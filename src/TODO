@@ -1,0 +1,40 @@
+$Source:$
+$Revision:$
+$Aliases:$
+$Author:$
+$Date:$
+$State:$
+
+* find a better name, e.g. SynthEdit or MIDI Factory or MIDI Fab or
+	MIDIATOR or SysExitor or MIDI Manager or Synth Manager or ...
+
+* event list editor:
+	* enable/disable reception of NRPN messages
+
+* documentation: general concepts:
+	* editors on arbitrary data: insert, change, delete
+		(cut & paste = special form of delete & insert)
+	* editors on structured data:
+		* constant structure: change only (e.g. options
+			dialog)
+		* SysExEdit: constant structure
+	* explain concept of source/target window
+		* motivation: special functions such as merge or
+			copy block of data
+
+* MIDI bulk dump:
+	must be able to insert forced delays for slow synthesizers;
+	encode delay time into the nodes of the tree
+	structure (e.g. along with variable offset in class MapNode)
+
+* Load from file / bulk request:
+	* Allow the user to specify locators (start/end) to extract
+		the state at a specific time in a long MIDI file
+	* When SysEx data is redefined within a single MIDI file, allow
+		certain solution strategies for such collisions:
+			* just overwrite old SysEx data
+			* if first overwrite is detected, stop immediately
+			* divide the file into pieces with contigous blocks
+				of SysEx data
+			* allow overwrite only of certain data (e.g.
+				a certain controller)

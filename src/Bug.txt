@@ -1,0 +1,13 @@
+java version "Linux_JDK_1.1.5_v7"
+
+Exception occurred during event dispatching:
+java.lang.NullPointerException: 
+        at java.awt.FocusManager.focusPrevious(Window.java:603)
+        at java.awt.FocusManager.focusPrevious(Window.java:592)
+        at java.awt.Window.handleTabEvent(Window.java:372)
+        at java.awt.Window.postProcessKeyEvent(Window.java:387)
+        at java.awt.Component.dispatchEventImpl(Component.java:1809)
+        at java.awt.Container.dispatchEventImpl(Container.java:939)
+        at java.awt.Window.dispatchEventImpl(Window.java:443)
+        at java.awt.Component.dispatchEvent(Component.java:1704)
+        at java.awt.EventDispatchThread.run(EventDispatchThread.java:63)

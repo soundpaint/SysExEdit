@@ -1,0 +1,80 @@
+$Source:$
+$Revision:$
+$Aliases:$
+$Author:$
+$Date:$
+$State:$
+
+	SysExEdit release 1.0-alpha1
+
+These are the release notes for the SysExEdit system, release
+1.0-alpha1. Read them carefully, as they tell you what this is all
+about, explain how to install the system, and what to do if something
+goes wrong. 
+
+WHAT IS SYSEXEDIT?
+
+  SysExEdit is a Java(tm)-based utility for creating MIDI messages
+  or MIDI files that contain SysEx messages for synthesizers and other
+  MIDI hardware. This utility assumes that the configuration of MIDI
+  hardware can be applied by direct memory access via system exclusive
+  messages. In fact, this is possible with most modern synthesizers.
+  SysExEdit is very flexible and customizable to a variety of specific
+  MIDI hardware; there is sample code included for a Yamaha(tm)
+  DB50XG/MU50 board, which is an XG(tm) compatible device.
+
+  SysExEdit is distributed under the GNU General Public License - see the
+  accompanying COPYING file for more details. 
+
+ON WHAT HARDWARE DOES IT RUN?
+
+  SysExEdit is fully written in Java; so, virtually, it runs on any
+  platform that a java runtime environment (JRE) is available for.
+  SysExEdit requires JRE/JDK1.1.x or higher.
+
+DOCUMENTATION:
+
+  The directory doc contains a collection of various documentation in
+  specific subdirectories.
+
+  - The directory doc/api contains the API documentation in html
+    format as generated from the javadoc utility.
+
+INSTALLING:
+
+  Create a directory that will harbour the SysExEdit system, e.g.:
+
+	mkdir C:\SysExEdit			% Windows95/NT(tm)
+
+	mkdir $HOME/SysExEdit			% Unix(tm)
+
+  Copy the compressed file SysExEdit.tgz or SysExEdit.zip into this
+  directory. Go into the directory with the command `cd'. Uncompress
+  the file with
+
+	unzip SysExEdit.zip
+
+  or
+
+	gunzip -c SysExEdit.tgz | tar -xf -
+
+COMPILING:
+
+  With the shell command `cd', go into the directory that contains
+  this README file.
+
+  On Unix systems, type `make all'.
+
+  On Windows95/NT systems, type `make.bat'.
+
+IF SOMETHING GOES WRONG:
+
+  First, check out for the file FAQ in the same directory as this
+  file, if present. If that does not help, email me:
+
+	reuterj@ira.uka.de
+
+  If you find any bugs or would like to send a comment, you can also
+  mail me.
+
+GOOD LUCK AND ENJOY!
