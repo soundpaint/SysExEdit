@@ -1,7 +1,7 @@
 /*
  * @(#)MessageFrame.java 1.00 98/02/06
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@ import javax.swing.JTextField;
  */
 class MessageFrame extends JFrame
 {
+  private static final long serialVersionUID = 2560926064683760350L;
+
   private MessageFrame() {}
 
   /**
@@ -65,7 +67,7 @@ class MessageFrame extends JFrame
     panel.add("South", button);
 
     pack();
-    show();
+    setVisible(true);
   }
 
   private class Listener implements ActionListener

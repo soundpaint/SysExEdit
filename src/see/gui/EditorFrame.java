@@ -1,7 +1,7 @@
 /*
  * @(#)EditorFrame.java 1.00 98/02/06
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,6 +85,8 @@ import see.model.MapNode;
  */
 public class EditorFrame extends JFrame implements Runnable
 {
+  private static final long serialVersionUID = -8230511863227744503L;
+
   /*
    * dialog titles
    */
@@ -352,14 +354,17 @@ public class EditorFrame extends JFrame implements Runnable
     GridBagLayout gbl;
     GridBagConstraints c = new GridBagConstraints();
     gbl = new GridBagLayout();
-    c.ipadx = 5; c.ipady = 5; /* internal padding */
+    c.ipadx = 5; /* internal padding */
+    c.ipady = 5; /* internal padding */
     c.insets = new Insets(5, 5, 5, 5); /* external padding */
-    c.gridx = c.RELATIVE; c.gridy = c.RELATIVE; /* default setting */
+    c.gridx = GridBagConstraints.RELATIVE; /* default setting */
+    c.gridy = GridBagConstraints.RELATIVE; /* default setting */
     c.gridwidth = 1;
     c.gridheight = GridBagConstraints.REMAINDER;
     c.fill = GridBagConstraints.NONE;
     c.anchor = GridBagConstraints.CENTER;
-    c.weightx = 0.0; c.weighty = 0.0;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
 
     // Layout Definitions for panel_button_row
     JPanel panel_pad;
@@ -677,7 +682,7 @@ public class EditorFrame extends JFrame implements Runnable
   {
     if (node.getAllowsChildren())
       {
-	Enumeration children = node.children();
+	Enumeration<Object> children = (Enumeration<Object>)node.children();
 	while (children.hasMoreElements())
 	  save_add((MapNode)children.nextElement());
       }
@@ -761,15 +766,16 @@ public class EditorFrame extends JFrame implements Runnable
     // [PENDING: Sometimes, the program hangs while calling
     // JOptionPane.showDialog() (after sucessfully calling
     // manager.getMapDefClasses).]
-    Class selection =
-      (Class)JOptionPane.showInputDialog(this, "Select a device model:",
-					 "Device Model Selection",
-					 JOptionPane.QUESTION_MESSAGE, null,
-					 manager.getMapDefClasses(), null);
+    Class<MapDef> selection =
+      (Class<MapDef>)JOptionPane.
+      showInputDialog(this, "Select a device model:",
+                      "Device Model Selection",
+                      JOptionPane.QUESTION_MESSAGE, null,
+                      manager.getMapDefClasses(), null);
     if (selection != null)
       try
       {
-	return (MapDef)selection.newInstance();
+	return selection.newInstance();
       }
     catch (Exception e)
       {

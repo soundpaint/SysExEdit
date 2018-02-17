@@ -1,7 +1,7 @@
 /*
  * @(#)FramesManager.java 1.00 98/02/06
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ package see.gui;
 
 import java.awt.Frame;
 import java.net.URL;
+
+import see.model.MapDef;
 
 /**
  * A class that implements this interface manages a set of bundled frames.
@@ -82,7 +84,7 @@ public interface FramesManager
   /**
    * Returns an array of all available map def classes.
    */
-  public Class[] getMapDefClasses();
+  public Class<MapDef>[] getMapDefClasses();
 
   /**
    * Executes SwingUtilities.updateComponentTreeUI on all registered frames.

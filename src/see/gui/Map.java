@@ -1,7 +1,7 @@
 /*
  * @(#)Map.java 1.00 99/01/30
  *
- * Copyright (C) 1999 Juergen Reuter
+ * Copyright (C) 1999, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,8 @@ import see.model.Representation;
  */
 class Map extends JTree
 {
+  private static final long serialVersionUID = 5701224992251396503L;
+
   /**
    * This String is used as an ID for a contents value that could not be
    * evaluated.
@@ -197,6 +199,8 @@ class Map extends JTree
   private class CellRenderer
     extends SelectableLabel implements TreeCellRenderer
   {
+    private static final long serialVersionUID = 2131652642719584363L;
+
     public void updateUI()
     {
       super.updateUI();

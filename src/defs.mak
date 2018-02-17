@@ -1,6 +1,6 @@
 # defs.mak for SysExEdit makefile
 #
-# Copyright (C) 1998  Juergen Reuter
+# Copyright (C) 1998, 2018 Juergen Reuter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,9 +29,6 @@ SEE_HOME = $(PWD)/..
 # the java runtime environment (JRE) home directory
 JRE_HOME = $(PWD)/../../JRE
 
-# the swing home directory
-SWING_HOME = $(PWD)/../../SWING
-
 # java source files root dircetory
 SRC_ROOT = $(SEE_HOME)/src
 
@@ -47,4 +44,9 @@ LIB_DIR = $(SEE_HOME)/lib
 DOC_OTHER =
 
 # java classpath environment variable
-CLASSPATH = '$(JRE_HOME)/lib/classes.zip:$(SWING_HOME)/swing.jar:$(CLS_ROOT):$(SRC_ROOT)'
+CLASSPATH = $(CLS_ROOT):$(SRC_ROOT)
+
+#  Local Variables:
+#    coding:utf-8
+#    mode:Makefile
+#  End:

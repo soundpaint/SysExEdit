@@ -1,7 +1,7 @@
 /*
  * @(#)DialogDeviceID.java 1.00 98/02/06
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,11 +50,11 @@ import javax.swing.event.ChangeListener;
  */
 class DialogDevID
 {
-  private static Hashtable labels;
+  private static Hashtable<Integer, JLabel> labels;
 
   static
   {
-    labels = new Hashtable();
+    labels = new Hashtable<Integer, JLabel>();
     for (int i = 0; i < 128; i+=0x20)
       labels.put(new Integer(i), new JLabel(Utils.intTo0xnn(i)));
     labels.put(new Integer(0x7f), new JLabel(Utils.intTo0xnn(0x7f)));
@@ -87,6 +87,8 @@ class DialogDevID
    */
   private static class Panel extends JPanel
   {
+    private static final long serialVersionUID = -6988609099484329685L;
+
     MyChangeListener myChangeListener;
     Panel(Object message, int deviceID)
     {
@@ -170,7 +172,7 @@ class DialogDevID
 		      JOptionPane.OK_CANCEL_OPTION, icon, null, null);
     pane.setWantsInput(false);
     JDialog dialog = pane.createDialog(parentComponent, title);
-    dialog.show();
+    dialog.setVisible(true);
     Object value = pane.getValue();
     if (value instanceof Integer)
       if (((Integer)value).intValue() == JOptionPane.OK_OPTION)

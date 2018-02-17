@@ -1,7 +1,7 @@
 /*
  * @(#)EnumerationType.java 1.00 98/01/31
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ public class EnumerationType
   private byte type;
   private int offs;
   private int radix;
-  private String[] enum;
+  private String[] values;
 
   /**
    * Defines a new EnumerationType for some value x for the range 0x00
@@ -69,12 +69,12 @@ public class EnumerationType
    * The EnumerationType of x is enum[x]. If x is beyond the bounds of the
    * array enum, the EnumerationType of x is defined as the String
    * constant UNKNOWN.
-   * @param enum An array of strings representing the value x for each x.
+   * @param values An array of strings representing the value x for each x.
    * @exception NullPointerException If enum equals null.
    */
-  public EnumerationType(String[] enum)
+  public EnumerationType(String[] values)
   {
-    this(0, enum);
+    this(0, values);
   }
 
   /**
@@ -84,13 +84,13 @@ public class EnumerationType
    * String constant UNKNOWN.
    * @param offs The offset to be added to the value that is to be
    *    represented.
-   * @param enum An array of strings representing the value (x + offs) for
-   *    each x.
+   * @param values An array of strings representing the value (x + offs)
+   *    for each x.
    * @exception NullPointerException If enum equals null.
    */
-  public EnumerationType(int offs, String[] enum)
+  public EnumerationType(int offs, String[] values)
   {
-    init(TYPE_ENUMERATION, offs, enum);
+    init(TYPE_ENUMERATION, offs, values);
   }
 
   /**
@@ -102,9 +102,9 @@ public class EnumerationType
    */
   EnumerationType(int x0, String s)
   {
-    String[] enum = new String[1];
-    enum[0] = s;
-    init(TYPE_ENUMERATION, -x0, enum);
+    String[] values = new String[1];
+    values[0] = s;
+    init(TYPE_ENUMERATION, -x0, values);
   }
 
   /**
@@ -119,24 +119,24 @@ public class EnumerationType
    * @param type Either TYPE_NUMBER or TYPE_ENUMERATION.
    * @param offs The offset to be added to the value that is to be
    *    represented.
-   * @param enum For type TYPE_ENUMERATION, an array of strings
+   * @param values For type TYPE_ENUMERATION, an array of strings
    *    representing the value (x + offs) for each x.
    * @exception IllegalArgumentException If parameter type is invalid.
    * @exception NullPointerException If type equals TYPE_ENUMERATION and
    *    enum equals null.
    */
-  private void init(byte type, int offs, String[] enum)
+  private void init(byte type, int offs, String[] values)
   {
     if ((type < TYPE_NUMBER) || (type > TYPE_ENUMERATION))
       throw new IllegalArgumentException("parameter type out of range");
     this.type = type;
     if (type == TYPE_ENUMERATION)
-      if (enum == null)
-	throw new NullPointerException("enum equals null");
+      if (values == null)
+	throw new NullPointerException("values equals null");
       else
-	this.enum = enum;
+	this.values = values;
     else
-      this.enum = null;
+      this.values = null;
     this.offs = offs;
     this.radix = radix;
   }
@@ -194,8 +194,8 @@ public class EnumerationType
 	else
 	  return "" + Integer.toString(y, radix);
       case TYPE_ENUMERATION:
-	if ((y >= 0) && (y < enum.length))
-	  return enum[y];
+	if ((y >= 0) && (y < values.length))
+	  return values[y];
 	else
 	  return UNKNOWN;
       default:
@@ -204,19 +204,19 @@ public class EnumerationType
   }
 
   /**
-   * Returns a string representation of the enum array (e.g. for debugging).
-   * @return A string representation of the enum array.
+   * Returns a string representation of the values array (e.g. for debugging).
+   * @return A string representation of the values array.
    */
-  private String enumToString()
+  private String valuesToString()
   {
     StringBuffer s = new StringBuffer();
     s.append("[");
-    if (enum != null)
+    if (values != null)
       {
-	if (enum.length > 0)
-	  s.append(enum[0]);
-	for (int i = 1; i < enum.length; i++)
-	  s.append(", " + enum[i]);
+	if (values.length > 0)
+	  s.append(values[0]);
+	for (int i = 1; i < values.length; i++)
+	  s.append(", " + values[i]);
       }
     s.append("]");
     return s.toString();
@@ -241,6 +241,6 @@ public class EnumerationType
 	type_str = "" + type;
       }
     return "EnumerationType{type=" + type_str + ", offs=" + offs +
-      ", enum=" + enumToString() + "}";
+      ", values=" + valuesToString() + "}";
   }
 }

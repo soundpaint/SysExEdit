@@ -1,7 +1,7 @@
 /*
  * @(#)SysExEdit.java 1.00 98/01/31
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ import javax.swing.UIDefaults;
 
 import see.gui.EditorFrame;
 import see.gui.FramesManager;
+import see.model.MapDef;
 
 /**
  * This is the main entry of the SysExEdit utility.
@@ -60,6 +61,8 @@ import see.gui.FramesManager;
  */
 public class SysExEdit extends Applet implements FramesManager
 {
+  private static final long serialVersionUID = -4898787358405623599L;
+
   private final static
   String VERSION = "SysExEdit/1.0alpha1";
 
@@ -93,9 +96,9 @@ public class SysExEdit extends Applet implements FramesManager
 
   private static URL resource = null; // a URL that references this class
 
-  private Hashtable frames; // frames and their unique IDs
+  private Hashtable<Frame, Integer> frames; // frames and their unique IDs
   private boolean inAnApplet = false; // true, if run as an applet
-  private Class[] classes = null; // array of map def classes
+  private Class<MapDef>[] classes = null; // array of map def classes
 
   private static void print_version(PrintWriter out)
   {
@@ -241,7 +244,7 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public void createEditorFrame(String filepath)
   {
-    frames = new Hashtable();
+    frames = new Hashtable<Frame, Integer>();
     System.out.println("[loading & initializing swing...]");
     System.out.flush();
     if (JOptionPane.showConfirmDialog(null, APPL_INFO, "Application Info",
@@ -403,7 +406,7 @@ public class SysExEdit extends Applet implements FramesManager
     synchronized(frames)
       {
 	int id = ++maxID;
-	frames.put(frame, new Integer(id));
+	frames.put(frame, id);
 	return id;
       }
   }
@@ -430,7 +433,7 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public int getID(Frame frame)
   {
-    Integer i = (Integer)frames.get(frame);
+    Integer i = frames.get(frame);
     return (i != null) ? i.intValue() : -1;
   }
 
@@ -439,10 +442,10 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public void updateUI()
   {
-    Enumeration enum = frames.keys();
-    while (enum.hasMoreElements())
+    Enumeration<Frame> enumeration = frames.keys();
+    while (enumeration.hasMoreElements())
       {
-	SwingUtilities.updateComponentTreeUI((Frame)enum.nextElement());
+	SwingUtilities.updateComponentTreeUI(enumeration.nextElement());
       }
   }
 
@@ -451,9 +454,9 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public void exitAll()
   {
-    Enumeration enum = frames.keys();
-    while (enum.hasMoreElements())
-      ((EditorFrame)enum.nextElement()).exit();
+    Enumeration<Frame> enumeration = frames.keys();
+    while (enumeration.hasMoreElements())
+      ((EditorFrame)enumeration.nextElement()).exit();
   }
 
   /**
@@ -480,7 +483,8 @@ public class SysExEdit extends Applet implements FramesManager
 	return;
       }
     UIDefaults uiDefaults = UIManager.getDefaults();
-    Enumeration iconsEnumeration = icons.propertyNames();
+    Enumeration<Object> iconsEnumeration =
+      (Enumeration<Object>)icons.propertyNames();
     System.out.print("[loading icons");
     System.out.flush();
     while (iconsEnumeration.hasMoreElements())
@@ -524,16 +528,18 @@ public class SysExEdit extends Applet implements FramesManager
   /**
    * Returns an array of all available map def classes.
    */
-  public Class[] getMapDefClasses()
+  public Class<MapDef>[] getMapDefClasses()
   {
     if (classes == null)
       {
-	Vector classesVector = new Vector();
-	Class _class;
+	Vector<Class<MapDef>> classesVector = new Vector<Class<MapDef>>();
+	Class<MapDef> _class;
 	try
 	  {
-	    classesVector.addElement(Class.forName("see.devices.DB50XG"));
-	    //classesVector.addElement(Class.forName("see.devices.U20"));
+	    classesVector.addElement((Class<MapDef>)
+                                      Class.forName("see.devices.DB50XG"));
+	    //classesVector.addElement((Class<MapDef>)
+            //                         Class.forName("see.devices.U20"));
 	  }
 	catch (Exception e)
 	  {
@@ -541,7 +547,7 @@ public class SysExEdit extends Applet implements FramesManager
 	    e.printStackTrace(System.out);
 	    System.out.flush();
 	  }
-	classes = new Class[classesVector.size()];
+	classes = (Class<MapDef>[])(new Class[classesVector.size()]);
 	classesVector.copyInto(classes);
       }
     return classes;

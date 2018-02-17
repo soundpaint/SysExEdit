@@ -1,7 +1,7 @@
 /*
  * @(#)MapChangeEvent.java 1.00 98/01/31
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@ import javax.swing.tree.DefaultTreeModel;
  */
 public class MapChangeEvent extends EventObject
 {
+  private static final long serialVersionUID = 2435483410608666577L;
+
   private DefaultTreeModel model;
   private int selector;
 

@@ -1,7 +1,7 @@
 /*
  * @(#)HtmlPanel.java 1.00 98/02/06
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@ import javax.swing.text.Document;
 public class HtmlPanel
   extends JPanel implements HyperlinkListener, ActionListener
 {
+  private static final long serialVersionUID = 3297576097796715505L;
+
   private final static String ACTION_PREV = "<";
   private final static String ACTION_NEXT = ">";
   private final static String ACTION_STOP = "Stop";
@@ -87,7 +89,7 @@ public class HtmlPanel
     history = new History(url, html_pane.getDocument());
     JViewport vp = scroller.getViewport();
     vp.add(html_pane);
-    vp.setBackingStoreEnabled(true);
+    vp.setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
     add(scroller, BorderLayout.CENTER);
     JPanel panel_header = new JPanel();
     panel_header.setLayout(new FlowLayout());

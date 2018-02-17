@@ -1,6 +1,6 @@
 # Makefile for SysExEdit
 #
-# Copyright (C) 1998  Juergen Reuter
+# Copyright (C) 1998, 2018 Juergen Reuter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ $(CLS_ROOT)/doc/api/images: $(CLS_ROOT)/doc/api
 	cd $(CLS_ROOT)/doc/api ; ln -s $(SRC_ROOT)/doc/api/images images
 
 $(CLS_ROOT)/doc/api/packages.html: classes $(CLS_ROOT)/doc/api/images
-	javadoc -source 1.4 -d $(CLS_ROOT)/doc/api -classpath $(CLASSPATH) \
+	javadoc -d $(CLS_ROOT)/doc/api -classpath $(CLASSPATH) \
 		$(DOC_OTHER) $(PACKAGES)
 
 doc: $(CLS_ROOT)/doc/tutorial $(CLS_ROOT)/doc/api/packages.html
@@ -176,5 +176,9 @@ tgz:
 .SUFFIXES: $(SUFFIXES) .java .class
 
 $(CLS_ROOT)%class: $(SRC_ROOT)%java
-	javac -source 1.4 -d $(CLS_ROOT) -classpath $(CLASSPATH) $<
+	javac -Xlint:all -d $(CLS_ROOT) -classpath $(CLASSPATH) $<
 
+#  Local Variables:
+#    coding:utf-8
+#    mode:Makefile
+#  End:

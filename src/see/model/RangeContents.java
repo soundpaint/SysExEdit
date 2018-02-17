@@ -1,7 +1,7 @@
 /*
  * @(#)RangeContents.java 1.00 98/01/31
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ public class RangeContents implements Contents
   private byte bit_size; // the effective size of this contents in bits (0..32)
   private Integer value; // the current value
   private Integer default_value; // the initial (default) value
-  private Vector ranges; // Range objects that allow implementing range union
+  private Vector<Range> ranges; // Range objects that allow implementing range union
   private int selectionID; // the currently valid range
 
   /**
@@ -71,7 +71,7 @@ public class RangeContents implements Contents
     bit_size = 0;
     value = null;
     default_value = null;
-    ranges = new Vector();
+    ranges = new Vector<Range>();
     selectionID = -1;
     if (range != null)
       {
@@ -128,7 +128,7 @@ public class RangeContents implements Contents
       throw new NullPointerException("representation");
     if (!(representation instanceof Range))
       throw new IllegalArgumentException("representation not a range");
-    ranges.addElement(representation);
+    ranges.addElement((Range)representation);
     min_bit_size =
       (byte)Math.max(min_bit_size, representation.getRequiredBitSize());
     bit_size = (byte)Math.max(min_bit_size, bit_size);
@@ -145,7 +145,7 @@ public class RangeContents implements Contents
     if (selectionID == -1)
       return null; // no range selected
     else
-      return (Range)ranges.elementAt(selectionID);
+      return ranges.elementAt(selectionID);
   }
 
   /**

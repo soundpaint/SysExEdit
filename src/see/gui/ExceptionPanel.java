@@ -1,7 +1,7 @@
 /*
  * @(#)ExceptionPanel.java 1.00 98/02/06
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,8 @@ import javax.swing.border.BevelBorder;
  */
 public class ExceptionPanel extends JPanel
 {
+  private static final long serialVersionUID = -8568553156220565622L;
+
   private final static String EXCEPTION = "Exception Info Message";
 
   private static class StringOutputStream extends OutputStream
@@ -91,7 +93,7 @@ public class ExceptionPanel extends JPanel
     JTextArea textArea = new JTextArea(out.toString());
     JViewport vp = scroller.getViewport();
     vp.add(textArea);
-    vp.setBackingStoreEnabled(true);
+    vp.setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
     add(scroller, BorderLayout.CENTER);
     //add(new JEditorPane("text/html", "<HTML><PRE>" + out + "</PRE>"));
   }

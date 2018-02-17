@@ -1,7 +1,7 @@
 /*
  * @(#)HtmlPanel.java 1.00 98/02/06
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ import java.util.Vector;
  */
 public class History
 {
-  private Vector references = new Vector();
-  private Vector contents = new Vector();
+  private Vector<Object> references = new Vector<Object>();
+  private Vector<Object> contents = new Vector<Object>();
   private int index = 0; // index of current + 1
 
   private History() {}

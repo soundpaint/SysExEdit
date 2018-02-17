@@ -1,7 +1,7 @@
 /*
  * @(#)MapNode.java 1.00 98/01/31
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Juergen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,11 +46,13 @@ import javax.swing.tree.DefaultTreeModel;
 public class MapNode extends DefaultMutableTreeNode
 implements MapChangeListener
 {
+  private static final long serialVersionUID = -1726377369359671649L;
+
   private long total_size; // the total bit size including all sub-trees
   private long address; // the absolute bit address of this node
   private long offset; // the number of inaccessible bits preceding this node
   private Contents contents; // only significant, if not allowsChildren
-  private Vector listeners = null; // map change listeners
+  private Vector<MapChangeListener> listeners = null; // map change listeners
 
   private MapNode() {}
 
@@ -162,11 +164,10 @@ implements MapChangeListener
   {
     if (listeners != null)
       {
-	Enumeration listeners_enum = listeners.elements();
+	Enumeration<MapChangeListener> listeners_enum = listeners.elements();
 	MapChangeEvent e = new MapChangeEvent(this, model, getSelector());
 	while (listeners_enum.hasMoreElements())
-	  ((MapChangeListener)listeners_enum.nextElement()).
-	    mapChangePerformed(e);
+	  (listeners_enum.nextElement()).mapChangePerformed(e);
       }
   }
 
@@ -176,7 +177,7 @@ implements MapChangeListener
   public void addMapChangeListener(MapChangeListener l)
   {
     if (listeners == null)
-      listeners = new Vector();
+      listeners = new Vector<MapChangeListener>();
     listeners.addElement(l);
   }
 
@@ -427,7 +428,7 @@ implements MapChangeListener
 	  MapNode next_node = null;
 	  MapNode node = null;
 	  long cumulative_address = this.address;
-	  Enumeration children_enum = children();
+	  Enumeration<Object> children_enum = (Enumeration<Object>)children();
 	  while ((cumulative_address < address) &&
 		 children_enum.hasMoreElements())
 	    {
