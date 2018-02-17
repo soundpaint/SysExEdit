@@ -57,50 +57,7 @@ JAVA =	$(SRC_ROOT)/see/model/AddressRepresentation.java \
 	$(SRC_ROOT)/see/gui/FramesManager.java \
 	$(SRC_ROOT)/see/gui/EditorFrame.java \
 	$(SRC_ROOT)/see/SysExEdit.java \
-	$(SRC_ROOT)/see/devices/DB50XG.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsToolBarUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsTreeUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsToggleButtonUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsTextUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsTextPaneUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsTextFieldUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsTextAreaUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsTableUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsTableHeaderUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsTabbedPaneUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsStandardDialogUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsSplitPaneUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsSplitPaneDivider.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsSpinnerUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsSliderUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsSeparatorUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsScrollPaneUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsScrollBarUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsRadioButtonUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsRadioButtonMenuItemUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsProgressBarUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsPopupMenuUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsPasswordFieldUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsOptionPane.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsMenuUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsMenuItemUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsMenuBarUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsLookAndFeel.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsListUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsLabelUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsInternalFrameUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsIconFactory.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsFileChooserUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsEditorPaneUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsDesktopPaneUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsDesktopManager.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsDesktopIconUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsComboBoxUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsCheckBoxUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsCheckBoxMenuItemUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsButtonUI.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsButtonListener.java \
-	$(SRC_ROOT)/see/gui/plaf/windows/WindowsBorders.java
+	$(SRC_ROOT)/see/devices/DB50XG.java
 
 CLASS =	$(CLS_ROOT)/see/model/AddressRepresentation.class \
 	$(CLS_ROOT)/see/model/Representation.class \
@@ -124,55 +81,13 @@ CLASS =	$(CLS_ROOT)/see/model/AddressRepresentation.class \
 	$(CLS_ROOT)/see/gui/FramesManager.class \
 	$(CLS_ROOT)/see/gui/EditorFrame.class \
 	$(CLS_ROOT)/see/SysExEdit.class \
-	$(CLS_ROOT)/see/devices/DB50XG.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsToolBarUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsTreeUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsToggleButtonUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsTextUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsTextPaneUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsTextFieldUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsTextAreaUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsTableUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsTableHeaderUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsTabbedPaneUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsSplitPaneUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsSplitPaneDivider.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsSliderUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsSeparatorUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsScrollPaneUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsScrollBarUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsRadioButtonUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsRadioButtonMenuItemUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsProgressBarUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsPopupMenuUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsPasswordFieldUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsMenuUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsMenuItemUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsMenuBarUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsLookAndFeel.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsListUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsLabelUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsInternalFrameUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsIconFactory.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsFileChooserUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsEditorPaneUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsDesktopPaneUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsDesktopManager.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsDesktopIconUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsComboBoxUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsCheckBoxUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsCheckBoxMenuItemUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsButtonUI.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsButtonListener.class \
-	$(CLS_ROOT)/see/gui/plaf/windows/WindowsBorders.class
+	$(CLS_ROOT)/see/devices/DB50XG.class
 
 all: classes doc lib
 
 COPYING		= $(CLS_ROOT)/COPYING.html
 DEMO		= $(CLS_ROOT)/Demo.html
 ICONS		= $(CLS_ROOT)/icons $(CLS_ROOT)/icons.properties
-WIN_ICONS	= $(CLS_ROOT)/see/gui/plaf/windows/icons
-WIN_RESOURCES	= $(CLS_ROOT)/see/gui/plaf/windows/resources
 
 classes:	$(CLS_ROOT) $(CLASS) $(ICONS) $(WIN_ICONS) $(WIN_RESOURCES) \
 		$(COPYING) $(DEMO)
@@ -197,14 +112,6 @@ $(CLS_ROOT)/icons.properties:
 icons:
 	cd icons; make all
 
-$(CLS_ROOT)/see/gui/plaf/windows/icons:
-	cd $(CLS_ROOT)/see/gui/plaf/windows ; \
-		ln -s $(SRC_ROOT)/see/gui/plaf/windows/icons icons
-
-$(CLS_ROOT)/see/gui/plaf/windows/resources:
-	cd $(CLS_ROOT)/see/gui/plaf/windows ; \
-		ln -s $(SRC_ROOT)/see/gui/plaf/windows/resources resources
-
 $(CLS_ROOT)/doc:
 	mkdir $(CLS_ROOT)/doc
 
@@ -218,7 +125,7 @@ $(CLS_ROOT)/doc/api/images: $(CLS_ROOT)/doc/api
 	cd $(CLS_ROOT)/doc/api ; ln -s $(SRC_ROOT)/doc/api/images images
 
 $(CLS_ROOT)/doc/api/packages.html: classes $(CLS_ROOT)/doc/api/images
-	javadoc -d $(CLS_ROOT)/doc/api -classpath $(CLASSPATH) \
+	javadoc -source 1.4 -d $(CLS_ROOT)/doc/api -classpath $(CLASSPATH) \
 		$(DOC_OTHER) $(PACKAGES)
 
 doc: $(CLS_ROOT)/doc/tutorial $(CLS_ROOT)/doc/api/packages.html
@@ -226,7 +133,7 @@ doc: $(CLS_ROOT)/doc/tutorial $(CLS_ROOT)/doc/api/packages.html
 lib: classes doc $(LIB_DIR)
 
 $(LIB_DIR):
-	mkdirhier $(LIB_DIR)
+	mkdir -p $(LIB_DIR)
 	cd $(CLS_ROOT); jar -0cvf $(LIB_DIR)/classes.zip .
 
 depend:
@@ -269,5 +176,5 @@ tgz:
 .SUFFIXES: $(SUFFIXES) .java .class
 
 $(CLS_ROOT)%class: $(SRC_ROOT)%java
-	javac -d $(CLS_ROOT) -classpath $(CLASSPATH) $<
+	javac -source 1.4 -d $(CLS_ROOT) -classpath $(CLASSPATH) $<
 

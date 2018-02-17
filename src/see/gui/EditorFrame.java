@@ -258,10 +258,6 @@ public class EditorFrame extends JFrame implements Runnable
 
   static
   {
-    /**/
-    UIManager.installLookAndFeel("Windows (cracked)",
-				 "see.gui.plaf.windows.WindowsLookAndFeel");
-    /**/
     lookAndFeelInfo = UIManager.getInstalledLookAndFeels();
   }
 
