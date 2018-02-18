@@ -154,7 +154,7 @@ public class EnumerationType
   /**
    * Returns the radix for String representation of numbers.
    * The default is 10.
-   * @param radix The radix.
+   * @return The radix.
    */
   public int getRadix()
   {

@@ -106,7 +106,7 @@ public interface Contents
 
   /**
    * Resets the contents value to its default value.
-   * @see setDefaultValue
+   * @see #setDefaultValue
    */
   public void reset();
 

@@ -252,7 +252,7 @@ implements MapChangeListener
    * node's child array at index childIndex. newChild must not be null
    * and must not be an ancestor of this node.
    * @param newChild The MutableTreeNode to insert under this node.
-   * @param childInden The index in this node's child array where this node
+   * @param childIndex The index in this node's child array where this node
    *    is to be inserted.
    * @exception ArrayIndexOutOfBoundsException If childIndex is out of bounds.
    * @exception IllegalArgumentException If newChild is null or is an
@@ -473,7 +473,7 @@ implements MapChangeListener
    * @exception IllegalArgumentException If size is below 0.
    * @exception IllegalArgumentException If the specified address is not
    *    accessible.
-   * @excveption IllegalArgumentException If size goes beyond the addressed
+   * @exception IllegalArgumentException If size goes beyond the addressed
    *    node.
    */
   public int[] getData(long address, int size)

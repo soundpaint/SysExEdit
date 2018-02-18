@@ -45,7 +45,7 @@ public class RangeContents implements Contents
   private byte min_bit_size; // the minimally required size of this contents
   private byte bit_size; // the effective size of this contents in bits (0..32)
   private Integer value; // the current value
-  private Integer default_value; // the initial (default) value
+  private Integer defaultValue; // the initial (default) value
   private Vector<Range> ranges; // Range objects that allow implementing range union
   private int selectionID; // the currently valid range
 
@@ -70,7 +70,7 @@ public class RangeContents implements Contents
     min_bit_size = 0;
     bit_size = 0;
     value = null;
-    default_value = null;
+    defaultValue = null;
     ranges = new Vector<Range>();
     selectionID = -1;
     if (range != null)
@@ -232,41 +232,41 @@ public class RangeContents implements Contents
 
   /**
    * Resets the contents value to its default value.
-   * @see setDefaultValue
+   * @see #setDefaultValue
    */
   public void reset()
   {
-    value = default_value;
+    value = defaultValue;
   }
 
   /*
    * Sets the default value for this contents. This value is shared among
    * all ranges; thus it even may be out of the currently selected or
    * any other range.
-   * @param default_value The default value.
+   * @param defaultValue The default value.
    * @exception IllegalArgumentException If value is not an instance of the
    *    class (java.lang.Integer) that holds the value represented by this
    *    class.
    * @see #reset
    */
-  public void setDefaultValue(Object default_value)
+  public void setDefaultValue(Object defaultValue)
   {
-    if (!(default_value instanceof Integer))
+    if (!(defaultValue instanceof Integer))
       throw new IllegalArgumentException("value not an Integer as expected");
     else
-      this.default_value = (Integer)default_value;
+      this.defaultValue = (Integer)defaultValue;
   }
 
   /*
    * Sets the default value for this contents. This value is shared among
    * all ranges; thus it even may be out of the currently selected or
    * any other range.
-   * @param default_value The default value.
+   * @param defaultValue The default value.
    * @see #reset
    */
-  public void setDefaultValue(int default_value)
+  public void setDefaultValue(int defaultValue)
   {
-    this.default_value =  new Integer(default_value);
+    this.defaultValue =  new Integer(defaultValue);
   }
 
   /**
@@ -277,7 +277,7 @@ public class RangeContents implements Contents
    */
   public Object getDefaultValue()
   {
-    return default_value;
+    return defaultValue;
   }
 
   /**
