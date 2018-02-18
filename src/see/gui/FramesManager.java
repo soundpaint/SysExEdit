@@ -70,11 +70,6 @@ public interface FramesManager
   public int getID(Frame frame);
 
   /**
-   * Returns the root directory of this application as a resource URL.
-   */
-  public URL getResource();
-
-  /**
    * Returns an array of all available map def classes.
    */
   public Class<MapDef>[] getMapDefClasses();

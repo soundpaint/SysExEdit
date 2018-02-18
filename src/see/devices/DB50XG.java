@@ -38,12 +38,12 @@ import see.model.AddressRepresentation;
  */
 public class DB50XG implements MapDef
 {
-  private final static String DEVICE_NAME = "Yamaha(tm) MU50/DB50XG";
+  private final static String DEVICE_NAME = "Yamaha™ MU50/DB50XG";
   private final static byte MANUFACTURER_ID = 0x43;
   private final static byte DEVICE_NUMBER = 0x1f;
   private final static byte MODEL_ID = 0x4c;
   private final static String ENTERED_BY =
-    "Jürgen Reuter, Copyright (C) 1998, 2018";
+    "Jürgen Reuter, Copyright © 1998, 2018";
 
   /**
    * Pan Data Assign Table

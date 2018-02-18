@@ -85,8 +85,6 @@ public class SysExEdit extends Applet implements FramesManager
   private static int argVersion = 0;	     /* dto. */
   private static int argCopyright = 0;	     /* dto. */
 
-  private static URL resource = null; // a URL that references this class
-
   private Hashtable<Frame, Integer> frames; // frames and their unique IDs
   private boolean inAnApplet = false; // true, if run as an applet
   private Class<MapDef>[] classes = null; // array of map def classes
@@ -242,7 +240,7 @@ public class SysExEdit extends Applet implements FramesManager
 				      JOptionPane.OK_CANCEL_OPTION) ==
 	JOptionPane.OK_OPTION)
       {
-	evaluateResource();
+        loadIcons();
 	new Thread(new EditorFrame(filepath, null, this)).start();
       }
     else
@@ -265,72 +263,6 @@ public class SysExEdit extends Applet implements FramesManager
     File file = new File(myPath);
     return (file.exists() && file.canRead());
     // [PENDING: we may also want to check is the file really is a class file]
-  }
-
-  /*
-   * This method evaluates a static resource URL that references this
-   * class, and loads all static icons needed for this application, if
-   * not already done.
-   */
-  private void evaluateResource()
-  {
-    if (resource != null)
-      return; // already done
-    /*
-    ClassLoader loader = getClass().getClassLoader();
-    if (loader == null)
-      resource = ClassLoader.getSystemResource("");
-    else
-      resource = loader.getResource("");
-      */
-    // The above lines do not work properly because of a bug in jdk 1.1.x
-    // when using a "systemresource" protocol URL.
-    // Hence, we determine resource manually, permitting only "file" and
-    // "http" as valid protocols for the URL.
-    if (inAnApplet)
-      resource = getCodeBase(); // returns a file or http URL
-    else // create a file URL manually
-      {
-	String classpath = System.getProperty("java.class.path");
-	String path = null;
-	int start = 0;
-	int end = classpath.indexOf(File.pathSeparatorChar, start);
-	while (end != -1)
-	  {
-	    path = classpath.substring(start, end);
-	    if (isResourceDir(path))
-	      break; // path found
-	    start = end + 1;
-	    end = classpath.indexOf(File.pathSeparatorChar, start);
-	  }
-	if (end == -1)
-	  {
-	    path = classpath.substring(start);
-	    if (isResourceDir(path))
-	      ; // path found
-	    else
-	      path = null;
-	  }
-	if (path != null)
-	  {
-	    try
-	      {
-		resource =
-		  new URL("file:" + new File(path).getCanonicalPath().
-			  replace(File.separatorChar, '/') + "/");
-	      }
-	    catch (Exception e)
-	      {
-		resource = null;
-	      }
-	  }
-	else
-	  resource = null;
-      }
-    System.out.println("[resource=" + resource + "]");
-    System.out.flush();
-    if (resource != null)
-      loadIcons(resource);
   }
 
   /**
@@ -453,43 +385,38 @@ public class SysExEdit extends Applet implements FramesManager
   /**
    * Loads all of the internal icons. This should be called only once
    * at startup, e.g. when this class is instantiated for the first time.
-   * @param resource A URL that is used to locate icons. Typically, the
-   *    URL references the directory that contains all class files of this
-   *    application.
    */
-  private static void loadIcons(URL resource)
+  private static void loadIcons()
   {
     System.out.println("[loading icon properties...]");
     System.out.flush();
-    Properties icons = new Properties();
+    final Properties icons = new Properties();
     try
       {
-	icons.load(new URL(resource, "icons.properties").
-		   openConnection().getInputStream());
+        final URL resource = SysExEdit.class.getResource("/icons.properties");
+        if (resource == null)
+          {
+            throw new NullPointerException("icons.properties resource not found");
+          }
+	icons.load(resource.openConnection().getInputStream());
       }
-    catch (IOException e)
+    catch (Exception e)
       {
-	System.out.println("WARNING: failed loading icons: " + e);
+	System.out.println("WARNING: failed loading icons list: " + e);
 	System.out.flush();
 	return;
       }
-    UIDefaults uiDefaults = UIManager.getDefaults();
-    Enumeration<Object> iconsEnumeration =
-      (Enumeration<Object>)icons.propertyNames();
-    System.out.print("[loading icons");
-    System.out.flush();
-    while (iconsEnumeration.hasMoreElements())
+    final UIDefaults uiDefaults = UIManager.getDefaults();
+    for (final String key : icons.stringPropertyNames())
       {
-	URL icon_location = null;
+        final String value = icons.getProperty(key);
+        System.out.print(".");
+        System.out.flush();
+	final URL iconLocation = SysExEdit.class.getResource(value);
 	try
 	  {
-	    String key = (String)iconsEnumeration.nextElement();
-	    String value = icons.getProperty(key);
-	    System.out.print(".");
-	    System.out.flush();
-	    icon_location = new URL(resource, value);
-	    ImageIcon imageIcon = new ImageIcon(icon_location);
-	    int status = imageIcon.getImageLoadStatus();
+	    final ImageIcon imageIcon = new ImageIcon(iconLocation);
+	    final int status = imageIcon.getImageLoadStatus();
 	    if (status == MediaTracker.COMPLETE)
 	      uiDefaults.put(key, imageIcon);
 	    else
@@ -499,21 +426,12 @@ public class SysExEdit extends Applet implements FramesManager
 	  {
 	    System.out.println();
 	    System.out.println("WARNING: failed loading " +
-			       icon_location + ":");
-	    System.out.println("" + e);
+			       iconLocation + ": " + e);
 	    System.out.flush();
 	  }
       }
     System.out.println("]");
     System.out.flush();
-  }
-
-  /**
-   * Returns the root directory of this application as a resource URL.
-   */
-  public URL getResource()
-  {
-    return resource;
   }
 
   /**

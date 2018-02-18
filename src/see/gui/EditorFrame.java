@@ -1015,7 +1015,7 @@ public class EditorFrame extends JFrame implements Runnable
       else if (command.equals(TUTORIAL))
 	{
 	  HtmlPanel panel = null;
-	  URL url = new URL(manager.getResource(), "doc/tutorial/index.html");
+	  URL url = EditorFrame.class.getResource("/doc/tutorial/MissingPage.html");
 	  if (url != null)
 	    panel = new HtmlPanel(url);
 	  if (panel != null)
@@ -1025,7 +1025,7 @@ public class EditorFrame extends JFrame implements Runnable
       else if (command.equals(API))
 	{
 	  HtmlPanel panel = null;
-	  URL url = new URL(manager.getResource(), "doc/api/packages.html");
+	  URL url = EditorFrame.class.getResource("/doc/api/index.html");
 	  if (url != null)
 	    panel = new HtmlPanel(url);
 	  if (panel != null)
@@ -1039,7 +1039,7 @@ public class EditorFrame extends JFrame implements Runnable
       else if (command.equals(LICENSE))
 	{
 	  HtmlPanel panel = null;
-	  URL url = new URL(manager.getResource(), "LICENSE.html");
+	  URL url = EditorFrame.class.getResource("/LICENSE.html");
 	  if (url != null)
 	    panel = new HtmlPanel(url);
 	  if (panel != null)
