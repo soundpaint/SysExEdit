@@ -922,10 +922,10 @@ public class EditorFrame extends JFrame implements Runnable
   {
     private JFileChooser newChooser(File defaultFile)
     {
-      JFileChooser chooser = new JFileChooser();
-      ExtensionFileFilter filter = new ExtensionFileFilter();
-      filter.addExtension("MID");
-      filter.addExtension("mid");
+      final JFileChooser chooser = new JFileChooser();
+      final ExtensionFileFilter filter =
+        new ExtensionFileFilter(new String[] {"mid", "midi", "sysex"},
+                                "MIDI SysEx files");
       chooser.addChoosableFileFilter(filter);
       chooser.setFileFilter(filter);
       if (defaultFile != null)
