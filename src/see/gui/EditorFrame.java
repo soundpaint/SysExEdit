@@ -1039,7 +1039,7 @@ public class EditorFrame extends JFrame implements Runnable
       else if (command.equals(LICENSE))
 	{
 	  HtmlPanel panel = null;
-	  URL url = new URL(manager.getResource(), "COPYING.html");
+	  URL url = new URL(manager.getResource(), "LICENSE.html");
 	  if (url != null)
 	    panel = new HtmlPanel(url);
 	  if (panel != null)

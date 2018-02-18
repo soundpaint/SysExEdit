@@ -78,19 +78,19 @@ CLASS =	$(CLS_ROOT)/see/model/AddressRepresentation.class \
 
 all: classes doc lib
 
-COPYING		= $(CLS_ROOT)/COPYING.html
+LICENSE		= $(CLS_ROOT)/LICENSE.html
 DEMO		= $(CLS_ROOT)/Demo.html
 ICONS		= $(CLS_ROOT)/icons $(CLS_ROOT)/icons.properties
 
 classes:	$(CLS_ROOT) $(CLASS) $(ICONS) $(WIN_ICONS) $(WIN_RESOURCES) \
-		$(COPYING) $(DEMO)
+		$(LICENSE) $(DEMO)
 
 $(CLS_ROOT):
 	mkdir $(CLS_ROOT)
 
-$(CLS_ROOT)/COPYING.html:
+$(CLS_ROOT)/LICENSE.html:
 	cd $(CLS_ROOT) ; \
-		ln -s $(SRC_ROOT)/COPYING.html COPYING.html
+		ln -s $(SRC_ROOT)/LICENSE.html LICENSE.html
 
 $(CLS_ROOT)/Demo.html:
 	cd $(CLS_ROOT) ; \
