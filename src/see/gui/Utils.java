@@ -1,7 +1,7 @@
 /*
  * @(#)Utils.java 1.00 98/02/06
  *
- * Copyright (C) 1998 Juergen Reuter
+ * Copyright (C) 1998, 2018 Jürgen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-// $Source:$
-// $Revision:$
-// $Aliases:$
-// $Author:$
-// $Date:$
-// $State:$
 
 package see.gui;
 
@@ -51,3 +44,10 @@ class Utils
       return "0x" + Integer.toString(b, 0x10);
   }
 }
+
+/*
+ * Local Variables:
+ *   coding:utf-8
+ *   mode:java
+ * End:
+ */

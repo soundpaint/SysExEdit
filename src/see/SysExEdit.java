@@ -1,7 +1,7 @@
 /*
  * @(#)SysExEdit.java 1.00 98/01/31
  *
- * Copyright (C) 1998, 2018 Juergen Reuter
+ * Copyright (C) 1998, 2018 Jürgen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-// $Source:$
-// $Revision:$
-// $Aliases:$
-// $Author:$
-// $Date:$
-// $State:$
 
 package see;
 
@@ -55,9 +48,7 @@ import see.model.MapDef;
 /**
  * This is the main entry of the SysExEdit utility.
  *
- * @version 1.00, 01/31/98
- * @author  Juergen Reuter
- * @since   Jsound1.0alpha1
+ * @version 1.01, 18/02/18
  */
 public class SysExEdit extends Applet implements FramesManager
 {
@@ -67,7 +58,7 @@ public class SysExEdit extends Applet implements FramesManager
   String VERSION = "SysExEdit/1.0alpha1";
 
   private final static
-  String COPYRIGHT = "Copyright (C) 1998 J\u00fcrgen Reuter";
+  String COPYRIGHT = "Copyright (C) 1998, 2018 Jürgen Reuter";
 
   private final static String APPL_INFO =
   VERSION + "\n" +
@@ -553,3 +544,10 @@ public class SysExEdit extends Applet implements FramesManager
     return classes;
   }
 }
+
+/*
+ * Local Variables:
+ *   coding:utf-8
+ *   mode:java
+ * End:
+ */

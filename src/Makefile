@@ -1,6 +1,6 @@
 # Makefile for SysExEdit
 #
-# Copyright (C) 1998, 2018 Juergen Reuter
+# Copyright (C) 1998, 2018 Jürgen Reuter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,13 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-# $Source:$
-# $Revision:$
-# $Aliases:$
-# $Author:$
-# $Date:$
-# $State:$
 
 include defs.mak
 

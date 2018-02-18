@@ -1,7 +1,7 @@
 /*
  * @(#)Map.java 1.00 99/01/30
  *
- * Copyright (C) 1999, 2018 Juergen Reuter
+ * Copyright (C) 1999, 2018 Jürgen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
-// $Source:$
-// $Revision:$
-// $Aliases:$
-// $Author:$
-// $Date:$
-// $State:$
 
 package see.gui;
 
@@ -244,3 +237,10 @@ class Map extends JTree
     }
   }
 }
+
+/*
+ * Local Variables:
+ *   coding:utf-8
+ *   mode:java
+ * End:
+ */
