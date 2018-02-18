@@ -80,44 +80,52 @@ all: classes doc lib
 
 LICENSE		= $(CLS_ROOT)/LICENSE.html
 DEMO		= $(CLS_ROOT)/Demo.html
-ICONS		= $(CLS_ROOT)/icons $(CLS_ROOT)/icons.properties
+ICONS		= $(patsubst $(SRC_ROOT)/%,$(CLS_ROOT)/%,$(wildcard $(SRC_ROOT)/icons/*.gif)) \
+		  $(CLS_ROOT)/icons.properties
 
-classes:	$(CLS_ROOT) $(CLASS) $(ICONS) $(WIN_ICONS) $(WIN_RESOURCES) \
-		$(LICENSE) $(DEMO)
+classes:	$(CLS_ROOT) $(CLASS) $(ICONS) $(LICENSE) $(DEMO)
 
 $(CLS_ROOT):
-	mkdir $(CLS_ROOT)
+	mkdir -p $@
 
-$(CLS_ROOT)/LICENSE.html:
-	cd $(CLS_ROOT) ; \
-		ln -s $(SRC_ROOT)/LICENSE.html LICENSE.html
+$(CLS_ROOT)/LICENSE.html: $(SRC_ROOT)/LICENSE.html
+	cp -fp $< $@
 
-$(CLS_ROOT)/Demo.html:
-	cd $(CLS_ROOT) ; \
-		ln -s $(SRC_ROOT)/Demo.html Demo.html
+$(CLS_ROOT)/Demo.html: $(SRC_ROOT)/Demo.html
+	cp -fp $< $@
 
-$(CLS_ROOT)/icons: icons
-	cd $(CLS_ROOT) ; ln -s $(SRC_ROOT)/icons icons
+$(CLS_ROOT)/icons:
+	mkdir -p $@
 
-$(CLS_ROOT)/icons.properties:
-	cd $(CLS_ROOT) ; ln -s $(SRC_ROOT)/icons.properties icons.properties
+$(CLS_ROOT)/icons/%: $(SRC_ROOT)/icons/% | $(CLS_ROOT)/icons
+	cp -fp $< $@
+
+$(CLS_ROOT)/icons.properties: $(SRC_ROOT)/icons.properties
+	echo ICONS=$(ICONS)
+	cp -fp $< $@
 
 icons:
 	cd icons; make all
 
 $(CLS_ROOT)/doc:
-	mkdir $(CLS_ROOT)/doc
-
-$(CLS_ROOT)/doc/tutorial: $(CLS_ROOT)/doc
-	cd $(CLS_ROOT)/doc ; ln -s $(SRC_ROOT)/doc/tutorial tutorial
+	mkdir -p $@
 
 $(CLS_ROOT)/doc/api: $(CLS_ROOT)/doc
-	mkdir $(CLS_ROOT)/doc/api
+	mkdir -p $@
+
+$(CLS_ROOT)/doc/tutorial: $(CLS_ROOT)/doc
+	mkdir -p $@
+
+$(CLS_ROOT)/doc/tutorial/%: $(SRC_ROOT)/doc/tutorial/%
+	cp -fp $< $@
 
 $(CLS_ROOT)/doc/api/images: $(CLS_ROOT)/doc/api
-	cd $(CLS_ROOT)/doc/api ; ln -s $(SRC_ROOT)/doc/api/images images
+	mkdir -p $@
 
-$(CLS_ROOT)/doc/api/packages.html: classes $(CLS_ROOT)/doc/api/images
+$(CLS_ROOT)/doc/api/images/%: $(SRC_ROOT)/doc/api/images/%
+	cp -fp $< $@
+
+$(CLS_ROOT)/doc/api/packages.html: $(SRC_ROOT)/see $(SRC_ROOT)/see/midi $(SRC_ROOT)/see/model $(SRC_ROOT)/see/gui $(SRC_ROOT)/see/devices | classes
 	javadoc -d $(CLS_ROOT)/doc/api -classpath $(CLASSPATH) \
 		$(DOC_OTHER) $(PACKAGES)
 
@@ -126,7 +134,7 @@ doc: $(CLS_ROOT)/doc/tutorial $(CLS_ROOT)/doc/api/packages.html
 lib: classes doc $(LIB_DIR)
 
 $(LIB_DIR):
-	mkdir -p $(LIB_DIR)
+	mkdir -p $@
 	cd $(CLS_ROOT); jar -0cvf $(LIB_DIR)/classes.zip .
 
 depend:
