@@ -133,11 +133,17 @@ jarclean:
 
 distclean: clean bkpclean docclean jarclean
 
-tgz:
-	- cd .. ; rm -f src.tgz.bak.bak
-	- cd .. ; mv -f src.tgz.bak src.tgz.bak.bak
-	- cd .. ; mv -f src.tgz src.tgz.bak
-	cd .. ; tar -cvf - src | gzip --best > src.tgz
+tarball: distclean
+	@cd .. ; \
+	TGZ_DATE=`date +%Y-%m-%d_%H-%M-%S` ; \
+	PROJECT_NAME=SysExEdit ; \
+	PROJECT_PATH=`basename \`pwd\`` ; \
+	TGZ_PREFIX=$$PROJECT_NAME\_$$TGZ_DATE ; cd .. ; \
+	tar cvf ./$$TGZ_PREFIX.tar.bz2 \
+		--exclude=.git \
+		--exclude=untracked_files \
+		--transform=s/$$PROJECT_PATH/$$TGZ_PREFIX/ \
+		--bzip2 $$PROJECT_PATH
 
 .SUFFIXES: $(SUFFIXES) .java .class
 
