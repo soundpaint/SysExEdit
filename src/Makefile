@@ -76,12 +76,13 @@ CLASS =	$(CLS_ROOT)/see/model/AddressRepresentation.class \
 	$(CLS_ROOT)/see/SysExEdit.class \
 	$(CLS_ROOT)/see/devices/DB50XG.class
 
-all: classes doc lib
+all: classes doc jar
 
 LICENSE		= $(CLS_ROOT)/LICENSE.html
 DEMO		= $(CLS_ROOT)/Demo.html
 ICONS		= $(patsubst $(SRC_ROOT)/%,$(CLS_ROOT)/%,$(wildcard $(SRC_ROOT)/icons/*.gif)) \
 		  $(CLS_ROOT)/icons.properties
+JAR_FILE	= $(JAR_DIR)/SysExEdit.jar
 
 classes:	$(CLS_ROOT) $(CLASS) $(ICONS) $(LICENSE) $(DEMO)
 
@@ -131,11 +132,14 @@ $(CLS_ROOT)/doc/api/packages.html: $(SRC_ROOT)/see $(SRC_ROOT)/see/midi $(SRC_RO
 
 doc: $(CLS_ROOT)/doc/tutorial $(CLS_ROOT)/doc/api/packages.html
 
-lib: classes doc $(LIB_DIR)
+jar: classes doc $(JAR_FILE)
 
-$(LIB_DIR):
+$(JAR_DIR):
 	mkdir -p $@
-	cd $(CLS_ROOT); jar -0cvf $(LIB_DIR)/classes.zip .
+
+$(JAR_FILE): $(JAR_DIR)
+	cd $(CLS_ROOT); \
+	jar -0cvfm $(JAR_DIR)/SysExEdit.jar $(SRC_ROOT)/META-INF/MANIFEST.MF .
 
 depend:
 
@@ -144,6 +148,7 @@ tags:
 
 clean:
 	- rm -rf $(CLS_ROOT)
+	- rm -rf $(JAR_DIR)
 	- cd icons ; make clean
 
 modelclean:
@@ -163,10 +168,10 @@ bkpclean:
 docclean:
 	- rm -rf $(CLS_ROOT)/doc
 
-libclean:
-	- rm -rf $(LIB_DIR)
+jarclean:
+	- rm -rf $(JAR_DIR)
 
-veryclean: clean bkpclean docclean libclean
+veryclean: clean bkpclean docclean jarclean
 
 tgz:
 	- cd .. ; rm -f src.tgz.bak.bak

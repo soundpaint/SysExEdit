@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Specification-Title: N.A.
+Created-By: Jürgen Reuter
+Implementation-Title: SysExEdit
+Specification-Vendor: Juergen Reuter
+Implementation-Vendor: Juergen Reuter
+Main-Class: see.SysExEdit
+SplashScreen-Image: icon/internal-waveform-sawtooth.gif

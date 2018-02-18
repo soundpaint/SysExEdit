@@ -29,9 +29,9 @@ SRC_ROOT = $(SEE_HOME)/src
 # (run 'make classes' to generate)
 CLS_ROOT = $(SEE_HOME)/classes
 
-# library directory; contains archive file with the compiled classes
-# (run 'make lib' to generate)
-LIB_DIR = $(SEE_HOME)/lib
+# binary target directory; contains archive file with the compiled classes
+# (run 'make jar' to generate)
+JAR_DIR = $(SEE_HOME)/jar
 
 # other (external) packages to be included when running javadoc
 DOC_OTHER =
