@@ -58,15 +58,15 @@ public class SysExEdit extends Applet implements FramesManager
   String VERSION = "SysExEdit/1.0alpha1";
 
   private final static
-  String COPYRIGHT = "Copyright (C) 1998, 2018 Jürgen Reuter";
+  String COPYRIGHT = "Copyright © 1998, 2018 Jürgen Reuter";
 
   private final static String APPL_INFO =
   VERSION + "\n" +
   COPYRIGHT + "\n" +
   "\n" +
   "SysExEdit comes with ABSOLUTELY NO WARRANTY;\n" +
-  "for details click on the menu item \"License...\" in\n" +
-  "the \"Help\" menu of the main window to view the full\n" +
+  "for details click on the menu item “License...” in\n" +
+  "the “Help” menu of the main window to view the full\n" +
   "license.\n" +
   "\n" +
   "This is free software, and you are welcome to\n" +
