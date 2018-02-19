@@ -65,7 +65,7 @@ class DialogDevID
     /**
      * Invoked when the target of the listener has changed its state.
      *
-     * @param e A ChangeEvent object
+     * @param e The change event.
      */
     public void stateChanged(ChangeEvent e)
     {
@@ -82,8 +82,9 @@ class DialogDevID
   {
     private static final long serialVersionUID = -6988609099484329685L;
 
-    MyChangeListener myChangeListener;
-    Panel(Object message, int deviceID)
+    private MyChangeListener myChangeListener;
+
+    private Panel(int deviceID)
     {
       myChangeListener = new MyChangeListener();
       Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
@@ -148,18 +149,17 @@ class DialogDevID
    * <code>initialValue</code> is the initial value to prompt the user with.
    *
    * @param parentComponent The parent Component for the dialog
-   * @param message The Object to display (currently ignored).
    * @param title The String to display in the dialog title bar
    * @param messageType The type of message to be displayed.
    * @param icon The Icon image to display.
    * @param initialValue The value used to initialize the input field.
    * @return device ID, or -1 meaning the user canceled the input
    */
-  static int showDialog(Component parentComponent, Object message,
+  static int showDialog(Component parentComponent,
 			String title, int messageType,
 			Icon icon, int initialValue)
   {
-    Panel panel = new Panel(message, initialValue);
+    Panel panel = new Panel(initialValue);
     JOptionPane pane =
       new JOptionPane(panel, messageType,
 		      JOptionPane.OK_CANCEL_OPTION, icon, null, null);

@@ -338,11 +338,9 @@ public class Range implements Representation
    * @param x The Integer value to be checked.
    * @return True, if the value is in range.
    */
-  public synchronized boolean isInRange(Object x)
+  public synchronized boolean isInRange(int x)
   {
-    if (!(x instanceof Integer))
-      return false;
-    long unsigned_x = signed_int_to_long(((Integer)x).intValue());
+    long unsigned_x = signed_int_to_long(x);
     if (hint == null) // no hint given; start with contigous first
       hint = contigous_first;
     if (hint == null) // empty range; we are done!
@@ -381,7 +379,7 @@ public class Range implements Representation
    * @return The lowermost value that is in range or null, if the range
    *    is empty.
    */
-  public Object lowermost()
+  public Integer lowermost()
   {
     if (contigous_first == null)
       return null;
@@ -397,7 +395,7 @@ public class Range implements Representation
    * @return The uppermost value that is in range or null, if the range
    *    is empty.
    */
-  public Object uppermost()
+  public Integer uppermost()
   {
     if (contigous_last == null)
       return null;
@@ -421,11 +419,9 @@ public class Range implements Representation
    * @return The next upper value that is in range or null, if there is
    *    no such value.
    */
-  public Object succ(Object x)
+  public Integer succ(int x)
   {
-    if (!(x instanceof Integer))
-      return null;
-    long unsigned_x = signed_int_to_long(((Integer)x).intValue());
+    long unsigned_x = signed_int_to_long(x);
     if (hint == null) // no hint given; start with contigous first
       hint = contigous_first;
     if (hint == null) // empty range; we are done!
@@ -478,11 +474,9 @@ public class Range implements Representation
    * @return The next lower value that is in range or null, if there is
    *    no such value.
    */
-  public Object pred(Object x)
+  public Integer pred(int x)
   {
-    if (!(x instanceof Integer))
-      return null;
-    long unsigned_x = signed_int_to_long(((Integer)x).intValue());
+    long unsigned_x = signed_int_to_long(x);
     if (hint == null) // no hint given; start with contigous first
       hint = contigous_first;
     if (hint == null) // empty range; we are done!
@@ -529,17 +523,14 @@ public class Range implements Representation
 
   /**
    * Returns a String that represents x according to the ValueType
-   * specifications of each contigous range,
-   * If x is not an Integer object or its value is beyond each contigous
-   * range, this method returns null.
+   * specifications of each contigous range.  If x is null or its
+   * value is beyond each contigous range, this method returns null.
    * @param x The Integer value to be represented.
    * @return The String representation of x.
    */
-  public String getDisplayValue(Object x)
+  public String getDisplayValue(int x)
   {
-    if (!(x instanceof Integer))
-      return null;
-    long unsigned_x = signed_int_to_long(((Integer)x).intValue());
+    long unsigned_x = signed_int_to_long(x);
     if (hint == null) // no hint given; start with contigous first
       hint = contigous_first;
     if (hint == null) // empty range; we are done!
@@ -569,7 +560,7 @@ public class Range implements Representation
 	  {
 	    hint = current;
 	    return
-              current.valueType.getDisplayValue(((Integer)x).intValue());
+              current.valueType.getDisplayValue(x);
 	  }
 	else
 	  {

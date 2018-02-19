@@ -335,7 +335,7 @@ implements MapChangeListener
 	Representation representation = contents.getSelectedRepresentation();
 	if (representation.isEnumerable())
 	  {
-	    Object succValue = representation.succ(contents.getValue());
+	    Integer succValue = representation.succ(contents.getValue());
 	    if (succValue != null)
 	      {
 		contents.setValue(succValue);
@@ -356,7 +356,7 @@ implements MapChangeListener
 	Representation representation = contents.getSelectedRepresentation();
 	if (representation.isEnumerable())
 	  {
-	    Object predValue = representation.pred(contents.getValue());
+	    Integer predValue = representation.pred(contents.getValue());
 	    if (predValue != null)
 	      {
 		contents.setValue(predValue);
@@ -559,13 +559,13 @@ implements MapChangeListener
    * Returns a clone of this node and all of its children, if any.
    * @return A clone of this node and all of its children, if any.
    */
-  public Object clone()
+  public MapNode clone()
   {
     MapNode newNode = null;
     newNode = (MapNode)super.clone();
     if (getAllowsChildren())
       for (int i = 0; i < getChildCount(); i++)
-	newNode.add((MapNode)((MapNode)getChildAt(i)).clone());
+	newNode.add(((MapNode)getChildAt(i)).clone());
     return newNode;
   }
 }

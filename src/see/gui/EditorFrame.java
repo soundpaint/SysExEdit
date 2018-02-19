@@ -988,7 +988,7 @@ public class EditorFrame extends JFrame implements Runnable
       else if (command.equals(DEVICE_ID))
 	{
 	  int newDeviceID =
-	    DialogDevID.showDialog(EditorFrame.this, "Select a device id:",
+	    DialogDevID.showDialog(EditorFrame.this,
 				   "Device ID Selection",
 				   JOptionPane.QUESTION_MESSAGE,
 				   UIManager.getDefaults().

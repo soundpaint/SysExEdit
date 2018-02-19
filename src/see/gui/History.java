@@ -28,10 +28,10 @@ import java.util.Vector;
  * browser, for example. Each entry consists of a reference (e.g. a URL)
  * and the actual content that is referred to (e.g. a HTML document).
  */
-public class History
+public class History<ReferenceType, ContentsType>
 {
-  private Vector<Object> references = new Vector<Object>();
-  private Vector<Object> contents = new Vector<Object>();
+  private Vector<ReferenceType> references = new Vector<ReferenceType>();
+  private Vector<ContentsType> contents = new Vector<ContentsType>();
   private int index = 0; // index of current + 1
 
   private History() {}
@@ -42,7 +42,7 @@ public class History
    * @param reference A reference (e.g. a URL) to the content.
    * @param content The actual content (e.g. a HTML document).
    */
-  public History(Object reference, Object content)
+  public History(ReferenceType reference, ContentsType content)
   {
     add(reference, content);
   }
@@ -51,7 +51,7 @@ public class History
    * Uses reference and content to create a new entry and inserts it after
    * the current. Any other entries after the current will be lost.
    */
-  public void add(Object reference, Object content)
+  public void add(ReferenceType reference, ContentsType content)
   {
     contents.setSize(index + 1);
     contents.setElementAt(content, index);
@@ -85,7 +85,7 @@ public class History
   /**
    * Sets the reference for the current position in the history.
    */
-  public void setReference(Object reference)
+  public void setReference(ReferenceType reference)
   {
     references.setElementAt(reference, index - 1);
   }
@@ -93,12 +93,15 @@ public class History
   /**
    * Returns the reference at the current position in the history.
    */
-  public Object getReference() { return references.elementAt(index - 1); }
+  public ReferenceType getReference()
+  {
+    return references.elementAt(index - 1);
+  }
 
   /**
    * Sets the content for the current position in the history.
    */
-  public void setContent(Object content)
+  public void setContent(ContentsType content)
   {
     contents.setElementAt(content, index - 1);
   }
@@ -106,7 +109,10 @@ public class History
   /**
    * Returns the content at the current position in the history.
    */
-  public Object getContent() { return contents.elementAt(index - 1); }
+  public ContentsType getContent()
+  {
+    return contents.elementAt(index - 1);
+  }
 }
 
 /*

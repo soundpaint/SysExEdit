@@ -204,10 +204,9 @@ class Map extends JTree
     }
 
     /**
-     * This is messaged from JTree whenever it needs to get the size
-     * of the component or it wants to draw it.
-     * This attempts to set the font based on value, which will be
-     * a TreeNode.
+     * This method is called from JTree whenever it needs to get the
+     * size of the component or wants to draw the tree.  It attempts
+     * to set the font based on value, which will be a TreeNode.
      */
     public Component
       getTreeCellRendererComponent(JTree tree, Object value,

@@ -87,7 +87,7 @@ public interface Contents
    *    class that holds the value represented by this class.
    * @see #reset
    */
-  public void setValue(Object value);
+  public void setValue(int value);
 
   /**
    * Returns the current contents value. This value is shared among
@@ -95,7 +95,7 @@ public interface Contents
    * out of the currently selected or any other representation.
    * @return The current value.
    */
-  public Object getValue();
+  public int getValue();
 
   /**
    * Resets the contents value to its default value.
@@ -112,7 +112,7 @@ public interface Contents
    *    class that holds the value represented by this class.
    * @see #reset
    */
-  public void setDefaultValue(Object default_value);
+  public void setDefaultValue(int default_value);
 
   /**
    * Returns the current default value. This value is shared among
@@ -120,7 +120,7 @@ public interface Contents
    * out of the currently selected or any other representation.
    * @return The current default value.
    */
-  public Object getDefaultValue();
+  public int getDefaultValue();
 
   /**
    * Returns a representation of the contents value according to the

@@ -37,8 +37,8 @@ public class RangeContents implements Contents
    */
   private byte min_bit_size; // the minimally required size of this contents
   private byte bit_size; // the effective size of this contents in bits (0..32)
-  private Integer value; // the current value
-  private Integer defaultValue; // the initial (default) value
+  private int value; // the current value
+  private int defaultValue; // the initial (default) value
   private Vector<Range> ranges; // Range objects that allow implementing range union
   private int selectionID; // the currently valid range
 
@@ -62,8 +62,8 @@ public class RangeContents implements Contents
   {
     min_bit_size = 0;
     bit_size = 0;
-    value = null;
-    defaultValue = null;
+    value = 0;
+    defaultValue = 0;
     ranges = new Vector<Range>();
     selectionID = -1;
     if (range != null)
@@ -190,24 +190,7 @@ public class RangeContents implements Contents
    */
   public void setValue(int value)
   {
-    this.value = new Integer(value);
-  }
-
-  /*
-   * Sets the value for this contents. This value is shared among
-   * all ranges; thus it even may be out of the currently selected or
-   * any other range.
-   * @param value The value.
-   * @exception IllegalArgumentException If value is not an instance of the
-   *    class (java.lang.Integer) that holds the value represented by this
-   *    class.
-   */
-  public void setValue(Object value)
-  {
-    if (!(value instanceof Integer))
-      throw new IllegalArgumentException("value not an Integer as expected");
-    else
-      this.value = (Integer)value;
+    this.value = value;
   }
 
   /**
@@ -216,7 +199,7 @@ public class RangeContents implements Contents
    * any other range.
    * @return The current value.
    */
-  public Object getValue()
+  public int getValue()
   {
     return value;
   }
@@ -235,29 +218,11 @@ public class RangeContents implements Contents
    * all ranges; thus it even may be out of the currently selected or
    * any other range.
    * @param defaultValue The default value.
-   * @exception IllegalArgumentException If value is not an instance of the
-   *    class (java.lang.Integer) that holds the value represented by this
-   *    class.
-   * @see #reset
-   */
-  public void setDefaultValue(Object defaultValue)
-  {
-    if (!(defaultValue instanceof Integer))
-      throw new IllegalArgumentException("value not an Integer as expected");
-    else
-      this.defaultValue = (Integer)defaultValue;
-  }
-
-  /*
-   * Sets the default value for this contents. This value is shared among
-   * all ranges; thus it even may be out of the currently selected or
-   * any other range.
-   * @param defaultValue The default value.
    * @see #reset
    */
   public void setDefaultValue(int defaultValue)
   {
-    this.defaultValue =  new Integer(defaultValue);
+    this.defaultValue = defaultValue;
   }
 
   /**
@@ -266,7 +231,7 @@ public class RangeContents implements Contents
    * any other range.
    * @return The current default value.
    */
-  public Object getDefaultValue()
+  public int getDefaultValue()
   {
     return defaultValue;
   }
@@ -283,7 +248,7 @@ public class RangeContents implements Contents
   public int[] toBits()
   {
     int[] bits = new int[1];
-    bits[1] = value.intValue();
+    bits[1] = value;
     return bits;
   }
 }

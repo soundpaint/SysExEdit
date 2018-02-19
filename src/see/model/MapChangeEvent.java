@@ -44,7 +44,7 @@ public class MapChangeEvent extends EventObject
    * @param selector The range selector.
    * @exception IllegalArgumentException If source equals null.
    */
-  public MapChangeEvent(Object source, DefaultTreeModel model, int selector)
+  public MapChangeEvent(MapNode source, DefaultTreeModel model, int selector)
   {
     super(source);
     this.model = model;

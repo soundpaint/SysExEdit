@@ -58,7 +58,7 @@ public class HtmlPanel
   private JEditorPane html_pane;
   private JLabel title;
   private JButton bt_prev, bt_next, bt_stop;
-  private History history;
+  private History<URL, Document> browseHistory;
 
   /**
    * Creates a panel that displays the content referenced by the specified
@@ -79,7 +79,7 @@ public class HtmlPanel
     html_pane = new JEditorPane(url);
     html_pane.setEditable(false);
     html_pane.addHyperlinkListener(this);
-    history = new History(url, html_pane.getDocument());
+    browseHistory = new History<URL, Document>(url, html_pane.getDocument());
     JViewport vp = scroller.getViewport();
     vp.add(html_pane);
     vp.setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
@@ -127,8 +127,8 @@ public class HtmlPanel
    */
   private void updatePage()
   {
-    bt_next.setEnabled(history.hasNext());
-    bt_prev.setEnabled(history.hasPrev());
+    bt_next.setEnabled(browseHistory.hasNext());
+    bt_prev.setEnabled(browseHistory.hasPrev());
     SwingUtilities.invokeLater(new PageLoader());
   }
 
@@ -137,15 +137,15 @@ public class HtmlPanel
    */
   public void actionPerformed(ActionEvent e)
   {
-    if ((e.getActionCommand().equals(ACTION_PREV)) && history.hasPrev())
+    if ((e.getActionCommand().equals(ACTION_PREV)) && browseHistory.hasPrev())
       {
-	history.prev();
+	browseHistory.prev();
 	updatePage();
       }
     else if ((e.getActionCommand().equals(ACTION_NEXT)) &&
-	     history.hasNext())
+	     browseHistory.hasNext())
       {
-	history.next();
+	browseHistory.next();
 	updatePage();
       }
     else if (e.getActionCommand().equals(ACTION_STOP))
@@ -161,7 +161,7 @@ public class HtmlPanel
   {
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
       {
-	history.add(e.getURL(), null);
+	browseHistory.add(e.getURL(), null);
 	updatePage();
       }
   }
@@ -202,14 +202,14 @@ public class HtmlPanel
 	{
 	  try
 	    {
-	      Document document = (Document)history.getContent();
+	      Document document = browseHistory.getContent();
 	      if (document != null)
 		html_pane.setDocument(document);
 	      else
 		{
-		  html_pane.setPage((URL)history.getReference());
+		  html_pane.setPage(browseHistory.getReference());
 		  document = html_pane.getDocument();
-		  history.setContent(document);
+		  browseHistory.setContent(document);
 		}
 	    }
 	  catch (IOException e)

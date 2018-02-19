@@ -48,26 +48,26 @@ public interface Representation
   public int getRequiredBitSize();
 
   /**
-   * Checks, if the specified object is a valid member of this
+   * Checks, if the specified value is a valid member of this
    * representation.
    * @param x The value to be checked.
    * @return True, if the value is in range.
    */
-  public boolean isInRange(Object x);
+  public boolean isInRange(int x);
 
   /**
    * Returns the lowermost value of this representation.
    * @return The lowermost value of this representation or null, if the
    *    range is empty.
    */
-  public Object lowermost();
+  public Integer lowermost();
 
   /**
    * Returns the uppermost value of this representation.
    * @return The uppermost value of this representation or null, if the
    *    range is empty.
    */
-  public Object uppermost();
+  public Integer uppermost();
 
   /**
    * Returns true, if this representation is enumeratable.
@@ -82,7 +82,7 @@ public interface Representation
    * @return The next upper value that is in range or null, if there is
    *    no such value or this representation is not enumeratable.
    */
-  public Object succ(Object x);
+  public Integer succ(int x);
 
   /**
    * Given some value x that may be or may be not in range, returns the
@@ -92,7 +92,7 @@ public interface Representation
    * @return The next lower value that is in range or null, if there is
    *    no such value or this representation is not enumeratable.
    */
-  public Object pred(Object x);
+  public Integer pred(int x);
 
   /**
    * Returns a String that represents x according to this Representation
@@ -100,7 +100,7 @@ public interface Representation
    * @param x The value to be represented.
    * @return The String representation of x.
    */
-  public String getDisplayValue(Object x);
+  public String getDisplayValue(int x);
 }
 
 /*
