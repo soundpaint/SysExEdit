@@ -333,7 +333,7 @@ implements MapChangeListener
     if (!getAllowsChildren())
       {
 	Representation representation = contents.getSelectedRepresentation();
-	if (representation.isEnumeratable())
+	if (representation.isEnumerable())
 	  {
 	    Object succValue = representation.succ(contents.getValue());
 	    if (succValue != null)
@@ -354,7 +354,7 @@ implements MapChangeListener
     if (!getAllowsChildren())
       {
 	Representation representation = contents.getSelectedRepresentation();
-	if (representation.isEnumeratable())
+	if (representation.isEnumerable())
 	  {
 	    Object predValue = representation.pred(contents.getValue());
 	    if (predValue != null)

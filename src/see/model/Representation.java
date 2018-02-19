@@ -72,7 +72,7 @@ public interface Representation
   /**
    * Returns true, if this representation is enumeratable.
    */
-  public boolean isEnumeratable();
+  public boolean isEnumerable();
 
   /**
    * Given some value x that may be or may be not in range, returns the
@@ -100,7 +100,7 @@ public interface Representation
    * @param x The value to be represented.
    * @return The String representation of x.
    */
-  public String toString(Object x);
+  public String getDisplayValue(Object x);
 }
 
 /*

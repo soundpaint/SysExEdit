@@ -81,14 +81,12 @@ public class RangeContents implements Contents
    * Creates a Range object that represents a bit string.<BR>
    * [PENDING: Should this be moved into class Range?]
    */
-  private static Range getBitStringRange(int amount)
+  private static Range getBitStringRange(final int amount)
   {
     if ((amount < 0) || (amount > 15))
       throw new IllegalArgumentException("amount");
-    EnumerationType unusedType = new EnumerationType();
-    unusedType.useFormattedBitString = true;
-    unusedType.bitStringSize = amount;
-    Range range = new Range(0, (1 << amount) - 1, unusedType);
+    final FlagsType unusedType = new FlagsType();
+    final Range range = new Range(0, (1 << amount) - 1, unusedType);
     range.setIconKey("internal-unknown");
     return range;
   }

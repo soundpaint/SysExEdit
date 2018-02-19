@@ -30,7 +30,9 @@ import see.model.RangeContents;
 import see.model.MapDef;
 import see.model.MapNode;
 import see.model.Range;
-import see.model.EnumerationType;
+import see.model.ValueType;
+import see.model.EnumType;
+import see.model.Int8Type;
 import see.model.AddressRepresentation;
 
 /**
@@ -562,32 +564,32 @@ public class DB50XG implements MapDef
   {
     RangeContents temp_contents;
     Range temp_range;
-    EnumerationType temp_enumerationType;
+    ValueType temp_valueType;
 
-    EnumerationType
-      pan = new EnumerationType(-1, PAN),
-      level = new EnumerationType(LEVEL),
-      lfo_frequency = new EnumerationType(LFO_FREQUENCY),
-      modulation_delay_offset = new EnumerationType(MODULATION_DELAY_OFFSET),
-      eq_frequency = new EnumerationType(EQ_FREQUENCY),
-      reverb_time = new EnumerationType(REVERB_TIME),
-      delay_time_1 = new EnumerationType(DELAY_TIME_1),
-      room_size = new EnumerationType(ROOM_SIZE),
-      delay_time_2 = new EnumerationType(DELAY_TIME_2),
-      reverb_cube_size = new EnumerationType(REVERB_CUBE_SIZE);
+    ValueType
+      pan = new EnumType(-1, PAN),
+      level = new EnumType(LEVEL),
+      lfo_frequency = new EnumType(LFO_FREQUENCY),
+      modulation_delay_offset = new EnumType(MODULATION_DELAY_OFFSET),
+      eq_frequency = new EnumType(EQ_FREQUENCY),
+      reverb_time = new EnumType(REVERB_TIME),
+      delay_time_1 = new EnumType(DELAY_TIME_1),
+      room_size = new EnumType(ROOM_SIZE),
+      delay_time_2 = new EnumType(DELAY_TIME_2),
+      reverb_cube_size = new EnumType(REVERB_CUBE_SIZE);
 
-    EnumerationType int_enumerationType = new EnumerationType();
+    Int8Type int_valueType = new Int8Type();
 
-    EnumerationType centered_7bit_enumerationType = new EnumerationType(-0x40);
+    Int8Type centered_7bit_valueType = new Int8Type(-0x40);
     Range centered_7bit_range = new Range();
     centered_7bit_range.addContigous(0x00, 0x7f,
-				     centered_7bit_enumerationType);
+				     centered_7bit_valueType);
 
     MapNode root = new MapNode("DB50XG");
     MapNode temp_node = new MapNode("System");
 
     temp_range = new Range();
-    temp_range.addContigous(0x0, 0x7, int_enumerationType);
+    temp_range.addContigous(0x0, 0x7, int_valueType);
     temp_range.setIconKey("internal-tune");
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
@@ -595,7 +597,7 @@ public class DB50XG implements MapDef
     temp_node.add(new MapNode("Master Tune[3]", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0x0, 0xf, int_enumerationType);
+    temp_range.addContigous(0x0, 0xf, int_valueType);
     temp_range.setIconKey("internal-tune");
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
@@ -603,7 +605,7 @@ public class DB50XG implements MapDef
     temp_node.add(new MapNode("Master Tune[2]", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0x0, 0xf, int_enumerationType);
+    temp_range.addContigous(0x0, 0xf, int_valueType);
     temp_range.setIconKey("internal-tune");
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
@@ -611,7 +613,7 @@ public class DB50XG implements MapDef
     temp_node.add(new MapNode("Master Tune[1]", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0x0, 0xf, int_enumerationType);
+    temp_range.addContigous(0x0, 0xf, int_valueType);
     temp_range.setIconKey("internal-tune");
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
@@ -619,7 +621,7 @@ public class DB50XG implements MapDef
     temp_node.add(new MapNode("Master Tune[0]", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0x0, 0x7f, int_enumerationType);
+    temp_range.addContigous(0x0, 0x7f, int_valueType);
     temp_range.setIconKey("internal-volume");
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
@@ -629,7 +631,7 @@ public class DB50XG implements MapDef
     temp_node.add(new MapNode("Unused", new RangeContents(7)));
 
     temp_range = new Range();
-    temp_range.addContigous(0x28, 0x58, centered_7bit_enumerationType);
+    temp_range.addContigous(0x28, 0x58, centered_7bit_valueType);
     temp_range.setIconKey("internal-transpose");
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
@@ -638,7 +640,7 @@ public class DB50XG implements MapDef
 
 
     temp_range = new Range();
-    temp_range.addContigous(0x7f, 0x7f, int_enumerationType);
+    temp_range.addContigous(0x7f, 0x7f, int_valueType);
     temp_range.setIconKey("internal-error");
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
@@ -647,7 +649,7 @@ public class DB50XG implements MapDef
 			      addr2index(0x00, 0x00, 0x76)));
 
     temp_range = new Range();
-    temp_range.addContigous(0x7f, 0x7f, int_enumerationType);
+    temp_range.addContigous(0x7f, 0x7f, int_valueType);
     temp_range.setIconKey("internal-error");
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
@@ -655,7 +657,7 @@ public class DB50XG implements MapDef
     temp_node.add(new MapNode("XG System On", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0x7f, 0x7f, int_enumerationType);
+    temp_range.addContigous(0x7f, 0x7f, int_valueType);
     temp_range.setIconKey("internal-error");
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
@@ -664,21 +666,21 @@ public class DB50XG implements MapDef
 
     root.add(temp_node);
 
-    EnumerationType
-      hall_enumerationType = new EnumerationType(-0x0080, HALL),
-      room_enumerationType = new EnumerationType(-0x0100, ROOM),
-      stage_enumerationType = new EnumerationType(-0x0180, STAGE),
-      chorus_enumerationType = new EnumerationType(-0x2080, CHORUS),
-      celeste_enumerationType = new EnumerationType(-0x2100, CELESTE),
-      flanger_enumerationType = new EnumerationType(-0x2180, FLANGER),
-      early_ref_enumerationType = new EnumerationType(-0x0480, EARLY_REF),
-      karaoke_enumerationType = new EnumerationType(-0x0a00, KARAOKE);
+    ValueType
+      hall_enumType = new EnumType(-0x0080, HALL),
+      room_enumType = new EnumType(-0x0100, ROOM),
+      stage_enumType = new EnumType(-0x0180, STAGE),
+      chorus_enumType = new EnumType(-0x2080, CHORUS),
+      celeste_enumType = new EnumType(-0x2100, CELESTE),
+      flanger_enumType = new EnumType(-0x2180, FLANGER),
+      early_ref_enumType = new EnumType(-0x0480, EARLY_REF),
+      karaoke_enumType = new EnumType(-0x0a00, KARAOKE);
 
     Range reverb_range = new Range();
     reverb_range.addContigous(0x0000, "No Effect");
-    reverb_range.addContigous(0x0080, 0x0081, hall_enumerationType);
-    reverb_range.addContigous(0x0100, 0x0102, room_enumerationType);
-    reverb_range.addContigous(0x0180, 0x0181, stage_enumerationType);
+    reverb_range.addContigous(0x0080, 0x0081, hall_enumType);
+    reverb_range.addContigous(0x0100, 0x0102, room_enumType);
+    reverb_range.addContigous(0x0180, 0x0181, stage_enumType);
     reverb_range.addContigous(0x0200, "Plate");
     reverb_range.addContigous(0x0800, "White Room");
     reverb_range.addContigous(0x0880, "Tunnel");
@@ -687,33 +689,33 @@ public class DB50XG implements MapDef
 
     Range chorus_range = new Range();
     chorus_range.addContigous(0x0000, "No Effect");
-    chorus_range.addContigous(0x2080, 0x2082, chorus_enumerationType);
+    chorus_range.addContigous(0x2080, 0x2082, chorus_enumType);
     chorus_range.addContigous(0x2088, "Chorus 4");
-    chorus_range.addContigous(0x2100, 0x2102, celeste_enumerationType);
+    chorus_range.addContigous(0x2100, 0x2102, celeste_enumType);
     chorus_range.addContigous(0x2108, "Celeste 4");
-    chorus_range.addContigous(0x2180, 0x2181, flanger_enumerationType);
+    chorus_range.addContigous(0x2180, 0x2181, flanger_enumType);
     chorus_range.addContigous(0x2188, "Flanger 3");
     chorus_range.setIconKey("internal-fx-chorus");
 
     Range variation_range = new Range();
     variation_range.addContigous(0x0000, "No Effect");
-    variation_range.addContigous(0x0080, 0x0081, hall_enumerationType);
-    variation_range.addContigous(0x0100, 0x0102, room_enumerationType);
-    variation_range.addContigous(0x0180, 0x0181, stage_enumerationType);
+    variation_range.addContigous(0x0080, 0x0081, hall_enumType);
+    variation_range.addContigous(0x0100, 0x0102, room_enumType);
+    variation_range.addContigous(0x0180, 0x0181, stage_enumType);
     variation_range.addContigous(0x0200, "Plate");
     variation_range.addContigous(0x0280, "Delay L, C, R");
     variation_range.addContigous(0x0300, "Delay L, R");
     variation_range.addContigous(0x0380, "Echo");
     variation_range.addContigous(0x0400, "Cross Delay");
-    variation_range.addContigous(0x0480, 0x0481, early_ref_enumerationType);
+    variation_range.addContigous(0x0480, 0x0481, early_ref_enumType);
     variation_range.addContigous(0x0500, "Gate Reverb");
     variation_range.addContigous(0x0580, "Reverse Gate");
-    variation_range.addContigous(0x0a00, 0x0a02, karaoke_enumerationType);
-    variation_range.addContigous(0x2080, 0x2082, chorus_enumerationType);
+    variation_range.addContigous(0x0a00, 0x0a02, karaoke_enumType);
+    variation_range.addContigous(0x2080, 0x2082, chorus_enumType);
     variation_range.addContigous(0x2088, "Chorus 4");
-    variation_range.addContigous(0x2100, 0x2102, celeste_enumerationType);
+    variation_range.addContigous(0x2100, 0x2102, celeste_enumType);
     variation_range.addContigous(0x2108, "Celeste 4");
-    variation_range.addContigous(0x2180, 0x2181, flanger_enumerationType);
+    variation_range.addContigous(0x2180, 0x2181, flanger_enumType);
     variation_range.addContigous(0x2188, "Flanger 3");
     variation_range.addContigous(0x2200, "Symphonic");
     variation_range.addContigous(0x2280, "Rotary Speaker");
@@ -737,14 +739,13 @@ public class DB50XG implements MapDef
     level_range.addContigous(0x00, 0x7f, level);
     level_range.setIconKey("internal-volume");
 
-    EnumerationType connection_enumerationType =
-      new EnumerationType(CONNECTION);
+    EnumType connection_enumType = new EnumType(CONNECTION);
     Range connection_range = new Range();
-    connection_range.addContigous(0x00, 0x01, connection_enumerationType);
+    connection_range.addContigous(0x00, 0x01, connection_enumType);
 
-    EnumerationType part_enumerationType = new EnumerationType(PART);
+    EnumType part_enumType = new EnumType(PART);
     Range part_range = new Range();
-    part_range.addContigous(0x00, 0x01, part_enumerationType);
+    part_range.addContigous(0x00, 0x01, part_enumType);
     part_range.addContigous(0x7f, "Off");
 
     temp_node = new MapNode("Effect1", addr2index(0x02, 0x00, 0x00));
@@ -756,7 +757,7 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Reverb Type", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_enumerationType);
+    temp_range.addContigous(0, 127, int_valueType);
     for (int i = 0; i < 10; i++)
       {
 	temp_contents = new RangeContents(temp_range);
@@ -777,7 +778,7 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Reverb Pan", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_enumerationType);
+    temp_range.addContigous(0, 127, int_valueType);
     long offset;
     for (int i = 10; i < 16; i++)
       {
@@ -798,7 +799,7 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Chorus Type", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_enumerationType);
+    temp_range.addContigous(0, 127, int_valueType);
     for (int i = 0; i < 10; i++)
       {
 	temp_contents = new RangeContents(temp_range);
@@ -824,7 +825,7 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Send Chorus To Reverb", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_enumerationType);
+    temp_range.addContigous(0, 127, int_valueType);
     for (int i = 10; i < 16; i++)
       {
 	temp_contents = new RangeContents(temp_range);
@@ -844,7 +845,7 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Variation Type", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_enumerationType);
+    temp_range.addContigous(0, 127, int_valueType);
     for (int i = 0; i < 10; i++)
       {
 	temp_contents = new RangeContents(temp_range);
@@ -912,7 +913,7 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("AC2 Variation Control Depth", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_enumerationType);
+    temp_range.addContigous(0, 127, int_valueType);
     for (int i = 10; i < 16; i++)
       {
 	temp_contents = new RangeContents(temp_range);

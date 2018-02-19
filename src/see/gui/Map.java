@@ -149,7 +149,7 @@ class Map extends JTree
       {
 	Representation representation = contents.getSelectedRepresentation();
 	if (representation != null)
-	  contentsStr = representation.toString(contents.getValue());
+	  contentsStr = representation.getDisplayValue(contents.getValue());
       }
     else
       contentsStr = "";

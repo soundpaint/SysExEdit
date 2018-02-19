@@ -87,7 +87,7 @@ public class Range implements Representation
   {
     long lb; // lower bound
     long ub; // upper bound
-    EnumerationType enumerationType;
+    ValueType valueType;
     Contigous prev; // previous contigous range
     Contigous next; // next contigous range
 
@@ -97,36 +97,36 @@ public class Range implements Representation
      * Creates a new contigous range object.
      * @param lb The lower bound of the contigous range.
      * @param ub The upper bound of the contigous range.
-     * @param enumerationType The EnumerationType for the contigous range.
-     * @exception NullPointerException If enumerationType equals null.
+     * @param valueType The ValueType for the contigous range.
+     * @exception NullPointerException If valueType equals null.
      */
-    Contigous(long lb, long ub, EnumerationType enumerationType)
+    Contigous(long lb, long ub, ValueType valueType)
     {
-      if (enumerationType == null)
-	throw new NullPointerException("enumerationType");
+      if (valueType == null)
+	throw new NullPointerException("valueType");
       this.lb = lb;
       this.ub = ub;
-      this.enumerationType = enumerationType;
+      this.valueType = valueType;
       this.prev = null;
       this.next = null;
     }
 
     /**
      * Returns a String that represents x according to the specification
-     * of the underlying EnumerationType.
+     * of the underlying ValueType.
      */
-    String toString(int x)
+    String getDisplayValue(int x)
     {
-      return enumerationType.toString(x);
+      return valueType.getDisplayValue(x);
     }
 
     /**
-     * Returns a string enumerationType of this object (e.g. for debugging).
-     * @return A string enumerationType of this object.
+     * Returns a string valueType of this object (e.g. for debugging).
+     * @return A string valueType of this object.
      */
     public String toString()
     {
-      return "Contigous{enumerationType=" + enumerationType + ", lb=" + lb +
+      return "Contigous{valueType=" + valueType + ", lb=" + lb +
 	", ub=" + ub + "}";
     }
   }
@@ -164,14 +164,14 @@ public class Range implements Representation
    * Creates a range with initially a single contigous range.
    * @param lb The lower bound of the contigous range.
    * @param ub The upper bound of the contigous range.
-   * @param enumerationType The EnumerationType for the contigous range.
-   * @exception NullPointerException If enumerationType equals null.
+   * @param valueType The ValueType for the contigous range.
+   * @exception NullPointerException If valueType equals null.
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public Range(int lb, int ub, EnumerationType enumerationType)
+  public Range(int lb, int ub, ValueType valueType)
   {
-    addContigous(lb, ub, enumerationType);
+    addContigous(lb, ub, valueType);
   }
 
   /**
@@ -204,48 +204,52 @@ public class Range implements Representation
    * Adds a single contigous range to the total range.
    * @param lb The lower bound of the contigous range.
    * @param ub The upper bound of the contigous range.
-   * @param enumerationType The EnumerationType for the contigous range.
-   * @exception NullPointerException If enumerationType equals null.
+   * @param valueType The ValueType for the contigous range.
+   * @exception NullPointerException If valueType equals null.
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addContigous(int lb, int ub, EnumerationType enumerationType)
+  public void addContigous(int lb, int ub, ValueType valueType)
   {
     long unsigned_lb = signed_int_to_long(lb);
     long unsigned_ub = signed_int_to_long(ub);
     if ((lb < 0) && (ub >= 0)) // overlapping contigous; so split it up
       {
-	addContigous(new Contigous(unsigned_lb, max_unsigned, enumerationType));
-	addContigous(new Contigous(min_unsigned, unsigned_ub, enumerationType));
+	addContigous(new Contigous(unsigned_lb, max_unsigned, valueType));
+	addContigous(new Contigous(min_unsigned, unsigned_ub, valueType));
       }
     else
-      addContigous(new Contigous(unsigned_lb, unsigned_ub, enumerationType));
+      addContigous(new Contigous(unsigned_lb, unsigned_ub, valueType));
   }
 
   /**
    * Adds a single value to the total range.
    * @param value The value to be added.
-   * @param enumerationType The EnumerationType for the value.
-   * @exception NullPointerException If enumerationType equals null.
+   * @param valueType The ValueType for the value.
+   * @exception NullPointerException If valueType equals null.
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addContigous(int value, EnumerationType enumerationType)
+  public void addContigous(ValueType valueType)
   {
-    addContigous(value, value, enumerationType);
+    if (valueType.getSize() != 1) {
+      throw new IllegalArgumentException("valueType does not represent a single value");
+    }
+    final int value = valueType.getMinValue();
+    addContigous(value, value, valueType);
   }
 
   /**
-   * Adds a single value to the total range.
-   * @param value The value to be added.
-   * @param enumerationType The String enumerationType for the value.
-   * @exception NullPointerException If enumerationType equals null.
+   * Adds a single enumeration value to the total range.
+   * @param value The enumeration value to be added.
+   * @param enumValue The enumeration value as string.
+   * @exception NullPointerException If enumValue equals null.
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addContigous(int value, String enumerationType)
+  public void addContigous(int value, String enumValue)
   {
-    addContigous(value, value, new EnumerationType(value, enumerationType));
+    addContigous(value, value, new EnumType(value, enumValue));
   }
 
   /**
@@ -405,9 +409,9 @@ public class Range implements Representation
   }
 
   /**
-   * Returns true, if this representation is enumeratable.
+   * Returns true, if this representation is enumerable.
    */
-  public boolean isEnumeratable() { return true; }
+  public boolean isEnumerable() { return true; }
 
   /**
    * Given some Integer value x that may be or not in range, returns the
@@ -524,14 +528,14 @@ public class Range implements Representation
   }
 
   /**
-   * Returns a String that represents x according to the EnumerationType
+   * Returns a String that represents x according to the ValueType
    * specifications of each contigous range,
    * If x is not an Integer object or its value is beyond each contigous
    * range, this method returns null.
    * @param x The Integer value to be represented.
    * @return The String representation of x.
    */
-  public String toString(Object x)
+  public String getDisplayValue(Object x)
   {
     if (!(x instanceof Integer))
       return null;
@@ -564,7 +568,8 @@ public class Range implements Representation
 	if (unsigned_x <= current.ub)
 	  {
 	    hint = current;
-	    return current.enumerationType.toString(((Integer)x).intValue());
+	    return
+              current.valueType.getDisplayValue(((Integer)x).intValue());
 	  }
 	else
 	  {
