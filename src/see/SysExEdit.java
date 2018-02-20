@@ -87,7 +87,7 @@ public class SysExEdit extends Applet implements FramesManager
 
   private Hashtable<Frame, Integer> frames; // frames and their unique IDs
   private boolean inAnApplet = false; // true, if run as an applet
-  private Class<MapDef>[] classes = null; // array of map def classes
+  private Vector<Class<MapDef>> classes = null; // vector of map def classes
 
   private static void print_version(PrintWriter out)
   {
@@ -439,27 +439,17 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public Class<MapDef>[] getMapDefClasses()
   {
-    if (classes == null)
-      {
-	Vector<Class<MapDef>> classesVector = new Vector<Class<MapDef>>();
-	Class<MapDef> _class;
-	try
-	  {
-	    classesVector.addElement((Class<MapDef>)
-                                      Class.forName("see.devices.DB50XG"));
-	    //classesVector.addElement((Class<MapDef>)
-            //                         Class.forName("see.devices.U20"));
-	  }
-	catch (Exception e)
-	  {
-	    System.out.println("WARNING: " + e);
-	    e.printStackTrace(System.out);
-	    System.out.flush();
-	  }
-	classes = (Class<MapDef>[])(new Class[classesVector.size()]);
-	classesVector.copyInto(classes);
+    if (classes == null) {
+      classes = new Vector<Class<MapDef>>();
+      try {
+        classes.addElement((Class<MapDef>)Class.forName("see.devices.DB50XG"));
+      } catch (final Exception e) {
+        System.out.println("WARNING: " + e);
+        e.printStackTrace(System.out);
+        System.out.flush();
       }
-    return classes;
+    }
+    return classes.toArray((Class<MapDef>[])new Class[0]);
   }
 }
 

@@ -675,7 +675,7 @@ public class EditorFrame extends JFrame implements Runnable
   {
     if (node.getAllowsChildren())
       {
-	Enumeration<Object> children = (Enumeration<Object>)node.children();
+	Enumeration children = node.children();
 	while (children.hasMoreElements())
 	  save_add((MapNode)children.nextElement());
       }

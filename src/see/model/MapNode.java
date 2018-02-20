@@ -421,7 +421,7 @@ implements MapChangeListener
 	  MapNode next_node = null;
 	  MapNode node = null;
 	  long cumulative_address = this.address;
-	  Enumeration<Object> children_enum = (Enumeration<Object>)children();
+	  Enumeration children_enum = children();
 	  while ((cumulative_address < address) &&
 		 children_enum.hasMoreElements())
 	    {
