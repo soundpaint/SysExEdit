@@ -40,11 +40,13 @@ public interface MapDef
 
   /**
    * Returns the manufacturer ID as defined in the MIDI specification.
+   * @return The manufacturer ID as defined in the MIDI specification.
    */
   abstract public byte getManufacturerID();
 
   /**
    * Returns the model ID.
+   * @return The model ID.
    */
   abstract public byte getModelID();
 
@@ -52,17 +54,21 @@ public interface MapDef
    * Returns the default device model ID. If the synthesizer specs do not
    * explicitly specify such a value, the value 0 may be a good choice as
    * return value.
+   * @return The default device model ID.
    */
   abstract public byte getDefaultDeviceID();
 
   /**
    * Returns the name of the author; optionally, a copyright message.
+   * @return The name of the author; optionally, a copyright message.
    */
   abstract public String getEnteredBy();
 
   /**
    * Returns an AddressRepresentation object that defines how addresses
    * are to be displayed to the user.
+   * @return An AddressRepresentation object that defines how
+   * addresses are to be displayed to the user.
    */
   abstract public AddressRepresentation getAddressRepresentation();
 

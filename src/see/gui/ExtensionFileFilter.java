@@ -63,6 +63,9 @@ public class ExtensionFileFilter extends FileFilter
    * <code>
    *   new ExtensionFileFilter({"mid", "midi", "sys"}, "SysEx MIDI files");
    * </code>
+   * @param extensions An array of strings that represents the
+   * extensions.
+   * @param description A description of the extensions for display.
    */
   public ExtensionFileFilter(final String[] extensions,
                              final String description)

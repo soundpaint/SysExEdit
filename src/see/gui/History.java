@@ -50,6 +50,8 @@ public class History<ReferenceType, ContentsType>
   /**
    * Uses reference and content to create a new entry and inserts it after
    * the current. Any other entries after the current will be lost.
+   * @param reference A reference (e.g. a URL) to the content.
+   * @param content The actual content (e.g. a HTML document).
    */
   public void add(ReferenceType reference, ContentsType content)
   {
@@ -62,6 +64,7 @@ public class History<ReferenceType, ContentsType>
 
   /**
    * Returns true, if there is another entry before the current.
+   * @return true, if there is another entry before the current.
    */
   public boolean hasPrev() { return index > 1; }
 
@@ -73,6 +76,7 @@ public class History<ReferenceType, ContentsType>
 
   /**
    * Returns true, if there is another entry after the current.
+   * @return true, if there is another entry after the current.
    */
   public boolean hasNext() { return index < references.size(); }
 
@@ -84,6 +88,8 @@ public class History<ReferenceType, ContentsType>
 
   /**
    * Sets the reference for the current position in the history.
+   * @param reference The reference for the current position in the
+   * history.
    */
   public void setReference(ReferenceType reference)
   {
@@ -92,6 +98,7 @@ public class History<ReferenceType, ContentsType>
 
   /**
    * Returns the reference at the current position in the history.
+   * @return The reference at the current position in the history.
    */
   public ReferenceType getReference()
   {
@@ -100,6 +107,8 @@ public class History<ReferenceType, ContentsType>
 
   /**
    * Sets the content for the current position in the history.
+   * @param content The content for the current position in the
+   * history.
    */
   public void setContent(ContentsType content)
   {
@@ -108,6 +117,7 @@ public class History<ReferenceType, ContentsType>
 
   /**
    * Returns the content at the current position in the history.
+   * @return The content at the current position in the history.
    */
   public ContentsType getContent()
   {

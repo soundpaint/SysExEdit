@@ -32,11 +32,13 @@ public interface FramesManager
 {
   /**
    * Returns the version id of this application.
+   * @return The version id of this application.
    */
   public String getVersion();
 
   /**
    * Returns the copyright mark of this application.
+   * @return The copyright mark of this application.
    */
   public String getCopyright();
 
@@ -71,6 +73,7 @@ public interface FramesManager
 
   /**
    * Returns an array of all available map def classes.
+   * @return An array of all available map def classes.
    */
   public Class<MapDef>[] getMapDefClasses();
 

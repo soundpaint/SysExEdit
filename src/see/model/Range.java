@@ -29,8 +29,8 @@ import javax.swing.Icon;
  * range 0x00000000 through 0xffffffff.<BR>
  *
  * IMPORTANT NOTE: Values are handled as signed integer values,
- * i.e. note that 0x7fffffff > 0x0, but 0xffffffff < 0x0. This is
- * important when specifying upper/lower bounds beyond
+ * i.e. note that 0x7fffffff &gt; 0x0, but 0xffffffff &lt; 0x0. This
+ * is important when specifying upper/lower bounds beyond
  * 0x7fffffff. Values below are not critical.<BR>
  *
  * A contigous range is specified by two integer values that define
@@ -224,7 +224,6 @@ public class Range implements Representation
 
   /**
    * Adds a single value to the total range.
-   * @param value The value to be added.
    * @param valueType The ValueType for the value.
    * @exception NullPointerException If valueType equals null.
    * @exception IllegalArgumentException If the insertion range overlaps

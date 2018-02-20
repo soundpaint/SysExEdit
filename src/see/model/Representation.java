@@ -71,6 +71,7 @@ public interface Representation
 
   /**
    * Returns true, if this representation is enumeratable.
+   * @return true, if this representation is enumeratable.
    */
   public boolean isEnumerable();
 

@@ -58,10 +58,11 @@ public class HtmlFactory
    * The message is included in the body of the error page and may
    * contain any markup that is allowed within the body of a html
    * page.
-   * @param title The title of the html page. The title is put between the
-   *    tags "<TITLE>" and "</TITLE>" in the header, and at the beginning of
-   *    the body between "<H1>" and "</H1>" tags. If title equals null,
-   *    the String "Error" is used.
+   * @param title The title of the html page. The title is put between
+   *    the tags "&lt;TITLE&gt;" and "&lt;/TITLE&gt;" in the header,
+   *    and at the beginning of the body between "&lt;H1&gt;" and
+   *    "&lt;/H1&gt;" tags. If title equals null, the String "Error"
+   *    is used.
    * @param message The message to be put into the body of the html page.
    *    If message equals null, the String "An error occurred" is used.
    * @return The HTML document or null, if no valid HTML document could
@@ -102,6 +103,9 @@ public class HtmlFactory
 
   /**
    * Reads a HTML document from the specified file.
+   * @param filepath The path of the file to read the document from.
+   * @return The HTML document as read from the specified file.
+   * @exception IOException If an I/O error occurs while reading.
    */
   public static HTMLDocument readFrom(String filepath)
     throws IOException

@@ -64,6 +64,7 @@ public interface Contents
    * implicitly or explicitly defined through the structure of the
    * underlying information. Those bits that remain unused are supposed to
    * be constantly zero.
+   * @param bit_size The effective bit size of this contents.
    * @exception IllegalArgumentException If bit_size is below zero or
    *    below the required bit size.
    */

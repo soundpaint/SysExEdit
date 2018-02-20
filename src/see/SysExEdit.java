@@ -283,11 +283,6 @@ public class SysExEdit extends Applet implements FramesManager
    * this applet that it has been loaded into the system. It is always
    * called before the first time that the <code>start</code> method is
    * called.
-   * <P>
-   * This method evaluates a static resource URL that references this
-   * class, and loads all static icons needed for this application, if
-   * not already done.
-   * @see #getResource
    */
   public void init()
   {
@@ -295,7 +290,8 @@ public class SysExEdit extends Applet implements FramesManager
   }
 
   /**
-   * Returns information about this applet.<BR>
+   * Returns information about this applet.
+   *
    * Specifically, it returns a String containing information 
    * about the author, version, and copyright of the applet. 
    *

@@ -29,6 +29,7 @@ public interface MapChangeListener extends EventListener
 {
   /**
    * Invoked when a map change occurs.
+   * @param e The map change event.
    */
   public void mapChangePerformed(MapChangeEvent e);
 }

@@ -166,6 +166,7 @@ implements MapChangeListener
 
   /**
    * Adds a MapChangeListener to this Contents object.
+   * @param l The MapChangeListener to add.
    */
   public void addMapChangeListener(MapChangeListener l)
   {
@@ -176,6 +177,7 @@ implements MapChangeListener
 
   /**
    * Removes a MapChangeListener from this Contents object.
+   * @param l The MapChangeListener to remove.
    */
   public void removeMapChangeListener(MapChangeListener l)
   {
@@ -463,6 +465,7 @@ implements MapChangeListener
    * @param size The bit size of the data. The maximum size is limited
    *    through the effective bit size of the addressed node, as the
    *    requested data may not go beyond the node.
+   * @return Data contents according to the given address and amount.
    * @exception IllegalArgumentException If size is below 0.
    * @exception IllegalArgumentException If the specified address is not
    *    accessible.

@@ -63,6 +63,7 @@ public class HtmlPanel
   /**
    * Creates a panel that displays the content referenced by the specified
    * URL.
+   * @param url The URL that references the content.
    * @exception IOException If the URL can not be resolved.
    */
   public HtmlPanel(URL url) throws IOException
@@ -133,7 +134,7 @@ public class HtmlPanel
   }
 
   /**
-   * Handles buttons "<", ">", "Stop"
+   * Handles buttons "&lt;", "&gt;", "Stop"
    */
   public void actionPerformed(ActionEvent e)
   {
