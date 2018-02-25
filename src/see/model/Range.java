@@ -23,15 +23,15 @@ package see.model;
 import javax.swing.Icon;
 
 /**
- * This class defines the total range and representation for int
- * values.  A total range consists of a finite list of disjunctive
- * contigous ranges.  A contigous range is a non-empty subrange of the
- * range 0x00000000 through 0xffffffff.<BR>
+ * A (possibly non-contigous) range represents a (possibly sparse) set
+ * of integer values that map to objects with string representation.
+ * It is composed of a finite list of disjunctive contigous subranges.
+ * A contigous subrange is a (non-sparse) set of integer values in the
+ * range 0x00000000 through 0xffffffff.
  *
  * IMPORTANT NOTE: Values are handled as signed integer values,
  * i.e. note that 0x7fffffff &gt; 0x0, but 0xffffffff &lt; 0x0. This
- * is important when specifying upper/lower bounds beyond
- * 0x7fffffff. Values below are not critical.<BR>
+ * is important when specifying upper/lower bounds beyond 0x7fffffff.
  *
  * A contigous range is specified by two integer values that define
  * the lower and upper bound of the range (the range includes the
