@@ -161,14 +161,13 @@ class Map extends JTree
   /**
    * Creates the icon for a given tree cell node.
    * @param node The node.
-   * @param leaf True, if the node is a leaf.
    * @param expanded True, if the node is expanded.
    * @return A proper Icon object for the tree cell.
    */
-  private Icon getTreeCellIcon(MapNode node, boolean leaf, boolean expanded)
+  private Icon getTreeCellIcon(MapNode node, boolean expanded)
   {
     final Icon icon;
-    if (leaf)
+    if (!node.getAllowsChildren())
       icon = node.getIcon();
     else if (expanded)
       icon = UIManager.getIcon("Tree.openIcon");
@@ -211,7 +210,7 @@ class Map extends JTree
 	{
 	  MapNode node = (MapNode)value;
 	  text = map.getTreeCellText(node);
-	  icon = map.getTreeCellIcon(node, leaf, expanded);
+	  icon = map.getTreeCellIcon(node, expanded);
 	}
       if (text == null)
 	text = tree.convertValueToText(value, selected, expanded,
