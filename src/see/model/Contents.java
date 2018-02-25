@@ -57,6 +57,50 @@ public interface Contents
    */
   public Icon getIcon();
 
+  /*
+   * Sets the default value for this contents. This value is shared among
+   * selectable representations of the contents value; thus it even may be
+   * out of the currently selected or any other representation.
+   * @param default_value The default value.
+   * @exception IllegalArgumentException If value is not an instance of the
+   *    class that holds the value represented by this class.
+   * @see #reset
+   */
+  public void setDefaultValue(int default_value);
+
+  /**
+   * Returns the current default value. This value is shared among
+   * selectable representations of the contents value; thus it even may be
+   * out of the currently selected or any other representation.
+   * @return The current default value.
+   */
+  public int getDefaultValue();
+
+  /*
+   * Sets the contents value for this contents. This value is shared among
+   * selectable representations of the contents value; thus it even may be
+   * out of the currently selected or any other representation.
+   * @param value The value.
+   * @exception IllegalArgumentException If value is not an instance of the
+   *    class that holds the value represented by this class.
+   * @see #reset
+   */
+  public void setValue(int value);
+
+  /**
+   * Returns the current contents value. This value is shared among
+   * selectable representations of the contents value; thus it even may be
+   * out of the currently selected or any other representation.
+   * @return The current value.
+   */
+  public int getValue();
+
+  /**
+   * Resets the contents value to its default value.
+   * @see #setDefaultValue
+   */
+  public void reset();
+
   /**
    * Increments the contents of this node, if possible.
    */
@@ -107,50 +151,6 @@ public interface Contents
    * @return The current effective bit size.
    */
   public byte getBitSize();
-
-  /*
-   * Sets the contents value for this contents. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
-   * @param value The value.
-   * @exception IllegalArgumentException If value is not an instance of the
-   *    class that holds the value represented by this class.
-   * @see #reset
-   */
-  public void setValue(int value);
-
-  /**
-   * Returns the current contents value. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
-   * @return The current value.
-   */
-  public int getValue();
-
-  /**
-   * Resets the contents value to its default value.
-   * @see #setDefaultValue
-   */
-  public void reset();
-
-  /*
-   * Sets the default value for this contents. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
-   * @param default_value The default value.
-   * @exception IllegalArgumentException If value is not an instance of the
-   *    class that holds the value represented by this class.
-   * @see #reset
-   */
-  public void setDefaultValue(int default_value);
-
-  /**
-   * Returns the current default value. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
-   * @return The current default value.
-   */
-  public int getDefaultValue();
 
   /**
    * Returns a representation of the contents value according to the

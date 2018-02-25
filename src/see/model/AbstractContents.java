@@ -31,6 +31,18 @@ import javax.swing.UIManager;
  */
 public abstract class AbstractContents implements Contents
 {
+  /** The current value. */
+  private int value;
+
+  /** The initial (default) value. */
+  private int defaultValue;
+
+  protected AbstractContents()
+  {
+    value = 0;
+    defaultValue = 0;
+  }
+
   /**
    * Adds a single representation to the pool of available representations.
    * Together, these representations define a union of single
@@ -85,6 +97,60 @@ public abstract class AbstractContents implements Contents
     } else {
       return null;
     }
+  }
+
+  /*
+   * Sets the default value for this contents. This value is shared among
+   * all ranges; thus it even may be out of the currently selected or
+   * any other range.
+   * @param defaultValue The default value.
+   * @see #reset
+   */
+  public void setDefaultValue(int defaultValue)
+  {
+    this.defaultValue = defaultValue;
+  }
+
+  /**
+   * Returns the current default value. This value is shared among
+   * all ranges; thus it even may be out of the currently selected or
+   * any other range.
+   * @return The current default value.
+   */
+  public int getDefaultValue()
+  {
+    return defaultValue;
+  }
+
+  /*
+   * Sets the value for this contents. This value is shared among
+   * all ranges; thus it even may be out of the currently selected or
+   * any other range.
+   * @param value The value.
+   */
+  public void setValue(int value)
+  {
+    this.value = value;
+  }
+
+  /**
+   * Returns the current value. This value is shared among
+   * all ranges; thus it even may be out of the currently selected or
+   * any other range.
+   * @return The current value.
+   */
+  public int getValue()
+  {
+    return value;
+  }
+
+  /**
+   * Resets the contents value to its default value.
+   * @see #setDefaultValue
+   */
+  public void reset()
+  {
+    setValue(defaultValue);
   }
 
   /**
@@ -165,50 +231,6 @@ public abstract class AbstractContents implements Contents
    * @return The current effective bit size.
    */
   abstract public byte getBitSize();
-
-  /*
-   * Sets the contents value for this contents. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
-   * @param value The value.
-   * @exception IllegalArgumentException If value is not an instance of the
-   *    class that holds the value represented by this class.
-   * @see #reset
-   */
-  abstract public void setValue(int value);
-
-  /**
-   * Returns the current contents value. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
-   * @return The current value.
-   */
-  abstract public int getValue();
-
-  /**
-   * Resets the contents value to its default value.
-   * @see #setDefaultValue
-   */
-  abstract public void reset();
-
-  /*
-   * Sets the default value for this contents. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
-   * @param default_value The default value.
-   * @exception IllegalArgumentException If value is not an instance of the
-   *    class that holds the value represented by this class.
-   * @see #reset
-   */
-  abstract public void setDefaultValue(int default_value);
-
-  /**
-   * Returns the current default value. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
-   * @return The current default value.
-   */
-  abstract public int getDefaultValue();
 
   /**
    * Returns a representation of the contents value according to the
