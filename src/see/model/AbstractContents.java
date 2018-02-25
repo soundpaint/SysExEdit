@@ -49,7 +49,7 @@ public abstract class AbstractContents implements Contents
    * @return The Representation object that is currently selected for this
    *    Contents object or null, if there is no valid selection.
    */
-  abstract public Representation getSelectedRepresentation();
+  abstract protected Representation getSelectedRepresentation();
 
   /**
    * Returns a String that represents this contents' current value
@@ -85,6 +85,54 @@ public abstract class AbstractContents implements Contents
     } else {
       return null;
     }
+  }
+
+  /**
+   * Increments the contents of this node, if possible.
+   * @param model The tree model of the tree that contains this node.
+   */
+  public void increment()
+  {
+    final Representation representation = getSelectedRepresentation();
+    if (representation.isEnumerable())
+      {
+        final Integer succValue = representation.succ(getValue());
+        if (succValue != null)
+          setValue(succValue);
+      }
+  }
+
+  /**
+   * Decrements the contents of this node.
+   * @param model The tree model of the tree that contains this node.
+   */
+  public void decrement()
+  {
+    final Representation representation = getSelectedRepresentation();
+    if (representation.isEnumerable())
+      {
+        final Integer predValue = representation.pred(getValue());
+        if (predValue != null)
+          setValue(predValue);
+      }
+  }
+
+  /**
+   * Sets the contents of this node to the uppermost value that is in range.
+   * @param model The tree model of the tree that contains this node.
+   */
+  public void uppermost()
+  {
+    setValue(getSelectedRepresentation().uppermost());
+  }
+
+  /**
+   * Sets the contents of this node to the lowermost value that is in range.
+   * @param model The tree model of the tree that contains this node.
+   */
+  public void lowermost()
+  {
+    setValue(getSelectedRepresentation().lowermost());
   }
 
   /**

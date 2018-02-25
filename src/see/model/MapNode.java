@@ -381,17 +381,8 @@ implements MapChangeListener
     if (!getAllowsChildren())
       {
         final Contents contents = getContents();
-	final Representation representation =
-          contents.getSelectedRepresentation();
-	if (representation.isEnumerable())
-	  {
-	    final Integer succValue = representation.succ(contents.getValue());
-	    if (succValue != null)
-	      {
-		contents.setValue(succValue);
-		fireMapChangeEvents(model);
-	      }
-	  }
+        contents.increment();
+        fireMapChangeEvents(model);
       }
   }
 
@@ -404,17 +395,8 @@ implements MapChangeListener
     if (!getAllowsChildren())
       {
         final Contents contents = getContents();
-	final Representation representation =
-          contents.getSelectedRepresentation();
-	if (representation.isEnumerable())
-	  {
-	    final Integer predValue = representation.pred(contents.getValue());
-	    if (predValue != null)
-	      {
-		contents.setValue(predValue);
-		fireMapChangeEvents(model);
-	      }
-	  }
+        contents.decrement();
+        fireMapChangeEvents(model);
       }
   }
 
@@ -427,8 +409,8 @@ implements MapChangeListener
     if (!getAllowsChildren())
       {
         final Contents contents = getContents();
-	contents.setValue(contents.getSelectedRepresentation().uppermost());
-	fireMapChangeEvents(model);
+        contents.uppermost();
+        fireMapChangeEvents(model);
       }
   }
 
@@ -441,8 +423,8 @@ implements MapChangeListener
     if (!getAllowsChildren())
       {
         final Contents contents = getContents();
-	contents.setValue(contents.getSelectedRepresentation().lowermost());
-	fireMapChangeEvents(model);
+        contents.lowermost();
+        fireMapChangeEvents(model);
       }
   }
 

@@ -131,7 +131,7 @@ public class RangeContents extends AbstractContents
    * @return The Range object that is currently selected for this
    *    RangeContents object or null, if there is no valid selection.
    */
-  public Representation getSelectedRepresentation()
+  protected Representation getSelectedRepresentation()
   {
     if (selectionID == -1)
       return null; // no range selected

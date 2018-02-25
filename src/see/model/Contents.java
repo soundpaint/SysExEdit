@@ -43,14 +43,6 @@ public interface Contents
   public void addRepresentation(Representation representation);
 
   /**
-   * Returns the Representation object that is currently selected for this
-   * Contents object.
-   * @return The Representation object that is currently selected for this
-   *    Contents object or null, if there is no valid selection.
-   */
-  public Representation getSelectedRepresentation();
-
-  /**
    * Returns a String that represents this contents' current value
    * according to the underlying Representation, or null, if the value
    * is not in range.
@@ -64,6 +56,26 @@ public interface Contents
    * @return The icon.
    */
   public Icon getIcon();
+
+  /**
+   * Increments the contents of this node, if possible.
+   */
+  public void increment();
+
+  /**
+   * Decrements the contents of this node.
+   */
+  public void decrement();
+
+  /**
+   * Sets the contents of this node to the uppermost value that is in range.
+   */
+  public void uppermost();
+
+  /**
+   * Sets the contents of this node to the lowermost value that is in range.
+   */
+  public void lowermost();
 
   /**
    * Selects a representation from the pool of available representations.
