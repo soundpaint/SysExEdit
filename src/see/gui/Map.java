@@ -25,6 +25,7 @@ import java.awt.Component;
 import javax.swing.Icon;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
 import see.model.AddressRepresentation;
@@ -189,8 +190,7 @@ class Map extends JTree
    * Displays an entry in a tree.
    * This is based on javax.swing.tree.DefaultTreeCellRenderer.
    */
-  private class CellRenderer
-    extends SelectableLabel implements TreeCellRenderer
+  private class CellRenderer extends DefaultTreeCellRenderer
   {
     private static final long serialVersionUID = 2131652642719584363L;
 
@@ -231,7 +231,7 @@ class Map extends JTree
       setIcon(icon);
       setText(text);
       // setFont(defaultFont);
-      setSelected(selected);
+      this.selected = selected;
       return this;
     }
   }
