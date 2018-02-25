@@ -1,7 +1,7 @@
 /*
- * @(#)Contents.java 1.00 98/01/31
+ * @(#)AbstractContents.java 1.00 18/02/25
  *
- * Copyright (C) 1998, 2018 Jürgen Reuter
+ * Copyright (C) 2018 Jürgen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +21,15 @@
 package see.model;
 
 import javax.swing.Icon;
+import javax.swing.UIManager;
 
 /**
- * This class holds the structural information and the actual contents
- * of a single memory entry of the target device. A memory entry may be
- * part of a memory location or represent just one memory location or
- * cover a couple of memory locations.
+ * This class holds the structural information and the actual contents,
+ * based on Range objects, of a single memory entry of the target device.
+ * A memory entry may be part of a memory location or represent just one
+ * memory location or cover a couple of memory locations (up to 32 bits).
  */
-public interface Contents
+public abstract class AbstractContents implements Contents
 {
   /**
    * Adds a single representation to the pool of available representations.
@@ -40,7 +41,7 @@ public interface Contents
    * @exception IllegalArgumentException If representation is not an
    *    instance of a compatible class.
    */
-  public void addRepresentation(Representation representation);
+  abstract public void addRepresentation(Representation representation);
 
   /**
    * Returns the Representation object that is currently selected for this
@@ -48,7 +49,7 @@ public interface Contents
    * @return The Representation object that is currently selected for this
    *    Contents object or null, if there is no valid selection.
    */
-  public Representation getSelectedRepresentation();
+  abstract public Representation getSelectedRepresentation();
 
   /**
    * Returns a String that represents this contents' current value
@@ -57,13 +58,34 @@ public interface Contents
    * @return The String representation of this contents' current
    * value.
    */
-  public String getDisplayValue();
+  public String getDisplayValue()
+  {
+    final Representation representation = getSelectedRepresentation();
+    if (representation != null) {
+      return representation.getDisplayValue(getValue());
+    } else {
+      return null;
+    }
+  }
 
   /**
    * Returns an icon that represents this content's type.
    * @return The icon.
    */
-  public Icon getIcon();
+  public Icon getIcon()
+  {
+    final Representation representation = getSelectedRepresentation();
+    if (representation != null) {
+      final String iconKey = representation.getIconKey();
+      if (iconKey != null) {
+        return UIManager.getIcon(iconKey);
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 
   /**
    * Selects a representation from the pool of available representations.
@@ -73,7 +95,7 @@ public interface Contents
    * @exception IndexOutOfBoundsException If selectionID is below 0 or
    *    above or equal to the number of representations of the union.
    */
-  public void setSelectedRepresentation(int selectionID);
+  abstract public void setSelectedRepresentation(int selectionID);
 
   /**
    * Sets the effective bit size of this contents. The effective bit size
@@ -85,7 +107,7 @@ public interface Contents
    * @exception IllegalArgumentException If bit_size is below zero or
    *    below the required bit size.
    */
-  public void setBitSize(int bit_size);
+  abstract public void setBitSize(int bit_size);
 
   /**
    * Returns the current effective bit size of this Contents object.
@@ -94,7 +116,7 @@ public interface Contents
    * the underlying structure.
    * @return The current effective bit size.
    */
-  public byte getBitSize();
+  abstract public byte getBitSize();
 
   /*
    * Sets the contents value for this contents. This value is shared among
@@ -105,7 +127,7 @@ public interface Contents
    *    class that holds the value represented by this class.
    * @see #reset
    */
-  public void setValue(int value);
+  abstract public void setValue(int value);
 
   /**
    * Returns the current contents value. This value is shared among
@@ -113,13 +135,13 @@ public interface Contents
    * out of the currently selected or any other representation.
    * @return The current value.
    */
-  public int getValue();
+  abstract public int getValue();
 
   /**
    * Resets the contents value to its default value.
    * @see #setDefaultValue
    */
-  public void reset();
+  abstract public void reset();
 
   /*
    * Sets the default value for this contents. This value is shared among
@@ -130,7 +152,7 @@ public interface Contents
    *    class that holds the value represented by this class.
    * @see #reset
    */
-  public void setDefaultValue(int default_value);
+  abstract public void setDefaultValue(int default_value);
 
   /**
    * Returns the current default value. This value is shared among
@@ -138,18 +160,18 @@ public interface Contents
    * out of the currently selected or any other representation.
    * @return The current default value.
    */
-  public int getDefaultValue();
+  abstract public int getDefaultValue();
 
   /**
    * Returns a representation of the contents value according to the
-   * underlying bit layout. 
+   * underlying bit layout.
    * @return The array of bits that represents the contents value. For
    *    performance reasons, the return value is actually not an array of
    *    bits, but rather an array of int values with each int value
    *    holding 32 bits. The least significant bit is stored in the least
    *    significant bit of field 0 of the return value.
    */
-  public int[] toBits();
+  abstract public int[] toBits();
 }
 
 /*

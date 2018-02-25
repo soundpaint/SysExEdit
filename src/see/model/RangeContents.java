@@ -28,7 +28,7 @@ import java.util.Vector;
  * A memory entry may be part of a memory location or represent just one
  * memory location or cover a couple of memory locations (up to 32 bits).
  */
-public class RangeContents implements Contents
+public class RangeContents extends AbstractContents
 {
   /*
    * Memory locations are typically distributed sparse in the address space

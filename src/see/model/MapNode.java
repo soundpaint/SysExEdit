@@ -22,6 +22,7 @@ package see.model;
 
 import java.util.Enumeration;
 import java.util.Vector;
+import javax.swing.Icon;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -266,13 +267,21 @@ implements MapChangeListener
   {
     final Contents contents = getContents();
     if (contents != null) {
-      final Representation representation =
-        contents.getSelectedRepresentation();
-      if (representation != null) {
-        return representation.getDisplayValue(contents.getValue());
-      } else {
-        return null;
-      }
+      return contents.getDisplayValue();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Returns the icon associated with this node.
+   * @return The icon associated with this node.
+   */
+  public Icon getIcon()
+  {
+    final Contents contents = getContents();
+    if (contents != null) {
+      return contents.getIcon();
     } else {
       return null;
     }
