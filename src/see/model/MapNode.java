@@ -44,7 +44,7 @@ implements MapChangeListener
   private long total_size; // the total bit size including all sub-trees
   private long address; // the absolute bit address of this node
   private long offset; // the number of inaccessible bits preceding this node
-  private Contents contents; // only significant, if not allowsChildren
+  private String label;
   private Vector<MapChangeListener> listeners = null; // map change listeners
 
   private MapNode() {}
@@ -52,14 +52,18 @@ implements MapChangeListener
   /**
    * Creates a new node with initially no children.
    */
-  private MapNode(boolean allowsChildren, String name,
-		  Contents contents, long contents_size, long offset)
+  private MapNode(final boolean allowsChildren, final String label,
+		  final Contents contents, final long contents_size,
+                  final long offset)
   {
-    super(name, allowsChildren);
-    if ((!allowsChildren) && (contents == null))
-      throw new NullPointerException("contents");
+    super(contents, allowsChildren);
+    if (!allowsChildren) {
+      if (contents == null) {
+        throw new NullPointerException("contents");
+      }
+    }
+    this.label = label;
     this.offset = offset;
-    this.contents = contents;
     this.total_size =  offset + contents_size;
     address = -1; // evaluate later
   }
@@ -67,53 +71,53 @@ implements MapChangeListener
   /**
    * Creates a node that allows children but does not contain a Contents
    * object.
-   * @param name The name of this node.
+   * @param label The label of this node.
    * @param offset The address offset for the child. This allows to
    *    define an area of inaccessible bits that precede the child's
    *    data.
    * @exception NullPointerException If contents equals null.
    */
-  public MapNode(String name, long offset)
+  public MapNode(final String label, final long offset)
   {
-    this(true, name, null, 0, offset);
+    this(true, label, null, 0, offset);
   }
 
   /**
    * Creates a node that allows children but does not contain a Contents
    * object. Offset is supposed to be 0.
-   * @param name The name of this node.
+   * @param label The label of this node.
    * @exception NullPointerException If contents equals null.
    */
-  public MapNode(String name)
+  public MapNode(final String label)
   {
-    this(name, 0);
+    this(label, 0);
   }
 
   /**
    * Creates a node that contains a Contents object (and hence does not
    * allow children).
-   * @param name The name of this node.
+   * @param label The label of this node.
    * @param contents The underlying Contents object.
    * @param offset The address offset for the child. This allows to
    *    define an area of inaccessible bits that precede the child's
    *    data.
    * @exception NullPointerException If contents equals null.
    */
-  public MapNode(String name, Contents contents, long offset)
+  public MapNode(final String label, final Contents contents, final long offset)
   {
-    this(false, name, contents, contents.getBitSize(), offset);
+    this(false, label, contents, contents.getBitSize(), offset);
   }
 
   /**
    * Creates a node that contains a Contents object (and hence does not
    * allow children). Offset is supposed to be 0.
-   * @param name The name of this node.
+   * @param label The label of this node.
    * @param contents The underlying Contents object.
    * @exception NullPointerException If contents equals null.
    */
-  public MapNode(String name, Contents contents)
+  public MapNode(final String label, final Contents contents)
   {
-    this(name, contents, 0);
+    this(label, contents, 0);
   }
 
   /**
@@ -138,11 +142,12 @@ implements MapChangeListener
   /**
    * Invoked when a map change occurs.
    */
-  public void mapChangePerformed(MapChangeEvent e)
+  public void mapChangePerformed(final MapChangeEvent e)
   {
+    final Contents contents = getContents();
     if (contents != null)
       {
-	DefaultTreeModel model = e.getModel();
+	final DefaultTreeModel model = e.getModel();
 	contents.setSelectedRepresentation(e.getSelector());
 	if (model != null)
 	  model.nodeChanged(this); // note: this only works *within* a tree
@@ -165,7 +170,7 @@ implements MapChangeListener
   }
 
   /**
-   * Adds a MapChangeListener to this Contents object.
+   * Adds a MapChangeListener to this Contents node.
    * @param l The MapChangeListener to add.
    */
   public void addMapChangeListener(MapChangeListener l)
@@ -176,7 +181,7 @@ implements MapChangeListener
   }
 
   /**
-   * Removes a MapChangeListener from this Contents object.
+   * Removes a MapChangeListener from this Contents node.
    * @param l The MapChangeListener to remove.
    */
   public void removeMapChangeListener(MapChangeListener l)
@@ -214,31 +219,63 @@ implements MapChangeListener
   }
 
   /**
+   * Returns a descriptive label for this contents.
+   * @return A descriptive label.
+   */
+  public String getLabel()
+  {
+    return label;
+  }
+
+  /**
+   * If this node does not allow children, this method sets the
+   * appropriate Contents object associated with this node.
+   * @return The Contents object associated with this node.
+   */
+  private void setContents(final Contents contents)
+  {
+    if (getAllowsChildren()) {
+      throw new IllegalArgumentException("only leaf nodes may carry contents");
+    }
+    setUserObject(contents);
+  }
+
+  /**
    * If this node does not allow children, this method returns the
    * appropriate Contents object associated with this node.
    * @return The Contents object associated with this node.
    */
   public Contents getContents()
   {
-    return contents;
+    Object obj = getUserObject();
+    if (obj == null) {
+      return null;
+    }
+    if (!(obj instanceof Contents)) {
+      throw new IllegalStateException("user object is not contents [obj=" +
+                                      obj + "]");
+    }
+    return (Contents)getUserObject();
   }
 
   /**
-   * Sets a descriptive name for this contents.
-   * @param name A descriptive name.
+   * Returns this node's value as string for display.
+   * @return This node's value as string for display.
    */
-  void setName(String name)
+  public String getDisplayValue()
   {
-    setUserObject(name);
-  }
-
-  /**
-   * Returns a descriptive name for this contents.
-   * @return A descriptive name.
-   */
-  String getName()
-  {
-    return (String)getUserObject();
+    final Contents contents = getContents();
+    if (contents != null) {
+      final Representation representation =
+        contents.getSelectedRepresentation();
+      if (representation != null) {
+        return representation.getDisplayValue(contents.getValue());
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -330,14 +367,16 @@ implements MapChangeListener
    * Increments the contents of this node, if possible.
    * @param model The tree model of the tree that contains this node.
    */
-  public void increment(DefaultTreeModel model)
+  public void increment(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
-	Representation representation = contents.getSelectedRepresentation();
+        final Contents contents = getContents();
+	final Representation representation =
+          contents.getSelectedRepresentation();
 	if (representation.isEnumerable())
 	  {
-	    Integer succValue = representation.succ(contents.getValue());
+	    final Integer succValue = representation.succ(contents.getValue());
 	    if (succValue != null)
 	      {
 		contents.setValue(succValue);
@@ -351,14 +390,16 @@ implements MapChangeListener
    * Decrements the contents of this node.
    * @param model The tree model of the tree that contains this node.
    */
-  public void decrement(DefaultTreeModel model)
+  public void decrement(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
-	Representation representation = contents.getSelectedRepresentation();
+        final Contents contents = getContents();
+	final Representation representation =
+          contents.getSelectedRepresentation();
 	if (representation.isEnumerable())
 	  {
-	    Integer predValue = representation.pred(contents.getValue());
+	    final Integer predValue = representation.pred(contents.getValue());
 	    if (predValue != null)
 	      {
 		contents.setValue(predValue);
@@ -372,10 +413,11 @@ implements MapChangeListener
    * Sets the contents of this node to the uppermost value that is in range.
    * @param model The tree model of the tree that contains this node.
    */
-  public void uppermost(DefaultTreeModel model)
+  public void uppermost(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
+        final Contents contents = getContents();
 	contents.setValue(contents.getSelectedRepresentation().uppermost());
 	fireMapChangeEvents(model);
       }
@@ -389,6 +431,7 @@ implements MapChangeListener
   {
     if (!getAllowsChildren())
       {
+        final Contents contents = getContents();
 	contents.setValue(contents.getSelectedRepresentation().lowermost());
 	fireMapChangeEvents(model);
       }
@@ -402,6 +445,7 @@ implements MapChangeListener
   {
     if (!getAllowsChildren())
       {
+        final Contents contents = getContents();
 	contents.reset();
 	fireMapChangeEvents(model);
       }
@@ -496,17 +540,18 @@ implements MapChangeListener
    * @excveption IllegalArgumentException If size goes beyond the addressed
    *    node.
    */
-  private int[] getLocalData(long address, int size)
+  private int[] getLocalData(final long address, final int size)
   {
     if (getAllowsChildren())
       throw new IllegalArgumentException("internal error: locate failed [1]");
     else
       {
-	int shift_size = (int)(address - this.address);
-	int contents_size = contents.getBitSize();
+	final int shift_size = (int)(address - this.address);
+        final Contents contents = getContents();
+	final int contents_size = contents.getBitSize();
 	if (shift_size >= contents_size)
 	  throw new IllegalStateException("locate failed [2]");
-	int[] local_data = contents.toBits();
+	final int[] local_data = contents.toBits();
 	/*
 	 * [PENDING: incomplete implementation]
 	 *

@@ -143,22 +143,18 @@ class Map extends JTree
       addressStr = addressRepresentation.addressToString(address) + ": ";
     else // address not evaluated yet or not enabled
       addressStr = "";
-    String nameStr = (node.toString() != null) ? node.toString() : "";
-    String contentsStr = null;
-    Contents contents = node.getContents();
-    if (contents != null)
-      {
-	Representation representation = contents.getSelectedRepresentation();
-	if (representation != null)
-	  contentsStr = representation.getDisplayValue(contents.getValue());
-      }
-    else
-      contentsStr = "";
-    if (contentsStr == null)
-      contentsStr = STRING_CONTENTS_UNKNOWN;
-    String sep = ((nameStr.length() > 0) && (contentsStr.length() > 0)) ?
+    String label = node.getLabel();
+    String displayValue = node.getDisplayValue();
+    if (displayValue == null)
+      if (!node.getAllowsChildren())
+        displayValue = STRING_CONTENTS_UNKNOWN;
+      else
+        displayValue = "";
+    if (label == null)
+      label = "";
+    String sep = ((label.length() > 0) && (displayValue.length() > 0)) ?
       " : " : "";
-    text = addressStr + nameStr + sep + contentsStr;
+    text = addressStr + label + sep + displayValue;
     return text;
   }
 
