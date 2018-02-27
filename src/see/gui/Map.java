@@ -45,8 +45,7 @@ class Map extends JTree
    * This String is used as an ID for a contents value that could not be
    * evaluated.
    */
-  protected final static
-  String STRING_CONTENTS_UNKNOWN = "???";
+  protected static final String STRING_CONTENTS_UNKNOWN = "???";
 
   /**
    * When displaying addresses, call addressToString() of this class.
@@ -58,16 +57,16 @@ class Map extends JTree
    */
   protected boolean addressInfoEnabled = false;
 
-  public void setForeground(Color value)
+  public void setForeground(final Color value)
   {
-    CellRenderer renderer = (CellRenderer)getCellRenderer();
+    final CellRenderer renderer = (CellRenderer)getCellRenderer();
     renderer.setForeground(value);
     super.setForeground(value);
   }
 
-  public void setBackground(Color value)
+  public void setBackground(final Color value)
   {
-    CellRenderer renderer = (CellRenderer)getCellRenderer();
+    final CellRenderer renderer = (CellRenderer)getCellRenderer();
     renderer.setBackground(value);
     super.setBackground(value);
   }
@@ -88,7 +87,7 @@ class Map extends JTree
    * @see #getAddressRepresentation
    * @see #setAddressInfoEnabled
    */
-  void setAddressRepresentation(AddressRepresentation representation)
+  void setAddressRepresentation(final AddressRepresentation representation)
   {
     addressRepresentation = representation;
   }
@@ -114,7 +113,7 @@ class Map extends JTree
    * @see setAddressRepresentation
    * @see #getAddressInfoEnabled
    */
-  void setAddressInfoEnabled(boolean enabled)
+  void setAddressInfoEnabled(final boolean enabled)
   {
     addressInfoEnabled = enabled;
   }
@@ -134,7 +133,7 @@ class Map extends JTree
    * @param node The node.
    * @return A proper String object for the tree cell.
    */
-  String getTreeCellText(MapNode node)
+  String getTreeCellText(final MapNode node)
   {
     String text = null;
     long address = node.getAddress();
@@ -164,7 +163,7 @@ class Map extends JTree
    * @param expanded True, if the node is expanded.
    * @return A proper Icon object for the tree cell.
    */
-  private Icon getTreeCellIcon(MapNode node, boolean expanded)
+  private Icon getTreeCellIcon(final MapNode node, final boolean expanded)
   {
     final Icon icon;
     if (!node.getAllowsChildren())
@@ -199,9 +198,11 @@ class Map extends JTree
      * to set the font based on value, which will be a TreeNode.
      */
     public Component
-      getTreeCellRendererComponent(JTree tree, Object value,
-				   boolean selected, boolean expanded,
-				   boolean leaf, int row, boolean hasFocus)
+      getTreeCellRendererComponent(final JTree tree, final Object value,
+				   final boolean selected,
+                                   final boolean expanded,
+				   final boolean leaf, final int row,
+                                   final boolean hasFocus)
     {
       Map map = (Map)tree;
       String text = null;

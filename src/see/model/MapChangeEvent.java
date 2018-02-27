@@ -34,8 +34,8 @@ public class MapChangeEvent extends EventObject
 {
   private static final long serialVersionUID = 2435483410608666577L;
 
-  private DefaultTreeModel model;
-  private int selector;
+  private final DefaultTreeModel model;
+  private final int selector;
 
   /**
    * Creates a new MapChangeEvent object with the specified source.
@@ -44,7 +44,9 @@ public class MapChangeEvent extends EventObject
    * @param selector The range selector.
    * @exception IllegalArgumentException If source equals null.
    */
-  public MapChangeEvent(MapNode source, DefaultTreeModel model, int selector)
+  public MapChangeEvent(final MapNode source,
+                        final DefaultTreeModel model,
+                        final int selector)
   {
     super(source);
     this.model = model;
@@ -55,7 +57,8 @@ public class MapChangeEvent extends EventObject
    * Returns the tree model of the source node.
    * @return The tree model of the source node.
    */
-  public DefaultTreeModel getModel() {
+  public DefaultTreeModel getModel()
+  {
     return model;
   }
 
@@ -63,7 +66,8 @@ public class MapChangeEvent extends EventObject
    * Returns the selector for the contents range to be selected.
    * @return The selector for the contents range to be selected.
    */
-  public int getSelector() {
+  public int getSelector()
+  {
     return selector;
   }
 }

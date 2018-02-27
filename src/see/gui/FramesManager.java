@@ -34,13 +34,13 @@ public interface FramesManager
    * Returns the version id of this application.
    * @return The version id of this application.
    */
-  public String getVersion();
+  String getVersion();
 
   /**
    * Returns the copyright mark of this application.
    * @return The copyright mark of this application.
    */
-  public String getCopyright();
+  String getCopyright();
 
   /**
    * Registers a new frame. Whenever a frame is registered, it is assigned
@@ -52,7 +52,7 @@ public interface FramesManager
    * @see #removeFrame
    * @see #getID
    */
-  public int addFrame(Frame frame);
+  int addFrame(final Frame frame);
 
   /**
    * Removes a frame from the set of registered frames.
@@ -61,7 +61,7 @@ public interface FramesManager
    * @param frame The frame to be removed.
    * @see #addFrame
    */
-  public void removeFrame(Frame frame);
+  void removeFrame(final Frame frame);
 
   /**
    * Gets the unique ID of the specified frame.
@@ -69,23 +69,23 @@ public interface FramesManager
    * @return The unique ID or -1, if the frame is not registered.
    * @see #addFrame
    */
-  public int getID(Frame frame);
+  int getID(final Frame frame);
 
   /**
    * Returns an array of all available map def classes.
    * @return An array of all available map def classes.
    */
-  public Class<MapDef>[] getMapDefClasses();
+  Class<MapDef>[] getMapDefClasses();
 
   /**
    * Executes SwingUtilities.updateComponentTreeUI on all registered frames.
    */
-  public void updateUI();
+  void updateUI();
 
   /**
    * Closes all frames and exits the application.
    */
-  public void exitAll();
+  void exitAll();
 }
 
 /*

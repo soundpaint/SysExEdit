@@ -53,7 +53,7 @@ public abstract class AbstractContents implements Contents
    * @exception IllegalArgumentException If representation is not an
    *    instance of a compatible class.
    */
-  abstract public void addRepresentation(Representation representation);
+  public abstract void addRepresentation(final Representation representation);
 
   /**
    * Returns the Representation object that is currently selected for this
@@ -61,7 +61,7 @@ public abstract class AbstractContents implements Contents
    * @return The Representation object that is currently selected for this
    *    Contents object or null, if there is no valid selection.
    */
-  abstract protected Representation getSelectedRepresentation();
+  protected abstract Representation getSelectedRepresentation();
 
   /**
    * Returns a String that represents this contents' current value
@@ -106,7 +106,7 @@ public abstract class AbstractContents implements Contents
    * @param defaultValue The default value.
    * @see #reset
    */
-  public void setDefaultValue(int defaultValue)
+  public void setDefaultValue(final int defaultValue)
   {
     this.defaultValue = defaultValue;
   }
@@ -128,7 +128,7 @@ public abstract class AbstractContents implements Contents
    * any other range.
    * @param value The value.
    */
-  public void setValue(int value)
+  public void setValue(final int value)
   {
     this.value = value;
   }
@@ -209,7 +209,7 @@ public abstract class AbstractContents implements Contents
    * @exception IndexOutOfBoundsException If selectionID is below 0 or
    *    above or equal to the number of representations of the union.
    */
-  abstract public void setSelectedRepresentation(int selectionID);
+  public abstract void setSelectedRepresentation(final int selectionID);
 
   /**
    * Sets the effective bit size of this contents. The effective bit size
@@ -221,7 +221,7 @@ public abstract class AbstractContents implements Contents
    * @exception IllegalArgumentException If bit_size is below zero or
    *    below the required bit size.
    */
-  abstract public void setBitSize(int bit_size);
+  public abstract void setBitSize(final int bit_size);
 
   /**
    * Returns the current effective bit size of this Contents object.
@@ -230,7 +230,7 @@ public abstract class AbstractContents implements Contents
    * the underlying structure.
    * @return The current effective bit size.
    */
-  abstract public byte getBitSize();
+  public abstract byte getBitSize();
 
   /**
    * Returns a representation of the contents value according to the
@@ -241,7 +241,7 @@ public abstract class AbstractContents implements Contents
    *    holding 32 bits. The least significant bit is stored in the least
    *    significant bit of field 0 of the return value.
    */
-  abstract public int[] toBits();
+  public abstract int[] toBits();
 }
 
 /*

@@ -33,9 +33,9 @@ class Utils
    * @param n An integer value.
    * @return A textual representation of the LSB as 2 hex digits String.
    */
-  static String intTo0xnn(int n)
+  static String intTo0xnn(final int n)
   {
-    byte b = (byte)n;
+    final byte b = (byte)n;
     if (b < 0)
       return "0x" + Integer.toString(b + 0x100, 0x10);
     else if (b <= 0xf)

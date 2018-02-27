@@ -45,10 +45,13 @@ implements MapChangeListener
   private long total_size; // the total bit size including all sub-trees
   private long address; // the absolute bit address of this node
   private long offset; // the number of inaccessible bits preceding this node
-  private String label;
-  private Vector<MapChangeListener> listeners = null; // map change listeners
+  private final String label;
+  private final Vector<MapChangeListener> listeners; // map change listeners
 
-  private MapNode() {}
+  private MapNode()
+  {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Creates a new node with initially no children.
@@ -67,6 +70,7 @@ implements MapChangeListener
     this.offset = offset;
     this.total_size =  offset + contents_size;
     address = -1; // evaluate later
+    listeners = new Vector<MapChangeListener>();
   }
 
   /**
@@ -159,25 +163,20 @@ implements MapChangeListener
    * Fires a map change event to all map change listeners.
    * @param model The tree model of the tree that contains this node.
    */
-  private void fireMapChangeEvents(DefaultTreeModel model)
+  private void fireMapChangeEvents(final DefaultTreeModel model)
   {
-    if (listeners != null)
-      {
-	Enumeration<MapChangeListener> listeners_enum = listeners.elements();
-	MapChangeEvent e = new MapChangeEvent(this, model, getSelector());
-	while (listeners_enum.hasMoreElements())
-	  (listeners_enum.nextElement()).mapChangePerformed(e);
-      }
+    final Enumeration<MapChangeListener> listeners_enum = listeners.elements();
+    final MapChangeEvent e = new MapChangeEvent(this, model, getSelector());
+    while (listeners_enum.hasMoreElements())
+      (listeners_enum.nextElement()).mapChangePerformed(e);
   }
 
   /**
    * Adds a MapChangeListener to this Contents node.
    * @param l The MapChangeListener to add.
    */
-  public void addMapChangeListener(MapChangeListener l)
+  public void addMapChangeListener(final MapChangeListener l)
   {
-    if (listeners == null)
-      listeners = new Vector<MapChangeListener>();
     listeners.addElement(l);
   }
 
@@ -185,10 +184,9 @@ implements MapChangeListener
    * Removes a MapChangeListener from this Contents node.
    * @param l The MapChangeListener to remove.
    */
-  public void removeMapChangeListener(MapChangeListener l)
+  public void removeMapChangeListener(final MapChangeListener l)
   {
-    if (listeners != null)
-      listeners.removeElement(l);
+    listeners.removeElement(l);
   }
 
   /**
@@ -197,7 +195,7 @@ implements MapChangeListener
    *    define an area of inaccessible bits that precede this node's
    *    data.
    */
-  public void setOffset(long offset)
+  public void setOffset(final long offset)
   {
     this.offset = offset;
   }
@@ -248,7 +246,7 @@ implements MapChangeListener
    */
   public Contents getContents()
   {
-    Object obj = getUserObject();
+    final Object obj = getUserObject();
     if (obj == null) {
       return null;
     }
@@ -300,10 +298,10 @@ implements MapChangeListener
    *    ancestor of this node.
    * @exception IllegalStateException If this node does not allow children.
    */
-  public void insert(MutableTreeNode newChild, int childIndex)
+  public void insert(final MutableTreeNode newChild, final int childIndex)
   {
     super.insert(newChild, childIndex);
-    MapNode child = (MapNode)newChild;
+    final MapNode child = (MapNode)newChild;
     child.reset(null);
     adjust_total_size(((MapNode)newChild).total_size);
   }
@@ -316,9 +314,9 @@ implements MapChangeListener
    *    to remove.
    * @exception ArrayIndexOutOfBoundsException If childIndex is out of bounds.
    */
-  public void remove(int childIndex)
+  public void remove(final int childIndex)
   {
-    MapNode child = (MapNode)getChildAt(childIndex);
+    final MapNode child = (MapNode)getChildAt(childIndex);
     super.remove(childIndex);
     adjust_total_size(-child.total_size);
   }
@@ -328,7 +326,7 @@ implements MapChangeListener
    * parent maps.
    * @param delta_size The adjustment size.
    */
-  private void adjust_total_size(long delta_size)
+  private void adjust_total_size(final long delta_size)
   {
     total_size += delta_size;
     if (parent != null)
@@ -366,7 +364,7 @@ implements MapChangeListener
     address = externalOffset + offset;
     for (int i = 0; i < getChildCount(); i++)
       {
-	MapNode child = (MapNode)getChildAt(i);
+	final MapNode child = (MapNode)getChildAt(i);
 	child.evaluateAddresses(externalOffset);
 	externalOffset += child.getTotalSize();
       }
@@ -418,7 +416,7 @@ implements MapChangeListener
    * Sets the contents of this node to the lowermost value that is in range.
    * @param model The tree model of the tree that contains this node.
    */
-  public void lowermost(DefaultTreeModel model)
+  public void lowermost(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
@@ -432,7 +430,7 @@ implements MapChangeListener
    * Resets the contents of this node to its default value.
    * @param model The tree model of the tree that contains this node.
    */
-  public void reset(DefaultTreeModel model)
+  public void reset(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
@@ -448,7 +446,7 @@ implements MapChangeListener
    * @return The node that covers the specified address, or null, if
    *    the address either can not be found in the map or is inaccessible.
    */
-  public MapNode locate(long address)
+  public MapNode locate(final long address)
   {
     if ((this.address <= address) && (address < this.address + total_size))
       if (!getAllowsChildren())
@@ -458,7 +456,7 @@ implements MapChangeListener
 	  MapNode next_node = null;
 	  MapNode node = null;
 	  long cumulative_address = this.address;
-	  Enumeration children_enum = children();
+	  final Enumeration children_enum = children();
 	  while ((cumulative_address < address) &&
 		 children_enum.hasMoreElements())
 	    {
@@ -507,13 +505,13 @@ implements MapChangeListener
    * @exception IllegalArgumentException If size goes beyond the addressed
    *    node.
    */
-  public int[] getData(long address, int size)
+  public int[] getData(final long address, final int size)
   {
     if (size < 0)
       throw new IllegalArgumentException("size < 0");
     if (size == 0)
       return new int[0];
-    MapNode node = locate(address);
+    final MapNode node = locate(address);
     if (node == null)
       throw new IllegalArgumentException("address not accessible");
     else
@@ -546,7 +544,7 @@ implements MapChangeListener
 	/*
 	 * [PENDING: incomplete implementation]
 	 *
-	int local_size = Math.min(size, contents_size - shift_size);
+	final int local_size = Math.min(size, contents_size - shift_size);
 	local_data = shiftLeft(local_data, shift_size);
 	local_data = trim(local_data, local_size);
 	if (local_size < size)
@@ -567,11 +565,11 @@ implements MapChangeListener
    * @param n The number of bit positions to shift.
    * @return The shifted data.
    */
-  private static int[] shiftRight(int[] data, int n)
+  private static int[] shiftRight(final int[] data, final int n)
   {
-    int intShift = n / 32;
-    int bitShift = n % 32;
-    int[] shiftedData = new int[data.length - intShift];
+    final int intShift = n / 32;
+    final int bitShift = n % 32;
+    final int[] shiftedData = new int[data.length - intShift];
     for (int i = 0; i < shiftedData.length; i++)
       {
 	shiftedData[i] = data[i + intShift] >> bitShift;
@@ -586,9 +584,9 @@ implements MapChangeListener
    * @param source The boolean array to be cloned.
    * @return The clone of the specified boolean array.
    */
-  private static boolean[] cloneBooleanArray(boolean[] source)
+  private static boolean[] cloneBooleanArray(final boolean[] source)
   {
-    boolean[] target = new boolean[source.length];
+    final boolean[] target = new boolean[source.length];
     for (int i = 0; i < source.length; i++)
       target[i] = source[i];
     return target;
@@ -600,8 +598,7 @@ implements MapChangeListener
    */
   public MapNode clone()
   {
-    MapNode newNode = null;
-    newNode = (MapNode)super.clone();
+    final MapNode newNode = (MapNode)super.clone();
     if (getAllowsChildren())
       for (int i = 0; i < getChildCount(); i++)
 	newNode.add(((MapNode)getChildAt(i)).clone());

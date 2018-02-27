@@ -51,7 +51,7 @@ public class Range implements Representation
    * @param n A signed int value.
    * @return A long value that equals the unsigned value of parameter n.
    */
-  private static long signed_int_to_long(int n)
+  private static long signed_int_to_long(final int n)
   {
     long long_n = (long)n;
     if (long_n < 0)
@@ -85,13 +85,16 @@ public class Range implements Representation
 
   private class Contigous
   {
-    long lb; // lower bound
-    long ub; // upper bound
-    ValueType valueType;
+    final long lb; // lower bound
+    final long ub; // upper bound
+    final ValueType valueType;
     Contigous prev; // previous contigous range
     Contigous next; // next contigous range
 
-    private Contigous() {}
+    private Contigous()
+    {
+      throw new UnsupportedOperationException();
+    }
 
     /**
      * Creates a new contigous range object.
@@ -100,7 +103,7 @@ public class Range implements Representation
      * @param valueType The ValueType for the contigous range.
      * @exception NullPointerException If valueType equals null.
      */
-    Contigous(long lb, long ub, ValueType valueType)
+    Contigous(final long lb, final long ub, final ValueType valueType)
     {
       if (valueType == null)
 	throw new NullPointerException("valueType");
@@ -115,7 +118,7 @@ public class Range implements Representation
      * Returns a String that represents x according to the specification
      * of the underlying ValueType.
      */
-    String getDisplayValue(int x)
+    private String getDisplayValue(final int x)
     {
       return valueType.getDisplayValue(x);
     }
@@ -169,7 +172,7 @@ public class Range implements Representation
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public Range(int lb, int ub, ValueType valueType)
+  public Range(final int lb, final int ub, final ValueType valueType)
   {
     addContigous(lb, ub, valueType);
   }
@@ -180,7 +183,7 @@ public class Range implements Representation
    * UIManager.getDefaults().put(iconKey, icon).
    * @param iconKey The key of the icon to be displayed.
    */
-  public void setIconKey(String iconKey)
+  public void setIconKey(final String iconKey)
   {
     this.iconKey = iconKey;
   }
@@ -197,8 +200,8 @@ public class Range implements Representation
 
   private Contigous hint = null; // cached reference for better performance
 
-  private static long min_unsigned = signed_int_to_long(0x00000000);
-  private static long max_unsigned = signed_int_to_long(0xffffffff);
+  private static final long min_unsigned = signed_int_to_long(0x00000000);
+  private static final long max_unsigned = signed_int_to_long(0xffffffff);
 
   /**
    * Adds a single contigous range to the total range.
@@ -209,10 +212,11 @@ public class Range implements Representation
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addContigous(int lb, int ub, ValueType valueType)
+  public void addContigous(final int lb, final int ub,
+                           final ValueType valueType)
   {
-    long unsigned_lb = signed_int_to_long(lb);
-    long unsigned_ub = signed_int_to_long(ub);
+    final long unsigned_lb = signed_int_to_long(lb);
+    final long unsigned_ub = signed_int_to_long(ub);
     if ((lb < 0) && (ub >= 0)) // overlapping contigous; so split it up
       {
 	addContigous(new Contigous(unsigned_lb, max_unsigned, valueType));
@@ -229,7 +233,7 @@ public class Range implements Representation
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addContigous(ValueType valueType)
+  public void addContigous(final ValueType valueType)
   {
     if (valueType.getSize() != 1) {
       throw new IllegalArgumentException("valueType does not represent a single value");
@@ -246,7 +250,7 @@ public class Range implements Representation
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addContigous(int value, String enumValue)
+  public void addContigous(final int value, final String enumValue)
   {
     addContigous(value, value, new EnumType(value, enumValue));
   }
@@ -257,7 +261,7 @@ public class Range implements Representation
    * @exception IllegalArgumentException If the insertion range overlaps
    *    with another range.
    */
-  private synchronized void addContigous(Contigous insertion)
+  private synchronized void addContigous(final Contigous insertion)
   {
     if (hint == null) // no hint given; start with contigous first
       hint = contigous_first;
@@ -337,9 +341,9 @@ public class Range implements Representation
    * @param x The Integer value to be checked.
    * @return True, if the value is in range.
    */
-  public synchronized boolean isInRange(int x)
+  public synchronized boolean isInRange(final int x)
   {
-    long unsigned_x = signed_int_to_long(x);
+    final long unsigned_x = signed_int_to_long(x);
     if (hint == null) // no hint given; start with contigous first
       hint = contigous_first;
     if (hint == null) // empty range; we are done!
@@ -406,9 +410,12 @@ public class Range implements Representation
   }
 
   /**
-   * Returns true, if this representation is enumerable.
+   * Returns <code>true</code>, if this representation is enumerable.
    */
-  public boolean isEnumerable() { return true; }
+  public boolean isEnumerable()
+  {
+    return true;
+  }
 
   /**
    * Given some Integer value x that may be or not in range, returns the
@@ -418,9 +425,9 @@ public class Range implements Representation
    * @return The next upper value that is in range or null, if there is
    *    no such value.
    */
-  public Integer succ(int x)
+  public Integer succ(final int x)
   {
-    long unsigned_x = signed_int_to_long(x);
+    final long unsigned_x = signed_int_to_long(x);
     if (hint == null) // no hint given; start with contigous first
       hint = contigous_first;
     if (hint == null) // empty range; we are done!
@@ -473,9 +480,9 @@ public class Range implements Representation
    * @return The next lower value that is in range or null, if there is
    *    no such value.
    */
-  public Integer pred(int x)
+  public Integer pred(final int x)
   {
-    long unsigned_x = signed_int_to_long(x);
+    final long unsigned_x = signed_int_to_long(x);
     if (hint == null) // no hint given; start with contigous first
       hint = contigous_first;
     if (hint == null) // empty range; we are done!
@@ -527,9 +534,9 @@ public class Range implements Representation
    * @param x The Integer value to be represented.
    * @return The String representation of x.
    */
-  public String getDisplayValue(int x)
+  public String getDisplayValue(final int x)
   {
-    long unsigned_x = signed_int_to_long(x);
+    final long unsigned_x = signed_int_to_long(x);
     if (hint == null) // no hint given; start with contigous first
       hint = contigous_first;
     if (hint == null) // empty range; we are done!
@@ -575,7 +582,7 @@ public class Range implements Representation
    */
   public String toString()
   {
-    StringBuffer s = new StringBuffer();
+    final StringBuffer s = new StringBuffer();
     s.append("Range[Contigous-Ranges{");
     Contigous contigous = contigous_first;
     while (contigous != null)

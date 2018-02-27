@@ -28,11 +28,13 @@ public class EnumType implements ValueType
   private int offs;
   private String[] displayValues;
 
-  public int getMinValue() {
+  public int getMinValue()
+  {
     return offs;
   }
 
-  public int getSize() {
+  public int getSize()
+  {
     return displayValues.length;
   }
 
@@ -46,7 +48,7 @@ public class EnumType implements ValueType
    * for each x.
    * @exception NullPointerException If enum equals null.
    */
-  public EnumType(String[] displayValues)
+  public EnumType(final String[] displayValues)
   {
     this(0, displayValues);
   }

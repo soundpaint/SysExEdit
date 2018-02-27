@@ -42,18 +42,18 @@ public class ExceptionPanel extends JPanel
 {
   private static final long serialVersionUID = -8568553156220565622L;
 
-  private final static String EXCEPTION = "Exception Info Message";
+  private static final String EXCEPTION = "Exception Info Message";
 
   private static class StringOutputStream extends OutputStream
   {
-    private StringBuffer buffer;
+    private final StringBuffer buffer;
 
     public StringOutputStream()
     {
       buffer = new StringBuffer();
     }
 
-    public void write(int b)
+    public void write(final int b)
     {
       buffer.append((char)b);
     }
@@ -66,10 +66,10 @@ public class ExceptionPanel extends JPanel
 
   private ExceptionPanel() {}
 
-  private ExceptionPanel(Throwable t, boolean printStackTrace)
+  private ExceptionPanel(final Throwable t, final boolean printStackTrace)
   {
-    StringOutputStream out = new StringOutputStream();
-    PrintWriter printer = new PrintWriter(out);
+    final StringOutputStream out = new StringOutputStream();
+    final PrintWriter printer = new PrintWriter(out);
     if (printStackTrace)
       t.printStackTrace(printer);
     printer.flush();
@@ -78,13 +78,13 @@ public class ExceptionPanel extends JPanel
     getAccessibleContext().setAccessibleName("Exception panel");
     getAccessibleContext().setAccessibleDescription
       ("A panel for viewing exception messages");
-    JScrollPane scroller = new JScrollPane();
+    final JScrollPane scroller = new JScrollPane();
     scroller.setPreferredSize(new Dimension(700, 420));
     scroller.setBorder(new BevelBorder(BevelBorder.LOWERED,
 				       Color.white, Color.gray));
 
-    JTextArea textArea = new JTextArea(out.toString());
-    JViewport vp = scroller.getViewport();
+    final JTextArea textArea = new JTextArea(out.toString());
+    final JViewport vp = scroller.getViewport();
     vp.add(textArea);
     vp.setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
     add(scroller, BorderLayout.CENTER);
@@ -98,8 +98,8 @@ public class ExceptionPanel extends JPanel
    * @param t The exception to show.
    * @param printStackTrace If true, also show the stack trace.
    */
-  public static void showException(Frame parent, Throwable t,
-				   boolean printStackTrace)
+  public static void showException(final Frame parent, final Throwable t,
+				   final boolean printStackTrace)
   {
     JOptionPane.showMessageDialog(parent,
 				  new ExceptionPanel(t, printStackTrace),

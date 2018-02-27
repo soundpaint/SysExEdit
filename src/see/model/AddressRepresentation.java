@@ -26,7 +26,7 @@ package see.model;
  */
 public interface AddressRepresentation
 {
-  public String addressToString(long index);
+  String addressToString(final long index);
 }
 
 /*

@@ -83,61 +83,58 @@ public class EditorFrame extends JFrame implements Runnable
   /*
    * dialog titles
    */
-  private final static String
-  CONFIRM = "Confirm";
+  private static final String CONFIRM = "Confirm";
 
-  private final static String
-  ERROR = "Error";
+  private static final String ERROR = "Error";
 
   /*
    * dialog messages
    */
-  private final static String
-  CONFIRM_CLOSE = "Data modified. Close anyway?";
+  private static final String CONFIRM_CLOSE = "Data modified.  Close anyway?";
 
-  private final static String
-  CONFIRM_LDM = "Data is modified and will be lost. Load anyway?";
+  private static final String
+  CONFIRM_LDM = "Data is modified and will be lost.  Load anyway?";
 
   /*
    * action commands
    */
-  private final static String FILE = "File";
-  private final static String NEW = "New";
-  private final static String LOAD = "Load...";
-  private final static String SAVE = "Save";
-  private final static String SAVE_AS = "Save as...";
-  private final static String REQUEST = "Request";
-  private final static String DUMP = "Dump";
-  private final static String CLOSE = "Close";
-  private final static String EXIT = "Exit";
-  private final static String EDIT = "Edit";
-  private final static String SELECT_ALL = "Select All";
-  private final static String SELECT_NONE = "Select None";
-  private final static String INVERT_SELECTION = "Invert Selection";
-  private final static String COPY = "Copy";
-  private final static String PASTE = "Paste";
-  private final static String INCREMENT = "Increment";
-  private final static String DECREMENT = "Decrement";
-  private final static String UPPERMOST = "Uppermost";
-  private final static String LOWERMOST = "Lowermost";
-  private final static String RESET = "Reset";
-  private final static String EVENT = "Event";
-  private final static String OPTIONS = "Options";
-  private final static String LOAD_DEVICE_MODEL = "Load Device Model...";
-  private final static String DEVICE_ID = "Device ID...";
-  private final static String DISPLAY_ADDRESSES = "Display Addresses";
-  private final static String TOOL_TIPS = "Tool Tips";
-  private final static String LAF = "Look & Feel";
-  private final static String HELP = "Help";
-  private final static String TUTORIAL = "Tutorial...";
-  private final static String API = "API Specs...";
-  private final static String LICENSE = "License...";
-  private final static String ABOUT_FRAME_APPLICATION = "About Application...";
-  private final static String
+  private static final String FILE = "File";
+  private static final String NEW = "New";
+  private static final String LOAD = "Load...";
+  private static final String SAVE = "Save";
+  private static final String SAVE_AS = "Save as...";
+  private static final String REQUEST = "Request";
+  private static final String DUMP = "Dump";
+  private static final String CLOSE = "Close";
+  private static final String EXIT = "Exit";
+  private static final String EDIT = "Edit";
+  private static final String SELECT_ALL = "Select All";
+  private static final String SELECT_NONE = "Select None";
+  private static final String INVERT_SELECTION = "Invert Selection";
+  private static final String COPY = "Copy";
+  private static final String PASTE = "Paste";
+  private static final String INCREMENT = "Increment";
+  private static final String DECREMENT = "Decrement";
+  private static final String UPPERMOST = "Uppermost";
+  private static final String LOWERMOST = "Lowermost";
+  private static final String RESET = "Reset";
+  private static final String EVENT = "Event";
+  private static final String OPTIONS = "Options";
+  private static final String LOAD_DEVICE_MODEL = "Load Device Model...";
+  private static final String DEVICE_ID = "Device ID...";
+  private static final String DISPLAY_ADDRESSES = "Display Addresses";
+  private static final String TOOL_TIPS = "Tool Tips";
+  private static final String LAF = "Look & Feel";
+  private static final String HELP = "Help";
+  private static final String TUTORIAL = "Tutorial...";
+  private static final String API = "API Specs...";
+  private static final String LICENSE = "License...";
+  private static final String ABOUT_FRAME_APPLICATION = "About Application...";
+  private static final String
   ABOUT_DEVICE_MODEL_APPLICATION = "About Device Model...";
 
   /*
-   * gui elements
+   * GUI elements
    */
   private Map map;
   private JCheckBox checkbox_dispAddr;
@@ -153,15 +150,18 @@ public class EditorFrame extends JFrame implements Runnable
   /*
    * Other instance variables
    */
-  private FramesManager manager; // manages this and all other editor frames
+  private final String filepath; // path of map def class
+  private MapDef mapDef;
+  private final FramesManager manager; // manages this and all other editor frames
   private File defaultLoadFile = null; // default load dialog file
   private File defaultSaveFile = null; // default save dialog file
   private int deviceID; // the device ID used for bulk requests & dumps
-  private String filepath; // path of map def class
-  private MapDef mapDef;
   private DefaultTreeModel mapModel = null;
 
-  private EditorFrame() {}
+  private EditorFrame()
+  {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * @param filepath The device model to use on startup.<BR>
@@ -171,7 +171,9 @@ public class EditorFrame extends JFrame implements Runnable
    *    the user is prompted a window to manually select a device model.
    * @param manager A frames manager that manages all other editor frames.
    */
-  public EditorFrame(String filepath, MapDef mapDef, FramesManager manager)
+  public EditorFrame(final String filepath,
+                     final MapDef mapDef,
+                     final FramesManager manager)
   {
     this.filepath = filepath;
     this.mapDef = mapDef;
@@ -184,7 +186,7 @@ public class EditorFrame extends JFrame implements Runnable
    */
   public void run()
   {
-    String windowID = "Window #" + manager.addFrame(this);
+    final String windowID = "Window #" + manager.addFrame(this);
     setTitle(manager.getVersion() + " " + windowID);
     if (filepath != null)
       {
@@ -223,10 +225,10 @@ public class EditorFrame extends JFrame implements Runnable
     manager.removeFrame(this);
   }
 
-  private void setMap(MapDef mapDef)
+  private void setMap(final MapDef mapDef)
   {
     this.mapDef = mapDef;
-    MapNode root = mapDef.buildMap();
+    final MapNode root = mapDef.buildMap();
     if (mapModel != null)
       mapModel.setRoot(root);
     else
@@ -256,7 +258,7 @@ public class EditorFrame extends JFrame implements Runnable
     lookAndFeelInfo = UIManager.getInstalledLookAndFeels();
   }
 
-  private void setLookAndFeel(String name) throws Exception
+  private void setLookAndFeel(final String name) throws Exception
   {
     String className = null;
     for (int i = 0; i < lookAndFeelInfo.length; i++)
@@ -272,14 +274,14 @@ public class EditorFrame extends JFrame implements Runnable
   private void initGUI()
   {
     JButton button;
-    EditorActionListener actionListener = new EditorActionListener();
+    final EditorActionListener actionListener = new EditorActionListener();
     constructMenuBar(actionListener);
 
     // tool icons area
-    JPanel panel_toolIcons = new JPanel();
+    final JPanel panel_toolIcons = new JPanel();
     panel_toolIcons.setLayout(new FlowLayout(FlowLayout.LEFT));
     getContentPane().add(panel_toolIcons, "North");
-    Insets insets = new Insets(0, 0, 0, 0);
+    final Insets insets = new Insets(0, 0, 0, 0);
 
     button = new JButton(UIManager.getIcon("internal-button-load"));
     button.addActionListener(actionListener);
@@ -319,7 +321,7 @@ public class EditorFrame extends JFrame implements Runnable
     panel_toolIcons.add(button);
 
     // map area
-    JPanel panel_map = new JPanel();
+    final JPanel panel_map = new JPanel();
     getContentPane().add(panel_map, "Center");
     map = new Map();
     map.setAddressRepresentation(mapDef.getAddressRepresentation());
@@ -331,7 +333,7 @@ public class EditorFrame extends JFrame implements Runnable
     map.getModel().addTreeModelListener(new TreeModelListener());
     map.setToolTipText("The Input Area gets its data from disk or " +
 		       "via MIDI.");
-    JScrollPane scrollpane_map = new JScrollPane();
+    final JScrollPane scrollpane_map = new JScrollPane();
     scrollpane_map.setPreferredSize(new Dimension(450, 450));
     scrollpane_map.getViewport().add(map);
     panel_map.setLayout(new BorderLayout());
@@ -361,7 +363,7 @@ public class EditorFrame extends JFrame implements Runnable
 
     // Layout Definitions for panel_button_row
     JPanel panel_pad;
-    JPanel panel_button_row = new JPanel();
+    final JPanel panel_button_row = new JPanel();
     gbl = new GridBagLayout();
     panel_button_row.setLayout(gbl);
 
@@ -412,7 +414,7 @@ public class EditorFrame extends JFrame implements Runnable
     panel_map.add("South", panel_button_row);
 
     // Layout Definitions for operations panel
-    JPanel panel_footer = new JPanel();
+    final JPanel panel_footer = new JPanel();
     gbl = new GridBagLayout();
     panel_footer.setLayout(gbl);
     c.gridwidth = 1;
@@ -463,16 +465,15 @@ public class EditorFrame extends JFrame implements Runnable
 
   private class EditorWindowListener extends WindowAdapter
   {
-    public void windowClosing(WindowEvent e)
+    public void windowClosing(final WindowEvent e)
     {
       signalDelete();
     }
   }
 
-  private void constructMenuBar(ActionListener listener)
+  private void constructMenuBar(final ActionListener listener)
   {
-
-    JMenuBar menubar = new JMenuBar();
+    final JMenuBar menubar = new JMenuBar();
     JMenu menu, submenu;
     JMenuItem menuItem;
 
@@ -527,7 +528,7 @@ public class EditorFrame extends JFrame implements Runnable
     submenu.setMnemonic((int)'l');
     for (int i = 0; i < lookAndFeelInfo.length; i++)
       {
-	UIManager.LookAndFeelInfo info = lookAndFeelInfo[i];
+	final UIManager.LookAndFeelInfo info = lookAndFeelInfo[i];
 	submenu.add(new JMenuItem(info.getName())).addActionListener(listener);
       }
 
@@ -573,72 +574,75 @@ public class EditorFrame extends JFrame implements Runnable
 
   private class IncrementAction implements ActionListener
   {
-    private Map map;
+    private final Map map;
 
-    private IncrementAction() {}
+    private IncrementAction()
+    {
+      throw new UnsupportedOperationException();
+    }
 
-    IncrementAction(Map map)
+    private IncrementAction(final Map map)
     {
       this.map = map;
     }
 
-    public void actionPerformed(ActionEvent e)
+    public void actionPerformed(final ActionEvent e)
     {
     }
   }
 
-  private void increment(DefaultTreeModel mapModel, TreePath path)
+  private void increment(final DefaultTreeModel mapModel, final TreePath path)
   {
-    MapNode node = (MapNode)path.getLastPathComponent();
+    final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
 	node.increment(mapModel);
       }
-    catch (Exception e) {} // ignore
+    catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
   }
 
-  private void decrement(DefaultTreeModel mapModel, TreePath path)
+  private void decrement(final DefaultTreeModel mapModel, final TreePath path)
   {
-    MapNode node = (MapNode)path.getLastPathComponent();
+    final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
 	node.decrement(mapModel);
       }
-    catch (Exception e) {} // ignore
+    catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
   }
 
-  private void lowermost(DefaultTreeModel mapModel, TreePath path)
+  private void lowermost(final DefaultTreeModel mapModel, final TreePath path)
   {
-    MapNode node = (MapNode)path.getLastPathComponent();
+    final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
 	node.lowermost(mapModel);
       }
-    catch (Exception e) {} // ignore
+    catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
   }
 
-  private void uppermost(DefaultTreeModel mapModel, TreePath path)
+  private void uppermost(final DefaultTreeModel mapModel, final TreePath path)
   {
-    MapNode node = (MapNode)path.getLastPathComponent();
+    final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
 	node.uppermost(mapModel);
       }
-    catch (Exception e) {} // ignore
+    catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
   }
 
-  private void reset(DefaultTreeModel mapModel, TreePath path)
+  private void reset(final DefaultTreeModel mapModel, final TreePath path)
   {
-    MapNode node = (MapNode)path.getLastPathComponent();
+    final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
 	node.reset(mapModel);
       }
-    catch (Exception e) {} // ignore
+    catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
   }
 
@@ -671,11 +675,11 @@ public class EditorFrame extends JFrame implements Runnable
    * saves a bulk of collected MapNode objects.
    * @param node The MapNode to be saved eventually.
    */
-  private void save_add(MapNode node) throws IOException
+  private void save_add(final MapNode node) throws IOException
   {
     if (node.getAllowsChildren())
       {
-	Enumeration children = node.children();
+	final Enumeration children = node.children();
 	while (children.hasMoreElements())
 	  save_add((MapNode)children.nextElement());
       }
@@ -710,7 +714,7 @@ public class EditorFrame extends JFrame implements Runnable
 	System.out.println("dump " + first_save_node.getAddress() + "-" +
 			   (last_save_node.getAddress() +
 			    last_save_node.getTotalSize()));
-	InputStream bulkDump =
+	final InputStream bulkDump =
 	  mapDef.bulkDump((MapNode)mapModel.getRoot(),
 			  first_save_node.getAddress(),
 			  last_save_node.getAddress() +
@@ -729,7 +733,7 @@ public class EditorFrame extends JFrame implements Runnable
    * Walks through the whole Map object and requests each selected
    * MapNode to be saved.
    */
-  private void save_selected(Map map)
+  private void save_selected(final Map map)
   {
     try
       {
@@ -748,7 +752,7 @@ public class EditorFrame extends JFrame implements Runnable
 	    save_flush();
 	  }
       }
-    catch (IOException e)
+    catch (final IOException e)
       {
 	new MessageFrame(e.toString());
       }
@@ -759,7 +763,7 @@ public class EditorFrame extends JFrame implements Runnable
     // [PENDING: Sometimes, the program hangs while calling
     // JOptionPane.showDialog() (after sucessfully calling
     // manager.getMapDefClasses).]
-    Class<MapDef> selection =
+    final Class<MapDef> selection =
       (Class<MapDef>)JOptionPane.
       showInputDialog(this, "Select a device model:",
                       "Device Model Selection",
@@ -770,7 +774,7 @@ public class EditorFrame extends JFrame implements Runnable
       {
 	return selection.newInstance();
       }
-    catch (Exception e)
+    catch (final Exception e)
       {
 	JOptionPane.showMessageDialog(this, e.toString(), ERROR,
 				      JOptionPane.INFORMATION_MESSAGE);
@@ -780,7 +784,7 @@ public class EditorFrame extends JFrame implements Runnable
 
   private void showAboutFrameApplicationDialog()
   {
-    String msg =
+    final String msg =
       manager.getVersion() + "\n" +
       manager.getCopyright() + "\n" +
       "\n" +
@@ -792,10 +796,10 @@ public class EditorFrame extends JFrame implements Runnable
 
   private void showAboutDeviceModelApplicationDialog()
   {
-    Box hbox = Box.createHorizontalBox();
-    Box vbox1 = Box.createVerticalBox();
-    Box vbox2 = Box.createVerticalBox();
-    Box vbox3 = Box.createVerticalBox();
+    final Box hbox = Box.createHorizontalBox();
+    final Box vbox1 = Box.createVerticalBox();
+    final Box vbox2 = Box.createVerticalBox();
+    final Box vbox3 = Box.createVerticalBox();
     hbox.add(vbox1);
     hbox.add(vbox2);
     hbox.add(vbox3);
@@ -855,22 +859,22 @@ public class EditorFrame extends JFrame implements Runnable
   private class TreeModelListener
     implements javax.swing.event.TreeModelListener
   {
-    public void treeNodesChanged(TreeModelEvent e)
+    public void treeNodesChanged(final TreeModelEvent e)
     {
       checkbox_md.setSelected(true);
     }
 
-    public void treeNodesInserted(TreeModelEvent e)
+    public void treeNodesInserted(final TreeModelEvent e)
     {
       checkbox_md.setSelected(true);
     }
 
-    public void treeNodesRemoved(TreeModelEvent e)
+    public void treeNodesRemoved(final TreeModelEvent e)
     {
       checkbox_md.setSelected(true);
     }
 
-    public void treeStructureChanged(TreeModelEvent e)
+    public void treeStructureChanged(final TreeModelEvent e)
     {
       checkbox_md.setSelected(true);
     }
@@ -878,10 +882,10 @@ public class EditorFrame extends JFrame implements Runnable
 
   private class KeyListener extends KeyAdapter
   {
-    public void keyTyped(KeyEvent e)
+    public void keyTyped(final KeyEvent e)
     {
-      TreePath path = map.getSelectionPath();
-      char key = e.getKeyChar();
+      final TreePath path = map.getSelectionPath();
+      final char key = e.getKeyChar();
       switch (key)
 	{
 	case '+':
@@ -913,7 +917,7 @@ public class EditorFrame extends JFrame implements Runnable
 
   private class EditorActionListener implements ActionListener
   {
-    private JFileChooser newChooser(File defaultFile)
+    private JFileChooser newChooser(final File defaultFile)
     {
       final JFileChooser chooser = new JFileChooser();
       final ExtensionFileFilter filter =
@@ -926,27 +930,27 @@ public class EditorFrame extends JFrame implements Runnable
       return chooser;
     }
 
-    public void actionPerformed(ActionEvent e)
+    public void actionPerformed(final ActionEvent e)
     {
       try
 	{
 	  unguardedActionPerformed(e);
 	}
-      catch (Throwable t)
+      catch (final Throwable t)
 	{
 	  ExceptionPanel.showException(EditorFrame.this, t, false);
 	}
     }
 
-    private void unguardedActionPerformed(ActionEvent e) throws Throwable
+    private void unguardedActionPerformed(final ActionEvent e) throws Throwable
     {
-      String command = e.getActionCommand();
+      final String command = e.getActionCommand();
       if (command.equals(NEW))
 	new Thread(new EditorFrame(null, mapDef, manager)).start();
       else if (command.equals(LOAD))
 	{
-	  JFileChooser chooser = newChooser(defaultLoadFile);
-	  int returnVal = chooser.showOpenDialog(EditorFrame.this);
+	  final JFileChooser chooser = newChooser(defaultLoadFile);
+	  final int returnVal = chooser.showOpenDialog(EditorFrame.this);
 	  if (returnVal == JFileChooser.APPROVE_OPTION)
 	    {
 	      defaultLoadFile = new File(chooser.getCurrentDirectory(),
@@ -958,8 +962,8 @@ public class EditorFrame extends JFrame implements Runnable
       else if (command.equals(SAVE_AS) ||
 	  (command.equals(SAVE) && defaultSaveFile == null))
 	{
-	  JFileChooser chooser = newChooser(defaultSaveFile);
-	  int returnVal = chooser.showSaveDialog(EditorFrame.this);
+	  final JFileChooser chooser = newChooser(defaultSaveFile);
+	  final int returnVal = chooser.showSaveDialog(EditorFrame.this);
 	  if (returnVal == JFileChooser.APPROVE_OPTION)
 	    {
 	      defaultSaveFile = new File(chooser.getCurrentDirectory(),
@@ -979,7 +983,7 @@ public class EditorFrame extends JFrame implements Runnable
 					   JOptionPane.YES_NO_OPTION)
 	     == JOptionPane.YES_OPTION))
 	  {
-	    MapDef mapDef = EditorFrame.this.loadDeviceModel();
+	    final MapDef mapDef = EditorFrame.this.loadDeviceModel();
 	    if (mapDef != null)
 	      setMap(mapDef);
 	    else {} // no selection - abort operaion!
@@ -987,7 +991,7 @@ public class EditorFrame extends JFrame implements Runnable
 	else {}
       else if (command.equals(DEVICE_ID))
 	{
-	  int newDeviceID =
+	  final int newDeviceID =
 	    DialogDevID.showDialog(EditorFrame.this,
 				   "Device ID Selection",
 				   JOptionPane.QUESTION_MESSAGE,
@@ -1014,23 +1018,24 @@ public class EditorFrame extends JFrame implements Runnable
 	}
       else if (command.equals(TUTORIAL))
 	{
-	  HtmlPanel panel = null;
-	  URL url = EditorFrame.class.getResource("/doc/tutorial/MissingPage.html");
-	  if (url != null)
-	    panel = new HtmlPanel(url);
-	  if (panel != null)
-	    JOptionPane.showMessageDialog(EditorFrame.this, panel, TUTORIAL,
-					  JOptionPane.INFORMATION_MESSAGE);
+	  final URL url =
+            EditorFrame.class.getResource("/doc/tutorial/MissingPage.html");
+	  if (url != null) {
+            final HtmlPanel panel = new HtmlPanel(url);
+            if (panel != null)
+              JOptionPane.showMessageDialog(EditorFrame.this, panel, TUTORIAL,
+                                            JOptionPane.INFORMATION_MESSAGE);
+          }
 	}
       else if (command.equals(API))
 	{
-	  HtmlPanel panel = null;
-	  URL url = EditorFrame.class.getResource("/doc/api/index.html");
-	  if (url != null)
-	    panel = new HtmlPanel(url);
-	  if (panel != null)
-	    JOptionPane.showMessageDialog(EditorFrame.this, panel, API,
-					  JOptionPane.INFORMATION_MESSAGE);
+	  final URL url = EditorFrame.class.getResource("/doc/api/index.html");
+	  if (url != null) {
+            final HtmlPanel panel = new HtmlPanel(url);
+            if (panel != null)
+              JOptionPane.showMessageDialog(EditorFrame.this, panel, API,
+                                            JOptionPane.INFORMATION_MESSAGE);
+          }
 	}
       else if (command.equals(ABOUT_FRAME_APPLICATION))
 	showAboutFrameApplicationDialog();
@@ -1038,13 +1043,13 @@ public class EditorFrame extends JFrame implements Runnable
 	showAboutDeviceModelApplicationDialog();
       else if (command.equals(LICENSE))
 	{
-	  HtmlPanel panel = null;
-	  URL url = EditorFrame.class.getResource("/LICENSE.html");
-	  if (url != null)
-	    panel = new HtmlPanel(url);
-	  if (panel != null)
-	    JOptionPane.showMessageDialog(EditorFrame.this, panel, LICENSE,
-					  JOptionPane.INFORMATION_MESSAGE);
+	  final URL url = EditorFrame.class.getResource("/LICENSE.html");
+	  if (url != null) {
+            final HtmlPanel panel = new HtmlPanel(url);
+            if (panel != null)
+              JOptionPane.showMessageDialog(EditorFrame.this, panel, LICENSE,
+                                            JOptionPane.INFORMATION_MESSAGE);
+          }
 	}
       else
 	for (int i = 0; i < lookAndFeelInfo.length; i++)
@@ -1064,7 +1069,7 @@ public class EditorFrame extends JFrame implements Runnable
       }
   }
 
-  void awaitDelete()
+  private void awaitDelete()
   {
     synchronized(this)
       {
@@ -1072,7 +1077,7 @@ public class EditorFrame extends JFrame implements Runnable
 	  {
 	    wait();
 	  }
-	catch(InterruptedException e) {}
+	catch (final InterruptedException e) {}
       }
   }
 }

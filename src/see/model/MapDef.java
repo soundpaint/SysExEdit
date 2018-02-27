@@ -31,24 +31,24 @@ public interface MapDef
   /**
    * System Exclusive Status code
    */
-  public final static int SYS_EX_STAT = 0xf0;
+  int SYS_EX_STAT = 0xf0;
 
   /**
    * End Of Exclusive Code
    */
-  public final static int SYS_EX_END = 0xf7;
+  int SYS_EX_END = 0xf7;
 
   /**
    * Returns the manufacturer ID as defined in the MIDI specification.
    * @return The manufacturer ID as defined in the MIDI specification.
    */
-  abstract public byte getManufacturerID();
+  byte getManufacturerID();
 
   /**
    * Returns the model ID.
    * @return The model ID.
    */
-  abstract public byte getModelID();
+  byte getModelID();
 
   /**
    * Returns the default device model ID. If the synthesizer specs do not
@@ -56,13 +56,13 @@ public interface MapDef
    * return value.
    * @return The default device model ID.
    */
-  abstract public byte getDefaultDeviceID();
+  byte getDefaultDeviceID();
 
   /**
    * Returns the name of the author; optionally, a copyright message.
    * @return The name of the author; optionally, a copyright message.
    */
-  abstract public String getEnteredBy();
+  String getEnteredBy();
 
   /**
    * Returns an AddressRepresentation object that defines how addresses
@@ -70,7 +70,7 @@ public interface MapDef
    * @return An AddressRepresentation object that defines how
    * addresses are to be displayed to the user.
    */
-  abstract public AddressRepresentation getAddressRepresentation();
+  AddressRepresentation getAddressRepresentation();
 
   /**
    * Creates a new Map with a specific structure. Usually, this method
@@ -78,7 +78,7 @@ public interface MapDef
    * MapNode objects as children at will.
    * @return The root node of the structured map.
    */
-  abstract public MapNode buildMap();
+  MapNode buildMap();
 
   /**
    * Given a contigous area of memory, returns a a stream of MIDI bytes
@@ -90,7 +90,7 @@ public interface MapDef
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  abstract public InputStream bulkDump(MapNode root, long start, long end);
+  InputStream bulkDump(final MapNode root, final long start, final long end);
 
   /**
    * Given an InputStream that represents a sequence of bulk dumped MIDI
@@ -98,12 +98,12 @@ public interface MapDef
    * updates the memory map accordingly.
    * @param in The InputStream of MIDI bytes to be interpreted.
    */
-  abstract public void bulkRead(InputStream in);
+  void bulkRead(final InputStream in);
 
   /**
    * Returns descriptive name of the device(s) (for headlines etc.)
    */
-  abstract public String toString();
+  String toString();
 }
 
 /*

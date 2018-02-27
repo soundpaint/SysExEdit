@@ -42,20 +42,20 @@ class MessageFrame extends JFrame
    * Creates a new MessageFrame with the specified message.
    * @param msg The message to be displayed.
    */
-  MessageFrame(String msg)
+  MessageFrame(final String msg)
   {
     super("Message");
     
-    JPanel panel = new JPanel();
+    final JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     getContentPane().add("Center", panel);
     setBackground(Color.lightGray);
 
-    JTextField textField = new JTextField(msg);
+    final JTextField textField = new JTextField(msg);
     textField.setEditable(false);
     panel.add("Center", textField);
 
-    JButton button = new JButton("Ok");
+    final JButton button = new JButton("Ok");
     button.addActionListener(new Listener());
     panel.add("South", button);
 
@@ -65,7 +65,7 @@ class MessageFrame extends JFrame
 
   private class Listener implements ActionListener
   {
-    public void actionPerformed(ActionEvent e)
+    public void actionPerformed(final ActionEvent e)
     {
       setVisible(false);
     }

@@ -32,20 +32,20 @@ public interface Representation
    * to be stored via UIManager.getDefaults().put(iconKey, icon).
    * @param iconKey The key of the icon to be displayed.
    */
-  public void setIconKey(String iconKey);
+  void setIconKey(final String iconKey);
 
   /**
    * Returns the key for the icon, that is displayed together with each
    * instance that implements this representation.
    * @return The key of the icon to be displayed.
    */
-   public String getIconKey();
+  String getIconKey();
 
   /**
    * Returns the minimally required bit size for coding.
    * @return The minimally required bit size for coding.
    */
-  public int getRequiredBitSize();
+  int getRequiredBitSize();
 
   /**
    * Checks, if the specified value is a valid member of this
@@ -53,27 +53,27 @@ public interface Representation
    * @param x The value to be checked.
    * @return True, if the value is in range.
    */
-  public boolean isInRange(int x);
+  boolean isInRange(final int x);
 
   /**
    * Returns the lowermost value of this representation.
    * @return The lowermost value of this representation or null, if the
    *    range is empty.
    */
-  public Integer lowermost();
+  Integer lowermost();
 
   /**
    * Returns the uppermost value of this representation.
    * @return The uppermost value of this representation or null, if the
    *    range is empty.
    */
-  public Integer uppermost();
+  Integer uppermost();
 
   /**
    * Returns true, if this representation is enumeratable.
    * @return true, if this representation is enumeratable.
    */
-  public boolean isEnumerable();
+  boolean isEnumerable();
 
   /**
    * Given some value x that may be or may be not in range, returns the
@@ -83,7 +83,7 @@ public interface Representation
    * @return The next upper value that is in range or null, if there is
    *    no such value or this representation is not enumeratable.
    */
-  public Integer succ(int x);
+  Integer succ(final int x);
 
   /**
    * Given some value x that may be or may be not in range, returns the
@@ -93,7 +93,7 @@ public interface Representation
    * @return The next lower value that is in range or null, if there is
    *    no such value or this representation is not enumeratable.
    */
-  public Integer pred(int x);
+  Integer pred(final int x);
 
   /**
    * Returns a String that represents x according to this Representation
@@ -101,7 +101,7 @@ public interface Representation
    * @param x The value to be represented.
    * @return The String representation of x.
    */
-  public String getDisplayValue(int x);
+  String getDisplayValue(final int x);
 }
 
 /*

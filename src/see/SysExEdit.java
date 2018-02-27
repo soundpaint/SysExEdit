@@ -89,7 +89,7 @@ public class SysExEdit extends Applet implements FramesManager
   private boolean inAnApplet = false; // true, if run as an applet
   private Vector<Class<MapDef>> classes = null; // vector of map def classes
 
-  private static void print_version(PrintWriter out)
+  private static void print_version(final PrintWriter out)
   {
     out.println(VERSION);
     out.println(COPYRIGHT);
@@ -97,7 +97,7 @@ public class SysExEdit extends Applet implements FramesManager
     if (out.checkError()) System.exit(-2);
   }
 
-  private static void print_copyright(PrintWriter out)
+  private static void print_copyright(final PrintWriter out)
   {
     print_version(out);
     out.println("This program is free software; you can redistribute it");
@@ -120,7 +120,7 @@ public class SysExEdit extends Applet implements FramesManager
     if (out.checkError()) System.exit(-2);
   }
 
-  private static void print_greeting(PrintWriter out)
+  private static void print_greeting(final PrintWriter out)
   {
     print_version(out);
     out.println("The SysExEdit utility comes with ABSOLUTELY NO WARRANTY;");
@@ -133,7 +133,7 @@ public class SysExEdit extends Applet implements FramesManager
     if (out.checkError()) System.exit(-2);
   }
 
-  private static void print_help(PrintWriter out)
+  private static void print_help(final PrintWriter out)
   {
     print_version(out);
     out.println("Usage: see.SysExEdit [-nogreeting] [-help] [-version] ");
@@ -146,7 +146,7 @@ public class SysExEdit extends Applet implements FramesManager
     if (out.checkError()) System.exit(-2);
   }
 
-  private static void print_multiple_files(PrintWriter out)
+  private static void print_multiple_files(final PrintWriter out)
   {
     out.println("There were multiple files specified.");
     print_help(out);
@@ -157,7 +157,7 @@ public class SysExEdit extends Applet implements FramesManager
    * Returns the argument counter's last value that points to the first
    * file argument.
    */
-  private static int parse_argv(String argv[])
+  private static int parse_argv(final String argv[])
   {
     int argc;
     for (argc = 0; argc < argv.length; argc++) {
@@ -185,10 +185,10 @@ public class SysExEdit extends Applet implements FramesManager
    * @param argv The argument list as passed from the command line.
    *    Use option `-help' for details on options available.
    */
-  public static void main(String[] argv)
+  public static void main(final String[] argv)
   {
-    int argc = parse_argv(argv);
-    PrintWriter out = new PrintWriter(System.out);
+    final int argc = parse_argv(argv);
+    final PrintWriter out = new PrintWriter(System.out);
     if (argHelp != 0)
       {
 	print_help(out);
@@ -208,19 +208,21 @@ public class SysExEdit extends Applet implements FramesManager
       {
 	if (argNoGreeting == 0)
 	  print_greeting(out);
-	String filepath = null;
+	final String filepath;
 	switch (argv.length - argc)
 	  {
 	  case 0:
+            filepath  = null;
 	    break;
 	  case 1:
 	    filepath = argv[argc];
 	    break;
 	  default:
+            filepath  = null;
 	    print_multiple_files(out);
 	    System.exit(-2);
 	  }
-	SysExEdit sysExEdit = new SysExEdit();
+	final SysExEdit sysExEdit = new SysExEdit();
 	sysExEdit.createEditorFrame(filepath);
       }
   }
@@ -231,7 +233,7 @@ public class SysExEdit extends Applet implements FramesManager
    *    If null, the user will be prompted to select a device model from
    *    a list.
    */
-  public void createEditorFrame(String filepath)
+  public void createEditorFrame(final String filepath)
   {
     frames = new Hashtable<Frame, Integer>();
     System.out.println("[loading & initializing swing...]");
@@ -249,18 +251,18 @@ public class SysExEdit extends Applet implements FramesManager
 
   private class ButtonListener implements ActionListener
   {
-    public void actionPerformed(ActionEvent e)
+    public void actionPerformed(final ActionEvent e)
     {
       createEditorFrame(null);
     }
   }
 
-  private boolean isResourceDir(String path)
+  private boolean isResourceDir(final String path)
   {
-    String myPath =
+    final String myPath =
       path + File.separatorChar +
       getClass().getName().replace('.', File.separatorChar) + ".class";
-    File file = new File(myPath);
+    final File file = new File(myPath);
     return (file.exists() && file.canRead());
     // [PENDING: we may also want to check is the file really is a class file]
   }
@@ -273,7 +275,7 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public void start()
   {
-    Button button = new Button("Start SysExEdit");
+    final Button button = new Button("Start SysExEdit");
     button.addActionListener(new ButtonListener());
     add(button);
   }
@@ -320,11 +322,11 @@ public class SysExEdit extends Applet implements FramesManager
    * @param frame The frame to be registered.
    * @return A unique ID that is assigned to the frame.
    */
-  public int addFrame(Frame frame)
+  public int addFrame(final Frame frame)
   {
     synchronized(frames)
       {
-	int id = ++maxID;
+	final int id = ++maxID;
 	frames.put(frame, id);
 	return id;
       }
@@ -335,7 +337,7 @@ public class SysExEdit extends Applet implements FramesManager
    * applet, calls System.exit(1), if no more frames are registered.
    * @param frame The frame to be removed.
    */
-  public void removeFrame(Frame frame)
+  public void removeFrame(final Frame frame)
   {
     frames.remove(frame);
     if (frames.isEmpty() && !inAnApplet)
@@ -350,10 +352,10 @@ public class SysExEdit extends Applet implements FramesManager
    * @param frame The frame.
    * @return The unique ID or -1, if the frame is not registered.
    */
-  public int getID(Frame frame)
+  public int getID(final Frame frame)
   {
-    Integer i = frames.get(frame);
-    return (i != null) ? i.intValue() : -1;
+    final Integer id = frames.get(frame);
+    return (id != null) ? id : -1;
   }
 
   /**
@@ -361,7 +363,7 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public void updateUI()
   {
-    Enumeration<Frame> enumeration = frames.keys();
+    final Enumeration<Frame> enumeration = frames.keys();
     while (enumeration.hasMoreElements())
       {
 	SwingUtilities.updateComponentTreeUI(enumeration.nextElement());
@@ -373,7 +375,7 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public void exitAll()
   {
-    Enumeration<Frame> enumeration = frames.keys();
+    final Enumeration<Frame> enumeration = frames.keys();
     while (enumeration.hasMoreElements())
       ((EditorFrame)enumeration.nextElement()).exit();
   }
@@ -396,7 +398,7 @@ public class SysExEdit extends Applet implements FramesManager
           }
 	icons.load(resource.openConnection().getInputStream());
       }
-    catch (Exception e)
+    catch (final Exception e)
       {
 	System.out.println("WARNING: failed loading icons list: " + e);
 	System.out.flush();
@@ -418,7 +420,7 @@ public class SysExEdit extends Applet implements FramesManager
 	    else
 	      throw new IOException("bad image load status: " + status);
 	  }
-	catch (Exception e)
+	catch (final Exception e)
 	  {
 	    System.out.println();
 	    System.out.println("WARNING: failed loading " +

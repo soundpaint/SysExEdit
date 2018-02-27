@@ -43,7 +43,7 @@ import javax.swing.event.ChangeListener;
  */
 class DialogDevID
 {
-  private static Hashtable<Integer, JLabel> labels;
+  private static final Hashtable<Integer, JLabel> labels;
 
   static
   {
@@ -60,18 +60,24 @@ class DialogDevID
    */
   private static class MyChangeListener implements ChangeListener
   {
-    JLabel label_deviceID;
-    JSlider slider;
+    private final JLabel deviceID;
+    private final JSlider slider;
+
+    public MyChangeListener(final JLabel deviceID, final JSlider slider)
+    {
+      this.deviceID = deviceID;
+      this.slider = slider;
+    }
+
     /**
      * Invoked when the target of the listener has changed its state.
      *
      * @param e The change event.
      */
-    public void stateChanged(ChangeEvent e)
+    public void stateChanged(final ChangeEvent e)
     {
-      int deviceID = slider.getValue();
-      label_deviceID.setText(Utils.intTo0xnn(deviceID));
-      label_deviceID.updateUI();
+      deviceID.setText(Utils.intTo0xnn(slider.getValue()));
+      deviceID.updateUI();
     }
   }
 
@@ -82,22 +88,22 @@ class DialogDevID
   {
     private static final long serialVersionUID = -6988609099484329685L;
 
-    private MyChangeListener myChangeListener;
+    private final MyChangeListener myChangeListener;
 
-    private Panel(int deviceID)
+    private Panel(final int deviceID)
     {
-      myChangeListener = new MyChangeListener();
-      Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+      final Border emptyBorder =
+        BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
-      BorderLayout layout = new BorderLayout();
+      final BorderLayout layout = new BorderLayout();
       layout.setHgap(10);
       layout.setVgap(10);
       setLayout(layout);
       setBorder(emptyBorder);
       // BasicOptionPaneUI splits up Strings that contain '\n'. We must
       // do it here manually, i.e. create a sequence of labels
-      JPanel panel_label = new JPanel(); // keep lines close together
-      GridLayout layout_panel_label = new GridLayout(0, 1);
+      final JPanel panel_label = new JPanel(); // keep lines close together
+      final GridLayout layout_panel_label = new GridLayout(0, 1);
       layout_panel_label.setHgap(0);
       layout_panel_label.setVgap(0);
       panel_label.setLayout(layout_panel_label);
@@ -110,32 +116,32 @@ class DialogDevID
       panel_label.add(label_text);
       add(panel_label, "North");
 
-      JPanel panel_slider = new JPanel();
+      final JPanel panel_slider = new JPanel();
       panel_slider.setLayout(new BorderLayout());
       panel_slider.setBorder(emptyBorder);
       panel_slider.setToolTipText("Adjust a new value for the Device ID");
       //panel_slider.add("West", new JLabel("0x00"));
       //panel_slider.add("East", new JLabel("0x7f"));
-      JLabel label_deviceID = new JLabel((String)null, SwingConstants.CENTER);
+      final JLabel label_deviceID =
+        new JLabel((String)null, SwingConstants.CENTER);
       panel_slider.add("North", label_deviceID);
-      JSlider slider = new JSlider(0, 127, deviceID);
+      final JSlider slider = new JSlider(0, 127, deviceID);
+      myChangeListener = new MyChangeListener(label_deviceID, slider);
       slider.addChangeListener(myChangeListener);
       slider.setOrientation(SwingConstants.HORIZONTAL);
       slider.setLabelTable(labels);
       slider.setPaintLabels(true);
       slider.setPaintTicks(true);
       slider.setMajorTickSpacing(0x10);
-      myChangeListener.label_deviceID = label_deviceID;
-      myChangeListener.slider = slider;
       myChangeListener.stateChanged(null); // update label
       panel_slider.add("Center", slider);
 
-      JPanel panel_panel_slider = new JPanel();
+      final JPanel panel_panel_slider = new JPanel();
       panel_panel_slider.setLayout(new BorderLayout());
       panel_panel_slider.setBorder(BorderFactory.createEtchedBorder());
       panel_panel_slider.add(panel_slider, "Center");
 
-      JPanel panel_panel_panel_slider = new JPanel();
+      final JPanel panel_panel_panel_slider = new JPanel();
       panel_panel_panel_slider.setLayout(new BorderLayout());
       panel_panel_panel_slider.add(panel_panel_slider, "North");
 
@@ -155,18 +161,18 @@ class DialogDevID
    * @param initialValue The value used to initialize the input field.
    * @return device ID, or -1 meaning the user canceled the input
    */
-  static int showDialog(Component parentComponent,
-			String title, int messageType,
-			Icon icon, int initialValue)
+  static int showDialog(final Component parentComponent,
+			final String title, final int messageType,
+			final Icon icon, final int initialValue)
   {
-    Panel panel = new Panel(initialValue);
-    JOptionPane pane =
+    final Panel panel = new Panel(initialValue);
+    final JOptionPane pane =
       new JOptionPane(panel, messageType,
 		      JOptionPane.OK_CANCEL_OPTION, icon, null, null);
     pane.setWantsInput(false);
-    JDialog dialog = pane.createDialog(parentComponent, title);
+    final JDialog dialog = pane.createDialog(parentComponent, title);
     dialog.setVisible(true);
-    Object value = pane.getValue();
+    final Object value = pane.getValue();
     if (value instanceof Integer)
       if (((Integer)value).intValue() == JOptionPane.OK_OPTION)
 	return panel.myChangeListener.slider.getValue();

@@ -25,7 +25,7 @@ package see.model;
  */
 public interface ValueType
 {
-  public final static String DISPLAY_VALUE_UNKNOWN = "???";
+  String DISPLAY_VALUE_UNKNOWN = "???";
 
   int getMinValue();
   int getSize();

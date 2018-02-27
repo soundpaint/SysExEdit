@@ -30,15 +30,23 @@ import java.util.Vector;
  */
 public class RangeContents extends AbstractContents
 {
-  /*
+  /**
+   * The minimally required size of this contents.
+   *
    * Memory locations are typically distributed sparse in the address space
    * of the device; thus we associate each memory cell with its address
    * rather than allocating a huge array with many empty memory cells.
    */
-  private byte min_bit_size; // the minimally required size of this contents
-  private byte bit_size; // the effective size of this contents in bits (0..32)
-  private Vector<Range> ranges; // Range objects that allow implementing range union
-  private int selectionID; // the currently valid range
+  private byte min_bit_size;
+
+  /** The effective size of this contents in bits (0..32). */
+  private byte bit_size;
+
+  /** The currently valid range. */
+  private int selectionID;
+
+  /** Range objects that allow implementing range union. */
+  private final Vector<Range> ranges;
 
   /**
    * Creates a new RangeContents object with initially no range (and thus no
@@ -56,7 +64,7 @@ public class RangeContents extends AbstractContents
    *    information for this RangeContents.
    * @exception NullPointerException If range equals null.
    */
-  public RangeContents(Range range)
+  public RangeContents(final Range range)
   {
     min_bit_size = 0;
     bit_size = 0;
@@ -93,7 +101,7 @@ public class RangeContents extends AbstractContents
    * @exception IllegalArgumentException If amount is below zero or above
    *    the upper limit of 15.
    */
-  public RangeContents(int amount)
+  public RangeContents(final int amount)
   {
     this(getBitStringRange(amount));
     setBitSize(amount);
@@ -109,7 +117,7 @@ public class RangeContents extends AbstractContents
    * @exception IllegalArgumentException If range is not an
    *    instance of class Range.
    */
-  public void addRepresentation(Representation representation)
+  public void addRepresentation(final Representation representation)
   {
     if (representation == null)
       throw new NullPointerException("representation");
@@ -143,7 +151,7 @@ public class RangeContents extends AbstractContents
    * @exception IndexOutOfBoundsException If selectionID is below 0 or above
    *    or equal to the number of ranges of the union.
    */
-  public void setSelectedRepresentation(int selectionID)
+  public void setSelectedRepresentation(final int selectionID)
   {
     if ((selectionID < 0) || (selectionID >= ranges.size()))
       throw new IndexOutOfBoundsException("selectionID");
@@ -157,7 +165,7 @@ public class RangeContents extends AbstractContents
    * bits are supposed to be constantly zero.
    * @exception IllegalArgumentException If bit_size is out of range.
    */
-  public void setBitSize(int bit_size)
+  public void setBitSize(final int bit_size)
   {
     if ((bit_size < 0) || (bit_size > 32) ||
 	(min_bit_size > bit_size))
@@ -189,7 +197,7 @@ public class RangeContents extends AbstractContents
    */
   public int[] toBits()
   {
-    int[] bits = new int[1];
+    final int[] bits = new int[1];
     bits[1] = getValue();
     return bits;
   }

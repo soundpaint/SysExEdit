@@ -30,8 +30,8 @@ import java.util.Vector;
  */
 public class History<ReferenceType, ContentsType>
 {
-  private Vector<ReferenceType> references = new Vector<ReferenceType>();
-  private Vector<ContentsType> contents = new Vector<ContentsType>();
+  private final Vector<ReferenceType> references = new Vector<ReferenceType>();
+  private final Vector<ContentsType> contents = new Vector<ContentsType>();
   private int index = 0; // index of current + 1
 
   private History() {}
@@ -42,7 +42,7 @@ public class History<ReferenceType, ContentsType>
    * @param reference A reference (e.g. a URL) to the content.
    * @param content The actual content (e.g. a HTML document).
    */
-  public History(ReferenceType reference, ContentsType content)
+  public History(final ReferenceType reference, final ContentsType content)
   {
     add(reference, content);
   }
@@ -53,7 +53,7 @@ public class History<ReferenceType, ContentsType>
    * @param reference A reference (e.g. a URL) to the content.
    * @param content The actual content (e.g. a HTML document).
    */
-  public void add(ReferenceType reference, ContentsType content)
+  public void add(final ReferenceType reference, final ContentsType content)
   {
     contents.setSize(index + 1);
     contents.setElementAt(content, index);
@@ -66,32 +66,44 @@ public class History<ReferenceType, ContentsType>
    * Returns true, if there is another entry before the current.
    * @return true, if there is another entry before the current.
    */
-  public boolean hasPrev() { return index > 1; }
+  public boolean hasPrev()
+  {
+    return index > 1;
+  }
 
   /**
    * Moves to the previous entry in the history, if there is a previous
    * entry. Otherwise, this method has no effect.
    */
-  public void prev() { if (hasPrev()) index--; }
+  public void prev()
+  {
+    if (hasPrev()) index--;
+  }
 
   /**
    * Returns true, if there is another entry after the current.
    * @return true, if there is another entry after the current.
    */
-  public boolean hasNext() { return index < references.size(); }
+  public boolean hasNext()
+  {
+    return index < references.size();
+  }
 
   /**
    * Moves to the next entry in the history, if there is a next
    * entry. Otherwise, this method has no effect.
    */
-  public void next() { if (hasNext()) index++; }
+  public void next()
+  {
+    if (hasNext()) index++;
+  }
 
   /**
    * Sets the reference for the current position in the history.
    * @param reference The reference for the current position in the
    * history.
    */
-  public void setReference(ReferenceType reference)
+  public void setReference(final ReferenceType reference)
   {
     references.setElementAt(reference, index - 1);
   }
@@ -110,7 +122,7 @@ public class History<ReferenceType, ContentsType>
    * @param content The content for the current position in the
    * history.
    */
-  public void setContent(ContentsType content)
+  public void setContent(final ContentsType content)
   {
     contents.setElementAt(content, index - 1);
   }

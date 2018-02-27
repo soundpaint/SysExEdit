@@ -40,7 +40,7 @@ public interface Contents
    * @exception IllegalArgumentException If representation is not an
    *    instance of a compatible class.
    */
-  public void addRepresentation(Representation representation);
+  void addRepresentation(final Representation representation);
 
   /**
    * Returns a String that represents this contents' current value
@@ -49,13 +49,13 @@ public interface Contents
    * @return The String representation of this contents' current
    * value.
    */
-  public String getDisplayValue();
+  String getDisplayValue();
 
   /**
    * Returns an icon that represents this content's type.
    * @return The icon.
    */
-  public Icon getIcon();
+  Icon getIcon();
 
   /*
    * Sets the default value for this contents. This value is shared among
@@ -66,7 +66,7 @@ public interface Contents
    *    class that holds the value represented by this class.
    * @see #reset
    */
-  public void setDefaultValue(int default_value);
+  void setDefaultValue(final int default_value);
 
   /**
    * Returns the current default value. This value is shared among
@@ -74,7 +74,7 @@ public interface Contents
    * out of the currently selected or any other representation.
    * @return The current default value.
    */
-  public int getDefaultValue();
+  int getDefaultValue();
 
   /*
    * Sets the contents value for this contents. This value is shared among
@@ -85,7 +85,7 @@ public interface Contents
    *    class that holds the value represented by this class.
    * @see #reset
    */
-  public void setValue(int value);
+  void setValue(final int value);
 
   /**
    * Returns the current contents value. This value is shared among
@@ -93,33 +93,33 @@ public interface Contents
    * out of the currently selected or any other representation.
    * @return The current value.
    */
-  public int getValue();
+  int getValue();
 
   /**
    * Resets the contents value to its default value.
    * @see #setDefaultValue
    */
-  public void reset();
+  void reset();
 
   /**
    * Increments the contents of this node, if possible.
    */
-  public void increment();
+  void increment();
 
   /**
    * Decrements the contents of this node.
    */
-  public void decrement();
+  void decrement();
 
   /**
    * Sets the contents of this node to the uppermost value that is in range.
    */
-  public void uppermost();
+  void uppermost();
 
   /**
    * Sets the contents of this node to the lowermost value that is in range.
    */
-  public void lowermost();
+  void lowermost();
 
   /**
    * Selects a representation from the pool of available representations.
@@ -129,7 +129,7 @@ public interface Contents
    * @exception IndexOutOfBoundsException If selectionID is below 0 or
    *    above or equal to the number of representations of the union.
    */
-  public void setSelectedRepresentation(int selectionID);
+  void setSelectedRepresentation(final int selectionID);
 
   /**
    * Sets the effective bit size of this contents. The effective bit size
@@ -141,7 +141,7 @@ public interface Contents
    * @exception IllegalArgumentException If bit_size is below zero or
    *    below the required bit size.
    */
-  public void setBitSize(int bit_size);
+  void setBitSize(final int bit_size);
 
   /**
    * Returns the current effective bit size of this Contents object.
@@ -150,7 +150,7 @@ public interface Contents
    * the underlying structure.
    * @return The current effective bit size.
    */
-  public byte getBitSize();
+  byte getBitSize();
 
   /**
    * Returns a representation of the contents value according to the
@@ -161,7 +161,7 @@ public interface Contents
    *    holding 32 bits. The least significant bit is stored in the least
    *    significant bit of field 0 of the return value.
    */
-  public int[] toBits();
+  int[] toBits();
 }
 
 /*

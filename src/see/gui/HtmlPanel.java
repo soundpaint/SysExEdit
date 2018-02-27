@@ -51,14 +51,14 @@ public class HtmlPanel
 {
   private static final long serialVersionUID = 3297576097796715505L;
 
-  private final static String ACTION_PREV = "<";
-  private final static String ACTION_NEXT = ">";
-  private final static String ACTION_STOP = "Stop";
+  private static final String ACTION_PREV = "<";
+  private static final String ACTION_NEXT = ">";
+  private static final String ACTION_STOP = "Stop";
 
-  private JEditorPane html_pane;
-  private JLabel title;
-  private JButton bt_prev, bt_next, bt_stop;
-  private History<URL, Document> browseHistory;
+  private final JEditorPane html_pane;
+  private final JLabel title;
+  private final JButton bt_prev, bt_next, bt_stop;
+  private final History<URL, Document> browseHistory;
 
   /**
    * Creates a panel that displays the content referenced by the specified
@@ -66,14 +66,14 @@ public class HtmlPanel
    * @param url The URL that references the content.
    * @exception IOException If the URL can not be resolved.
    */
-  public HtmlPanel(URL url) throws IOException
+  public HtmlPanel(final URL url) throws IOException
   {
     setBorder(new BevelBorder(BevelBorder.LOWERED, Color.white, Color.gray));
     setLayout(new BorderLayout());
     getAccessibleContext().setAccessibleName("HTML panel");
     getAccessibleContext().setAccessibleDescription
       ("A panel for viewing HTML documents, and following their links");
-    JScrollPane scroller = new JScrollPane();
+    final JScrollPane scroller = new JScrollPane();
     scroller.setPreferredSize(new Dimension(700, 420));
     scroller.setBorder(new BevelBorder(BevelBorder.LOWERED,
 				       Color.white, Color.gray));
@@ -81,18 +81,18 @@ public class HtmlPanel
     html_pane.setEditable(false);
     html_pane.addHyperlinkListener(this);
     browseHistory = new History<URL, Document>(url, html_pane.getDocument());
-    JViewport vp = scroller.getViewport();
+    final JViewport vp = scroller.getViewport();
     vp.add(html_pane);
     vp.setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
     add(scroller, BorderLayout.CENTER);
-    JPanel panel_header = new JPanel();
+    final JPanel panel_header = new JPanel();
     panel_header.setLayout(new FlowLayout());
     add(panel_header, BorderLayout.NORTH);
     title = new JLabel();
     title.setToolTipText("Document Title");
     updateTitle();
     panel_header.add(title);
-    JPanel panel_buttons = new JPanel();
+    final JPanel panel_buttons = new JPanel();
     panel_buttons.setLayout(new FlowLayout());
     add(panel_buttons, BorderLayout.SOUTH);
     bt_prev = new JButton(ACTION_PREV);
@@ -117,7 +117,7 @@ public class HtmlPanel
    */
   private void updateTitle()
   {
-    String titlestr =
+    final String titlestr =
       (String)html_pane.getDocument().getProperty(Document.TitleProperty);
     title.setText((titlestr != null) ? titlestr : "<untitled>");
     title.updateUI();
@@ -136,7 +136,7 @@ public class HtmlPanel
   /**
    * Handles buttons "&lt;", "&gt;", "Stop"
    */
-  public void actionPerformed(ActionEvent e)
+  public void actionPerformed(final ActionEvent e)
   {
     if ((e.getActionCommand().equals(ACTION_PREV)) && browseHistory.hasPrev())
       {
@@ -158,7 +158,7 @@ public class HtmlPanel
   /**
    * Notification of a change relative to a hyperlink.
    */
-  public void hyperlinkUpdate(HyperlinkEvent e)
+  public void hyperlinkUpdate(final HyperlinkEvent e)
   {
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
       {
@@ -193,7 +193,7 @@ public class HtmlPanel
 	  html_pane.setCursor(original_cursor);
 
 	  // [PENDING: remove this when automatic validation is activated.]
-	  Container parent = html_pane.getParent();
+	  final Container parent = html_pane.getParent();
 	  parent.repaint();
 
 	  restore_cursor_pending = false;
@@ -203,17 +203,16 @@ public class HtmlPanel
 	{
 	  try
 	    {
-	      Document document = browseHistory.getContent();
+	      final Document document = browseHistory.getContent();
 	      if (document != null)
 		html_pane.setDocument(document);
 	      else
 		{
 		  html_pane.setPage(browseHistory.getReference());
-		  document = html_pane.getDocument();
-		  browseHistory.setContent(document);
+		  browseHistory.setContent(html_pane.getDocument());
 		}
 	    }
-	  catch (IOException e)
+	  catch (final IOException e)
 	    {
 	      html_pane.setDocument(HtmlFactory.errorPage("I/O Error",
 							  e.toString()));
