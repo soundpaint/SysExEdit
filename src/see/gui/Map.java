@@ -45,17 +45,17 @@ class Map extends JTree
    * This String is used as an ID for a contents value that could not be
    * evaluated.
    */
-  protected static final String STRING_CONTENTS_UNKNOWN = "???";
+  private static final String STRING_CONTENTS_UNKNOWN = "???";
 
   /**
    * When displaying addresses, call addressToString() of this class.
    */
-  protected AddressRepresentation addressRepresentation;
+  private AddressRepresentation addressRepresentation;
 
   /**
    * A flag that turns address information generation on or off.
    */
-  protected boolean addressInfoEnabled = false;
+  private boolean addressInfoEnabled = false;
 
   public void setForeground(final Color value)
   {
@@ -97,7 +97,7 @@ class Map extends JTree
    * @return The AddressRepresentation object.
    * @see #setAddressRepresentation
    */
-  AddressRepresentation getAddressRepresentation()
+  private AddressRepresentation getAddressRepresentation()
   {
     return addressRepresentation;
   }
@@ -123,7 +123,7 @@ class Map extends JTree
    * @return True, if address information is enabled on toString() method.
    * @see #setAddressInfoEnabled
    */
-  boolean getAddressInfoEnabled()
+  private boolean getAddressInfoEnabled()
   {
     return addressInfoEnabled;
   }
@@ -133,7 +133,7 @@ class Map extends JTree
    * @param node The node.
    * @return A proper String object for the tree cell.
    */
-  String getTreeCellText(final MapNode node)
+  private String getTreeCellText(final MapNode node)
   {
     String text = null;
     long address = node.getAddress();
