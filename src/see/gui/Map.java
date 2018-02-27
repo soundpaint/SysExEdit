@@ -130,9 +130,8 @@ class Map extends JTree
    */
   private String getTreeCellText(final MapNode node)
   {
-    String text = null;
-    long address = node.getAddress();
-    String addressStr;
+    final long address = node.getAddress();
+    final String addressStr;
     if ((address >= 0) && addressInfoEnabled)
       addressStr = addressRepresentation.addressToString(address) + ": ";
     else // address not evaluated yet or not enabled
@@ -146,9 +145,9 @@ class Map extends JTree
         displayValue = "";
     if (label == null)
       label = "";
-    String sep = ((label.length() > 0) && (displayValue.length() > 0)) ?
+    final String sep = ((label.length() > 0) && (displayValue.length() > 0)) ?
       " : " : "";
-    text = addressStr + label + sep + displayValue;
+    final String text = addressStr + label + sep + displayValue;
     return text;
   }
 
@@ -199,12 +198,12 @@ class Map extends JTree
                                    final boolean leaf, final int row,
                                    final boolean hasFocus)
     {
-      Map map = (Map)tree;
+      final Map map = (Map)tree;
       String text = null;
       Icon icon = null;
       if ((value != null) && (value instanceof MapNode))
         {
-          MapNode node = (MapNode)value;
+          final MapNode node = (MapNode)value;
           text = map.getTreeCellText(node);
           icon = map.getTreeCellIcon(node, expanded);
         }
