@@ -38,17 +38,18 @@ public class HtmlFactory
   /**
    * Contains a HTML document with a "broken link" message.
    */
-  public static HTMLDocument Error404 = errorPage("Error 404", "Not found");
+  public static final HTMLDocument Error404 =
+    errorPage("Error 404", "Not found");
 
   /**
    * Creates a HTML document from the specified String.
    */
-  private static HTMLDocument fromString(String s)
+  private static HTMLDocument fromString(final String str)
     throws IOException, BadLocationException
   {
-    StringReader reader = new StringReader(s);
-    HTMLEditorKit kit = new HTMLEditorKit();
-    HTMLDocument document = new HTMLDocument(kit.getStyleSheet());
+    final StringReader reader = new StringReader(str);
+    final HTMLEditorKit kit = new HTMLEditorKit();
+    final HTMLDocument document = new HTMLDocument(kit.getStyleSheet());
     kit.read(reader, document, 0);
     return document;
   }
@@ -58,47 +59,47 @@ public class HtmlFactory
    * The message is included in the body of the error page and may
    * contain any markup that is allowed within the body of a html
    * page.
-   * @param title The title of the html page. The title is put between
-   *    the tags "&lt;TITLE&gt;" and "&lt;/TITLE&gt;" in the header,
-   *    and at the beginning of the body between "&lt;H1&gt;" and
-   *    "&lt;/H1&gt;" tags. If title equals null, the String "Error"
-   *    is used.
-   * @param message The message to be put into the body of the html page.
-   *    If message equals null, the String "An error occurred" is used.
+   * @param customTitle The title of the html page. The title is put
+   *    between the tags "&lt;TITLE&gt;" and "&lt;/TITLE&gt;" in the
+   *    header, and at the beginning of the body between "&lt;H1&gt;"
+   *    and "&lt;/H1&gt;" tags.  If the title equals null, the String
+   *    "Error" is used.
+   * @param customMessage The message to be put into the body of the
+   *    html page.  If message equals null, the String "An error
+   *    occurred" is used.
    * @return The HTML document or null, if no valid HTML document could
    *    be created with the given title and message.
    */
-  public static HTMLDocument errorPage(String title, String message)
+  public static HTMLDocument errorPage(final String customTitle,
+                                       final String customMessage)
   {
-    if (title == null)
-      title = "Error";
-    if (message == null)
-      message = "An error occurred";
-    StringBuffer html = new StringBuffer();
-    html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\r\n");
+    final String title = customTitle != null ? customTitle : "Error";
+    final String message =
+      customMessage != null ? customMessage : "An error occurred";
+    final StringBuffer html = new StringBuffer();
+    html.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" " +
+                "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n");
     html.append("<!--NewPage-->\r\n");
-    html.append("<HTML>\r\n");
-    html.append("<HEAD>\r\n");
-    html.append("<TITLE>" + title + "</TITLE>\r\n");
-    html.append("</HEAD>\r\n");
-    html.append("<BODY BGCOLOR=\"#ffffff\">\r\n");
-    html.append("<H1>" + title + "</H1>\r\n");
-    html.append("<P>\r\n");
-    html.append(message + "\r\n");
-    html.append("</BODY>\r\n");
-    html.append("</HTML>\r\n");
-    HTMLDocument document = null;
-    try
-      {
-	document = fromString(html.toString());
-      }
-    catch (IOException e) {} // StringReader should not throw an IOException
-    catch (BadLocationException e)
-      {
-	System.out.println("Warning: message: invalid html: " + e);
-	System.out.flush();
-      }
-    return document;
+    html.append("<html>\r\n");
+    html.append("  <head>\r\n");
+    html.append("    <title>" + title + "</title>\r\n");
+    html.append("  </head>\r\n");
+    html.append("  <body>\r\n");
+    html.append("    <h1>" + title + "</h1>\r\n");
+    html.append("    <p>" + message + "</p>\r\n");
+    html.append("  </body>\r\n");
+    html.append("</html>\r\n");
+    final HTMLDocument document;
+    try {
+      return fromString(html.toString());
+    } catch (final IOException e) {
+      // StringReader should not throw an IOException
+      return null;
+    } catch (final BadLocationException e) {
+      System.out.println("Warning: message: invalid html: " + e);
+      System.out.flush();
+      return null;
+    }
   }
 
   /**
@@ -107,28 +108,22 @@ public class HtmlFactory
    * @return The HTML document as read from the specified file.
    * @exception IOException If an I/O error occurs while reading.
    */
-  public static HTMLDocument readFrom(String filepath)
+  public static HTMLDocument readFrom(final String filepath)
     throws IOException
   {
-    FileReader reader;
-    HTMLEditorKit kit = new HTMLEditorKit();
-    HTMLDocument document = new HTMLDocument();
-    try
-      {
-	reader = new FileReader(filepath);
-      }
-    catch (FileNotFoundException e)
-      {
-	throw new IOException("could not load html page: " + e);
-      }
-    try
-      {
-	kit.read(reader, document, 0);
-      }
-    catch (BadLocationException e)
-      {
-	throw new IOException("could not read html page: " + e);
-      }
+    final FileReader reader;
+    final HTMLEditorKit kit = new HTMLEditorKit();
+    final HTMLDocument document = new HTMLDocument();
+    try {
+      reader = new FileReader(filepath);
+    } catch (final FileNotFoundException e) {
+      throw new IOException("could not load html page: " + e);
+    }
+    try {
+      kit.read(reader, document, 0);
+    } catch (final BadLocationException e) {
+      throw new IOException("could not read html page: " + e);
+    }
     return document;
   }
 }
