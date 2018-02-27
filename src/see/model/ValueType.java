@@ -25,6 +25,12 @@ package see.model;
  */
 public interface ValueType
 {
+  /**
+   * Default display string for an invalid value.  This string is a
+   * fallback value for displaying a map node if its contents is not
+   * in the range of valid values as defined by the associated
+   * representation of that node.
+   */
   String DISPLAY_VALUE_UNKNOWN = "???";
 
   int getMinValue();

@@ -242,6 +242,13 @@ public abstract class AbstractContents implements Contents
    *    significant bit of field 0 of the return value.
    */
   public abstract int[] toBits();
+
+  public String toString()
+  {
+    final String displayValue = getDisplayValue();
+    return
+      displayValue != null ? displayValue : ValueType.DISPLAY_VALUE_UNKNOWN;
+  }
 }
 
 /*

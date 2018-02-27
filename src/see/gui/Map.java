@@ -32,6 +32,7 @@ import see.model.AddressRepresentation;
 import see.model.Contents;
 import see.model.MapNode;
 import see.model.Representation;
+import see.model.ValueType;
 
 /**
  * This class extends JTree with some more attributes that specify how the
@@ -40,12 +41,6 @@ import see.model.Representation;
 class Map extends JTree
 {
   private static final long serialVersionUID = 5701224992251396503L;
-
-  /**
-   * This String is used as an ID for a contents value that could not be
-   * evaluated.
-   */
-  private static final String STRING_CONTENTS_UNKNOWN = "???";
 
   /**
    * When displaying addresses, call addressToString() of this class.
@@ -146,7 +141,7 @@ class Map extends JTree
     String displayValue = node.getDisplayValue();
     if (displayValue == null)
       if (!node.getAllowsChildren())
-        displayValue = STRING_CONTENTS_UNKNOWN;
+        displayValue = ValueType.DISPLAY_VALUE_UNKNOWN;
       else
         displayValue = "";
     if (label == null)
@@ -192,7 +187,7 @@ class Map extends JTree
         this.setBackground(Map.this.getBackground());
     }
 
-    /**
+    /*
      * This method is called from JTree whenever it needs to get the
      * size of the component or wants to draw the tree.  It attempts
      * to set the font based on value, which will be a TreeNode.

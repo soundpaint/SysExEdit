@@ -21,7 +21,7 @@
 package see.model;
 
 /**
- * This class defines an enumeration type for a single Contents object.
+ * This class renders an 8 bits mask of flags.
  */
 public class FlagsType implements ValueType
 {
@@ -29,9 +29,9 @@ public class FlagsType implements ValueType
   private final int bitStringSize;
 
   /**
-   * Defines a new FlagsType for some value x for the range 0x00 through
-   * 0xff.  The display value is just the value's ordinary numeric
-   * representation.
+   * Defines a new FlagsType for arbitrary values n in the range 0x00
+   * through 0xff.  The display value is just the value's ordinary
+   * numeric representation as a set of binary digits.
    */
   public FlagsType()
   {
@@ -39,10 +39,12 @@ public class FlagsType implements ValueType
   }
 
   /**
-   * Defines a new FlagsType for some integer offset.  The display
-   * value is just the value's ordinary numeric representation plus
-   * the specified offset, which may be negative or positive or zero.
-   * This convenience constructor assumes a bit string size of 8.
+   * Defines a new FlagsType for arbitrary values n in the range
+   * [offset, offset + 255].  That is, the display value is just the
+   * value's internal 8 bits numeric representation plus the specified
+   * offset, which may be negative or positive or zero, formatted as a
+   * set of binary digits.  This convenience constructor assumes a bit
+   * string size of 8.
    * @param offs The offset to be added to the value that is to be
    *    represented.
    */
@@ -52,9 +54,11 @@ public class FlagsType implements ValueType
   }
 
   /**
-   * Defines a new FlagsType for some integer value x.  The display
-   * value is just the value's ordinary numeric representation plus
-   * the specified offset, which may be negative or positive or zero.
+   * Defines a new FlagsType for arbitrary values n in the range
+   * [offset, offset + 255].  That is, the display value is just the
+   * value's internal 8 bits numeric representation plus the specified
+   * offset, which may be negative or positive or zero, formatted as a
+   * set of binary digits.
    * @param offs The offset to be added to the value that is to be
    *    represented.
    * @param bitStringSize The number of flags that this type
@@ -91,8 +95,8 @@ public class FlagsType implements ValueType
   }
 
   /**
-   * Returns a String that represents x according to the specification
-   * of this EnumerationType.
+   * Returns a String that represents the specified value according to
+   * the specification of this FlagsType.
    */
   public String getDisplayValue(final int value)
   {

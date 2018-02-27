@@ -21,7 +21,8 @@
 package see.model;
 
 /**
- * This class implements an enumeration type for a single Contents object.
+ * This class renders an integer value based on a given enumeration of
+ * display values.
  */
 public class EnumType implements ValueType
 {
@@ -114,7 +115,7 @@ public class EnumType implements ValueType
         s.append(displayValue);
       }
     }
-    return s.toString();
+    return "{" + s.toString() + "}";
   }
 
   /**
@@ -123,7 +124,8 @@ public class EnumType implements ValueType
    */
   public String toString()
   {
-    return "EnumType{" + displayValuesToString() + "}";
+    return "EnumType{offs=" + offs + ", displayValues=" +
+      displayValuesToString() + "}";
   }
 }
 
