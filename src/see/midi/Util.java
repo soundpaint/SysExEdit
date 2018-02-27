@@ -20,26 +20,28 @@
 
 package see.midi;
 
-import java.util.Vector;
-import javax.media.sound.AudioManager;
-import javax.media.sound.midi.MidiOutControlDevice;
-import javax.media.transport.ControlDevice;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiDeviceTransmitter;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Transmitter;
 
 public class Util
 {
-  public static void main(String argv[])
+  public static void main(final String argv[]) throws MidiUnavailableException
   {
-    Vector devices = new Vector();
-    ControlDevice[] allDevices = AudioManager.listControlDevices();
-    for (int i = 0; i < allDevices.length; i++)
-      if (allDevices[i] instanceof MidiOutControlDevice)
-	devices.addElement(allDevices[i]);
-    MidiOutControlDevice[] midiOut = new MidiOutControlDevice[devices.size()];
-    devices.copyInto(midiOut);
-    System.out.println("Midi Out Devices:");
-    for (int i = 0; i < midiOut.length; i++)
-      System.out.println(midiOut[i].getName());
-    System.out.flush();
+    final Transmitter transmitter = MidiSystem.getTransmitter();
+    if (transmitter instanceof MidiDeviceTransmitter) {
+      final MidiDeviceTransmitter deviceTransmitter =
+        (MidiDeviceTransmitter)transmitter;
+      final MidiDevice device = deviceTransmitter.getMidiDevice();
+      final MidiDevice.Info info = device.getDeviceInfo();
+      System.out.println("Midi Device:");
+      System.out.println("Name: " + info.getName());
+      System.out.println("Description: " + info.getDescription());
+      System.out.println("Vendor: " + info.getVendor());
+      System.out.println("Version: " + info.getVersion());
+    }
   }
 }
 

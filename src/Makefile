@@ -31,7 +31,8 @@ PACKAGES=see see.model see.gui see.devices
 JAVA=$(wildcard $(SRC_ROOT)/see/*.java) \
 	$(wildcard $(SRC_ROOT)/see/model/*.java) \
 	$(wildcard $(SRC_ROOT)/see/gui/*.java) \
-	$(wildcard $(SRC_ROOT)/see/devices/*.java)
+	$(wildcard $(SRC_ROOT)/see/devices/*.java) \
+	$(wildcard $(SRC_ROOT)/see/midi/*.java)
 
 CLASS=$(patsubst $(SRC_ROOT)/%.java,$(CLS_ROOT)/%.class,$(JAVA))
 
