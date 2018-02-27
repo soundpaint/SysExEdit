@@ -56,8 +56,8 @@ public class Range implements Representation
     long long_n = (long)n;
     if (long_n < 0)
       {
-	long_n += 0x080000000;
-	long_n += 0x080000000;
+        long_n += 0x080000000;
+        long_n += 0x080000000;
       }
     return long_n;
   }
@@ -75,8 +75,8 @@ public class Range implements Representation
       throw new IllegalArgumentException("n out of bounds");
     if (n > 0x07fffffff)
       {
-	n = n - 0x080000000;
-	n = n - 0x080000000;
+        n = n - 0x080000000;
+        n = n - 0x080000000;
       }
     if (n > 0x07fffffff)
       throw new IllegalArgumentException("n out of bounds");
@@ -106,7 +106,7 @@ public class Range implements Representation
     Contigous(final long lb, final long ub, final ValueType valueType)
     {
       if (valueType == null)
-	throw new NullPointerException("valueType");
+        throw new NullPointerException("valueType");
       this.lb = lb;
       this.ub = ub;
       this.valueType = valueType;
@@ -130,7 +130,7 @@ public class Range implements Representation
     public String toString()
     {
       return "Contigous{valueType=" + valueType + ", lb=" + lb +
-	", ub=" + ub + "}";
+        ", ub=" + ub + "}";
     }
   }
 
@@ -219,8 +219,8 @@ public class Range implements Representation
     final long unsigned_ub = signed_int_to_long(ub);
     if ((lb < 0) && (ub >= 0)) // overlapping contigous; so split it up
       {
-	addContigous(new Contigous(unsigned_lb, max_unsigned, valueType));
-	addContigous(new Contigous(min_unsigned, unsigned_ub, valueType));
+        addContigous(new Contigous(unsigned_lb, max_unsigned, valueType));
+        addContigous(new Contigous(min_unsigned, unsigned_ub, valueType));
       }
     else
       addContigous(new Contigous(unsigned_lb, unsigned_ub, valueType));
@@ -267,62 +267,62 @@ public class Range implements Representation
       hint = contigous_first;
     if (hint == null) // empty range; just start with a new list
       {
-	insertion.prev = null;
-	insertion.next = null;
-	contigous_first = insertion;
-	contigous_last = insertion;
+        insertion.prev = null;
+        insertion.next = null;
+        contigous_first = insertion;
+        contigous_last = insertion;
       }
     else // search & insert
       {
-	Contigous past = null; // previously visited contigous
-	Contigous current = hint; // presently visited contigous
-	while ((current != null) && (current.ub < insertion.lb))
-	  {
-	    past = current;
-	    current = current.next;
-	  }
-	if (current == null) // must insert as new tail
-	  if (past.ub < insertion.lb)
-	    {
-	      insertion.prev = past;
-	      insertion.next = null;
-	      past.next = insertion;
-	      contigous_last = insertion;
-	      hint = insertion;
-	      return;
-	    }
-	  else
-	    throw new IllegalStateException("overlapping range [1]" +
-					    "(insertion=" + insertion +
-					    "; past=" + past);
-	while ((current != null) && (current.lb > insertion.ub))
-	  {
-	    past = current;
-	    current = current.prev;
-	  }
-	if (current == null) // must insert as new head
-	  if (past.lb > insertion.ub)
-	    {
-	      insertion.prev = null;
-	      insertion.next = past;
-	      past.prev = insertion;
-	      contigous_first = insertion;
-	      hint = insertion;
-	      return;
-	    }
-	  else
-	    throw new IllegalStateException("overlapping range [2]" +
-					    "(insertion=" + insertion +
-					    "; past=" + past);
-	else // must insert between past and current
-	  {
-	    insertion.prev = current;
-	    insertion.next = past;
-	    past.prev = insertion;
-	    current.next = insertion;
-	    hint = insertion;
-	    return;
-	  }
+        Contigous past = null; // previously visited contigous
+        Contigous current = hint; // presently visited contigous
+        while ((current != null) && (current.ub < insertion.lb))
+          {
+            past = current;
+            current = current.next;
+          }
+        if (current == null) // must insert as new tail
+          if (past.ub < insertion.lb)
+            {
+              insertion.prev = past;
+              insertion.next = null;
+              past.next = insertion;
+              contigous_last = insertion;
+              hint = insertion;
+              return;
+            }
+          else
+            throw new IllegalStateException("overlapping range [1]" +
+                                            "(insertion=" + insertion +
+                                            "; past=" + past);
+        while ((current != null) && (current.lb > insertion.ub))
+          {
+            past = current;
+            current = current.prev;
+          }
+        if (current == null) // must insert as new head
+          if (past.lb > insertion.ub)
+            {
+              insertion.prev = null;
+              insertion.next = past;
+              past.prev = insertion;
+              contigous_first = insertion;
+              hint = insertion;
+              return;
+            }
+          else
+            throw new IllegalStateException("overlapping range [2]" +
+                                            "(insertion=" + insertion +
+                                            "; past=" + past);
+        else // must insert between past and current
+          {
+            insertion.prev = current;
+            insertion.next = past;
+            past.prev = insertion;
+            current.next = insertion;
+            hint = insertion;
+            return;
+          }
       }
   }
 
@@ -350,30 +350,30 @@ public class Range implements Representation
       return false;
     else
       {
-	Contigous past = null; // previously visited contigous
-	Contigous current = hint; // presently visited contigous
-	while ((current != null) && (current.ub < unsigned_x))
-	  {
-	    past = current;
-	    current = current.next;
-	  }
-	if (current == null)
-	  {
-	    hint = contigous_last;
-	    return false; // above uppermost value
-	  }
-	while ((current != null) && (current.lb > unsigned_x))
-	  {
-	    past = current;
-	    current = current.prev;
-	  }
-	if (current == null)
-	  {
-	    hint = contigous_first;
-	    return false; // below lowermost value
-	  }
-	hint = current;
-	return unsigned_x <= current.ub; // in or between ranges
+        Contigous past = null; // previously visited contigous
+        Contigous current = hint; // presently visited contigous
+        while ((current != null) && (current.ub < unsigned_x))
+          {
+            past = current;
+            current = current.next;
+          }
+        if (current == null)
+          {
+            hint = contigous_last;
+            return false; // above uppermost value
+          }
+        while ((current != null) && (current.lb > unsigned_x))
+          {
+            past = current;
+            current = current.prev;
+          }
+        if (current == null)
+          {
+            hint = contigous_first;
+            return false; // below lowermost value
+          }
+        hint = current;
+        return unsigned_x <= current.ub; // in or between ranges
       }
   }
 
@@ -388,8 +388,8 @@ public class Range implements Representation
       return null;
     else
       {
-	hint = contigous_first;
-	return new Integer(long_to_signed_int(contigous_first.lb));
+        hint = contigous_first;
+        return new Integer(long_to_signed_int(contigous_first.lb));
       }
   }
 
@@ -404,8 +404,8 @@ public class Range implements Representation
       return null;
     else
       {
-	hint = contigous_last;
-	return new Integer(long_to_signed_int(contigous_last.ub));
+        hint = contigous_last;
+        return new Integer(long_to_signed_int(contigous_last.ub));
       }
   }
 
@@ -434,41 +434,41 @@ public class Range implements Representation
       return null;
     else
       {
-	Contigous past = null; // previously visited contigous
-	Contigous current = hint; // presently visited contigous
-	while ((current != null) && (current.ub < unsigned_x))
-	  {
-	    past = current;
-	    current = current.next;
-	  }
-	if (current == null)
-	  {
-	    hint = contigous_last;
-	    return null; // x above uppermost value
-	  }
-	while ((current != null) && (current.lb > unsigned_x))
-	  {
-	    past = current;
-	    current = current.prev;
-	  }
-	if (current == null) // x below lowermost value; return lowermost
-	  {
-	    hint = past;
-	    return new Integer(long_to_signed_int(past.lb));
-	  }
-	else if (unsigned_x >= current.ub) // succ(x) above current
-	  {
-	    hint = current.next;
-	    if (current.next == null)
-	      return null; // x is already uppermost value
-	    else
-	      return new Integer(long_to_signed_int(current.next.lb));
-	  }
-	else
-	  {
-	    hint = current;
-	    return new Integer(long_to_signed_int(unsigned_x + 1));
-	  }
+        Contigous past = null; // previously visited contigous
+        Contigous current = hint; // presently visited contigous
+        while ((current != null) && (current.ub < unsigned_x))
+          {
+            past = current;
+            current = current.next;
+          }
+        if (current == null)
+          {
+            hint = contigous_last;
+            return null; // x above uppermost value
+          }
+        while ((current != null) && (current.lb > unsigned_x))
+          {
+            past = current;
+            current = current.prev;
+          }
+        if (current == null) // x below lowermost value; return lowermost
+          {
+            hint = past;
+            return new Integer(long_to_signed_int(past.lb));
+          }
+        else if (unsigned_x >= current.ub) // succ(x) above current
+          {
+            hint = current.next;
+            if (current.next == null)
+              return null; // x is already uppermost value
+            else
+              return new Integer(long_to_signed_int(current.next.lb));
+          }
+        else
+          {
+            hint = current;
+            return new Integer(long_to_signed_int(unsigned_x + 1));
+          }
       }
   }
 
@@ -489,41 +489,41 @@ public class Range implements Representation
       return null;
     else
       {
-	Contigous past = null; // previously visited contigous
-	Contigous current = hint; // presently visited contigous
-	while ((current != null) && (current.lb > unsigned_x))
-	  {
-	    past = current;
-	    current = current.prev;
-	  }
-	if (current == null)
-	  {
-	    hint = contigous_first;
-	    return null; // x below lowermost value
-	  }
-	while ((current != null) && (current.ub < unsigned_x))
-	  {
-	    past = current;
-	    current = current.next;
-	  }
-	if (current == null) // x above uppermost value; return uppermost
-	  {
-	    hint = past;
-	    return new Integer(long_to_signed_int(past.ub));
-	  }
-	else if (unsigned_x <= current.lb) // pred(x) below current
-	  {
-	    hint = current.prev;
-	    if (current.prev == null)
-	      return null; // x is already lowermost value
-	    else
-	      return new Integer(long_to_signed_int(current.prev.ub));
-	  }
-	else
-	  {
-	    hint = current;
-	    return new Integer(long_to_signed_int(unsigned_x - 1));
-	  }
+        Contigous past = null; // previously visited contigous
+        Contigous current = hint; // presently visited contigous
+        while ((current != null) && (current.lb > unsigned_x))
+          {
+            past = current;
+            current = current.prev;
+          }
+        if (current == null)
+          {
+            hint = contigous_first;
+            return null; // x below lowermost value
+          }
+        while ((current != null) && (current.ub < unsigned_x))
+          {
+            past = current;
+            current = current.next;
+          }
+        if (current == null) // x above uppermost value; return uppermost
+          {
+            hint = past;
+            return new Integer(long_to_signed_int(past.ub));
+          }
+        else if (unsigned_x <= current.lb) // pred(x) below current
+          {
+            hint = current.prev;
+            if (current.prev == null)
+              return null; // x is already lowermost value
+            else
+              return new Integer(long_to_signed_int(current.prev.ub));
+          }
+        else
+          {
+            hint = current;
+            return new Integer(long_to_signed_int(unsigned_x - 1));
+          }
       }
   }
 
@@ -543,36 +543,36 @@ public class Range implements Representation
       return null;
     else
       {
-	Contigous past = null; // previously visited contigous
-	Contigous current = hint; // presently visited contigous
-	while ((current != null) && (current.ub < unsigned_x))
-	  {
-	    past = current;
-	    current = current.next;
-	  }
-	if (current == null)
-	  return null; // above uppermost value
-	while ((current != null) && (current.lb > unsigned_x))
-	  {
-	    past = current;
-	    current = current.prev;
-	  }
-	if (current == null)
-	  {
-	    hint = contigous_first;
-	    return null; // below lowermost value
-	  }
-	if (unsigned_x <= current.ub)
-	  {
-	    hint = current;
-	    return
+        Contigous past = null; // previously visited contigous
+        Contigous current = hint; // presently visited contigous
+        while ((current != null) && (current.ub < unsigned_x))
+          {
+            past = current;
+            current = current.next;
+          }
+        if (current == null)
+          return null; // above uppermost value
+        while ((current != null) && (current.lb > unsigned_x))
+          {
+            past = current;
+            current = current.prev;
+          }
+        if (current == null)
+          {
+            hint = contigous_first;
+            return null; // below lowermost value
+          }
+        if (unsigned_x <= current.ub)
+          {
+            hint = current;
+            return
               current.valueType.getDisplayValue(x);
-	  }
-	else
-	  {
-	    hint = current;
-	    return null; // between two ranges
-	  }
+          }
+        else
+          {
+            hint = current;
+            return null; // between two ranges
+          }
       }
   }
 
@@ -587,8 +587,8 @@ public class Range implements Representation
     Contigous contigous = contigous_first;
     while (contigous != null)
       {
-	s.append(contigous.toString());
-	contigous = contigous.next;
+        s.append(contigous.toString());
+        contigous = contigous.next;
       }
     s.append("}]");
     return s.toString();

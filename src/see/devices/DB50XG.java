@@ -499,17 +499,17 @@ public class DB50XG implements MapDef
      */
     public String addressToString(long address)
       {
-	byte bitpos = (byte)(address % 7);
-	address = address / 7;
-	byte hi = (byte)((address >> 14) & 0x7f);
-	byte mid = (byte)((address >> 7) & 0x7f);
-	byte lo = (byte)(address & 0x7f);
-	String bitpos_str = bitpos == 0 ? "" : " [" + bitpos + "]";
-	return
-	  two_digits(Integer.toString(hi, 16)) + " " +
-	  two_digits(Integer.toString(mid,16)) + " " +
-	  two_digits(Integer.toString(lo,16)) +
-	  bitpos_str;
+        byte bitpos = (byte)(address % 7);
+        address = address / 7;
+        byte hi = (byte)((address >> 14) & 0x7f);
+        byte mid = (byte)((address >> 7) & 0x7f);
+        byte lo = (byte)(address & 0x7f);
+        String bitpos_str = bitpos == 0 ? "" : " [" + bitpos + "]";
+        return
+          two_digits(Integer.toString(hi, 16)) + " " +
+          two_digits(Integer.toString(mid,16)) + " " +
+          two_digits(Integer.toString(lo,16)) +
+          bitpos_str;
       }
   }
 
@@ -583,7 +583,7 @@ public class DB50XG implements MapDef
     Int8Type centered_7bit_valueType = new Int8Type(-0x40);
     Range centered_7bit_range = new Range();
     centered_7bit_range.addContigous(0x00, 0x7f,
-				     centered_7bit_valueType);
+                                     centered_7bit_valueType);
 
     MapNode root = new MapNode("DB50XG");
     MapNode temp_node = new MapNode("System");
@@ -646,7 +646,7 @@ public class DB50XG implements MapDef
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x7f);
     temp_node.add(new MapNode("Drum Setup Reset", temp_contents,
-			      addr2index(0x00, 0x00, 0x76)));
+                              addr2index(0x00, 0x00, 0x76)));
 
     temp_range = new Range();
     temp_range.addContigous(0x7f, 0x7f, int_valueType);
@@ -760,11 +760,11 @@ public class DB50XG implements MapDef
     temp_range.addContigous(0, 127, int_valueType);
     for (int i = 0; i < 10; i++)
       {
-	temp_contents = new RangeContents(temp_range);
-	temp_contents.setBitSize(7);
-	temp_contents.setDefaultValue(0x00);
-	temp_node2.add(new MapNode("Reverb Parameter " + (i + 1),
-				   temp_contents));
+        temp_contents = new RangeContents(temp_range);
+        temp_contents.setBitSize(7);
+        temp_contents.setDefaultValue(0x00);
+        temp_node2.add(new MapNode("Reverb Parameter " + (i + 1),
+                                   temp_contents));
       }
 
     temp_contents = new RangeContents(level_range);
@@ -782,12 +782,12 @@ public class DB50XG implements MapDef
     long offset;
     for (int i = 10; i < 16; i++)
       {
-	temp_contents = new RangeContents(temp_range);
-	temp_contents.setBitSize(7);
-	temp_contents.setDefaultValue(0x00);
-	offset = (i == 10) ? addr2index(0x00, 0x00, 0x02) : 0;
-	temp_node2.add(new MapNode("Reverb Parameter " + (i + 1),
-				   temp_contents, offset));
+        temp_contents = new RangeContents(temp_range);
+        temp_contents.setBitSize(7);
+        temp_contents.setDefaultValue(0x00);
+        offset = (i == 10) ? addr2index(0x00, 0x00, 0x02) : 0;
+        temp_node2.add(new MapNode("Reverb Parameter " + (i + 1),
+                                   temp_contents, offset));
       }
 
     temp_node.add(temp_node2);
@@ -802,11 +802,11 @@ public class DB50XG implements MapDef
     temp_range.addContigous(0, 127, int_valueType);
     for (int i = 0; i < 10; i++)
       {
-	temp_contents = new RangeContents(temp_range);
-	temp_contents.setBitSize(7);
-	temp_contents.setDefaultValue(0x00);
-	temp_node2.add(new MapNode("Chorus Parameter " + (i + 1),
-				   temp_contents));
+        temp_contents = new RangeContents(temp_range);
+        temp_contents.setBitSize(7);
+        temp_contents.setDefaultValue(0x00);
+        temp_node2.add(new MapNode("Chorus Parameter " + (i + 1),
+                                   temp_contents));
       }
 
     temp_contents = new RangeContents(level_range);
@@ -828,12 +828,12 @@ public class DB50XG implements MapDef
     temp_range.addContigous(0, 127, int_valueType);
     for (int i = 10; i < 16; i++)
       {
-	temp_contents = new RangeContents(temp_range);
-	temp_contents.setBitSize(7);
-	temp_contents.setDefaultValue(0x00);
-	offset = (i == 10) ? addr2index(0x00, 0x00, 0x01) : 0;
-	temp_node2.add(new MapNode("Chorus Parameter " + (i + 1),
-				   temp_contents, offset));
+        temp_contents = new RangeContents(temp_range);
+        temp_contents.setBitSize(7);
+        temp_contents.setDefaultValue(0x00);
+        offset = (i == 10) ? addr2index(0x00, 0x00, 0x01) : 0;
+        temp_node2.add(new MapNode("Chorus Parameter " + (i + 1),
+                                   temp_contents, offset));
       }
 
     temp_node.add(temp_node2);
@@ -848,11 +848,11 @@ public class DB50XG implements MapDef
     temp_range.addContigous(0, 127, int_valueType);
     for (int i = 0; i < 10; i++)
       {
-	temp_contents = new RangeContents(temp_range);
-	temp_contents.setBitSize(14);
-	temp_contents.setDefaultValue(0x00);
-	temp_node2.add(new MapNode("Variation Parameter " + (i + 1),
-				   temp_contents));
+        temp_contents = new RangeContents(temp_range);
+        temp_contents.setBitSize(14);
+        temp_contents.setDefaultValue(0x00);
+        temp_node2.add(new MapNode("Variation Parameter " + (i + 1),
+                                   temp_contents));
       }
 
     temp_contents = new RangeContents(level_range);
@@ -916,12 +916,12 @@ public class DB50XG implements MapDef
     temp_range.addContigous(0, 127, int_valueType);
     for (int i = 10; i < 16; i++)
       {
-	temp_contents = new RangeContents(temp_range);
-	temp_contents.setBitSize(7);
-	temp_contents.setDefaultValue(0x00);
-	offset = (i == 10) ? addr2index(0x00, 0x00, 0x0f) : 0;
-	temp_node2.add(new MapNode("Variation Parameter " + (i + 1),
-				   temp_contents));
+        temp_contents = new RangeContents(temp_range);
+        temp_contents.setBitSize(7);
+        temp_contents.setDefaultValue(0x00);
+        offset = (i == 10) ? addr2index(0x00, 0x00, 0x0f) : 0;
+        temp_node2.add(new MapNode("Variation Parameter " + (i + 1),
+                                   temp_contents));
       }
 
     temp_node.add(temp_node2);
@@ -945,13 +945,13 @@ public class DB50XG implements MapDef
     switch (s.length())
       {
       case 0:
-	return "00";
+        return "00";
       case 1:
-	return "0" + s;
+        return "0" + s;
       case 2:
-	return s;
+        return s;
       default:
-	return s.substring(s.length() - 2);
+        return s.substring(s.length() - 2);
       }
   }
 
@@ -973,13 +973,13 @@ public class DB50XG implements MapDef
     BulkStream(MapNode root, long start, long end) throws IOException
     {
       if (root == null)
-	throw new NullPointerException("root");
+        throw new NullPointerException("root");
       if (start > end)
-	throw new IOException("start > end");
+        throw new IOException("start > end");
       if (start < 0)
-	throw new IOException("start < 0");
+        throw new IOException("start < 0");
       if (end > 7 * 0x3fffff)
-	throw new IOException("end > 7 * 0x3fffff");
+        throw new IOException("end > 7 * 0x3fffff");
       byte_start = (int)(start / 7);
       byte_count = (int)((end - start + 6) / 7);
       hi = (byte)((byte_start >> 14) & 0x7f);
@@ -996,42 +996,42 @@ public class DB50XG implements MapDef
     {
       int data;
       switch (extrapos)
-	{
-	case -9:
-	  data = SYS_EX_STAT;
-	  break;
-	case -8:
-	  data = MANUFACTURER_ID;
-	  break;
-	case -7:
-	  data = DEVICE_NUMBER;
-	  break;
-	case -6:
-	  data = MODEL_ID;
-	  break;
-	case -5:
-	  data = byte_count >> 7;
-	  check_sum = (check_sum + data) & 0x7f;
-	  break;
-	case -4:
-	  data = byte_count & 0x7f;
-	  check_sum = (check_sum + data) & 0x7f;
-	  break;
-	case -3:
-	  data = hi;
-	  check_sum = (check_sum + data) & 0x7f;
-	  break;
-	case -2:
-	  data = mid;
-	  check_sum = (check_sum + data) & 0x7f;
-	  break;
-	case -1:
-	  data = lo;
-	  check_sum = (check_sum + data) & 0x7f;
-	  break;
-	default:
-	  throw new IllegalStateException("invalid extrapos");
-	}
+        {
+        case -9:
+          data = SYS_EX_STAT;
+          break;
+        case -8:
+          data = MANUFACTURER_ID;
+          break;
+        case -7:
+          data = DEVICE_NUMBER;
+          break;
+        case -6:
+          data = MODEL_ID;
+          break;
+        case -5:
+          data = byte_count >> 7;
+          check_sum = (check_sum + data) & 0x7f;
+          break;
+        case -4:
+          data = byte_count & 0x7f;
+          check_sum = (check_sum + data) & 0x7f;
+          break;
+        case -3:
+          data = hi;
+          check_sum = (check_sum + data) & 0x7f;
+          break;
+        case -2:
+          data = mid;
+          check_sum = (check_sum + data) & 0x7f;
+          break;
+        case -1:
+          data = lo;
+          check_sum = (check_sum + data) & 0x7f;
+          break;
+        default:
+          throw new IllegalStateException("invalid extrapos");
+        }
       extrapos++;
       return data;
     }
@@ -1040,17 +1040,17 @@ public class DB50XG implements MapDef
     {
       int data;
       switch (extrapos)
-	{
-	case 0:
-	  check_sum = (~check_sum) & 0x7f;
-	  data = check_sum;
-	  break;
-	case 1:
-	  data = SYS_EX_END;
-	  break;
-	default:
-	  throw new IllegalStateException("invalid extrapos");
-	}
+        {
+        case 0:
+          check_sum = (~check_sum) & 0x7f;
+          data = check_sum;
+          break;
+        case 1:
+          data = SYS_EX_END;
+          break;
+        default:
+          throw new IllegalStateException("invalid extrapos");
+        }
       extrapos++;
       return data;
     }
@@ -1067,15 +1067,15 @@ public class DB50XG implements MapDef
     public int read() throws IOException
     {
       if (pos < end)
-	if (extrapos >= 0)
-	  return next_bulk_dump_byte();
-	else
-	  return next_header_byte();
+        if (extrapos >= 0)
+          return next_bulk_dump_byte();
+        else
+          return next_header_byte();
       else
-	if (extrapos < 2) // tail data
-	  return next_tail_byte();
-	else
-	  return -1; // EOF
+        if (extrapos < 2) // tail data
+          return next_tail_byte();
+        else
+          return -1; // EOF
     }
   }
 
@@ -1093,11 +1093,11 @@ public class DB50XG implements MapDef
   {
     try
       {
-	return new BulkStream(root, start, end);
+        return new BulkStream(root, start, end);
       }
     catch (IOException e)
       {
-	throw new IllegalStateException(e.toString());
+        throw new IllegalStateException(e.toString());
       }
   }
 

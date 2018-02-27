@@ -190,36 +190,36 @@ public class EditorFrame extends JFrame implements Runnable
     setTitle(manager.getVersion() + " " + windowID);
     if (filepath != null)
       {
-	System.err.println("[WARNING: loading map def by cmd line arg " +
-			   "not supported by now - sorry! (ignored)]");
-	System.err.flush();
-	//mapDef = loadMapFrom(filepath);
+        System.err.println("[WARNING: loading map def by cmd line arg " +
+                           "not supported by now - sorry! (ignored)]");
+        System.err.flush();
+        //mapDef = loadMapFrom(filepath);
       }
     if (mapDef == null)
       {
-	System.out.println("[" + windowID + ": prompting for map def...]");
-	System.out.flush();
-	mapDef = loadDeviceModel();
+        System.out.println("[" + windowID + ": prompting for map def...]");
+        System.out.flush();
+        mapDef = loadDeviceModel();
       }
     if (mapDef != null)
       {
-	setMap(mapDef);
-	System.out.println("[" + windowID + ": initializing GUI...]");
-	System.out.flush();
-	initGUI();
-	System.out.println("[" + windowID + ": opening window...]");
-	System.out.flush();
-	pack();
-	setVisible(true);
-	awaitDelete();
-	setVisible(false);
-	System.out.println("[" + windowID + ": window closed]");
-	System.out.flush();
+        setMap(mapDef);
+        System.out.println("[" + windowID + ": initializing GUI...]");
+        System.out.flush();
+        initGUI();
+        System.out.println("[" + windowID + ": opening window...]");
+        System.out.flush();
+        pack();
+        setVisible(true);
+        awaitDelete();
+        setVisible(false);
+        System.out.println("[" + windowID + ": window closed]");
+        System.out.flush();
       }
     else
       {
-	System.out.println("[" + windowID + " aborted]");
-	System.out.flush();
+        System.out.println("[" + windowID + " aborted]");
+        System.out.flush();
       }
     dispose();
     manager.removeFrame(this);
@@ -263,10 +263,10 @@ public class EditorFrame extends JFrame implements Runnable
     String className = null;
     for (int i = 0; i < lookAndFeelInfo.length; i++)
       if (name.equals(lookAndFeelInfo[i].getName()))
-	{
-	  className = lookAndFeelInfo[i].getClassName();
-	  break;
-	}
+        {
+          className = lookAndFeelInfo[i].getClassName();
+          break;
+        }
     UIManager.setLookAndFeel(className);
     manager.updateUI();
   }
@@ -332,7 +332,7 @@ public class EditorFrame extends JFrame implements Runnable
     map.addKeyListener(new KeyListener());
     map.getModel().addTreeModelListener(new TreeModelListener());
     map.setToolTipText("The Input Area gets its data from disk or " +
-		       "via MIDI.");
+                       "via MIDI.");
     final JScrollPane scrollpane_map = new JScrollPane();
     scrollpane_map.setPreferredSize(new Dimension(450, 450));
     scrollpane_map.getViewport().add(map);
@@ -340,10 +340,10 @@ public class EditorFrame extends JFrame implements Runnable
     panel_map.add("Center", scrollpane_map);
     panel_map.
       setBorder(BorderFactory.
-		createTitledBorder(BorderFactory.createEtchedBorder(),
-				   "Map",
-				   TitledBorder.CENTER,
-				   TitledBorder.TOP));
+                createTitledBorder(BorderFactory.createEtchedBorder(),
+                                   "Map",
+                                   TitledBorder.CENTER,
+                                   TitledBorder.TOP));
 
     // Layout Definitions for panel button rows
     GridBagLayout gbl;
@@ -448,7 +448,7 @@ public class EditorFrame extends JFrame implements Runnable
     checkbox_md = new JCheckBox("Modified");
     checkbox_md.setEnabled(false);
     checkbox_md.setToolTipText("True, if the output window has been " +
-			       "modified " + "since the last save");
+                               "modified " + "since the last save");
     gbl.setConstraints(checkbox_md, c);
     panel_footer.add(checkbox_md);
     button = new JButton(CLOSE);
@@ -528,8 +528,8 @@ public class EditorFrame extends JFrame implements Runnable
     submenu.setMnemonic((int)'l');
     for (int i = 0; i < lookAndFeelInfo.length; i++)
       {
-	final UIManager.LookAndFeelInfo info = lookAndFeelInfo[i];
-	submenu.add(new JMenuItem(info.getName())).addActionListener(listener);
+        final UIManager.LookAndFeelInfo info = lookAndFeelInfo[i];
+        submenu.add(new JMenuItem(info.getName())).addActionListener(listener);
       }
 
     menu = new JMenu(OPTIONS);
@@ -596,7 +596,7 @@ public class EditorFrame extends JFrame implements Runnable
     final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
-	node.increment(mapModel);
+        node.increment(mapModel);
       }
     catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
@@ -607,7 +607,7 @@ public class EditorFrame extends JFrame implements Runnable
     final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
-	node.decrement(mapModel);
+        node.decrement(mapModel);
       }
     catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
@@ -618,7 +618,7 @@ public class EditorFrame extends JFrame implements Runnable
     final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
-	node.lowermost(mapModel);
+        node.lowermost(mapModel);
       }
     catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
@@ -629,7 +629,7 @@ public class EditorFrame extends JFrame implements Runnable
     final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
-	node.uppermost(mapModel);
+        node.uppermost(mapModel);
       }
     catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
@@ -640,7 +640,7 @@ public class EditorFrame extends JFrame implements Runnable
     final MapNode node = (MapNode)path.getLastPathComponent();
     try
       {
-	node.reset(mapModel);
+        node.reset(mapModel);
       }
     catch (final Exception e) {} // ignore
     mapModel.nodeChanged(node);
@@ -679,26 +679,26 @@ public class EditorFrame extends JFrame implements Runnable
   {
     if (node.getAllowsChildren())
       {
-	final Enumeration children = node.children();
-	while (children.hasMoreElements())
-	  save_add((MapNode)children.nextElement());
+        final Enumeration children = node.children();
+        while (children.hasMoreElements())
+          save_add((MapNode)children.nextElement());
       }
     else
       {
-	if (last_save_node != null)
-	  if (last_save_node.getAddress() + last_save_node.getTotalSize() ==
-	      node.getAddress())
-	    {
-	      // add to contigous block & quit
-	      last_save_node = node;
-	      return;
-	    }
-	  else
-	    // end of contigous block; dump it
-	    save_flush();
-	// start a new contigous block
-	first_save_node = node;
-	last_save_node = node;
+        if (last_save_node != null)
+          if (last_save_node.getAddress() + last_save_node.getTotalSize() ==
+              node.getAddress())
+            {
+              // add to contigous block & quit
+              last_save_node = node;
+              return;
+            }
+          else
+            // end of contigous block; dump it
+            save_flush();
+        // start a new contigous block
+        first_save_node = node;
+        last_save_node = node;
       }
   }
 
@@ -711,21 +711,21 @@ public class EditorFrame extends JFrame implements Runnable
       return; // nothing to flush
     else
       {
-	System.out.println("dump " + first_save_node.getAddress() + "-" +
-			   (last_save_node.getAddress() +
-			    last_save_node.getTotalSize()));
-	final InputStream bulkDump =
-	  mapDef.bulkDump((MapNode)mapModel.getRoot(),
-			  first_save_node.getAddress(),
-			  last_save_node.getAddress() +
-			  last_save_node.getTotalSize());
-	int data;
-	while ((data = bulkDump.read()) >= 0)
-	  {
-	    System.out.println("data=" + data);
-	    save_stream.write(data);
-	  }
-	save_init();
+        System.out.println("dump " + first_save_node.getAddress() + "-" +
+                           (last_save_node.getAddress() +
+                            last_save_node.getTotalSize()));
+        final InputStream bulkDump =
+          mapDef.bulkDump((MapNode)mapModel.getRoot(),
+                          first_save_node.getAddress(),
+                          last_save_node.getAddress() +
+                          last_save_node.getTotalSize());
+        int data;
+        while ((data = bulkDump.read()) >= 0)
+          {
+            System.out.println("data=" + data);
+            save_stream.write(data);
+          }
+        save_init();
       }
   }
 
@@ -737,24 +737,24 @@ public class EditorFrame extends JFrame implements Runnable
   {
     try
       {
-	save_stream = new FileOutputStream("bulkdump.mid");
-	save_init();
-	int index = map.getMinSelectionRow();
-	if (index >= 0)
-	  {
-	    while (index <= map.getMaxSelectionRow())
-	      {
-		if (map.isRowSelected(index))
-		  save_add((MapNode)map.getPathForRow(index).
-			   getLastPathComponent());
-		index++;
-	      }
-	    save_flush();
-	  }
+        save_stream = new FileOutputStream("bulkdump.mid");
+        save_init();
+        int index = map.getMinSelectionRow();
+        if (index >= 0)
+          {
+            while (index <= map.getMaxSelectionRow())
+              {
+                if (map.isRowSelected(index))
+                  save_add((MapNode)map.getPathForRow(index).
+                           getLastPathComponent());
+                index++;
+              }
+            save_flush();
+          }
       }
     catch (final IOException e)
       {
-	new MessageFrame(e.toString());
+        new MessageFrame(e.toString());
       }
   }
 
@@ -772,12 +772,12 @@ public class EditorFrame extends JFrame implements Runnable
     if (selection != null)
       try
       {
-	return selection.newInstance();
+        return selection.newInstance();
       }
     catch (final Exception e)
       {
-	JOptionPane.showMessageDialog(this, e.toString(), ERROR,
-				      JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, e.toString(), ERROR,
+                                      JOptionPane.INFORMATION_MESSAGE);
       }
     return null;
   }
@@ -791,7 +791,7 @@ public class EditorFrame extends JFrame implements Runnable
       "Original distribution site is\n" +
       "https://github.com/soundpaint/SysExEdit\n";
     JOptionPane.showMessageDialog(this, msg, ABOUT_FRAME_APPLICATION,
-				  JOptionPane.INFORMATION_MESSAGE);
+                                  JOptionPane.INFORMATION_MESSAGE);
   }
 
   private void showAboutDeviceModelApplicationDialog()
@@ -841,16 +841,16 @@ public class EditorFrame extends JFrame implements Runnable
     label.setForeground(Color.black);
     vbox3.add(label);
     JOptionPane.showMessageDialog(this, hbox, ABOUT_DEVICE_MODEL_APPLICATION,
-				  JOptionPane.INFORMATION_MESSAGE);
+                                  JOptionPane.INFORMATION_MESSAGE);
   }
 
   public void exit()
   {
     if ((!checkbox_md.isSelected()) ||
       (JOptionPane.showConfirmDialog(EditorFrame.this,
-				     "Window #" + manager.getID(this) +
-				     ": " + CONFIRM_CLOSE, CONFIRM,
-				     JOptionPane.YES_NO_OPTION)
+                                     "Window #" + manager.getID(this) +
+                                     ": " + CONFIRM_CLOSE, CONFIRM,
+                                     JOptionPane.YES_NO_OPTION)
        == JOptionPane.YES_OPTION))
       signalDelete();
     else {}
@@ -887,31 +887,31 @@ public class EditorFrame extends JFrame implements Runnable
       final TreePath path = map.getSelectionPath();
       final char key = e.getKeyChar();
       switch (key)
-	{
-	case '+':
-	  if (path != null)
-	    increment((DefaultTreeModel)map.getModel(), path);
-	  break;
-	case '-':
-	  if (path != null)
-	    decrement((DefaultTreeModel)map.getModel(), path);
-	  break;
-	case '<':
-	  if (path != null)
-	    lowermost((DefaultTreeModel)map.getModel(), path);
-	  break;
-	case '>':
-	  if (path != null)
-	    uppermost((DefaultTreeModel)map.getModel(), path);
-	  break;
-	case '!':
-	  if (path != null)
-	    reset((DefaultTreeModel)map.getModel(), path);
-	  break;
-	case '\u0013': // Ctrl-S
-	  save_selected(map);
-	  break;
-	}
+        {
+        case '+':
+          if (path != null)
+            increment((DefaultTreeModel)map.getModel(), path);
+          break;
+        case '-':
+          if (path != null)
+            decrement((DefaultTreeModel)map.getModel(), path);
+          break;
+        case '<':
+          if (path != null)
+            lowermost((DefaultTreeModel)map.getModel(), path);
+          break;
+        case '>':
+          if (path != null)
+            uppermost((DefaultTreeModel)map.getModel(), path);
+          break;
+        case '!':
+          if (path != null)
+            reset((DefaultTreeModel)map.getModel(), path);
+          break;
+        case '\u0013': // Ctrl-S
+          save_selected(map);
+          break;
+        }
     }
   }
 
@@ -926,138 +926,138 @@ public class EditorFrame extends JFrame implements Runnable
       chooser.addChoosableFileFilter(filter);
       chooser.setFileFilter(filter);
       if (defaultFile != null)
-	chooser.setSelectedFile(defaultFile);
+        chooser.setSelectedFile(defaultFile);
       return chooser;
     }
 
     public void actionPerformed(final ActionEvent e)
     {
       try
-	{
-	  unguardedActionPerformed(e);
-	}
+        {
+          unguardedActionPerformed(e);
+        }
       catch (final Throwable t)
-	{
-	  ExceptionPanel.showException(EditorFrame.this, t, false);
-	}
+        {
+          ExceptionPanel.showException(EditorFrame.this, t, false);
+        }
     }
 
     private void unguardedActionPerformed(final ActionEvent e) throws Throwable
     {
       final String command = e.getActionCommand();
       if (command.equals(NEW))
-	new Thread(new EditorFrame(null, mapDef, manager)).start();
+        new Thread(new EditorFrame(null, mapDef, manager)).start();
       else if (command.equals(LOAD))
-	{
-	  final JFileChooser chooser = newChooser(defaultLoadFile);
-	  final int returnVal = chooser.showOpenDialog(EditorFrame.this);
-	  if (returnVal == JFileChooser.APPROVE_OPTION)
-	    {
-	      defaultLoadFile = new File(chooser.getCurrentDirectory(),
-					 chooser.getSelectedFile().getName());
-	      //load(defaultLoadFile);
-	      //checkbox_md.setSelected(false);
-	    }
-	}
+        {
+          final JFileChooser chooser = newChooser(defaultLoadFile);
+          final int returnVal = chooser.showOpenDialog(EditorFrame.this);
+          if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+              defaultLoadFile = new File(chooser.getCurrentDirectory(),
+                                         chooser.getSelectedFile().getName());
+              //load(defaultLoadFile);
+              //checkbox_md.setSelected(false);
+            }
+        }
       else if (command.equals(SAVE_AS) ||
-	  (command.equals(SAVE) && defaultSaveFile == null))
-	{
-	  final JFileChooser chooser = newChooser(defaultSaveFile);
-	  final int returnVal = chooser.showSaveDialog(EditorFrame.this);
-	  if (returnVal == JFileChooser.APPROVE_OPTION)
-	    {
-	      defaultSaveFile = new File(chooser.getCurrentDirectory(),
-					 chooser.getSelectedFile().getName());
-	      //saveAs(defaultSaveFile);
-	      //checkbox_md.setSelected(false);
-	    }
-	}
+          (command.equals(SAVE) && defaultSaveFile == null))
+        {
+          final JFileChooser chooser = newChooser(defaultSaveFile);
+          final int returnVal = chooser.showSaveDialog(EditorFrame.this);
+          if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+              defaultSaveFile = new File(chooser.getCurrentDirectory(),
+                                         chooser.getSelectedFile().getName());
+              //saveAs(defaultSaveFile);
+              //checkbox_md.setSelected(false);
+            }
+        }
       else if (command.equals(CLOSE))
-	exit();
+        exit();
       else if (command.equals(EXIT))
-	manager.exitAll();
+        manager.exitAll();
       else if (command.equals(LOAD_DEVICE_MODEL))
-	if ((!checkbox_md.isSelected()) ||
-	    (JOptionPane.showConfirmDialog(EditorFrame.this,
-					   CONFIRM_LDM, CONFIRM,
-					   JOptionPane.YES_NO_OPTION)
-	     == JOptionPane.YES_OPTION))
-	  {
-	    final MapDef mapDef = EditorFrame.this.loadDeviceModel();
-	    if (mapDef != null)
-	      setMap(mapDef);
-	    else {} // no selection - abort operaion!
-	  }
-	else {}
+        if ((!checkbox_md.isSelected()) ||
+            (JOptionPane.showConfirmDialog(EditorFrame.this,
+                                           CONFIRM_LDM, CONFIRM,
+                                           JOptionPane.YES_NO_OPTION)
+             == JOptionPane.YES_OPTION))
+          {
+            final MapDef mapDef = EditorFrame.this.loadDeviceModel();
+            if (mapDef != null)
+              setMap(mapDef);
+            else {} // no selection - abort operaion!
+          }
+        else {}
       else if (command.equals(DEVICE_ID))
-	{
-	  final int newDeviceID =
-	    DialogDevID.showDialog(EditorFrame.this,
-				   "Device ID Selection",
-				   JOptionPane.QUESTION_MESSAGE,
-				   UIManager.getDefaults().
-				   getIcon("internal-control"),
-				   deviceID);
-	  if (newDeviceID >= 0)
-	    {
-	      deviceID = newDeviceID;
-	      label_deviceID.setText("Device ID: " +
-				     Utils.intTo0xnn(deviceID));
-	      label_deviceID.updateUI();
-	    }
-	}
+        {
+          final int newDeviceID =
+            DialogDevID.showDialog(EditorFrame.this,
+                                   "Device ID Selection",
+                                   JOptionPane.QUESTION_MESSAGE,
+                                   UIManager.getDefaults().
+                                   getIcon("internal-control"),
+                                   deviceID);
+          if (newDeviceID >= 0)
+            {
+              deviceID = newDeviceID;
+              label_deviceID.setText("Device ID: " +
+                                     Utils.intTo0xnn(deviceID));
+              label_deviceID.updateUI();
+            }
+        }
       else if (command.equals(DISPLAY_ADDRESSES))
-	{
-	  map.setAddressInfoEnabled(checkbox_dispAddr.isSelected());
-	  map.updateUI();
-	}
+        {
+          map.setAddressInfoEnabled(checkbox_dispAddr.isSelected());
+          map.updateUI();
+        }
       else if (command.equals(TOOL_TIPS))
-	{
-	  ToolTipManager.sharedInstance().
-	    setEnabled(checkbox_toolTips.isSelected());
-	}
+        {
+          ToolTipManager.sharedInstance().
+            setEnabled(checkbox_toolTips.isSelected());
+        }
       else if (command.equals(TUTORIAL))
-	{
-	  final URL url =
+        {
+          final URL url =
             EditorFrame.class.getResource("/doc/tutorial/MissingPage.html");
-	  if (url != null) {
+          if (url != null) {
             final HtmlPanel panel = new HtmlPanel(url);
             if (panel != null)
               JOptionPane.showMessageDialog(EditorFrame.this, panel, TUTORIAL,
                                             JOptionPane.INFORMATION_MESSAGE);
           }
-	}
+        }
       else if (command.equals(API))
-	{
-	  final URL url = EditorFrame.class.getResource("/doc/api/index.html");
-	  if (url != null) {
+        {
+          final URL url = EditorFrame.class.getResource("/doc/api/index.html");
+          if (url != null) {
             final HtmlPanel panel = new HtmlPanel(url);
             if (panel != null)
               JOptionPane.showMessageDialog(EditorFrame.this, panel, API,
                                             JOptionPane.INFORMATION_MESSAGE);
           }
-	}
+        }
       else if (command.equals(ABOUT_FRAME_APPLICATION))
-	showAboutFrameApplicationDialog();
+        showAboutFrameApplicationDialog();
       else if (command.equals(ABOUT_DEVICE_MODEL_APPLICATION))
-	showAboutDeviceModelApplicationDialog();
+        showAboutDeviceModelApplicationDialog();
       else if (command.equals(LICENSE))
-	{
-	  final URL url = EditorFrame.class.getResource("/LICENSE.html");
-	  if (url != null) {
+        {
+          final URL url = EditorFrame.class.getResource("/LICENSE.html");
+          if (url != null) {
             final HtmlPanel panel = new HtmlPanel(url);
             if (panel != null)
               JOptionPane.showMessageDialog(EditorFrame.this, panel, LICENSE,
                                             JOptionPane.INFORMATION_MESSAGE);
           }
-	}
+        }
       else
-	for (int i = 0; i < lookAndFeelInfo.length; i++)
-	  if (command.equals(lookAndFeelInfo[i].getName()))
-	    {
-	      EditorFrame.this.setLookAndFeel(command);
-	      break;
-	    }
+        for (int i = 0; i < lookAndFeelInfo.length; i++)
+          if (command.equals(lookAndFeelInfo[i].getName()))
+            {
+              EditorFrame.this.setLookAndFeel(command);
+              break;
+            }
     }
   }
 
@@ -1065,7 +1065,7 @@ public class EditorFrame extends JFrame implements Runnable
   {
     synchronized(this)
       {
-	notify();
+        notify();
       }
   }
 
@@ -1073,11 +1073,11 @@ public class EditorFrame extends JFrame implements Runnable
   {
     synchronized(this)
       {
-	try
-	  {
-	    wait();
-	  }
-	catch (final InterruptedException e) {}
+        try
+          {
+            wait();
+          }
+        catch (final InterruptedException e) {}
       }
   }
 }

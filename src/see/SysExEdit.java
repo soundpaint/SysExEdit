@@ -76,14 +76,14 @@ public class SysExEdit extends Applet implements FramesManager
   /*
    * command line arguments
    */
-  private static int argNoGreeting = 0;	     /*
-					      * 0=unread;
-					      * 1=argName read;
-					      * 2=argValue read
-					      */
-  private static int argHelp = 0;	     /* dto. */
-  private static int argVersion = 0;	     /* dto. */
-  private static int argCopyright = 0;	     /* dto. */
+  private static int argNoGreeting = 0; /*
+                                         * 0=unread;
+                                         * 1=argName read;
+                                         * 2=argValue read
+                                         */
+  private static int argHelp = 0;       /* dto. */
+  private static int argVersion = 0;    /* dto. */
+  private static int argCopyright = 0;  /* dto. */
 
   private Hashtable<Frame, Integer> frames; // frames and their unique IDs
   private boolean inAnApplet = false; // true, if run as an applet
@@ -191,39 +191,39 @@ public class SysExEdit extends Applet implements FramesManager
     final PrintWriter out = new PrintWriter(System.out);
     if (argHelp != 0)
       {
-	print_help(out);
-	System.exit(-1);
+        print_help(out);
+        System.exit(-1);
       }
     else if (argVersion != 0)
       {
-	print_version(out);
-	System.exit(1);
+        print_version(out);
+        System.exit(1);
       }
     else if (argCopyright != 0)
       {
-	print_copyright(out);
-	System.exit(1);
+        print_copyright(out);
+        System.exit(1);
       }
     else
       {
-	if (argNoGreeting == 0)
-	  print_greeting(out);
-	final String filepath;
-	switch (argv.length - argc)
-	  {
-	  case 0:
+        if (argNoGreeting == 0)
+          print_greeting(out);
+        final String filepath;
+        switch (argv.length - argc)
+          {
+          case 0:
             filepath  = null;
-	    break;
-	  case 1:
-	    filepath = argv[argc];
-	    break;
-	  default:
+            break;
+          case 1:
+            filepath = argv[argc];
+            break;
+          default:
             filepath  = null;
-	    print_multiple_files(out);
-	    System.exit(-2);
-	  }
-	final SysExEdit sysExEdit = new SysExEdit();
-	sysExEdit.createEditorFrame(filepath);
+            print_multiple_files(out);
+            System.exit(-2);
+          }
+        final SysExEdit sysExEdit = new SysExEdit();
+        sysExEdit.createEditorFrame(filepath);
       }
   }
 
@@ -239,11 +239,11 @@ public class SysExEdit extends Applet implements FramesManager
     System.out.println("[loading & initializing swing...]");
     System.out.flush();
     if (JOptionPane.showConfirmDialog(null, APPL_INFO, "Application Info",
-				      JOptionPane.OK_CANCEL_OPTION) ==
-	JOptionPane.OK_OPTION)
+                                      JOptionPane.OK_CANCEL_OPTION) ==
+        JOptionPane.OK_OPTION)
       {
         loadIcons();
-	new Thread(new EditorFrame(filepath, null, this)).start();
+        new Thread(new EditorFrame(filepath, null, this)).start();
       }
     else
       removeFrame(new Frame());
@@ -326,9 +326,9 @@ public class SysExEdit extends Applet implements FramesManager
   {
     synchronized(frames)
       {
-	final int id = ++maxID;
-	frames.put(frame, id);
-	return id;
+        final int id = ++maxID;
+        frames.put(frame, id);
+        return id;
       }
   }
 
@@ -342,8 +342,8 @@ public class SysExEdit extends Applet implements FramesManager
     frames.remove(frame);
     if (frames.isEmpty() && !inAnApplet)
       {
-	System.out.println("[done]"); System.out.flush();
-	System.exit(1);
+        System.out.println("[done]"); System.out.flush();
+        System.exit(1);
       }
   }
 
@@ -366,7 +366,7 @@ public class SysExEdit extends Applet implements FramesManager
     final Enumeration<Frame> enumeration = frames.keys();
     while (enumeration.hasMoreElements())
       {
-	SwingUtilities.updateComponentTreeUI(enumeration.nextElement());
+        SwingUtilities.updateComponentTreeUI(enumeration.nextElement());
       }
   }
 
@@ -396,13 +396,13 @@ public class SysExEdit extends Applet implements FramesManager
           {
             throw new NullPointerException("icons.properties resource not found");
           }
-	icons.load(resource.openConnection().getInputStream());
+        icons.load(resource.openConnection().getInputStream());
       }
     catch (final Exception e)
       {
-	System.out.println("WARNING: failed loading icons list: " + e);
-	System.out.flush();
-	return;
+        System.out.println("WARNING: failed loading icons list: " + e);
+        System.out.flush();
+        return;
       }
     final UIDefaults uiDefaults = UIManager.getDefaults();
     for (final String key : icons.stringPropertyNames())
@@ -410,23 +410,23 @@ public class SysExEdit extends Applet implements FramesManager
         final String value = icons.getProperty(key);
         System.out.print(".");
         System.out.flush();
-	final URL iconLocation = SysExEdit.class.getResource(value);
-	try
-	  {
-	    final ImageIcon imageIcon = new ImageIcon(iconLocation);
-	    final int status = imageIcon.getImageLoadStatus();
-	    if (status == MediaTracker.COMPLETE)
-	      uiDefaults.put(key, imageIcon);
-	    else
-	      throw new IOException("bad image load status: " + status);
-	  }
-	catch (final Exception e)
-	  {
-	    System.out.println();
-	    System.out.println("WARNING: failed loading " +
-			       iconLocation + ": " + e);
-	    System.out.flush();
-	  }
+        final URL iconLocation = SysExEdit.class.getResource(value);
+        try
+          {
+            final ImageIcon imageIcon = new ImageIcon(iconLocation);
+            final int status = imageIcon.getImageLoadStatus();
+            if (status == MediaTracker.COMPLETE)
+              uiDefaults.put(key, imageIcon);
+            else
+              throw new IOException("bad image load status: " + status);
+          }
+        catch (final Exception e)
+          {
+            System.out.println();
+            System.out.println("WARNING: failed loading " +
+                               iconLocation + ": " + e);
+            System.out.flush();
+          }
       }
     System.out.println("]");
     System.out.flush();

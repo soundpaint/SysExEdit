@@ -162,20 +162,20 @@ class DialogDevID
    * @return device ID, or -1 meaning the user canceled the input
    */
   static int showDialog(final Component parentComponent,
-			final String title, final int messageType,
-			final Icon icon, final int initialValue)
+                        final String title, final int messageType,
+                        final Icon icon, final int initialValue)
   {
     final Panel panel = new Panel(initialValue);
     final JOptionPane pane =
       new JOptionPane(panel, messageType,
-		      JOptionPane.OK_CANCEL_OPTION, icon, null, null);
+                      JOptionPane.OK_CANCEL_OPTION, icon, null, null);
     pane.setWantsInput(false);
     final JDialog dialog = pane.createDialog(parentComponent, title);
     dialog.setVisible(true);
     final Object value = pane.getValue();
     if (value instanceof Integer)
       if (((Integer)value).intValue() == JOptionPane.OK_OPTION)
-	return panel.myChangeListener.slider.getValue();
+        return panel.myChangeListener.slider.getValue();
     return -1;
   }
 }

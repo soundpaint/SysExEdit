@@ -76,7 +76,7 @@ public class HtmlPanel
     final JScrollPane scroller = new JScrollPane();
     scroller.setPreferredSize(new Dimension(700, 420));
     scroller.setBorder(new BevelBorder(BevelBorder.LOWERED,
-				       Color.white, Color.gray));
+                                       Color.white, Color.gray));
     html_pane = new JEditorPane(url);
     html_pane.setEditable(false);
     html_pane.addHyperlinkListener(this);
@@ -140,18 +140,18 @@ public class HtmlPanel
   {
     if ((e.getActionCommand().equals(ACTION_PREV)) && browseHistory.hasPrev())
       {
-	browseHistory.prev();
-	updatePage();
+        browseHistory.prev();
+        updatePage();
       }
     else if ((e.getActionCommand().equals(ACTION_NEXT)) &&
-	     browseHistory.hasNext())
+             browseHistory.hasNext())
       {
-	browseHistory.next();
-	updatePage();
+        browseHistory.next();
+        updatePage();
       }
     else if (e.getActionCommand().equals(ACTION_STOP))
       {
-	// not implemented yet
+        // not implemented yet
       }
   }
 
@@ -162,8 +162,8 @@ public class HtmlPanel
   {
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
       {
-	browseHistory.add(e.getURL(), null);
-	updatePage();
+        browseHistory.add(e.getURL(), null);
+        updatePage();
       }
   }
 
@@ -186,46 +186,46 @@ public class HtmlPanel
     public void run()
     {
       if (restore_cursor_pending)
-	{
-	  updateTitle();
+        {
+          updateTitle();
 
-	  // restore the original cursor
-	  html_pane.setCursor(original_cursor);
+          // restore the original cursor
+          html_pane.setCursor(original_cursor);
 
-	  // [PENDING: remove this when automatic validation is activated.]
-	  final Container parent = html_pane.getParent();
-	  parent.repaint();
+          // [PENDING: remove this when automatic validation is activated.]
+          final Container parent = html_pane.getParent();
+          parent.repaint();
 
-	  restore_cursor_pending = false;
-	  bt_stop.setEnabled(false);
-	}
+          restore_cursor_pending = false;
+          bt_stop.setEnabled(false);
+        }
       else
-	{
-	  try
-	    {
-	      final Document document = browseHistory.getContent();
-	      if (document != null)
-		html_pane.setDocument(document);
-	      else
-		{
-		  html_pane.setPage(browseHistory.getReference());
-		  browseHistory.setContent(html_pane.getDocument());
-		}
-	    }
-	  catch (final IOException e)
-	    {
-	      html_pane.setDocument(HtmlFactory.errorPage("I/O Error",
-							  e.toString()));
-	    }
-	  finally
-	    {
-	      // schedule the cursor to revert after
-	      // the paint has happened.
-	      restore_cursor_pending = true;
-	      bt_stop.setEnabled(true);
-	      SwingUtilities.invokeLater(this);
-	    }
-	}
+        {
+          try
+            {
+              final Document document = browseHistory.getContent();
+              if (document != null)
+                html_pane.setDocument(document);
+              else
+                {
+                  html_pane.setPage(browseHistory.getReference());
+                  browseHistory.setContent(html_pane.getDocument());
+                }
+            }
+          catch (final IOException e)
+            {
+              html_pane.setDocument(HtmlFactory.errorPage("I/O Error",
+                                                          e.toString()));
+            }
+          finally
+            {
+              // schedule the cursor to revert after
+              // the paint has happened.
+              restore_cursor_pending = true;
+              bt_stop.setEnabled(true);
+              SwingUtilities.invokeLater(this);
+            }
+        }
     }
   }
 }

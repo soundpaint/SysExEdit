@@ -189,7 +189,7 @@ class Map extends JTree
       // super.updateUI() resets the background color to ui default,
       // but we want to use Map's background color:
       if (Map.this != null)
-	this.setBackground(Map.this.getBackground());
+        this.setBackground(Map.this.getBackground());
     }
 
     /**
@@ -199,25 +199,25 @@ class Map extends JTree
      */
     public Component
       getTreeCellRendererComponent(final JTree tree, final Object value,
-				   final boolean selected,
+                                   final boolean selected,
                                    final boolean expanded,
-				   final boolean leaf, final int row,
+                                   final boolean leaf, final int row,
                                    final boolean hasFocus)
     {
       Map map = (Map)tree;
       String text = null;
       Icon icon = null;
       if ((value != null) && (value instanceof MapNode))
-	{
-	  MapNode node = (MapNode)value;
-	  text = map.getTreeCellText(node);
-	  icon = map.getTreeCellIcon(node, expanded);
-	}
+        {
+          MapNode node = (MapNode)value;
+          text = map.getTreeCellText(node);
+          icon = map.getTreeCellIcon(node, expanded);
+        }
       if (text == null)
-	text = tree.convertValueToText(value, selected, expanded,
-				       leaf, row, hasFocus);
+        text = tree.convertValueToText(value, selected, expanded,
+                                       leaf, row, hasFocus);
       if (icon == null)
-	icon = UIManager.getDefaults().getIcon("internal-control");
+        icon = UIManager.getDefaults().getIcon("internal-control");
 
       setIcon(icon);
       setText(text);

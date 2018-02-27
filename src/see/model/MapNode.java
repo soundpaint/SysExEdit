@@ -57,7 +57,7 @@ implements MapChangeListener
    * Creates a new node with initially no children.
    */
   private MapNode(final boolean allowsChildren, final String label,
-		  final Contents contents, final long contents_size,
+                  final Contents contents, final long contents_size,
                   final long offset)
   {
     super(contents, allowsChildren);
@@ -152,10 +152,10 @@ implements MapChangeListener
     final Contents contents = getContents();
     if (contents != null)
       {
-	final DefaultTreeModel model = e.getModel();
-	contents.setSelectedRepresentation(e.getSelector());
-	if (model != null)
-	  model.nodeChanged(this); // note: this only works *within* a tree
+        final DefaultTreeModel model = e.getModel();
+        contents.setSelectedRepresentation(e.getSelector());
+        if (model != null)
+          model.nodeChanged(this); // note: this only works *within* a tree
       }
   }
 
@@ -364,9 +364,9 @@ implements MapChangeListener
     address = externalOffset + offset;
     for (int i = 0; i < getChildCount(); i++)
       {
-	final MapNode child = (MapNode)getChildAt(i);
-	child.evaluateAddresses(externalOffset);
-	externalOffset += child.getTotalSize();
+        final MapNode child = (MapNode)getChildAt(i);
+        child.evaluateAddresses(externalOffset);
+        externalOffset += child.getTotalSize();
       }
   }
 
@@ -435,8 +435,8 @@ implements MapChangeListener
     if (!getAllowsChildren())
       {
         final Contents contents = getContents();
-	contents.reset();
-	fireMapChangeEvents(model);
+        contents.reset();
+        fireMapChangeEvents(model);
       }
   }
 
@@ -450,44 +450,44 @@ implements MapChangeListener
   {
     if ((this.address <= address) && (address < this.address + total_size))
       if (!getAllowsChildren())
-	return this;
+        return this;
       else
-	{
-	  MapNode next_node = null;
-	  MapNode node = null;
-	  long cumulative_address = this.address;
-	  final Enumeration children_enum = children();
-	  while ((cumulative_address < address) &&
-		 children_enum.hasMoreElements())
-	    {
-	      node = next_node;
-	      next_node = (MapNode)children_enum.nextElement();
-	      cumulative_address += next_node.total_size;
-	    }
-	  // Assertion[1] (node != null):
-	  //   The while loop must always be executed at least twice, as
-	  //   the parent node has the same address as the first child node.
-	  //   If not, the map structure is corrupt.
-	  //
-	  // Assertion[2] (cumulative_address < address):
-	  //   The location must somewhere among the childs because of the
-	  //   if clauses that guard this block. Otherwise, the map
-	  //   structure is corrupt.
-	  //
-	  if ((node == null) || (cumulative_address < address))
-	    throw new IllegalStateException("map structure corrupt");
-	  else if (node.address > address)
-	    return null; // address is located in inaccessible (padding) area
-	  else if (node.getAllowsChildren())
-	    return node.locate(address); // more specific location required
-	  else
-	    return node; // gotcha!
-	}
+        {
+          MapNode next_node = null;
+          MapNode node = null;
+          long cumulative_address = this.address;
+          final Enumeration children_enum = children();
+          while ((cumulative_address < address) &&
+                 children_enum.hasMoreElements())
+            {
+              node = next_node;
+              next_node = (MapNode)children_enum.nextElement();
+              cumulative_address += next_node.total_size;
+            }
+          // Assertion[1] (node != null):
+          //   The while loop must always be executed at least twice, as
+          //   the parent node has the same address as the first child node.
+          //   If not, the map structure is corrupt.
+          //
+          // Assertion[2] (cumulative_address < address):
+          //   The location must somewhere among the childs because of the
+          //   if clauses that guard this block. Otherwise, the map
+          //   structure is corrupt.
+          //
+          if ((node == null) || (cumulative_address < address))
+            throw new IllegalStateException("map structure corrupt");
+          else if (node.address > address)
+            return null; // address is located in inaccessible (padding) area
+          else if (node.getAllowsChildren())
+            return node.locate(address); // more specific location required
+          else
+            return node; // gotcha!
+        }
     else
       if (parent != null)
-	return ((MapNode)parent).locate(address);
+        return ((MapNode)parent).locate(address);
       else
-	return null; // address is located in inaccessible (padding) area
+        return null; // address is located in inaccessible (padding) area
   }
 
   /**
@@ -535,25 +535,25 @@ implements MapChangeListener
       throw new IllegalArgumentException("internal error: locate failed [1]");
     else
       {
-	final int shift_size = (int)(address - this.address);
+        final int shift_size = (int)(address - this.address);
         final Contents contents = getContents();
-	final int contents_size = contents.getBitSize();
-	if (shift_size >= contents_size)
-	  throw new IllegalStateException("locate failed [2]");
-	final int[] local_data = contents.toBits();
-	/*
-	 * [PENDING: incomplete implementation]
-	 *
-	final int local_size = Math.min(size, contents_size - shift_size);
-	local_data = shiftLeft(local_data, shift_size);
-	local_data = trim(local_data, local_size);
-	if (local_size < size)
-	  local_data |=
-	    (locate(address + local_size).
-	     getLocalData(address + local_size, size - local_size)
-	     << local_size);
-	     */
-	return local_data;
+        final int contents_size = contents.getBitSize();
+        if (shift_size >= contents_size)
+          throw new IllegalStateException("locate failed [2]");
+        final int[] local_data = contents.toBits();
+        /*
+         * [PENDING: incomplete implementation]
+         *
+        final int local_size = Math.min(size, contents_size - shift_size);
+        local_data = shiftLeft(local_data, shift_size);
+        local_data = trim(local_data, local_size);
+        if (local_size < size)
+          local_data |=
+            (locate(address + local_size).
+             getLocalData(address + local_size, size - local_size)
+             << local_size);
+             */
+        return local_data;
       }
   }
 
@@ -572,9 +572,9 @@ implements MapChangeListener
     final int[] shiftedData = new int[data.length - intShift];
     for (int i = 0; i < shiftedData.length; i++)
       {
-	shiftedData[i] = data[i + intShift] >> bitShift;
-	if ((bitShift > 0) && ((i + intShift + 1) < data.length))
-	  shiftedData[i] |= data[i + intShift + 1] << (32 - bitShift);
+        shiftedData[i] = data[i + intShift] >> bitShift;
+        if ((bitShift > 0) && ((i + intShift + 1) < data.length))
+          shiftedData[i] |= data[i + intShift + 1] << (32 - bitShift);
       }
     return shiftedData;
   }
@@ -601,7 +601,7 @@ implements MapChangeListener
     final MapNode newNode = (MapNode)super.clone();
     if (getAllowsChildren())
       for (int i = 0; i < getChildCount(); i++)
-	newNode.add(((MapNode)getChildAt(i)).clone());
+        newNode.add(((MapNode)getChildAt(i)).clone());
     return newNode;
   }
 }

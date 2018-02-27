@@ -81,7 +81,7 @@ public class ExceptionPanel extends JPanel
     final JScrollPane scroller = new JScrollPane();
     scroller.setPreferredSize(new Dimension(700, 420));
     scroller.setBorder(new BevelBorder(BevelBorder.LOWERED,
-				       Color.white, Color.gray));
+                                       Color.white, Color.gray));
 
     final JTextArea textArea = new JTextArea(out.toString());
     final JViewport vp = scroller.getViewport();
@@ -99,12 +99,12 @@ public class ExceptionPanel extends JPanel
    * @param printStackTrace If true, also show the stack trace.
    */
   public static void showException(final Frame parent, final Throwable t,
-				   final boolean printStackTrace)
+                                   final boolean printStackTrace)
   {
     JOptionPane.showMessageDialog(parent,
-				  new ExceptionPanel(t, printStackTrace),
-				  EXCEPTION,
-				  JOptionPane.ERROR_MESSAGE);
+                                  new ExceptionPanel(t, printStackTrace),
+                                  EXCEPTION,
+                                  JOptionPane.ERROR_MESSAGE);
   }
 }
 

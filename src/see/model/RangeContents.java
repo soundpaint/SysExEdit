@@ -72,12 +72,12 @@ public class RangeContents extends AbstractContents
     selectionID = -1;
     if (range != null)
       {
-	addRepresentation(range);
-	// if (bit_size == 0)
-	//  throw new IllegalArgumentException("range empty");
-	// [PENDING: needs somewhat like:
-	// if (bit_size == 0) setEditable(false); ]
-	setSelectedRepresentation(0);
+        addRepresentation(range);
+        // if (bit_size == 0)
+        //  throw new IllegalArgumentException("range empty");
+        // [PENDING: needs somewhat like:
+        // if (bit_size == 0) setEditable(false); ]
+        setSelectedRepresentation(0);
       }
   }
 
@@ -168,7 +168,7 @@ public class RangeContents extends AbstractContents
   public void setBitSize(final int bit_size)
   {
     if ((bit_size < 0) || (bit_size > 32) ||
-	(min_bit_size > bit_size))
+        (min_bit_size > bit_size))
       throw new IllegalArgumentException("bit_size out of range");
     else
       this.bit_size = (byte)bit_size;
