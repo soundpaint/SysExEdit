@@ -126,37 +126,13 @@ implements MapChangeListener
   }
 
   /**
-   * Returns an integer value that serves as an ID that may be posted to
-   * a Contents object whose range selection depends on the contents value
-   * of this MapNode object.<BR>
-   * Basically, this is a function that bijectively maps the current value
-   * of instance variable contents_value onto an integer value in the
-   * range [0, x-1], where x is the size of the total range of this node's
-   * contents_value range. This is only applicable, if contents_value
-   * has an enumaratable representation.<BR>
-   * [PENDING: This method has not been implemented yet. Currently, it
-   * always returns the value 0.]
-   * @return An integer value that serves as an ID for another node's
-   *    range selection.
-   */
-  private int getSelector()
-  {
-    return 0;
-  }
-
-  /**
    * Invoked when a map change occurs.
    */
   public void mapChangePerformed(final MapChangeEvent e)
   {
-    final Contents contents = getContents();
-    if (contents != null)
-      {
-        final DefaultTreeModel model = e.getModel();
-        contents.setSelectedRepresentation(e.getSelector());
-        if (model != null)
-          model.nodeChanged(this); // note: this only works *within* a tree
-      }
+    final DefaultTreeModel model = e.getModel();
+    if (model != null)
+      model.nodeChanged(this); // note: this only works *within* a tree
   }
 
   /**
@@ -166,7 +142,7 @@ implements MapChangeListener
   private void fireMapChangeEvents(final DefaultTreeModel model)
   {
     final Enumeration<MapChangeListener> listeners_enum = listeners.elements();
-    final MapChangeEvent e = new MapChangeEvent(this, model, getSelector());
+    final MapChangeEvent e = new MapChangeEvent(this, model);
     while (listeners_enum.hasMoreElements())
       (listeners_enum.nextElement()).mapChangePerformed(e);
   }
@@ -224,19 +200,6 @@ implements MapChangeListener
   public String getLabel()
   {
     return label;
-  }
-
-  /**
-   * If this node does not allow children, this method sets the
-   * appropriate Contents object associated with this node.
-   * @return The Contents object associated with this node.
-   */
-  private void setContents(final Contents contents)
-  {
-    if (getAllowsChildren()) {
-      throw new IllegalArgumentException("only leaf nodes may carry contents");
-    }
-    setUserObject(contents);
   }
 
   /**

@@ -24,33 +24,26 @@ import java.util.EventObject;
 import javax.swing.tree.DefaultTreeModel;
 
 /**
- * An object instance of this class represents an event that occurs whenever
- * a change in a MapNode object may need to select a different range in some
- * Contents object of another MapNode object, or, in other words, whenever
- * the representation of some node may depend on the current value of another
- * node.
+ * An object instance of this class represents an event that occurs
+ * whenever the value of a MapNode changes.
  */
 public class MapChangeEvent extends EventObject
 {
   private static final long serialVersionUID = 2435483410608666577L;
 
   private final DefaultTreeModel model;
-  private final int selector;
 
   /**
    * Creates a new MapChangeEvent object with the specified source.
    * @param source The source node that triggers this event.
    * @param model The tree model of the source node.
-   * @param selector The range selector.
    * @exception IllegalArgumentException If source equals null.
    */
   public MapChangeEvent(final MapNode source,
-                        final DefaultTreeModel model,
-                        final int selector)
+                        final DefaultTreeModel model)
   {
     super(source);
     this.model = model;
-    this.selector = selector;
   }
 
   /**
@@ -60,15 +53,6 @@ public class MapChangeEvent extends EventObject
   public DefaultTreeModel getModel()
   {
     return model;
-  }
-
-  /**
-   * Returns the selector for the contents range to be selected.
-   * @return The selector for the contents range to be selected.
-   */
-  public int getSelector()
-  {
-    return selector;
   }
 }
 
