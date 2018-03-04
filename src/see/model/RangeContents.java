@@ -90,8 +90,8 @@ public class RangeContents extends AbstractContents
     if ((amount < 0) || (amount > 15))
       throw new IllegalArgumentException("amount");
     final FlagsType unusedType = new FlagsType();
-    final Range range = new Range(0, (1 << amount) - 1, unusedType);
-    range.setIconKey("internal-unknown");
+    final Range range =
+      new Range("internal-unknown", 0, (1 << amount) - 1, unusedType);
     return range;
   }
 

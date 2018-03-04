@@ -20,6 +20,8 @@
 
 package see.model;
 
+import java.util.Comparator;
+import java.util.TreeSet;
 import javax.swing.Icon;
 
 /**
@@ -46,122 +48,49 @@ import javax.swing.Icon;
 public class Range implements Representation
 {
   /**
-   * Returns a long value that equals the unsigned interpretation of
-   * the given signed int value.
-   * @param n A signed int value.
-   * @return A long value that equals the unsigned value of parameter n.
+   * A key that represents an icon that illustrates an instance of
+   * this Range.
    */
-  private static long signed_int_to_long(final int n)
-  {
-    long long_n = (long)n;
-    if (long_n < 0)
-      {
-        long_n += 0x080000000;
-        long_n += 0x080000000;
-      }
-    return long_n;
-  }
+  private final String iconKey;
 
   /**
-   * Returns a signed int value whose unsigned interpretation equals the
-   * value of the given long value.
-   * @param n A long value that equals the unsigned value of some int.
-   * @return The signed int value.
-   * @exception IllegalArgumentException If n does not fit into the int range.
+   * The list of all contigous ranges, sorted by ascending
+   * representation values.
    */
-  private static int long_to_signed_int(long n)
-  {
-    if (n < 0)
-      throw new IllegalArgumentException("n out of bounds");
-    if (n > 0x07fffffff)
-      {
-        n = n - 0x080000000;
-        n = n - 0x080000000;
-      }
-    if (n > 0x07fffffff)
-      throw new IllegalArgumentException("n out of bounds");
-    return (int)n;
-  }
-
-  private class Contigous
-  {
-    final long lb; // lower bound
-    final long ub; // upper bound
-    final ValueType valueType;
-    Contigous prev; // previous contigous range
-    Contigous next; // next contigous range
-
-    private Contigous()
-    {
-      throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Creates a new contigous range object.
-     * @param lb The lower bound of the contigous range.
-     * @param ub The upper bound of the contigous range.
-     * @param valueType The ValueType for the contigous range.
-     * @exception NullPointerException If valueType equals null.
-     */
-    Contigous(final long lb, final long ub, final ValueType valueType)
-    {
-      if (valueType == null)
-        throw new NullPointerException("valueType");
-      this.lb = lb;
-      this.ub = ub;
-      this.valueType = valueType;
-      this.prev = null;
-      this.next = null;
-    }
-
-    /**
-     * Returns a String that represents x according to the specification
-     * of the underlying ValueType.
-     */
-    private String getDisplayValue(final int x)
-    {
-      return valueType.getDisplayValue(x);
-    }
-
-    /**
-     * Returns a string valueType of this object (e.g. for debugging).
-     * @return A string valueType of this object.
-     */
-    public String toString()
-    {
-      return "Contigous{valueType=" + valueType + ", lb=" + lb +
-        ", ub=" + ub + "}";
-    }
-  }
+  private final TreeSet<Subrange> subranges;
 
   /**
-   * The head element of the sorted list of all contigous ranges; if
-   * the range is not empty, this variable points to the contigous
-   * range that contains the lowermost value that is in range.
+   * Same as subranges, but with a different comparator for looking up
+   * a subrange by a given value, rather than for comparing different
+   * subranges.
    */
-  private Contigous contigous_first;
+  private TreeSet<Subrange> subrangesByValue;
 
   /**
-   * The tail element of the sorted list of all contigous ranges; if
-   * the range is not empty, this variable points to the contigous
-   * range that contains the uppermost value that is in range.
-   */
-  private Contigous contigous_last;
-
-  /**
-   * the total size of this range
+   * The total number of valid values in this range.
    */
   private long size = 0;
 
   /**
-   * A key that represents an icon that is illustrates this Range instance.
+   * Creates a range that is initially empty.  Uses the default
+   * "internal-data" icon for this range.
    */
-  private String iconKey = null;
+  public Range()
+  {
+    this("internal-data");
+  }
 
   /**
    * Creates a range that is initially empty.
+   * @param iconKey The key of the icon to be used when rendering this
+   * range in the GUI.
    */
-  public Range() {}
+  public Range(final String iconKey)
+  {
+    this.iconKey = iconKey;
+    subranges = new TreeSet<Subrange>();
+    subrangesByValue = null;
+  }
 
   /**
    * Creates a range with initially a single contigous range.
@@ -172,21 +101,45 @@ public class Range implements Representation
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public Range(final int lb, final int ub, final ValueType valueType)
+  public Range(final String iconKey,
+               final int lb, final int ub, final ValueType valueType)
   {
-    addContigous(lb, ub, valueType);
+    this(iconKey);
+    addSubrange(lb, ub, valueType);
   }
 
   /**
-   * Specifies a key for the icon, that is displayed together with each
-   * instance of this range. The associated icon is to be stored via
-   * UIManager.getDefaults().put(iconKey, icon).
-   * @param iconKey The key of the icon to be displayed.
+   * Returns a long value that equals the unsigned interpretation of
+   * the given signed int value.
+   * @param n A signed int value.
+   * @return A long value that equals the unsigned value of parameter n.
    */
-  public void setIconKey(final String iconKey)
+  private static long signed_int_to_long(final int n)
   {
-    this.iconKey = iconKey;
+    final long long_n = (long)n;
+    if (long_n >= 0)
+      return long_n;
+    return long_n + 0x0000000100000000L;
   }
+
+  /**
+   * Returns a signed int value whose unsigned interpretation equals the
+   * value of the given long value.
+   * @param n A long value that equals the unsigned value of some int.
+   * @return The signed int value.
+   * @exception IllegalArgumentException If n does not fit into the int range.
+   */
+  private static int long_to_signed_int(final long n)
+  {
+    if (n < 0)
+      throw new IllegalArgumentException("n out of bounds");
+    if (n >= 0x0000000100000000L)
+      throw new IllegalArgumentException("n out of bounds");
+    return (int)n;
+  }
+
+  private static final long min_unsigned = 0x0000000000000000L;
+  private static final long max_unsigned = 0x00000000ffffffffL;
 
   /**
    * Returns the key for the icon, that is displayed together with each
@@ -198,11 +151,6 @@ public class Range implements Representation
     return iconKey;
   }
 
-  private Contigous hint = null; // cached reference for better performance
-
-  private static final long min_unsigned = signed_int_to_long(0x00000000);
-  private static final long max_unsigned = signed_int_to_long(0xffffffff);
-
   /**
    * Adds a single contigous range to the total range.
    * @param lb The lower bound of the contigous range.
@@ -212,18 +160,32 @@ public class Range implements Representation
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addContigous(final int lb, final int ub,
-                           final ValueType valueType)
+  public void addSubrange(final int lb, final int ub,
+                          final ValueType valueType)
   {
     final long unsigned_lb = signed_int_to_long(lb);
     final long unsigned_ub = signed_int_to_long(ub);
-    if ((lb < 0) && (ub >= 0)) // overlapping contigous; so split it up
-      {
-        addContigous(new Contigous(unsigned_lb, max_unsigned, valueType));
-        addContigous(new Contigous(min_unsigned, unsigned_ub, valueType));
-      }
-    else
-      addContigous(new Contigous(unsigned_lb, unsigned_ub, valueType));
+    if ((lb < 0) && (ub >= 0)) {
+      // overlapping contigous; so split it up
+      subranges.add(new Subrange(unsigned_lb, max_unsigned, valueType));
+      subranges.add(new Subrange(min_unsigned, unsigned_ub, valueType));
+    } else {
+      subranges.add(new Subrange(unsigned_lb, unsigned_ub, valueType));
+    }
+    subrangesByValue = null;
+  }
+
+  /**
+   * Adds a single enumeration value to the total range.
+   * @param value The enumeration value to be added.
+   * @param valueType The ValueType for the value.
+   * @exception NullPointerException If valueType equals null.
+   * @exception IllegalArgumentException If the insertion range overlaps
+   *    some already existing range.
+   */
+  public void addSingleValue(final int value, final ValueType valueType)
+  {
+    addSubrange(value, value, valueType);
   }
 
   /**
@@ -231,15 +193,14 @@ public class Range implements Representation
    * @param valueType The ValueType for the value.
    * @exception NullPointerException If valueType equals null.
    * @exception IllegalArgumentException If the insertion range overlaps
-   *    some already exisiting range.
+   *    some already existing range.
    */
-  public void addContigous(final ValueType valueType)
+  public void addSingleValue(final ValueType valueType)
   {
     if (valueType.getSize() != 1) {
       throw new IllegalArgumentException("valueType does not represent a single value");
     }
-    final int value = valueType.getMinValue();
-    addContigous(value, value, valueType);
+    addSingleValue(valueType.getMinValue(), valueType);
   }
 
   /**
@@ -250,80 +211,60 @@ public class Range implements Representation
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addContigous(final int value, final String enumValue)
+  public void addSingleValue(final int value, final String enumValue)
   {
-    addContigous(value, value, new EnumType(value, enumValue));
+    addSingleValue(value, new EnumType(value, enumValue));
   }
 
-  /**
-   * Inserts the contigous range into the sorted list of ranges.
-   * @param insertion The contigous range to be inserted.
-   * @exception IllegalArgumentException If the insertion range overlaps
-   *    with another range.
-   */
-  private synchronized void addContigous(final Contigous insertion)
+  private final static Comparator<Subrange>
+    subrangeContainmentComparator = new Comparator<Subrange>() {
+        public int compare(final Subrange r1, final Subrange r2)
+        {
+          if ((r1.getLowerBound() <= r2.getLowerBound()) &&
+              (r1.getUpperBound() >= r2.getUpperBound())) {
+            // r1 encompasses r2
+            return 0;
+          }
+          if ((r2.getLowerBound() <= r1.getLowerBound()) &&
+              (r2.getUpperBound() >= r1.getUpperBound())) {
+            // r2 encompasses r1
+            return 0;
+          }
+          if (r1.getUpperBound() <= r2.getLowerBound()) {
+            // r1 comes before r2
+            return -1;
+          }
+          if (r2.getUpperBound() <= r1.getLowerBound()) {
+            // r2 comes before r1
+            return +1;
+          }
+          throw new ClassCastException("r1 / r2 overlap");
+        }
+
+        public boolean equals(final Object obj)
+        {
+          return obj == subrangeContainmentComparator;
+        }
+      };
+
+  private Subrange getSubrangeByValue(int value)
   {
-    if (hint == null) // no hint given; start with contigous first
-      hint = contigous_first;
-    if (hint == null) // empty range; just start with a new list
-      {
-        insertion.prev = null;
-        insertion.next = null;
-        contigous_first = insertion;
-        contigous_last = insertion;
-      }
-    else // search & insert
-      {
-        Contigous past = null; // previously visited contigous
-        Contigous current = hint; // presently visited contigous
-        while ((current != null) && (current.ub < insertion.lb))
-          {
-            past = current;
-            current = current.next;
-          }
-        if (current == null) // must insert as new tail
-          if (past.ub < insertion.lb)
-            {
-              insertion.prev = past;
-              insertion.next = null;
-              past.next = insertion;
-              contigous_last = insertion;
-              hint = insertion;
-              return;
-            }
-          else
-            throw new IllegalStateException("overlapping range [1]" +
-                                            "(insertion=" + insertion +
-                                            "; past=" + past);
-        while ((current != null) && (current.lb > insertion.ub))
-          {
-            past = current;
-            current = current.prev;
-          }
-        if (current == null) // must insert as new head
-          if (past.lb > insertion.ub)
-            {
-              insertion.prev = null;
-              insertion.next = past;
-              past.prev = insertion;
-              contigous_first = insertion;
-              hint = insertion;
-              return;
-            }
-          else
-            throw new IllegalStateException("overlapping range [2]" +
-                                            "(insertion=" + insertion +
-                                            "; past=" + past);
-        else // must insert between past and current
-          {
-            insertion.prev = current;
-            insertion.next = past;
-            past.prev = insertion;
-            current.next = insertion;
-            hint = insertion;
-            return;
-          }
-      }
+    if (subrangesByValue == null) {
+      subrangesByValue =
+        new TreeSet<Subrange>(subrangeContainmentComparator);
+      subrangesByValue.addAll(subranges);
+    }
+    final Subrange valueSubrange =
+      new Subrange(value, value, Int8Type.defaultInstance);
+    final Subrange floor = subrangesByValue.floor(valueSubrange);
+    if (floor != null) {
+      return floor;
+    }
+    final Subrange ceiling = subrangesByValue.ceiling(valueSubrange);
+    if (ceiling != null) {
+      return ceiling;
+    }
+    return null;
   }
 
   /**
@@ -343,38 +284,8 @@ public class Range implements Representation
    */
   public synchronized boolean isInRange(final int x)
   {
-    final long unsigned_x = signed_int_to_long(x);
-    if (hint == null) // no hint given; start with contigous first
-      hint = contigous_first;
-    if (hint == null) // empty range; we are done!
-      return false;
-    else
-      {
-        Contigous past = null; // previously visited contigous
-        Contigous current = hint; // presently visited contigous
-        while ((current != null) && (current.ub < unsigned_x))
-          {
-            past = current;
-            current = current.next;
-          }
-        if (current == null)
-          {
-            hint = contigous_last;
-            return false; // above uppermost value
-          }
-        while ((current != null) && (current.lb > unsigned_x))
-          {
-            past = current;
-            current = current.prev;
-          }
-        if (current == null)
-          {
-            hint = contigous_first;
-            return false; // below lowermost value
-          }
-        hint = current;
-        return unsigned_x <= current.ub; // in or between ranges
-      }
+    final Subrange subrange = getSubrangeByValue(x);
+    return subrange != null;
   }
 
   /**
@@ -384,13 +295,10 @@ public class Range implements Representation
    */
   public Integer lowermost()
   {
-    if (contigous_first == null)
+    if (subranges.isEmpty())
       return null;
-    else
-      {
-        hint = contigous_first;
-        return new Integer(long_to_signed_int(contigous_first.lb));
-      }
+    final Subrange subrange = subranges.first();
+    return new Integer(long_to_signed_int(subrange.getLowerBound()));
   }
 
   /**
@@ -400,13 +308,10 @@ public class Range implements Representation
    */
   public Integer uppermost()
   {
-    if (contigous_last == null)
+    if (subranges.isEmpty())
       return null;
-    else
-      {
-        hint = contigous_last;
-        return new Integer(long_to_signed_int(contigous_last.ub));
-      }
+    final Subrange subrange = subranges.last();
+    return new Integer(long_to_signed_int(subrange.getUpperBound()));
   }
 
   /**
@@ -427,49 +332,15 @@ public class Range implements Representation
    */
   public Integer succ(final int x)
   {
-    final long unsigned_x = signed_int_to_long(x);
-    if (hint == null) // no hint given; start with contigous first
-      hint = contigous_first;
-    if (hint == null) // empty range; we are done!
+    final Subrange subrange = getSubrangeByValue(x);
+    if (subrange == null)
       return null;
-    else
-      {
-        Contigous past = null; // previously visited contigous
-        Contigous current = hint; // presently visited contigous
-        while ((current != null) && (current.ub < unsigned_x))
-          {
-            past = current;
-            current = current.next;
-          }
-        if (current == null)
-          {
-            hint = contigous_last;
-            return null; // x above uppermost value
-          }
-        while ((current != null) && (current.lb > unsigned_x))
-          {
-            past = current;
-            current = current.prev;
-          }
-        if (current == null) // x below lowermost value; return lowermost
-          {
-            hint = past;
-            return new Integer(long_to_signed_int(past.lb));
-          }
-        else if (unsigned_x >= current.ub) // succ(x) above current
-          {
-            hint = current.next;
-            if (current.next == null)
-              return null; // x is already uppermost value
-            else
-              return new Integer(long_to_signed_int(current.next.lb));
-          }
-        else
-          {
-            hint = current;
-            return new Integer(long_to_signed_int(unsigned_x + 1));
-          }
-      }
+    if (x < subrange.getUpperBound())
+      return x + 1;
+    final Subrange nextSubrange = subranges.higher(subrange);
+    if (nextSubrange == null)
+      return null;
+    return (int)nextSubrange.getLowerBound();
   }
 
   /**
@@ -482,49 +353,15 @@ public class Range implements Representation
    */
   public Integer pred(final int x)
   {
-    final long unsigned_x = signed_int_to_long(x);
-    if (hint == null) // no hint given; start with contigous first
-      hint = contigous_first;
-    if (hint == null) // empty range; we are done!
+    final Subrange subrange = getSubrangeByValue(x);
+    if (subrange == null)
       return null;
-    else
-      {
-        Contigous past = null; // previously visited contigous
-        Contigous current = hint; // presently visited contigous
-        while ((current != null) && (current.lb > unsigned_x))
-          {
-            past = current;
-            current = current.prev;
-          }
-        if (current == null)
-          {
-            hint = contigous_first;
-            return null; // x below lowermost value
-          }
-        while ((current != null) && (current.ub < unsigned_x))
-          {
-            past = current;
-            current = current.next;
-          }
-        if (current == null) // x above uppermost value; return uppermost
-          {
-            hint = past;
-            return new Integer(long_to_signed_int(past.ub));
-          }
-        else if (unsigned_x <= current.lb) // pred(x) below current
-          {
-            hint = current.prev;
-            if (current.prev == null)
-              return null; // x is already lowermost value
-            else
-              return new Integer(long_to_signed_int(current.prev.ub));
-          }
-        else
-          {
-            hint = current;
-            return new Integer(long_to_signed_int(unsigned_x - 1));
-          }
-      }
+    if (x > subrange.getLowerBound())
+      return x - 1;
+    final Subrange previousSubrange = subranges.lower(subrange);
+    if (previousSubrange == null)
+      return null;
+    return (int)previousSubrange.getUpperBound();
   }
 
   /**
@@ -536,44 +373,10 @@ public class Range implements Representation
    */
   public String getDisplayValue(final int x)
   {
-    final long unsigned_x = signed_int_to_long(x);
-    if (hint == null) // no hint given; start with contigous first
-      hint = contigous_first;
-    if (hint == null) // empty range; we are done!
+    final Subrange subrange = getSubrangeByValue(x);
+    if (subrange == null)
       return null;
-    else
-      {
-        Contigous past = null; // previously visited contigous
-        Contigous current = hint; // presently visited contigous
-        while ((current != null) && (current.ub < unsigned_x))
-          {
-            past = current;
-            current = current.next;
-          }
-        if (current == null)
-          return null; // above uppermost value
-        while ((current != null) && (current.lb > unsigned_x))
-          {
-            past = current;
-            current = current.prev;
-          }
-        if (current == null)
-          {
-            hint = contigous_first;
-            return null; // below lowermost value
-          }
-        if (unsigned_x <= current.ub)
-          {
-            hint = current;
-            return
-              current.valueType.getDisplayValue(x);
-          }
-        else
-          {
-            hint = current;
-            return null; // between two ranges
-          }
-      }
+    return subrange.getDisplayValue(x);
   }
 
   /**
@@ -583,15 +386,13 @@ public class Range implements Representation
   public String toString()
   {
     final StringBuffer s = new StringBuffer();
-    s.append("Range[Contigous-Ranges{");
-    Contigous contigous = contigous_first;
-    while (contigous != null)
-      {
-        s.append(contigous.toString());
-        contigous = contigous.next;
+    for (final Subrange subrange : subranges) {
+      if (s.length() > 0) {
+        s.append(", ");
       }
-    s.append("}]");
-    return s.toString();
+      s.append(subrange.toString());
+    }
+    return "Range[subRanges={" + s + "}]";
   }
 }
 

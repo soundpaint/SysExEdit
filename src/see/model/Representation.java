@@ -27,14 +27,6 @@ package see.model;
 public interface Representation
 {
   /**
-   * Specifies a key for the icon, that is displayed together with each
-   * instance that implements this representation. The associated icon is
-   * to be stored via UIManager.getDefaults().put(iconKey, icon).
-   * @param iconKey The key of the icon to be displayed.
-   */
-  void setIconKey(final String iconKey);
-
-  /**
    * Returns the key for the icon, that is displayed together with each
    * instance that implements this representation.
    * @return The key of the icon to be displayed.

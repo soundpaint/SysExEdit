@@ -471,24 +471,36 @@ public class DB50XG implements MapDef
   /**
    * Returns the manufacturer ID as defined in the MIDI specification.
    */
-  public byte getManufacturerID() { return MANUFACTURER_ID; }
+  public byte getManufacturerID()
+  {
+    return MANUFACTURER_ID;
+  }
 
   /**
    * Returns the model ID.
    */
-  public byte getModelID() { return MODEL_ID; }
+  public byte getModelID()
+  {
+    return MODEL_ID;
+  }
 
   /**
    * Returns the default device model ID. As the synthesizer specs do not
    * explicitly specify such a value, we return the value 0, which may be
    * a good choice.
    */
-  public byte getDefaultDeviceID() { return 0; }
+  public byte getDefaultDeviceID()
+  {
+    return 0;
+  }
 
   /**
    * Returns the name of the author; optionally, a copyright message.
    */
-  public String getEnteredBy() { return ENTERED_BY; }
+  public String getEnteredBy()
+  {
+    return ENTERED_BY;
+  }
 
   private class DB50XGAddressRepresentation implements AddressRepresentation
   {
@@ -498,19 +510,19 @@ public class DB50XG implements MapDef
      * @return A string representation for the given address.
      */
     public String addressToString(long address)
-      {
-        byte bitpos = (byte)(address % 7);
-        address = address / 7;
-        byte hi = (byte)((address >> 14) & 0x7f);
-        byte mid = (byte)((address >> 7) & 0x7f);
-        byte lo = (byte)(address & 0x7f);
-        String bitpos_str = bitpos == 0 ? "" : " [" + bitpos + "]";
-        return
-          two_digits(Integer.toString(hi, 16)) + " " +
-          two_digits(Integer.toString(mid,16)) + " " +
-          two_digits(Integer.toString(lo,16)) +
-          bitpos_str;
-      }
+    {
+      final byte bitpos = (byte)(address % 7);
+      address /= address;
+      final byte hi = (byte)((address >> 14) & 0x7f);
+      final byte mid = (byte)((address >> 7) & 0x7f);
+      final byte lo = (byte)(address & 0x7f);
+      final String bitpos_str = bitpos == 0 ? "" : " [" + bitpos + "]";
+      return
+        two_digits(Integer.toString(hi, 16)) + " " +
+        two_digits(Integer.toString(mid,16)) + " " +
+        two_digits(Integer.toString(lo,16)) +
+        bitpos_str;
+    }
   }
 
   /**
@@ -530,7 +542,7 @@ public class DB50XG implements MapDef
    * @param lo The DB50XG address low component value.
    * @return The corresponding index in a vector of bits.
    */
-  private long addr2index(int hi, int mid, int lo)
+  private long addr2index(final int hi, final int mid, final int lo)
   {
     return
       (7*((((long)(hi & 0x7f)) << 14) | ((mid & 0x7f) << 7) | (lo & 0x7f)));
@@ -547,9 +559,9 @@ public class DB50XG implements MapDef
    * @exception IllegalArgumentException If the specified address already
    *    has been passed.
    */
-  private void skipToAddress(MapNode node, long index)
+  private void skipToAddress(final MapNode node, final long index)
   {
-    long delta = index - node.getTotalSize();
+    final long delta = index - node.getTotalSize();
     if (delta < 0)
       throw new IllegalArgumentException("address already passed");
     if (delta > 0)
@@ -566,7 +578,7 @@ public class DB50XG implements MapDef
     Range temp_range;
     ValueType temp_valueType;
 
-    ValueType
+    final ValueType
       pan = new EnumType(-1, PAN),
       level = new EnumType(LEVEL),
       lfo_frequency = new EnumType(LFO_FREQUENCY),
@@ -578,51 +590,45 @@ public class DB50XG implements MapDef
       delay_time_2 = new EnumType(DELAY_TIME_2),
       reverb_cube_size = new EnumType(REVERB_CUBE_SIZE);
 
-    Int8Type int_valueType = new Int8Type();
+    final Int8Type int_valueType = Int8Type.defaultInstance;
 
-    Int8Type centered_7bit_valueType = new Int8Type(-0x40);
-    Range centered_7bit_range = new Range();
-    centered_7bit_range.addContigous(0x00, 0x7f,
-                                     centered_7bit_valueType);
+    final Int8Type centered_7bit_valueType = new Int8Type(-0x40);
+    final Range centered_7bit_range = new Range();
+    centered_7bit_range.addSubrange(0x00, 0x7f, centered_7bit_valueType);
 
-    MapNode root = new MapNode("DB50XG");
+    final MapNode root = new MapNode("DB50XG");
     MapNode temp_node = new MapNode("System");
 
-    temp_range = new Range();
-    temp_range.addContigous(0x0, 0x7, int_valueType);
-    temp_range.setIconKey("internal-tune");
+    temp_range = new Range("internal-tune");
+    temp_range.addSubrange(0x0, 0x7, int_valueType);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x4);
     temp_node.add(new MapNode("Master Tune[3]", temp_contents));
 
-    temp_range = new Range();
-    temp_range.addContigous(0x0, 0xf, int_valueType);
-    temp_range.setIconKey("internal-tune");
+    temp_range = new Range("internal-tune");
+    temp_range.addSubrange(0x0, 0xf, int_valueType);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x0);
     temp_node.add(new MapNode("Master Tune[2]", temp_contents));
 
-    temp_range = new Range();
-    temp_range.addContigous(0x0, 0xf, int_valueType);
-    temp_range.setIconKey("internal-tune");
+    temp_range = new Range("internal-tune");
+    temp_range.addSubrange(0x0, 0xf, int_valueType);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x0);
     temp_node.add(new MapNode("Master Tune[1]", temp_contents));
 
-    temp_range = new Range();
-    temp_range.addContigous(0x0, 0xf, int_valueType);
-    temp_range.setIconKey("internal-tune");
+    temp_range = new Range("internal-tune");
+    temp_range.addSubrange(0x0, 0xf, int_valueType);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x0);
     temp_node.add(new MapNode("Master Tune[0]", temp_contents));
 
-    temp_range = new Range();
-    temp_range.addContigous(0x0, 0x7f, int_valueType);
-    temp_range.setIconKey("internal-volume");
+    temp_range = new Range("internal-volume");
+    temp_range.addSubrange(0x0, 0x7f, int_valueType);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x7f);
@@ -630,35 +636,31 @@ public class DB50XG implements MapDef
 
     temp_node.add(new MapNode("Unused", new RangeContents(7)));
 
-    temp_range = new Range();
-    temp_range.addContigous(0x28, 0x58, centered_7bit_valueType);
-    temp_range.setIconKey("internal-transpose");
+    temp_range = new Range("internal-transpose");
+    temp_range.addSubrange(0x28, 0x58, centered_7bit_valueType);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x40);
     temp_node.add(new MapNode("Transpose", temp_contents));
 
 
-    temp_range = new Range();
-    temp_range.addContigous(0x7f, 0x7f, int_valueType);
-    temp_range.setIconKey("internal-error");
+    temp_range = new Range("internal-error");
+    temp_range.addSingleValue(0x7f, int_valueType);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x7f);
     temp_node.add(new MapNode("Drum Setup Reset", temp_contents,
                               addr2index(0x00, 0x00, 0x76)));
 
-    temp_range = new Range();
-    temp_range.addContigous(0x7f, 0x7f, int_valueType);
-    temp_range.setIconKey("internal-error");
+    temp_range = new Range("internal-error");
+    temp_range.addSingleValue(0x7f, int_valueType);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x7f);
     temp_node.add(new MapNode("XG System On", temp_contents));
 
-    temp_range = new Range();
-    temp_range.addContigous(0x7f, 0x7f, int_valueType);
-    temp_range.setIconKey("internal-error");
+    temp_range = new Range("internal-error");
+    temp_range.addSingleValue(0x7f, int_valueType);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(7);
     temp_contents.setDefaultValue(0x7f);
@@ -666,7 +668,7 @@ public class DB50XG implements MapDef
 
     root.add(temp_node);
 
-    ValueType
+    final ValueType
       hall_enumType = new EnumType(-0x0080, HALL),
       room_enumType = new EnumType(-0x0100, ROOM),
       stage_enumType = new EnumType(-0x0180, STAGE),
@@ -676,77 +678,73 @@ public class DB50XG implements MapDef
       early_ref_enumType = new EnumType(-0x0480, EARLY_REF),
       karaoke_enumType = new EnumType(-0x0a00, KARAOKE);
 
-    Range reverb_range = new Range();
-    reverb_range.addContigous(0x0000, "No Effect");
-    reverb_range.addContigous(0x0080, 0x0081, hall_enumType);
-    reverb_range.addContigous(0x0100, 0x0102, room_enumType);
-    reverb_range.addContigous(0x0180, 0x0181, stage_enumType);
-    reverb_range.addContigous(0x0200, "Plate");
-    reverb_range.addContigous(0x0800, "White Room");
-    reverb_range.addContigous(0x0880, "Tunnel");
-    reverb_range.addContigous(0x0980, "Basement");
-    reverb_range.setIconKey("internal-fx-reverb");
+    final Range reverb_range = new Range("internal-fx-reverb");
+    reverb_range.addSingleValue(0x0000, "No Effect");
+    reverb_range.addSubrange(0x0080, 0x0081, hall_enumType);
+    reverb_range.addSubrange(0x0100, 0x0102, room_enumType);
+    reverb_range.addSubrange(0x0180, 0x0181, stage_enumType);
+    reverb_range.addSingleValue(0x0200, "Plate");
+    reverb_range.addSingleValue(0x0800, "White Room");
+    reverb_range.addSingleValue(0x0880, "Tunnel");
+    reverb_range.addSingleValue(0x0980, "Basement");
 
-    Range chorus_range = new Range();
-    chorus_range.addContigous(0x0000, "No Effect");
-    chorus_range.addContigous(0x2080, 0x2082, chorus_enumType);
-    chorus_range.addContigous(0x2088, "Chorus 4");
-    chorus_range.addContigous(0x2100, 0x2102, celeste_enumType);
-    chorus_range.addContigous(0x2108, "Celeste 4");
-    chorus_range.addContigous(0x2180, 0x2181, flanger_enumType);
-    chorus_range.addContigous(0x2188, "Flanger 3");
-    chorus_range.setIconKey("internal-fx-chorus");
+    final Range chorus_range = new Range("internal-fx-chorus");
+    chorus_range.addSingleValue(0x0000, "No Effect");
+    chorus_range.addSubrange(0x2080, 0x2082, chorus_enumType);
+    chorus_range.addSingleValue(0x2088, "Chorus 4");
+    chorus_range.addSubrange(0x2100, 0x2102, celeste_enumType);
+    chorus_range.addSingleValue(0x2108, "Celeste 4");
+    chorus_range.addSubrange(0x2180, 0x2181, flanger_enumType);
+    chorus_range.addSingleValue(0x2188, "Flanger 3");
 
-    Range variation_range = new Range();
-    variation_range.addContigous(0x0000, "No Effect");
-    variation_range.addContigous(0x0080, 0x0081, hall_enumType);
-    variation_range.addContigous(0x0100, 0x0102, room_enumType);
-    variation_range.addContigous(0x0180, 0x0181, stage_enumType);
-    variation_range.addContigous(0x0200, "Plate");
-    variation_range.addContigous(0x0280, "Delay L, C, R");
-    variation_range.addContigous(0x0300, "Delay L, R");
-    variation_range.addContigous(0x0380, "Echo");
-    variation_range.addContigous(0x0400, "Cross Delay");
-    variation_range.addContigous(0x0480, 0x0481, early_ref_enumType);
-    variation_range.addContigous(0x0500, "Gate Reverb");
-    variation_range.addContigous(0x0580, "Reverse Gate");
-    variation_range.addContigous(0x0a00, 0x0a02, karaoke_enumType);
-    variation_range.addContigous(0x2080, 0x2082, chorus_enumType);
-    variation_range.addContigous(0x2088, "Chorus 4");
-    variation_range.addContigous(0x2100, 0x2102, celeste_enumType);
-    variation_range.addContigous(0x2108, "Celeste 4");
-    variation_range.addContigous(0x2180, 0x2181, flanger_enumType);
-    variation_range.addContigous(0x2188, "Flanger 3");
-    variation_range.addContigous(0x2200, "Symphonic");
-    variation_range.addContigous(0x2280, "Rotary Speaker");
-    variation_range.addContigous(0x2300, "Tremolo");
-    variation_range.addContigous(0x2380, "Auto Pan");
-    variation_range.addContigous(0x2401, "Phaser 1");
-    variation_range.addContigous(0x2408, "Phaser 2");
-    variation_range.addContigous(0x2480, "Distortion");
-    variation_range.addContigous(0x2500, "Over Drive");
-    variation_range.addContigous(0x2580, "Amp Simulator");
-    variation_range.addContigous(0x2600, "3-Band EQ (Mono)");
-    variation_range.addContigous(0x2680, "2-Band EQ (Stereo)");
-    variation_range.addContigous(0x2700, "Auto Wah (LFO)");
-    variation_range.addContigous(0x2000, "Thru");
+    final Range variation_range = new Range();
+    variation_range.addSingleValue(0x0000, "No Effect");
+    variation_range.addSubrange(0x0080, 0x0081, hall_enumType);
+    variation_range.addSubrange(0x0100, 0x0102, room_enumType);
+    variation_range.addSubrange(0x0180, 0x0181, stage_enumType);
+    variation_range.addSingleValue(0x0200, "Plate");
+    variation_range.addSingleValue(0x0280, "Delay L, C, R");
+    variation_range.addSingleValue(0x0300, "Delay L, R");
+    variation_range.addSingleValue(0x0380, "Echo");
+    variation_range.addSingleValue(0x0400, "Cross Delay");
+    variation_range.addSubrange(0x0480, 0x0481, early_ref_enumType);
+    variation_range.addSingleValue(0x0500, "Gate Reverb");
+    variation_range.addSingleValue(0x0580, "Reverse Gate");
+    variation_range.addSubrange(0x0a00, 0x0a02, karaoke_enumType);
+    variation_range.addSubrange(0x2080, 0x2082, chorus_enumType);
+    variation_range.addSingleValue(0x2088, "Chorus 4");
+    variation_range.addSubrange(0x2100, 0x2102, celeste_enumType);
+    variation_range.addSingleValue(0x2108, "Celeste 4");
+    variation_range.addSubrange(0x2180, 0x2181, flanger_enumType);
+    variation_range.addSingleValue(0x2188, "Flanger 3");
+    variation_range.addSingleValue(0x2200, "Symphonic");
+    variation_range.addSingleValue(0x2280, "Rotary Speaker");
+    variation_range.addSingleValue(0x2300, "Tremolo");
+    variation_range.addSingleValue(0x2380, "Auto Pan");
+    variation_range.addSingleValue(0x2401, "Phaser 1");
+    variation_range.addSingleValue(0x2408, "Phaser 2");
+    variation_range.addSingleValue(0x2480, "Distortion");
+    variation_range.addSingleValue(0x2500, "Over Drive");
+    variation_range.addSingleValue(0x2580, "Amp Simulator");
+    variation_range.addSingleValue(0x2600, "3-Band EQ (Mono)");
+    variation_range.addSingleValue(0x2680, "2-Band EQ (Stereo)");
+    variation_range.addSingleValue(0x2700, "Auto Wah (LFO)");
+    variation_range.addSingleValue(0x2000, "Thru");
 
-    Range pan_range = new Range();
-    pan_range.addContigous(0x01, 0x7f, pan);
-    pan_range.setIconKey("internal-pan");
+    final Range pan_range = new Range("internal-pan");
+    pan_range.addSubrange(0x01, 0x7f, pan);
 
-    Range level_range = new Range();
-    level_range.addContigous(0x00, 0x7f, level);
-    level_range.setIconKey("internal-volume");
+    final Range level_range = new Range("internal-volume");
+    level_range.addSubrange(0x00, 0x7f, level);
 
-    EnumType connection_enumType = new EnumType(CONNECTION);
-    Range connection_range = new Range();
-    connection_range.addContigous(0x00, 0x01, connection_enumType);
+    final EnumType connection_enumType = new EnumType(CONNECTION);
+    final Range connection_range = new Range();
+    connection_range.addSubrange(0x00, 0x01, connection_enumType);
 
-    EnumType part_enumType = new EnumType(PART);
-    Range part_range = new Range();
-    part_range.addContigous(0x00, 0x01, part_enumType);
-    part_range.addContigous(0x7f, "Off");
+    final EnumType part_enumType = new EnumType(PART);
+    final Range part_range = new Range();
+    part_range.addSubrange(0x00, 0x01, part_enumType);
+    part_range.addSingleValue(0x7f, "Off");
 
     temp_node = new MapNode("Effect1", addr2index(0x02, 0x00, 0x00));
     MapNode temp_node2 = new MapNode("Reverb");
@@ -757,15 +755,14 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Reverb Type", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_valueType);
-    for (int i = 0; i < 10; i++)
-      {
-        temp_contents = new RangeContents(temp_range);
-        temp_contents.setBitSize(7);
-        temp_contents.setDefaultValue(0x00);
-        temp_node2.add(new MapNode("Reverb Parameter " + (i + 1),
-                                   temp_contents));
-      }
+    temp_range.addSubrange(0, 127, int_valueType);
+    for (int i = 0; i < 10; i++) {
+      temp_contents = new RangeContents(temp_range);
+      temp_contents.setBitSize(7);
+      temp_contents.setDefaultValue(0x00);
+      temp_node2.add(new MapNode("Reverb Parameter " + (i + 1),
+                                 temp_contents));
+    }
 
     temp_contents = new RangeContents(level_range);
     temp_contents.setBitSize(7);
@@ -778,17 +775,16 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Reverb Pan", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_valueType);
+    temp_range.addSubrange(0, 127, int_valueType);
     long offset;
-    for (int i = 10; i < 16; i++)
-      {
-        temp_contents = new RangeContents(temp_range);
-        temp_contents.setBitSize(7);
-        temp_contents.setDefaultValue(0x00);
-        offset = (i == 10) ? addr2index(0x00, 0x00, 0x02) : 0;
-        temp_node2.add(new MapNode("Reverb Parameter " + (i + 1),
-                                   temp_contents, offset));
-      }
+    for (int i = 10; i < 16; i++) {
+      temp_contents = new RangeContents(temp_range);
+      temp_contents.setBitSize(7);
+      temp_contents.setDefaultValue(0x00);
+      offset = i == 10 ? addr2index(0x00, 0x00, 0x02) : 0;
+      temp_node2.add(new MapNode("Reverb Parameter " + (i + 1),
+                                 temp_contents, offset));
+    }
 
     temp_node.add(temp_node2);
     temp_node2 = new MapNode("Chorus", addr2index(0x00, 0x00, 0x0a));
@@ -799,15 +795,14 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Chorus Type", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_valueType);
-    for (int i = 0; i < 10; i++)
-      {
-        temp_contents = new RangeContents(temp_range);
-        temp_contents.setBitSize(7);
-        temp_contents.setDefaultValue(0x00);
-        temp_node2.add(new MapNode("Chorus Parameter " + (i + 1),
-                                   temp_contents));
-      }
+    temp_range.addSubrange(0, 127, int_valueType);
+    for (int i = 0; i < 10; i++) {
+      temp_contents = new RangeContents(temp_range);
+      temp_contents.setBitSize(7);
+      temp_contents.setDefaultValue(0x00);
+      temp_node2.add(new MapNode("Chorus Parameter " + (i + 1),
+                                 temp_contents));
+    }
 
     temp_contents = new RangeContents(level_range);
     temp_contents.setBitSize(7);
@@ -825,16 +820,15 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Send Chorus To Reverb", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_valueType);
-    for (int i = 10; i < 16; i++)
-      {
-        temp_contents = new RangeContents(temp_range);
-        temp_contents.setBitSize(7);
-        temp_contents.setDefaultValue(0x00);
-        offset = (i == 10) ? addr2index(0x00, 0x00, 0x01) : 0;
-        temp_node2.add(new MapNode("Chorus Parameter " + (i + 1),
-                                   temp_contents, offset));
-      }
+    temp_range.addSubrange(0, 127, int_valueType);
+    for (int i = 10; i < 16; i++) {
+      temp_contents = new RangeContents(temp_range);
+      temp_contents.setBitSize(7);
+      temp_contents.setDefaultValue(0x00);
+      offset = i == 10 ? addr2index(0x00, 0x00, 0x01) : 0;
+      temp_node2.add(new MapNode("Chorus Parameter " + (i + 1),
+                                 temp_contents, offset));
+    }
 
     temp_node.add(temp_node2);
     temp_node2 = new MapNode("Variation", addr2index(0x00, 0x00, 0x0a));
@@ -845,15 +839,14 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("Variation Type", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_valueType);
-    for (int i = 0; i < 10; i++)
-      {
-        temp_contents = new RangeContents(temp_range);
-        temp_contents.setBitSize(14);
-        temp_contents.setDefaultValue(0x00);
-        temp_node2.add(new MapNode("Variation Parameter " + (i + 1),
-                                   temp_contents));
-      }
+    temp_range.addSubrange(0, 127, int_valueType);
+    for (int i = 0; i < 10; i++) {
+      temp_contents = new RangeContents(temp_range);
+      temp_contents.setBitSize(14);
+      temp_contents.setDefaultValue(0x00);
+      temp_node2.add(new MapNode("Variation Parameter " + (i + 1),
+                                 temp_contents));
+    }
 
     temp_contents = new RangeContents(level_range);
     temp_contents.setBitSize(7);
@@ -913,23 +906,22 @@ public class DB50XG implements MapDef
     temp_node2.add(new MapNode("AC2 Variation Control Depth", temp_contents));
 
     temp_range = new Range();
-    temp_range.addContigous(0, 127, int_valueType);
-    for (int i = 10; i < 16; i++)
-      {
-        temp_contents = new RangeContents(temp_range);
-        temp_contents.setBitSize(7);
-        temp_contents.setDefaultValue(0x00);
-        offset = (i == 10) ? addr2index(0x00, 0x00, 0x0f) : 0;
-        temp_node2.add(new MapNode("Variation Parameter " + (i + 1),
-                                   temp_contents));
-      }
+    temp_range.addSubrange(0, 127, int_valueType);
+    for (int i = 10; i < 16; i++) {
+      temp_contents = new RangeContents(temp_range);
+      temp_contents.setBitSize(7);
+      temp_contents.setDefaultValue(0x00);
+      offset = i == 10 ? addr2index(0x00, 0x00, 0x0f) : 0;
+      temp_node2.add(new MapNode("Variation Parameter " + (i + 1),
+                                 temp_contents));
+    }
 
     temp_node.add(temp_node2);
     root.add(temp_node);
 
     temp_node = new MapNode("Multi Part 1", addr2index(0x05, 0x7e, 0x0a));
     temp_range = new Range();
-    temp_range.addContigous(0, 127, lfo_frequency);
+    temp_range.addSubrange(0, 127, lfo_frequency);
     temp_contents = new RangeContents(temp_range);
     temp_contents.setBitSize(14);
     temp_node.add(new MapNode("LFO Frequency", temp_contents));
@@ -940,37 +932,40 @@ public class DB50XG implements MapDef
     return root;
   }
 
-  private String two_digits(String s)
+  private String two_digits(final String s)
   {
-    switch (s.length())
-      {
-      case 0:
-        return "00";
-      case 1:
-        return "0" + s;
-      case 2:
-        return s;
-      default:
-        return s.substring(s.length() - 2);
-      }
+    switch (s.length()) {
+    case 0:
+      return "00";
+    case 1:
+      return "0" + s;
+    case 2:
+      return s;
+    default:
+      return s.substring(s.length() - 2);
+    }
   }
 
   private class BulkStream extends InputStream
   {
+    private final int byte_start;
+    private final int byte_count;
+    private final byte hi;
+    private final byte mid;
+    private final byte lo;
+    private final long end;
     private long pos;
-    private long end;
     private int extrapos;
-    private int byte_start;
-    private int byte_count;
-    private byte hi;
-    private byte mid;
-    private byte lo;
     private int check_sum;
     private MapNode node;
 
-    private BulkStream() {}
+    private BulkStream()
+    {
+      throw new UnsupportedOperationException();
+    }
 
-    BulkStream(MapNode root, long start, long end) throws IOException
+    BulkStream(final MapNode root, final long start, final long end)
+      throws IOException
     {
       if (root == null)
         throw new NullPointerException("root");
@@ -994,63 +989,61 @@ public class DB50XG implements MapDef
 
     private int next_header_byte()
     {
-      int data;
-      switch (extrapos)
-        {
-        case -9:
-          data = SYS_EX_STAT;
-          break;
-        case -8:
-          data = MANUFACTURER_ID;
-          break;
-        case -7:
-          data = DEVICE_NUMBER;
-          break;
-        case -6:
-          data = MODEL_ID;
-          break;
-        case -5:
-          data = byte_count >> 7;
-          check_sum = (check_sum + data) & 0x7f;
-          break;
-        case -4:
-          data = byte_count & 0x7f;
-          check_sum = (check_sum + data) & 0x7f;
-          break;
-        case -3:
-          data = hi;
-          check_sum = (check_sum + data) & 0x7f;
-          break;
-        case -2:
-          data = mid;
-          check_sum = (check_sum + data) & 0x7f;
-          break;
-        case -1:
-          data = lo;
-          check_sum = (check_sum + data) & 0x7f;
-          break;
-        default:
-          throw new IllegalStateException("invalid extrapos");
-        }
+      final int data;
+      switch (extrapos) {
+      case -9:
+        data = SYS_EX_STAT;
+        break;
+      case -8:
+        data = MANUFACTURER_ID;
+        break;
+      case -7:
+        data = DEVICE_NUMBER;
+        break;
+      case -6:
+        data = MODEL_ID;
+        break;
+      case -5:
+        data = byte_count >> 7;
+        check_sum = (check_sum + data) & 0x7f;
+        break;
+      case -4:
+        data = byte_count & 0x7f;
+        check_sum = (check_sum + data) & 0x7f;
+        break;
+      case -3:
+        data = hi;
+        check_sum = (check_sum + data) & 0x7f;
+        break;
+      case -2:
+        data = mid;
+        check_sum = (check_sum + data) & 0x7f;
+        break;
+      case -1:
+        data = lo;
+        check_sum = (check_sum + data) & 0x7f;
+        break;
+      default:
+        throw new IllegalStateException("invalid extrapos");
+      }
       extrapos++;
       return data;
     }
 
     private int next_tail_byte()
     {
-      int data;
-      switch (extrapos)
-        {
-        case 0:
-          check_sum = (~check_sum) & 0x7f;
-          data = check_sum;
-          break;
-        case 1:
-          data = SYS_EX_END;
-          break;
-        default:
-          throw new IllegalStateException("invalid extrapos");
-        }
+      final int data;
+      switch (extrapos) {
+      case 0:
+        check_sum = (~check_sum) & 0x7f;
+        data = check_sum;
+        break;
+      case 1:
+        data = SYS_EX_END;
+        break;
+      default:
+        throw new IllegalStateException("invalid extrapos");
+      }
       extrapos++;
       return data;
     }
@@ -1058,7 +1051,7 @@ public class DB50XG implements MapDef
     private int next_bulk_dump_byte()
     {
       node = node.locate(pos);
-      int data[] = node.getData(pos, 7);
+      final int data[] = node.getData(pos, 7);
       check_sum = (check_sum + data[0]) & 0x7f;
       pos += 7;
       return data[0];
@@ -1089,16 +1082,14 @@ public class DB50XG implements MapDef
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  public InputStream bulkDump(MapNode root, long start, long end)
+  public InputStream bulkDump(final MapNode root,
+                              final long start, final long end)
   {
-    try
-      {
-        return new BulkStream(root, start, end);
-      }
-    catch (IOException e)
-      {
-        throw new IllegalStateException(e.toString());
-      }
+    try {
+      return new BulkStream(root, start, end);
+    } catch (final IOException e) {
+      throw new IllegalStateException(e.toString());
+    }
   }
 
   /**
@@ -1107,14 +1098,18 @@ public class DB50XG implements MapDef
    * updates the memory map accordingly.
    * @param in The InputStream of MIDI bytes to be interpreted.
    */
-  public void bulkRead(InputStream in)
+  public void bulkRead(final InputStream in)
   {
+    // TODO
   }
 
   /**
    * Returns descriptive name of the device(s) (for headlines etc.)
    */
-  public String toString() { return DEVICE_NAME; }
+  public String toString()
+  {
+    return DEVICE_NAME;
+  }
 }
 
 /*

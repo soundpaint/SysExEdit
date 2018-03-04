@@ -30,11 +30,18 @@ public class Int8Type implements ValueType
   private final int radix;
 
   /**
+   * A predefined Int8Type for arbitrary values n in the range 0x00
+   * through 0xff.  The display value is just the value's ordinary
+   * numeric representation.
+   */
+  public final static Int8Type defaultInstance = new Int8Type();
+
+  /**
    * Defines a new Int8Type for arbitrary values n in the range 0x00
    * through 0xff.  The display value is just the value's ordinary
    * numeric representation.
    */
-  public Int8Type()
+  private Int8Type()
   {
     this(0);
   }
