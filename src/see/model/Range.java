@@ -48,6 +48,12 @@ import javax.swing.Icon;
 public class Range implements Representation
 {
   /**
+   * The key for an icon that is applicable as fallback for any kind
+   * of data when no more specific icon is available.
+   */
+  public static final String GENERIC_ICON_KEY = "internal-data";
+
+  /**
    * A key that represents an icon that illustrates an instance of
    * this Range.
    */
@@ -72,12 +78,12 @@ public class Range implements Representation
   private long size = 0;
 
   /**
-   * Creates a range that is initially empty.  Uses the default
-   * "internal-data" icon for this range.
+   * Creates a range that is initially empty.  Uses the generic
+   * fall-back icon for this range.
    */
   public Range()
   {
-    this("internal-data");
+    this(GENERIC_ICON_KEY);
   }
 
   /**

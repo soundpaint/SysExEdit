@@ -91,7 +91,7 @@ public class RangeContents extends AbstractContents
       throw new IllegalArgumentException("amount");
     final FlagsType unusedType = new FlagsType();
     final Range range =
-      new Range("internal-unknown", 0, (1 << amount) - 1, unusedType);
+      new Range(Range.GENERIC_ICON_KEY, 0, (1 << amount) - 1, unusedType);
     return range;
   }
 
