@@ -44,24 +44,10 @@ public abstract class AbstractContents implements Contents
   }
 
   /**
-   * Adds a single representation to the pool of available representations.
-   * Together, these representations define a union of single
-   * representations.<BR>
-   * The effective bit size is automatically changed, if necessary.
-   * @param representation The representation to be added to the pool.
-   * @exception NullPointerException If representation equals null.
-   * @exception IllegalArgumentException If representation is not an
-   *    instance of a compatible class.
+   * Returns the Representation object for this Contents object.
+   * @return The Representation object for this Contents object.
    */
-  public abstract void addRepresentation(final Representation representation);
-
-  /**
-   * Returns the Representation object that is currently selected for this
-   * Contents object.
-   * @return The Representation object that is currently selected for this
-   *    Contents object or null, if there is no valid selection.
-   */
-  protected abstract Representation getSelectedRepresentation();
+  protected abstract Representation getRepresentation();
 
   /**
    * Returns a String that represents this contents' current value
@@ -72,7 +58,7 @@ public abstract class AbstractContents implements Contents
    */
   public String getDisplayValue()
   {
-    final Representation representation = getSelectedRepresentation();
+    final Representation representation = getRepresentation();
     if (representation != null) {
       return representation.getDisplayValue(getValue());
     } else {
@@ -86,7 +72,7 @@ public abstract class AbstractContents implements Contents
    */
   public Icon getIcon()
   {
-    final Representation representation = getSelectedRepresentation();
+    final Representation representation = getRepresentation();
     if (representation != null) {
       final String iconKey = representation.getIconKey();
       if (iconKey != null) {
@@ -159,7 +145,7 @@ public abstract class AbstractContents implements Contents
    */
   public void increment()
   {
-    final Representation representation = getSelectedRepresentation();
+    final Representation representation = getRepresentation();
     if (representation.isEnumerable())
       {
         final Integer succValue = representation.succ(getValue());
@@ -174,7 +160,7 @@ public abstract class AbstractContents implements Contents
    */
   public void decrement()
   {
-    final Representation representation = getSelectedRepresentation();
+    final Representation representation = getRepresentation();
     if (representation.isEnumerable())
       {
         final Integer predValue = representation.pred(getValue());
@@ -189,7 +175,7 @@ public abstract class AbstractContents implements Contents
    */
   public void uppermost()
   {
-    setValue(getSelectedRepresentation().uppermost());
+    setValue(getRepresentation().uppermost());
   }
 
   /**
@@ -198,18 +184,8 @@ public abstract class AbstractContents implements Contents
    */
   public void lowermost()
   {
-    setValue(getSelectedRepresentation().lowermost());
+    setValue(getRepresentation().lowermost());
   }
-
-  /**
-   * Selects a representation from the pool of available representations.
-   * @param selectionID The number of the representation with respect to
-   *    the order the representations were added to this Contents object.
-   *    The first representation has the number 0.
-   * @exception IndexOutOfBoundsException If selectionID is below 0 or
-   *    above or equal to the number of representations of the union.
-   */
-  public abstract void setSelectedRepresentation(final int selectionID);
 
   /**
    * Sets the effective bit size of this contents. The effective bit size

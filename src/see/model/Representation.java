@@ -37,7 +37,7 @@ public interface Representation
    * Returns the minimally required bit size for coding.
    * @return The minimally required bit size for coding.
    */
-  int getRequiredBitSize();
+  byte getRequiredBitSize();
 
   /**
    * Checks, if the specified value is a valid member of this

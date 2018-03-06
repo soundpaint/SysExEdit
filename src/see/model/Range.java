@@ -277,7 +277,7 @@ public class Range implements Representation
    * Returns the minimally required bit size to code the total range.
    * @return The minimally required bit size in the range 0..32.
    */
-  public int getRequiredBitSize()
+  public byte getRequiredBitSize()
   {
     return (byte)Math.ceil(Math.log(size) / Math.log(2));
   }

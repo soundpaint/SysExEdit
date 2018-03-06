@@ -37,7 +37,7 @@ public class RangeContents extends AbstractContents
    * of the device; thus we associate each memory cell with its address
    * rather than allocating a huge array with many empty memory cells.
    */
-  private byte min_bit_size;
+  private final byte min_bit_size;
 
   /** The effective size of this contents in bits (0..32). */
   private byte bit_size;
@@ -45,8 +45,8 @@ public class RangeContents extends AbstractContents
   /** The currently valid range. */
   private int selectionID;
 
-  /** Range objects that allow implementing range union. */
-  private final Vector<Range> ranges;
+  /** Range object for this contents. */
+  private final Range range;
 
   /**
    * Creates a new RangeContents object with initially no range (and thus no
@@ -66,19 +66,12 @@ public class RangeContents extends AbstractContents
    */
   public RangeContents(final Range range)
   {
-    min_bit_size = 0;
-    bit_size = 0;
-    ranges = new Vector<Range>();
-    selectionID = -1;
-    if (range != null)
-      {
-        addRepresentation(range);
-        // if (bit_size == 0)
-        //  throw new IllegalArgumentException("range empty");
-        // [PENDING: needs somewhat like:
-        // if (bit_size == 0) setEditable(false); ]
-        setSelectedRepresentation(0);
-      }
+    if (range == null) {
+      throw new NullPointerException("range");
+    }
+    this.range = range;
+    min_bit_size = range.getRequiredBitSize();
+    bit_size = (byte)Math.max(min_bit_size, bit_size);
   }
 
   /**
@@ -109,53 +102,12 @@ public class RangeContents extends AbstractContents
   }
 
   /**
-   * Adds a single range to the pool of available ranges.
-   * Together, these ranges define a union of single ranges.<BR>
-   * The effective bit size is automatically changed, if necessary.
-   * @param representation The range to be added to the pool.
-   * @exception NullPointerException If range equals null.
-   * @exception IllegalArgumentException If range is not an
-   *    instance of class Range.
+   * Returns the Representation object for this Contents object.
+   * @return The Representation object for this Contents object.
    */
-  public void addRepresentation(final Representation representation)
+  protected Representation getRepresentation()
   {
-    if (representation == null)
-      throw new NullPointerException("representation");
-    if (!(representation instanceof Range))
-      throw new IllegalArgumentException("representation not a range");
-    ranges.addElement((Range)representation);
-    min_bit_size =
-      (byte)Math.max(min_bit_size, representation.getRequiredBitSize());
-    bit_size = (byte)Math.max(min_bit_size, bit_size);
-  }
-
-  /**
-   * Returns the Range object that is currently selected for this
-   * RangeContents object.
-   * @return The Range object that is currently selected for this
-   *    RangeContents object or null, if there is no valid selection.
-   */
-  protected Representation getSelectedRepresentation()
-  {
-    if (selectionID == -1)
-      return null; // no range selected
-    else
-      return ranges.elementAt(selectionID);
-  }
-
-  /**
-   * Selects a range from the pool of available ranges.
-   * @param selectionID The number of the range with respect to the order
-   *    the ranges were added to this RangeContents object. The first range
-   *    has the number 0.
-   * @exception IndexOutOfBoundsException If selectionID is below 0 or above
-   *    or equal to the number of ranges of the union.
-   */
-  public void setSelectedRepresentation(final int selectionID)
-  {
-    if ((selectionID < 0) || (selectionID >= ranges.size()))
-      throw new IndexOutOfBoundsException("selectionID");
-    this.selectionID = selectionID;
+    return range;
   }
 
   /**

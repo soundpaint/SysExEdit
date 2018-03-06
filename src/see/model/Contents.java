@@ -31,18 +31,6 @@ import javax.swing.Icon;
 public interface Contents
 {
   /**
-   * Adds a single representation to the pool of available representations.
-   * Together, these representations define a union of single
-   * representations.<BR>
-   * The effective bit size is automatically changed, if necessary.
-   * @param representation The representation to be added to the pool.
-   * @exception NullPointerException If representation equals null.
-   * @exception IllegalArgumentException If representation is not an
-   *    instance of a compatible class.
-   */
-  void addRepresentation(final Representation representation);
-
-  /**
    * Returns a String that represents this contents' current value
    * according to the underlying Representation, or null, if the value
    * is not in range.
@@ -58,9 +46,7 @@ public interface Contents
   Icon getIcon();
 
   /*
-   * Sets the default value for this contents. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
+   * Sets the default value for this contents.
    * @param default_value The default value.
    * @exception IllegalArgumentException If value is not an instance of the
    *    class that holds the value represented by this class.
@@ -69,17 +55,13 @@ public interface Contents
   void setDefaultValue(final int default_value);
 
   /**
-   * Returns the current default value. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
+   * Returns the current default value for this contents.
    * @return The current default value.
    */
   int getDefaultValue();
 
   /*
-   * Sets the contents value for this contents. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
+   * Sets the contents value for this contents.
    * @param value The value.
    * @exception IllegalArgumentException If value is not an instance of the
    *    class that holds the value represented by this class.
@@ -88,9 +70,7 @@ public interface Contents
   void setValue(final int value);
 
   /**
-   * Returns the current contents value. This value is shared among
-   * selectable representations of the contents value; thus it even may be
-   * out of the currently selected or any other representation.
+   * Returns the current value for this contents.
    * @return The current value.
    */
   int getValue();
@@ -120,16 +100,6 @@ public interface Contents
    * Sets the contents of this node to the lowermost value that is in range.
    */
   void lowermost();
-
-  /**
-   * Selects a representation from the pool of available representations.
-   * @param selectionID The number of the representation with respect to
-   *    the order the representations were added to this Contents object.
-   *    The first representation has the number 0.
-   * @exception IndexOutOfBoundsException If selectionID is below 0 or
-   *    above or equal to the number of representations of the union.
-   */
-  void setSelectedRepresentation(final int selectionID);
 
   /**
    * Sets the effective bit size of this contents. The effective bit size
