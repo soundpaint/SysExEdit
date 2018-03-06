@@ -26,12 +26,12 @@ package see.model;
  */
 public class EnumType implements ValueType
 {
-  private int offs;
+  private int lowerBound;
   private String[] displayValues;
 
-  public int getMinValue()
+  public int getLowerBound()
   {
-    return offs;
+    return lowerBound;
   }
 
   public int getSize()
@@ -40,13 +40,13 @@ public class EnumType implements ValueType
   }
 
   /**
-   * Defines a new EnumType for the specified display values, starting
-   * with an internal value of 0 for the internal representation.  For
-   * an internal value beyond the bounds of the display values string
-   * array, the EnumType's display value is defined as the string
-   * constant DISPLAY_VALUE_UNKNOWN.
-   * @param displayValues An array of strings representing the value x
-   * for each x.
+   * Defines a new EnumerationType with the specified display values.
+   * Each display value is associated with a specific numerical value.
+   * The first of the specified display values is associated with the
+   * numerical value <code>0</code>; the next display value is
+   * associated with <code>1</code>, and so on.
+   * @param displayValues An array of strings representing the display
+   * values.
    * @exception NullPointerException If enum equals null.
    */
   public EnumType(final String[] displayValues)
@@ -59,43 +59,46 @@ public class EnumType implements ValueType
    * EnumType's display value equals the specified display value if
    * and only if the internal value equals the specified internal
    * value, and DISPLAY_VALUE_UNKNOWN in all other cases.
-   * @param internalValue The internal value to be represented by the
+   * @param value The numerical representation of the specified
    * display value.
-   * @param value The display value for the internal value.
+   * @param displayValue The display value for the internal value.
    */
-  public EnumType(final int internalValue, final String value)
+  public EnumType(final int value, final String displayValue)
   {
-    this(-internalValue, new String[] {value});
+    this(value, new String[] {displayValue});
   }
 
   /**
-   * Defines a new EnumerationType for some integer value x.
-   * The EnumerationType of x is enum[x + offs]. If (x + offs) is beyond the
-   * bounds of the array enum, the EnumerationType of x is defined as the
-   * String constant DISPLAY_VALUE_UNKNOWN.
-   * @param offs The offset to be added to the value that is to be
-   *    represented.
-   * @param displayValues An array of strings representing the value
-   *    (internalValue + offs) for each internal value.
+   * Defines a new EnumerationType with the specified display values.
+   * Each display value is associated with a specific numerical value.
+   * The first of the specified display values is associated with the
+   * numerical value <code>lowerBound</code>; the next display value
+   * is associated with <code>lowerBound + 1</code>, and so on.
+   * @param lowerBound The numerical representation of the first of the
+   * specified display values.
+   * @param displayValues An array of strings representing the display
+   * values.
    * @exception NullPointerException If displayValues equals null.
    */
-  public EnumType(final int offs, final String[] displayValues)
+  public EnumType(final int lowerBound, final String[] displayValues)
   {
-    this.offs = offs;
+    this.lowerBound = lowerBound;
     if (displayValues == null)
       throw new NullPointerException("displayValues equals null");
     this.displayValues = displayValues;
   }
 
   /**
-   * Returns a String that represents x according to the specification
-   * of this EnumerationType.
+   * Returns the display value that this enumeration associated with
+   * the specified numerical representation value.
+   * @param value The numerical value.
+   * @return The associated display value.
    */
   public String getDisplayValue(final int value)
   {
-    final int internalValue = value + offs;
-    if ((internalValue >= 0) && (internalValue < displayValues.length))
-      return displayValues[internalValue];
+    final int index = value - lowerBound;
+    if ((index >= 0) && (index < displayValues.length))
+      return displayValues[index];
     else
       return DISPLAY_VALUE_UNKNOWN;
   }
@@ -124,7 +127,7 @@ public class EnumType implements ValueType
    */
   public String toString()
   {
-    return "EnumType{offs=" + offs + ", displayValues=" +
+    return "EnumType{lowerBound=" + lowerBound + ", displayValues=" +
       displayValuesToString() + "}";
   }
 }

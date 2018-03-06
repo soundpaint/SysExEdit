@@ -206,7 +206,7 @@ public class Range implements Representation
     if (valueType.getSize() != 1) {
       throw new IllegalArgumentException("valueType does not represent a single value");
     }
-    addSingleValue(valueType.getMinValue(), valueType);
+    addSingleValue(valueType.getLowerBound(), valueType);
   }
 
   /**

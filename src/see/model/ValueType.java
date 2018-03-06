@@ -21,20 +21,45 @@
 package see.model;
 
 /**
- * This interface defines the basic type for a single Contents object.
+ * A class that implements this interface represents the type of a
+ * contigous, finite range of integer values.  For each integer value
+ * in this range, the implementing class must also define a string
+ * representation for human display, called "display value".  The
+ * display value should be unique among all values of the value range
+ * type.
  */
 public interface ValueType
 {
   /**
-   * Default display string for an invalid value.  This string is a
-   * fallback value for displaying a map node if its contents is not
-   * in the range of valid values as defined by the associated
-   * representation of that node.
+   * Default display value for an integer value out of range.  This
+   * string is a fallback display value for an integer value that is
+   * not in the contigous range of integer values for this value range
+   * type.
    */
   String DISPLAY_VALUE_UNKNOWN = "???";
 
-  int getMinValue();
+  /**
+   * Returns the lower bound of the range of values that this value
+   * range type represents.
+   * @return The lower bound integer value of this value range type.
+   */
+  int getLowerBound();
+
+  /**
+   * Returns the size of this value range type, i.e. the number of
+   * different values in this value range type.
+   * @return The size of this value range type.
+   */
   int getSize();
+
+  /**
+   * Returns the display value associated with the specified numerical
+   * value of this value range type.
+   * @param value An integer value in the range of this value range
+   * type.
+   * @return The display value that is associated with the specified
+   * integer value.
+   */
   String getDisplayValue(final int value);
 }
 

@@ -26,7 +26,7 @@ package see.model;
  */
 public class Int8Type implements ValueType
 {
-  private final int offs;
+  private final int lowerBound;
   private final int radix;
 
   /**
@@ -47,39 +47,36 @@ public class Int8Type implements ValueType
   }
 
   /**
-   * Defines a new Int8Type for arbitrary values n in the range
-   * [offset, offset + 255].  That is, the display value is just the
-   * value's internal 8 bits numeric representation plus the specified
-   * offset, which may be negative or positive or zero.  This
-   * convenience constructor assumes a radix of 10 for displaying the
-   * value.
-   * @param offs The offset to be added to the value that is to be
-   *    represented.
+   * Defines a new Int8Type for arbitrary integer values n in the
+   * range [0, 255], that are displayed as values [lowerBound,
+   * lowerBound + 255].  This convenience constructor assumes a radix
+   * of 10 for displaying the value.
+   * @param lowerBound The integer value that the display value '0'
+   * maps to.
    */
-  public Int8Type(final int offs)
+  public Int8Type(final int lowerBound)
   {
-    this(offs, 10);
+    this(lowerBound, 10);
   }
 
   /**
-   * Defines a new Int8Type for arbitrary values n in the range
-   * [offset, offset + 255].  That is, the display value is just the
-   * value's internal 8 bits numeric representation plus the specified
-   * offset, which may be negative or positive or zero.
-   * @param offs The offset to be added to the value that is to be
-   *    represented.
+   * Defines a new Int8Type for arbitrary integer values n in the
+   * range [0, 255], that are displayed as values [lowerBound,
+   * lowerBound + 255].
+   * @param lowerBound The integer value that the display value '0'
+   * maps to.
    * @param radix The radix to use when creating a numeric display
    * value from the integer value.
    */
-  public Int8Type(final int offs, final int radix)
+  public Int8Type(final int lowerBound, final int radix)
   {
-    this.offs = offs;
+    this.lowerBound = lowerBound;
     this.radix = radix;
   }
 
-  public int getMinValue()
+  public int getLowerBound()
   {
-    return offs;
+    return lowerBound;
   }
 
   public int getSize()
@@ -103,11 +100,11 @@ public class Int8Type implements ValueType
    */
   public String getDisplayValue(final int value)
   {
-    final long internalValue = value + offs;
-    if ((internalValue < 0) || (internalValue > 255)) {
+    final long index = value - lowerBound;
+    if ((index < 0) || (index > 255)) {
       return DISPLAY_VALUE_UNKNOWN;
     }
-    return Integer.toString(value + offs, radix);
+    return Integer.toString((int)index, radix);
   }
 
   /**
@@ -116,7 +113,7 @@ public class Int8Type implements ValueType
    */
   public String toString()
   {
-    return "IntType{offs=" + offs + ", radix=" + radix + "}";
+    return "IntType{lowerBound=" + lowerBound + ", radix=" + radix + "}";
   }
 }
 

@@ -579,7 +579,7 @@ public class DB50XG implements MapDef
     ValueType temp_valueType;
 
     final ValueType
-      pan = new EnumType(-1, PAN),
+      pan = new EnumType(1, PAN),
       level = new EnumType(LEVEL),
       lfo_frequency = new EnumType(LFO_FREQUENCY),
       modulation_delay_offset = new EnumType(MODULATION_DELAY_OFFSET),
@@ -669,14 +669,14 @@ public class DB50XG implements MapDef
     root.add(temp_node);
 
     final ValueType
-      hall_enumType = new EnumType(-0x0080, HALL),
-      room_enumType = new EnumType(-0x0100, ROOM),
-      stage_enumType = new EnumType(-0x0180, STAGE),
-      chorus_enumType = new EnumType(-0x2080, CHORUS),
-      celeste_enumType = new EnumType(-0x2100, CELESTE),
-      flanger_enumType = new EnumType(-0x2180, FLANGER),
-      early_ref_enumType = new EnumType(-0x0480, EARLY_REF),
-      karaoke_enumType = new EnumType(-0x0a00, KARAOKE);
+      hall_enumType = new EnumType(0x0080, HALL),
+      room_enumType = new EnumType(0x0100, ROOM),
+      stage_enumType = new EnumType(0x0180, STAGE),
+      chorus_enumType = new EnumType(0x2080, CHORUS),
+      celeste_enumType = new EnumType(0x2100, CELESTE),
+      flanger_enumType = new EnumType(0x2180, FLANGER),
+      early_ref_enumType = new EnumType(0x0480, EARLY_REF),
+      karaoke_enumType = new EnumType(0x0a00, KARAOKE);
 
     final Range reverb_range = new Range("internal-fx-reverb");
     reverb_range.addSingleValue(0x0000, "No Effect");

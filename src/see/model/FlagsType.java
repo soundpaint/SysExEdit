@@ -25,13 +25,14 @@ package see.model;
  */
 public class FlagsType implements ValueType
 {
-  private final int offs;
+  private final int lowerBound;
   private final int bitStringSize;
 
   /**
-   * Defines a new FlagsType for arbitrary values n in the range 0x00
+   * Defines a new bits mask for arbitrary values n in the range 0x00
    * through 0xff.  The display value is just the value's ordinary
-   * numeric representation as a set of binary digits.
+   * numeric representation as a set of binary digits.  This
+   * convenience constructor assumes a bit string size of 8.
    */
   public FlagsType()
   {
@@ -39,40 +40,38 @@ public class FlagsType implements ValueType
   }
 
   /**
-   * Defines a new FlagsType for arbitrary values n in the range
-   * [offset, offset + 255].  That is, the display value is just the
-   * value's internal 8 bits numeric representation plus the specified
-   * offset, which may be negative or positive or zero, formatted as a
-   * set of binary digits.  This convenience constructor assumes a bit
-   * string size of 8.
-   * @param offs The offset to be added to the value that is to be
-   *    represented.
+   * Defines a new bits mask for arbitrary values n in the range 0x00
+   * through 0xff.  The display value is just the value's ordinary
+   * numeric representation relative to the specified lower bound,
+   * displayed as a set of binary digits.  This convenience
+   * constructor assumes a bit string size of 8.
+   * @param lowerBound The integer value that the bit mask consisting
+   * of '0's only maps to.
    */
-  public FlagsType(final int offs)
+  public FlagsType(final int lowerBound)
   {
-    this(offs, 8);
+    this(lowerBound, 8);
   }
 
   /**
-   * Defines a new FlagsType for arbitrary values n in the range
-   * [offset, offset + 255].  That is, the display value is just the
-   * value's internal 8 bits numeric representation plus the specified
-   * offset, which may be negative or positive or zero, formatted as a
-   * set of binary digits.
-   * @param offs The offset to be added to the value that is to be
-   *    represented.
-   * @param bitStringSize The number of flags that this type
-   *    represents.
+   * Defines a new bits mask for arbitrary values n in the range 0x00
+   * through 0xff.  The display value is just the value's ordinary
+   * numeric representation relative to the specified lower bound,
+   * displayed as a set of binary digits.
+   * @param lowerBound The integer value that the bit mask consisting
+   * of '0's only maps to.
+   * @param bitStringSize The number of flags to be shown in the
+   * display value.
    */
-  public FlagsType(final int offs, final int bitStringSize)
+  public FlagsType(final int lowerBound, final int bitStringSize)
   {
-    this.offs = offs;
+    this.lowerBound = lowerBound;
     this.bitStringSize = bitStringSize;
   }
 
-  public int getMinValue()
+  public int getLowerBound()
   {
-    return offs;
+    return lowerBound;
   }
 
   public int getSize()
@@ -80,12 +79,7 @@ public class FlagsType implements ValueType
     return 256;
   }
 
-  /**
-   * Returns a bit string representation for a given value.
-   * @param value The value to be represented.
-   * @return A bit string representation of the value.
-   */
-  private String formatBitString(final int value)
+  private String formatBitMask(final int value)
   {
     final StringBuffer s = new StringBuffer();
     s.append("%");
@@ -95,16 +89,18 @@ public class FlagsType implements ValueType
   }
 
   /**
-   * Returns a String that represents the specified value according to
-   * the specification of this FlagsType.
+   * Returns a bit mask representation as display value for a given
+   * numerical value.
+   * @param value The numerical value to be represented.
+   * @return A bit mask as display value.
    */
   public String getDisplayValue(final int value)
   {
-    final long internalValue = value + offs;
-    if ((internalValue < 0) || (internalValue > 255)) {
+    final long index = value - lowerBound;
+    if ((index < 0) || (index > 255)) {
       return DISPLAY_VALUE_UNKNOWN;
     }
-    return formatBitString(value + offs);
+    return formatBitMask((int)index);
   }
 
   /**
@@ -113,7 +109,8 @@ public class FlagsType implements ValueType
    */
   public String toString()
   {
-    return "FlagsType{offs=" + offs + ", bitStringSize=" + bitStringSize + "}";
+    return "FlagsType{lowerBound=" + lowerBound +
+      ", bitStringSize=" + bitStringSize + "}";
   }
 }
 
