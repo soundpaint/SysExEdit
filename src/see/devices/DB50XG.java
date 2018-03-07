@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultMutableTreeNode;
 
+import see.model.AbstractDevice;
 import see.model.Contents;
 import see.model.RangeContents;
 import see.model.MapDef;
@@ -38,7 +40,7 @@ import see.model.AddressRepresentation;
 /**
  * This class customizes SysExEdit for a DB50XG synthesizer.
  */
-public class DB50XG implements MapDef
+public class DB50XG extends AbstractDevice
 {
   private final static String DEVICE_NAME = "Yamaha™ MU50/DB50XG";
   private final static byte MANUFACTURER_ID = 0x43;
@@ -466,7 +468,10 @@ public class DB50XG implements MapDef
     "Part 13", "Part 14", "Part 15", "Part 16"
   };
 
-  public DB50XG() {}
+  public DB50XG(final String deviceName)
+  {
+    super(deviceName);
+  }
 
   /**
    * Returns the manufacturer ID as defined in the MIDI specification.
@@ -570,9 +575,8 @@ public class DB50XG implements MapDef
 
   /**
    * Creates a map that represents the DB50XG's internal memory.
-   * @return The root node of the created map.
    */
-  public MapNode buildMap()
+  public void buildMap()
   {
     RangeContents temp_contents;
     Range temp_range;
@@ -596,7 +600,6 @@ public class DB50XG implements MapDef
     final Range centered_7bit_range = new Range();
     centered_7bit_range.addSubrange(0x00, 0x7f, centered_7bit_valueType);
 
-    final MapNode root = new MapNode("DB50XG");
     MapNode temp_node = new MapNode("System");
 
     temp_range = new Range("internal-tune");
@@ -666,6 +669,7 @@ public class DB50XG implements MapDef
     temp_contents.setDefaultValue(0x7f);
     temp_node.add(new MapNode("All Parameter Reset", temp_contents));
 
+    final MapRoot root = getRoot();
     root.add(temp_node);
 
     final ValueType
@@ -928,8 +932,6 @@ public class DB50XG implements MapDef
     temp_node.add(new MapNode("Unused", new RangeContents(2)));
 
     root.add(temp_node);
-    root.evaluateAddresses();
-    return root;
   }
 
   private String two_digits(final String s)

@@ -38,7 +38,7 @@ import see.model.ValueType;
  * This class extends JTree with some more attributes that specify how the
  * Map is to be displayed as a tree.
  */
-class Map extends JTree
+public class Map extends JTree
 {
   private static final long serialVersionUID = 5701224992251396503L;
 

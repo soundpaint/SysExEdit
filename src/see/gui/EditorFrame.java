@@ -40,6 +40,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -68,6 +70,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import see.model.MapDef;
@@ -228,7 +231,7 @@ public class EditorFrame extends JFrame implements Runnable
   private void setMap(final MapDef mapDef)
   {
     this.mapDef = mapDef;
-    final MapNode root = mapDef.buildMap();
+    final TreeNode root = mapDef.getRoot();
     if (mapModel != null)
       mapModel.setRoot(root);
     else
@@ -323,7 +326,7 @@ public class EditorFrame extends JFrame implements Runnable
     // map area
     final JPanel panel_map = new JPanel();
     getContentPane().add(panel_map, "Center");
-    map = new Map();
+    map = mapDef.getMap();
     map.setAddressRepresentation(mapDef.getAddressRepresentation());
     map.setAddressInfoEnabled(false);
     map.setModel(mapModel);
@@ -769,16 +772,21 @@ public class EditorFrame extends JFrame implements Runnable
                       "Device Model Selection",
                       JOptionPane.QUESTION_MESSAGE, null,
                       manager.getMapDefClasses(), null);
-    if (selection != null)
-      try
-      {
-        return selection.newInstance();
-      }
-    catch (final Exception e)
-      {
-        JOptionPane.showMessageDialog(this, e.toString(), ERROR,
+    if (selection != null) {
+      try {
+        final String deviceName = selection.getSimpleName();
+        return
+          selection.getDeclaredConstructor(new Class[] {String.class}).
+          newInstance(deviceName);
+      } catch (final Exception e) {
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(stringWriter);
+        e.printStackTrace(printWriter);
+        printWriter.close();
+        JOptionPane.showMessageDialog(this, stringWriter, ERROR,
                                       JOptionPane.INFORMATION_MESSAGE);
       }
+    }
     return null;
   }
 

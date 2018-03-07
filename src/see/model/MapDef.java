@@ -21,6 +21,9 @@
 package see.model;
 
 import java.io.InputStream;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import see.gui.Map;
 
 /**
  * By subclassing this abstract class, you can customize SysExEdit to a
@@ -76,9 +79,20 @@ public interface MapDef
    * Creates a new Map with a specific structure. Usually, this method
    * creates a <CODE>new MapNode(...)</CODE> as root node and then inserts
    * MapNode objects as children at will.
-   * @return The root node of the structured map.
    */
-  MapNode buildMap();
+  void buildMap();
+
+  /**
+   * Returns the root node of the tree of map nodes.
+   * @return The root node of the tree.
+   */
+  AbstractDevice.MapRoot getRoot();
+
+  /**
+   * Returns the associated tree component.
+   * @return The associated tree component.
+   */
+  Map getMap();
 
   /**
    * Given a contigous area of memory, returns a a stream of MIDI bytes
