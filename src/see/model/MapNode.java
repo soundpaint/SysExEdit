@@ -20,12 +20,16 @@
 
 package see.model;
 
+import java.awt.Component;
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.swing.Icon;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+
+import see.gui.Map;
 
 /**
  * This class is used to represent a node in the hierarchical structure of
@@ -38,7 +42,7 @@ import javax.swing.tree.DefaultTreeModel;
  * each node. This allows to define areas of inaccessible memory.
  */
 public class MapNode extends DefaultMutableTreeNode
-implements MapChangeListener
+  implements MapChangeListener, ContentsChangeListener
 {
   private static final long serialVersionUID = -1726377369359671649L;
 
@@ -71,6 +75,9 @@ implements MapChangeListener
     this.total_size =  offset + contents_size;
     address = -1; // evaluate later
     listeners = new Vector<MapChangeListener>();
+    if (contents != null) {
+      contents.addContentsChangeListener(this);
+    }
   }
 
   /**
@@ -123,6 +130,13 @@ implements MapChangeListener
   public MapNode(final String label, final Contents contents)
   {
     this(label, contents, 0);
+  }
+
+  public void editingPathValueChanged(final Contents contents)
+  {
+    final TreeNode root = getRoot();
+    final Map map = ((AbstractDevice.MapRoot)root).getMap();
+    map.stopEditing();
   }
 
   /**
@@ -215,9 +229,29 @@ implements MapChangeListener
     }
     if (!(obj instanceof Contents)) {
       throw new IllegalStateException("user object is not contents [obj=" +
-                                      obj + "]");
+                                      obj.getClass() + "]");
     }
     return (Contents)getUserObject();
+  }
+
+  public Component getEditor()
+  {
+    final Contents contents = getContents();
+    return contents != null ? contents.getEditor() : null;
+  }
+
+  /**
+   * Returns the numerical representation of this node's value.
+   * @return The numerical representation of this node's value.
+   */
+  public Integer getValue()
+  {
+    final Contents contents = getContents();
+    if (contents != null) {
+      return contents.getValue();
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -282,6 +316,14 @@ implements MapChangeListener
     final MapNode child = (MapNode)getChildAt(childIndex);
     super.remove(childIndex);
     adjust_total_size(-child.total_size);
+  }
+
+  @Override
+  public void setUserObject(Object userObject)
+  {
+    // The user object is actually already updated in
+    // RangeContents#editingPathValueChanged().
+    // Hence, this method does not change anything in the map.
   }
 
   /**

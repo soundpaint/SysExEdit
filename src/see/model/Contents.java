@@ -20,6 +20,7 @@
 
 package see.model;
 
+import java.awt.Component;
 import javax.swing.Icon;
 
 /**
@@ -30,6 +31,22 @@ import javax.swing.Icon;
  */
 public interface Contents
 {
+  /**
+   * Returns a GUI component that enables the user to enter a value of
+   * the type of contents that this object represents.
+   * @return The GUI component.
+   */
+  Component getEditor();
+
+  /**
+   * Adds a ContentsChangeListener that is envoked whenever the
+   * contents value changes.
+   * @param listener The listener to add.
+   * @exception NullPointerException If <code>listener</code> is
+   * <code>null</code>.
+   */
+  void addContentsChangeListener(final ContentsChangeListener listener);
+
   /**
    * Returns a String that represents this contents' current value
    * according to the underlying Representation, or null, if the value

@@ -20,7 +20,14 @@
 
 package see.model;
 
+import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.SwingUtilities;
 
 /**
  * This class holds the structural information and the actual contents,
@@ -48,6 +55,11 @@ public class RangeContents extends AbstractContents
   /** Range object for this contents. */
   private final Range range;
 
+  /** The editor for entering a value of this range contents. */
+  private final JComboBox<Contents> editor;
+
+  private Vector<ContentsChangeListener> listeners;
+
   /**
    * Creates a new RangeContents object with initially no range (and thus no
    * range selection).
@@ -72,6 +84,46 @@ public class RangeContents extends AbstractContents
     this.range = range;
     min_bit_size = range.getRequiredBitSize();
     bit_size = (byte)Math.max(min_bit_size, bit_size);
+
+    editor = new JComboBox<Contents>();
+
+    listeners = new Vector<ContentsChangeListener>();
+
+    final KeyListener kl = new KeyAdapter()
+      {
+        public void keyTyped(KeyEvent e)
+        {
+          if (e.getKeyChar() == '\n') {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                  final Contents newContents =
+                    editor.getItemAt(editor.getSelectedIndex());
+                  editingPathValueChanged(newContents);
+                }
+              });
+          }
+        }
+      };
+    editor.addKeyListener(kl);
+  }
+
+  public void addContentsChangeListener(final ContentsChangeListener listener)
+  {
+    if (listener == null) {
+      throw new NullPointerException("listener");
+    }
+    listeners.add(listener);
+  }
+
+  private void editingPathValueChanged(final Contents newContents)
+  {
+    // Here, we actually update the map (rather than in
+    // MapNode#setUserObject()).
+    setValue(newContents.getValue());
+
+    for (final ContentsChangeListener listener : listeners) {
+      listener.editingPathValueChanged(this);
+    }
   }
 
   /**
@@ -152,6 +204,34 @@ public class RangeContents extends AbstractContents
     final int[] bits = new int[1];
     bits[1] = getValue();
     return bits;
+  }
+
+  public Component getEditor()
+  {
+    final DefaultComboBoxModel<Contents> editorModel =
+      new DefaultComboBoxModel<Contents>();
+    int selectedIndex = -1;
+    int index = -1;
+    Integer value = range.lowermost();
+    while (value != null) {
+      final Contents contents =
+        new RangeContents(new Range(range.getIconKey(),
+                                    value, value,
+                                    new EnumType(value, new String[] {
+                                        range.getDisplayValue(value)})));
+      contents.setValue(value);
+      editorModel.addElement(contents);
+      index++;
+      if (value == getValue()) {
+        selectedIndex = index;
+      }
+      value = range.succ(value);
+    }
+    editor.setModel(editorModel);
+    if (selectedIndex > 0) {
+      editor.setSelectedIndex(selectedIndex);
+    }
+    return editor;
   }
 }
 

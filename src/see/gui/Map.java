@@ -22,16 +22,16 @@ package see.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
+import javax.swing.JComboBox;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeCellEditor;
 
 import see.model.AddressRepresentation;
-import see.model.Contents;
 import see.model.MapNode;
-import see.model.Representation;
 import see.model.ValueType;
 
 /**
@@ -52,26 +52,39 @@ public class Map extends JTree
    */
   private boolean addressInfoEnabled = false;
 
+  public Map()
+  {
+    super();
+    setEditable(true);
+    final CellRenderer renderer = new CellRenderer();
+    setCellRenderer(renderer);
+    setCellEditor(new MapCellEditor());
+  }
+
   public void setForeground(final Color value)
   {
     final CellRenderer renderer = (CellRenderer)getCellRenderer();
-    renderer.setForeground(value);
+    if (renderer != null) {
+      renderer.setForeground(value);
+    }
     super.setForeground(value);
   }
 
   public void setBackground(final Color value)
   {
     final CellRenderer renderer = (CellRenderer)getCellRenderer();
-    renderer.setBackground(value);
+    if (renderer != null) {
+      renderer.setBackground(value);
+    }
     super.setBackground(value);
   }
 
   public void updateUI()
   {
-    TreeCellRenderer renderer = getCellRenderer();
-    if (renderer == null)
-      setCellRenderer(renderer = new CellRenderer());
-    ((CellRenderer)renderer).updateUI(); // updates cell widths
+    final CellRenderer renderer = (CellRenderer)getCellRenderer();
+    if (renderer != null) {
+      renderer.updateUI(); // updates cell widths
+    }
     super.updateUI();
   }
 
@@ -218,6 +231,43 @@ public class Map extends JTree
       // setFont(defaultFont);
       this.selected = selected;
       return this;
+    }
+  }
+
+  private class MapCellEditor extends AbstractCellEditor
+    implements TreeCellEditor
+  {
+    private static final long serialVersionUID = -1479756067528395593L;
+
+    /**
+     * Unfortunetely, class AbstractCellEditor is not prepared to
+     * handle different cell editors for different cells.  Therefore,
+     * we have to remember the cell editor that is currently in use
+     * (assuming that there is always at most one active cell editor
+     * in a tree).
+     */
+    private Component lastRequestedEditor;
+
+    public Object getCellEditorValue()
+    {
+      final JComboBox editor = (JComboBox)lastRequestedEditor;
+      return editor.getSelectedItem();
+    }
+
+    public Component getTreeCellEditorComponent(final JTree tree,
+                                                final Object value,
+                                                final boolean isSelected,
+                                                final boolean expanded,
+                                                final boolean leaf,
+                                                final int row)
+    {
+      if (!(value instanceof MapNode)) {
+        throw new RuntimeException("tree value is not a map node");
+      }
+      final MapNode node = (MapNode)value;
+      final Component editor = node.getEditor();
+      lastRequestedEditor = editor;
+      return editor;
     }
   }
 }
