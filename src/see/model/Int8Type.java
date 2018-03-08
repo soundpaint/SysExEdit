@@ -113,7 +113,7 @@ public class Int8Type implements ValueType
    */
   public String toString()
   {
-    return "IntType{lowerBound=" + lowerBound + ", radix=" + radix + "}";
+    return "Int8Type{lowerBound=" + lowerBound + ", radix=" + radix + "}";
   }
 }
 

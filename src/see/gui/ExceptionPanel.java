@@ -70,9 +70,14 @@ public class ExceptionPanel extends JPanel
   {
     final StringOutputStream out = new StringOutputStream();
     final PrintWriter printer = new PrintWriter(out);
-    if (printStackTrace)
+    final String message;
+    if (printStackTrace) {
       t.printStackTrace(printer);
-    printer.flush();
+      printer.close();
+      message = out.toString();
+    } else {
+      message = t.getMessage();
+    }
     setBorder(new BevelBorder(BevelBorder.LOWERED, Color.white, Color.gray));
     setLayout(new BorderLayout());
     getAccessibleContext().setAccessibleName("Exception panel");
@@ -82,13 +87,13 @@ public class ExceptionPanel extends JPanel
     scroller.setPreferredSize(new Dimension(700, 420));
     scroller.setBorder(new BevelBorder(BevelBorder.LOWERED,
                                        Color.white, Color.gray));
-
-    final JTextArea textArea = new JTextArea(out.toString());
+    final JTextArea textArea = new JTextArea(message);
     final JViewport vp = scroller.getViewport();
     vp.add(textArea);
     vp.setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
     add(scroller, BorderLayout.CENTER);
-    //add(new JEditorPane("text/html", "<HTML><PRE>" + out + "</PRE>"));
+    //add(new JEditorPane("text/html", "<html><body><pre>" + out +
+    //                    "</pre></body></html>"));
   }
 
   /**

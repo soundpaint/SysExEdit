@@ -940,14 +940,11 @@ public class EditorFrame extends JFrame implements Runnable
 
     public void actionPerformed(final ActionEvent e)
     {
-      try
-        {
-          unguardedActionPerformed(e);
-        }
-      catch (final Throwable t)
-        {
-          ExceptionPanel.showException(EditorFrame.this, t, false);
-        }
+      try {
+        unguardedActionPerformed(e);
+      } catch (final Throwable t) {
+        ExceptionPanel.showException(EditorFrame.this, t, true);
+      }
     }
 
     private void unguardedActionPerformed(final ActionEvent e) throws Throwable

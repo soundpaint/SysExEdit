@@ -517,7 +517,7 @@ public class DB50XG extends AbstractDevice
     public String addressToString(long address)
     {
       final byte bitpos = (byte)(address % 7);
-      address /= address;
+      address /= 7;
       final byte hi = (byte)((address >> 14) & 0x7f);
       final byte mid = (byte)((address >> 7) & 0x7f);
       final byte lo = (byte)(address & 0x7f);
