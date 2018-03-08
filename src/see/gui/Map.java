@@ -24,13 +24,13 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
-import javax.swing.JComboBox;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
 
 import see.model.AddressRepresentation;
+import see.model.Editor;
 import see.model.MapNode;
 import see.model.ValueType;
 
@@ -250,8 +250,8 @@ public class Map extends JTree
 
     public Object getCellEditorValue()
     {
-      final JComboBox editor = (JComboBox)lastRequestedEditor;
-      return editor.getSelectedItem();
+      final Editor editor = (Editor)lastRequestedEditor;
+      return editor.getSelectedContents();
     }
 
     public Component getTreeCellEditorComponent(final JTree tree,

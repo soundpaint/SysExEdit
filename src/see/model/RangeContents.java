@@ -25,8 +25,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Vector;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 
 /**
@@ -56,7 +54,7 @@ public class RangeContents extends AbstractContents
   private final Range range;
 
   /** The editor for entering a value of this range contents. */
-  private final JComboBox<Contents> editor;
+  private final Editor editor;
 
   private Vector<ContentsChangeListener> listeners;
 
@@ -84,11 +82,8 @@ public class RangeContents extends AbstractContents
     this.range = range;
     min_bit_size = range.getRequiredBitSize();
     bit_size = (byte)Math.max(min_bit_size, bit_size);
-
-    editor = new JComboBox<Contents>();
-
+    editor = new DropDownEditor();
     listeners = new Vector<ContentsChangeListener>();
-
     final KeyListener kl = new KeyAdapter()
       {
         public void keyTyped(KeyEvent e)
@@ -96,15 +91,14 @@ public class RangeContents extends AbstractContents
           if (e.getKeyChar() == '\n') {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                  final Contents newContents =
-                    editor.getItemAt(editor.getSelectedIndex());
+                  final Contents newContents = editor.getSelectedContents();
                   editingPathValueChanged(newContents);
                 }
               });
           }
         }
       };
-    editor.addKeyListener(kl);
+    ((Component)editor).addKeyListener(kl);
   }
 
   public void addContentsChangeListener(final ContentsChangeListener listener)
@@ -208,8 +202,7 @@ public class RangeContents extends AbstractContents
 
   public Component getEditor()
   {
-    final DefaultComboBoxModel<Contents> editorModel =
-      new DefaultComboBoxModel<Contents>();
+    editor.clear();
     int selectedIndex = -1;
     int index = -1;
     Integer value = range.lowermost();
@@ -220,18 +213,17 @@ public class RangeContents extends AbstractContents
                                     new EnumType(value, new String[] {
                                         range.getDisplayValue(value)})));
       contents.setValue(value);
-      editorModel.addElement(contents);
+      editor.addContents(contents);
       index++;
       if (value == getValue()) {
         selectedIndex = index;
       }
       value = range.succ(value);
     }
-    editor.setModel(editorModel);
     if (selectedIndex > 0) {
       editor.setSelectedIndex(selectedIndex);
     }
-    return editor;
+    return (Component)editor;
   }
 }
 
