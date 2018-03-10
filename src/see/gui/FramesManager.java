@@ -23,8 +23,6 @@ package see.gui;
 import java.awt.Frame;
 import java.net.URL;
 
-import see.model.MapDef;
-
 /**
  * A class that implements this interface manages a set of bundled frames.
  */
@@ -70,12 +68,6 @@ public interface FramesManager
    * @see #addFrame
    */
   int getID(final Frame frame);
-
-  /**
-   * Returns an array of all available map def classes.
-   * @return An array of all available map def classes.
-   */
-  Class<MapDef>[] getMapDefClasses();
 
   /**
    * Executes SwingUtilities.updateComponentTreeUI on all registered frames.

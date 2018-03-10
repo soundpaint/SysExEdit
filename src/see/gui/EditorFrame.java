@@ -44,6 +44,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.swing.BorderFactory;
@@ -202,11 +203,10 @@ public class EditorFrame extends JFrame implements Runnable
       {
         System.out.println("[" + windowID + ": prompting for map def...]");
         System.out.flush();
-        mapDef = loadDeviceModel();
+        loadDeviceModel();
       }
     if (mapDef != null)
       {
-        setMap(mapDef);
         System.out.println("[" + windowID + ": initializing GUI...]");
         System.out.flush();
         initGUI();
@@ -226,18 +226,6 @@ public class EditorFrame extends JFrame implements Runnable
       }
     dispose();
     manager.removeFrame(this);
-  }
-
-  private void setMap(final MapDef mapDef)
-  {
-    this.mapDef = mapDef;
-    final TreeNode root = mapDef.getRoot();
-    if (mapModel != null)
-      mapModel.setRoot(root);
-    else
-      mapModel = new DefaultTreeModel(root);
-    if (label_deviceName != null) // gui already initialized
-      updateModelInfo();
   }
 
   private void updateModelInfo()
@@ -718,8 +706,7 @@ public class EditorFrame extends JFrame implements Runnable
                            (last_save_node.getAddress() +
                             last_save_node.getTotalSize()));
         final InputStream bulkDump =
-          mapDef.bulkDump((MapNode)mapModel.getRoot(),
-                          first_save_node.getAddress(),
+          mapDef.bulkDump(first_save_node.getAddress(),
                           last_save_node.getAddress() +
                           last_save_node.getTotalSize());
         int data;
@@ -761,23 +748,60 @@ public class EditorFrame extends JFrame implements Runnable
       }
   }
 
-  private MapDef loadDeviceModel()
+  /**
+   * Returns an array of all available map def classes.
+   */
+  private Class<MapDef>[] getMapDefClasses()
   {
-    // [PENDING: Sometimes, the program hangs while calling
-    // JOptionPane.showDialog() (after sucessfully calling
-    // manager.getMapDefClasses).]
-    final Class<MapDef> selection =
-      (Class<MapDef>)JOptionPane.
-      showInputDialog(this, "Select a device model:",
-                      "Device Model Selection",
-                      JOptionPane.QUESTION_MESSAGE, null,
-                      manager.getMapDefClasses(), null);
-    if (selection != null) {
+    final Vector<Class<MapDef>> classes = new Vector<Class<MapDef>>();
+    try {
+      // TODO: The list of available device class names should be read
+      // from a file.
+      classes.addElement((Class<MapDef>)Class.forName("see.devices.DB50XG"));
+    } catch (final Exception e) {
+      System.out.println("WARNING: " + e);
+      e.printStackTrace(System.out);
+      System.out.flush();
+    }
+    return classes.toArray((Class<MapDef>[])new Class[0]);
+  }
+
+  /**
+   * Wrap device classes in a model suitable for putting into a combo
+   * box.
+   */
+  private static class ComboBoxDeviceEntry
+  {
+    private final MapDef device;
+
+    private ComboBoxDeviceEntry(final MapDef device)
+    {
+      this.device = device;
+    }
+
+    public MapDef getDevice()
+    {
+      return device;
+    }
+
+    /**
+     * Displays the device's name (rather than a class specifier) in
+     * the combo box.
+     */
+    public String toString()
+    {
+      return device.getName();
+    }
+  }
+
+  private ComboBoxDeviceEntry[] createDeviceSelectionEntries()
+  {
+    final Class<MapDef>[] deviceClasses = getMapDefClasses();
+    final ArrayList<ComboBoxDeviceEntry> deviceEntries =
+      new ArrayList<ComboBoxDeviceEntry>();
+    for (final Class<MapDef> deviceClass : deviceClasses) {
       try {
-        final String deviceName = selection.getSimpleName();
-        return
-          selection.getDeclaredConstructor(new Class[] {String.class}).
-          newInstance(deviceName);
+        deviceEntries.add(new ComboBoxDeviceEntry(deviceClass.newInstance()));
       } catch (final Exception e) {
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter printWriter = new PrintWriter(stringWriter);
@@ -786,6 +810,44 @@ public class EditorFrame extends JFrame implements Runnable
         JOptionPane.showMessageDialog(this, stringWriter, ERROR,
                                       JOptionPane.INFORMATION_MESSAGE);
       }
+    }
+    return deviceEntries.toArray(new ComboBoxDeviceEntry[0]);
+  }
+
+  private MapDef loadDeviceModel()
+  {
+    // [PENDING: Sometimes, the program hangs while calling
+    // JOptionPane.showDialog() (after sucessfully calling
+    // getMapDefClasses).]
+    final ComboBoxDeviceEntry[] deviceSelectionEntries =
+      createDeviceSelectionEntries();
+    if (deviceSelectionEntries == null) {
+      JOptionPane.showMessageDialog(this,
+                                    "No device model available.",
+                                    ERROR,
+                                    JOptionPane.INFORMATION_MESSAGE);
+      return null;
+    }
+    final ComboBoxDeviceEntry selection =
+      (ComboBoxDeviceEntry)JOptionPane.
+      showInputDialog(this, "Select a device model:",
+                      "Device Model Selection",
+                      JOptionPane.QUESTION_MESSAGE, null,
+                      deviceSelectionEntries, null);
+    if (selection != null) {
+      final MapDef device = selection.getDevice();
+      if (device != null) {
+        this.mapDef = device;
+        final TreeNode root = device.buildMap();
+        if (mapModel != null) // no need to re-create mapModel, if
+                              // already existing
+          mapModel.setRoot(root);
+        else
+          mapModel = new DefaultTreeModel(root);
+        if (label_deviceName != null) // gui already initialized
+          updateModelInfo();
+      }
+      return device;
     }
     return null;
   }
@@ -988,10 +1050,7 @@ public class EditorFrame extends JFrame implements Runnable
                                            JOptionPane.YES_NO_OPTION)
              == JOptionPane.YES_OPTION))
           {
-            final MapDef mapDef = EditorFrame.this.loadDeviceModel();
-            if (mapDef != null)
-              setMap(mapDef);
-            else {} // no selection - abort operaion!
+            EditorFrame.this.loadDeviceModel();
           }
         else {}
       else if (command.equals(DEVICE_ID))

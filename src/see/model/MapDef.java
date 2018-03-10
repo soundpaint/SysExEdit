@@ -21,7 +21,7 @@
 package see.model;
 
 import java.io.InputStream;
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import see.gui.Map;
 
@@ -80,13 +80,7 @@ public interface MapDef
    * creates a <CODE>new MapNode(...)</CODE> as root node and then inserts
    * MapNode objects as children at will.
    */
-  void buildMap();
-
-  /**
-   * Returns the root node of the tree of map nodes.
-   * @return The root node of the tree.
-   */
-  AbstractDevice.MapRoot getRoot();
+  TreeNode buildMap();
 
   /**
    * Returns the associated tree component.
@@ -97,14 +91,13 @@ public interface MapDef
   /**
    * Given a contigous area of memory, returns a a stream of MIDI bytes
    * that may be used to send the memory contents to the MIDI device.
-   * @param root The root node of the map to use.
    * @param start The bit address in the memory map where to start.
    * @param end The bit address in the memory map where to end before;
    *    thus the total bulk dump size is (end - start) bits of memory.
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  InputStream bulkDump(final MapNode root, final long start, final long end);
+  InputStream bulkDump(final long start, final long end);
 
   /**
    * Given an InputStream that represents a sequence of bulk dumped MIDI
@@ -117,7 +110,7 @@ public interface MapDef
   /**
    * Returns descriptive name of the device(s) (for headlines etc.)
    */
-  String toString();
+  String getName();
 }
 
 /*

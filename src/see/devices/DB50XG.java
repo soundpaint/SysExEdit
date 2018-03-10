@@ -29,7 +29,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import see.model.AbstractDevice;
 import see.model.Contents;
 import see.model.RangeContents;
-import see.model.MapDef;
 import see.model.MapNode;
 import see.model.Range;
 import see.model.ValueType;
@@ -468,9 +467,9 @@ public class DB50XG extends AbstractDevice
     "Part 13", "Part 14", "Part 15", "Part 16"
   };
 
-  public DB50XG(final String deviceName)
+  public DB50XG()
   {
-    super(deviceName);
+    super();
   }
 
   /**
@@ -576,7 +575,7 @@ public class DB50XG extends AbstractDevice
   /**
    * Creates a map that represents the DB50XG's internal memory.
    */
-  public void buildMap()
+  public void buildMap(final MapRoot root)
   {
     RangeContents temp_contents;
     Range temp_range;
@@ -669,7 +668,6 @@ public class DB50XG extends AbstractDevice
     temp_contents.setDefaultValue(0x7f);
     temp_node.add(new MapNode("All Parameter Reset", temp_contents));
 
-    final MapRoot root = getRoot();
     root.add(temp_node);
 
     final ValueType
@@ -1074,16 +1072,6 @@ public class DB50XG extends AbstractDevice
     }
   }
 
-  /**
-   * Given a contigous area of memory, returns a a stream of MIDI bytes
-   * that may be used to send the memory contents to the MIDI device.
-   * @param root The root node of the map to use.
-   * @param start The bit address in the memory map where to start.
-   * @param end The bit address in the memory map where to end before;
-   *    thus the total bulk dump size is (end - start) bits of memory.
-   * @return A stream that bulk dumps the sequence of bytes for the
-   *    MIDI device.
-   */
   public InputStream bulkDump(final MapNode root,
                               final long start, final long end)
   {
@@ -1108,7 +1096,7 @@ public class DB50XG extends AbstractDevice
   /**
    * Returns descriptive name of the device(s) (for headlines etc.)
    */
-  public String toString()
+  public String getName()
   {
     return DEVICE_NAME;
   }

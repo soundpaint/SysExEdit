@@ -43,7 +43,6 @@ import javax.swing.UIDefaults;
 
 import see.gui.EditorFrame;
 import see.gui.FramesManager;
-import see.model.MapDef;
 
 /**
  * This is the main entry of the SysExEdit utility.
@@ -87,7 +86,6 @@ public class SysExEdit extends Applet implements FramesManager
 
   private Hashtable<Frame, Integer> frames; // frames and their unique IDs
   private boolean inAnApplet = false; // true, if run as an applet
-  private Vector<Class<MapDef>> classes = null; // vector of map def classes
 
   private static void print_version(final PrintWriter out)
   {
@@ -430,24 +428,6 @@ public class SysExEdit extends Applet implements FramesManager
       }
     System.out.println("]");
     System.out.flush();
-  }
-
-  /**
-   * Returns an array of all available map def classes.
-   */
-  public Class<MapDef>[] getMapDefClasses()
-  {
-    if (classes == null) {
-      classes = new Vector<Class<MapDef>>();
-      try {
-        classes.addElement((Class<MapDef>)Class.forName("see.devices.DB50XG"));
-      } catch (final Exception e) {
-        System.out.println("WARNING: " + e);
-        e.printStackTrace(System.out);
-        System.out.flush();
-      }
-    }
-    return classes.toArray((Class<MapDef>[])new Class[0]);
   }
 }
 

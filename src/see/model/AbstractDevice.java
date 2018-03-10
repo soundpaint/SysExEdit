@@ -20,7 +20,8 @@
 
 package see.model;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import java.io.InputStream;
+import javax.swing.tree.TreeNode;
 
 import see.gui.Map;
 
@@ -35,7 +36,7 @@ public abstract class AbstractDevice implements MapDef
 
     private final Map map;
 
-    public MapRoot(final String deviceName)
+    private MapRoot(final String deviceName)
     {
       super(deviceName);
       map = new Map();
@@ -47,20 +48,22 @@ public abstract class AbstractDevice implements MapDef
     }
   }
 
-  private final MapRoot root;
+  private MapRoot root;
 
-  public AbstractDevice(final String deviceName)
+  public AbstractDevice()
   {
-    if (deviceName == null) {
-      throw new NullPointerException("deviceName");
-    }
-    root = new MapRoot(deviceName);
-    buildMap();
-    root.evaluateAddresses();
   }
 
-  public MapRoot getRoot()
+  /**
+   * Creates a map that represents the device's internal memory.
+   */
+  public abstract void buildMap(final MapRoot root);
+
+  public TreeNode buildMap()
   {
+    root = new MapRoot(getName());
+    buildMap(root);
+    root.evaluateAddresses();
     return root;
   }
 
@@ -68,6 +71,26 @@ public abstract class AbstractDevice implements MapDef
   {
     return root.getMap();
   }
+
+  public InputStream bulkDump(final long start, final long end)
+  {
+    return bulkDump(root, start, end);
+  }
+
+  /**
+   * Given a contigous area of memory, returns a a stream of MIDI bytes
+   * that may be used to send the memory contents to the MIDI device.
+   * @param root The root node of the map to use.
+   * @param start The bit address in the memory map where to start.
+   * @param end The bit address in the memory map where to end before;
+   *    thus the total bulk dump size is (end - start) bits of memory.
+   * @return A stream that bulk dumps the sequence of bytes for the
+   *    MIDI device.
+   */
+  public abstract InputStream bulkDump(final MapNode root,
+                                       final long start, final long end);
+
+  public abstract String getName();
 }
 
 /*

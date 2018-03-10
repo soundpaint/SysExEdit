@@ -141,7 +141,6 @@ public abstract class AbstractContents implements Contents
 
   /**
    * Increments the contents of this node, if possible.
-   * @param model The tree model of the tree that contains this node.
    */
   public void increment()
   {
@@ -156,7 +155,6 @@ public abstract class AbstractContents implements Contents
 
   /**
    * Decrements the contents of this node.
-   * @param model The tree model of the tree that contains this node.
    */
   public void decrement()
   {
@@ -171,7 +169,6 @@ public abstract class AbstractContents implements Contents
 
   /**
    * Sets the contents of this node to the uppermost value that is in range.
-   * @param model The tree model of the tree that contains this node.
    */
   public void uppermost()
   {
@@ -180,7 +177,6 @@ public abstract class AbstractContents implements Contents
 
   /**
    * Sets the contents of this node to the lowermost value that is in range.
-   * @param model The tree model of the tree that contains this node.
    */
   public void lowermost()
   {
