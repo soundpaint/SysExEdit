@@ -162,12 +162,13 @@ public class Range implements Representation
    * @param lb The lower bound of the contigous range.
    * @param ub The upper bound of the contigous range.
    * @param valueType The ValueType for the contigous range.
+   * @return This object for convenience of chained expressions.
    * @exception NullPointerException If valueType equals null.
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addSubrange(final int lb, final int ub,
-                          final ValueType valueType)
+  public Range addSubrange(final int lb, final int ub,
+                           final ValueType valueType)
   {
     final long unsigned_lb = signed_int_to_long(lb);
     final long unsigned_ub = signed_int_to_long(ub);
@@ -179,47 +180,51 @@ public class Range implements Representation
       subranges.add(new Subrange(unsigned_lb, unsigned_ub, valueType));
     }
     subrangesByValue = null;
+    return this;
   }
 
   /**
    * Adds a single enumeration value to the total range.
    * @param value The enumeration value to be added.
    * @param valueType The ValueType for the value.
+   * @return This object for convenience of chained expressions.
    * @exception NullPointerException If valueType equals null.
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already existing range.
    */
-  public void addSingleValue(final int value, final ValueType valueType)
+  public Range addSingleValue(final int value, final ValueType valueType)
   {
-    addSubrange(value, value, valueType);
+    return addSubrange(value, value, valueType);
   }
 
   /**
    * Adds a single value to the total range.
    * @param valueType The ValueType for the value.
+   * @return This object for convenience of chained expressions.
    * @exception NullPointerException If valueType equals null.
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already existing range.
    */
-  public void addSingleValue(final ValueType valueType)
+  public Range addSingleValue(final ValueType valueType)
   {
     if (valueType.getSize() != 1) {
       throw new IllegalArgumentException("valueType does not represent a single value");
     }
-    addSingleValue(valueType.getLowerBound(), valueType);
+    return addSingleValue(valueType.getLowerBound(), valueType);
   }
 
   /**
    * Adds a single enumeration value to the total range.
    * @param value The enumeration value to be added.
    * @param enumValue The enumeration value as string.
+   * @return This object for convenience of chained expressions.
    * @exception NullPointerException If enumValue equals null.
    * @exception IllegalArgumentException If the insertion range overlaps
    *    some already exisiting range.
    */
-  public void addSingleValue(final int value, final String enumValue)
+  public Range addSingleValue(final int value, final String enumValue)
   {
-    addSingleValue(value, new EnumType(value, enumValue));
+    return addSingleValue(value, new EnumType(value, enumValue));
   }
 
   private final static Comparator<Subrange>
