@@ -73,16 +73,17 @@ public abstract class AbstractContents implements Contents
   public Icon getIcon()
   {
     final Representation representation = getRepresentation();
-    if (representation != null) {
-      final String iconKey = representation.getIconKey();
-      if (iconKey != null) {
-        return UIManager.getIcon(iconKey);
-      } else {
-        return null;
-      }
-    } else {
+    if (representation == null)
       return null;
-    }
+    final String iconKey = representation.getIconKey();
+    if (iconKey == null)
+      return null;
+    final Icon icon = UIManager.getIcon(iconKey);
+    if (icon != null)
+      return icon;
+    System.err.println("[WARNING: icon not found: " + iconKey + "]");
+    System.err.flush();
+    return UIManager.getIcon(Range.GENERIC_ICON_KEY);
   }
 
   /*

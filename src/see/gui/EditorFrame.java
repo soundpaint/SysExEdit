@@ -194,10 +194,10 @@ public class EditorFrame extends JFrame implements Runnable
     setTitle(manager.getVersion() + " " + windowID);
     if (filepath != null)
       {
-        System.err.println("[WARNING: loading map def by cmd line arg " +
-                           "not supported by now - sorry! (ignored)]");
-        System.err.flush();
         //mapDef = loadMapFrom(filepath);
+        System.err.println("[WARNING: loading map def by cmd line arg " +
+                           "not supported by now - sorry!]");
+        System.err.flush();
       }
     if (mapDef == null)
       {
@@ -759,9 +759,8 @@ public class EditorFrame extends JFrame implements Runnable
       // from a file.
       classes.addElement((Class<MapDef>)Class.forName("see.devices.DB50XG"));
     } catch (final Exception e) {
-      System.out.println("WARNING: " + e);
-      e.printStackTrace(System.out);
-      System.out.flush();
+      System.err.println("[WARNING: Failed loading device: " + e + "]");
+      System.err.flush();
     }
     return classes.toArray((Class<MapDef>[])new Class[0]);
   }

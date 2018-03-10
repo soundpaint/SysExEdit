@@ -96,8 +96,8 @@ public class HtmlFactory
       // StringReader should not throw an IOException
       return null;
     } catch (final BadLocationException e) {
-      System.out.println("Warning: message: invalid html: " + e);
-      System.out.flush();
+      System.err.println("[WARNING: Error page: invalid html: " + e + "]");
+      System.err.flush();
       return null;
     }
   }

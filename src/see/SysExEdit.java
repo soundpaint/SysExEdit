@@ -398,8 +398,8 @@ public class SysExEdit extends Applet implements FramesManager
       }
     catch (final Exception e)
       {
-        System.out.println("WARNING: failed loading icons list: " + e);
-        System.out.flush();
+        System.err.println("[WARNING: failed loading icons list: " + e + "]");
+        System.err.flush();
         return;
       }
     final UIDefaults uiDefaults = UIManager.getDefaults();
@@ -420,10 +420,9 @@ public class SysExEdit extends Applet implements FramesManager
           }
         catch (final Exception e)
           {
-            System.out.println();
-            System.out.println("WARNING: failed loading " +
-                               iconLocation + ": " + e);
-            System.out.flush();
+            System.err.println("[WARNING: failed loading " +
+                               iconLocation + ": " + e + "]");
+            System.err.flush();
           }
       }
     System.out.println("]");
