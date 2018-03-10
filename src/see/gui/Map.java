@@ -32,6 +32,7 @@ import javax.swing.tree.TreeCellEditor;
 import see.model.AddressRepresentation;
 import see.model.Editor;
 import see.model.MapNode;
+import see.model.Range;
 import see.model.ValueType;
 
 /**
@@ -224,7 +225,7 @@ public class Map extends JTree
         text = tree.convertValueToText(value, selected, expanded,
                                        leaf, row, hasFocus);
       if (icon == null)
-        icon = UIManager.getDefaults().getIcon("internal-control");
+        icon = UIManager.getDefaults().getIcon(Range.GENERIC_ICON_KEY);
 
       setIcon(icon);
       setText(text);

@@ -101,9 +101,6 @@ public class Int8Type implements ValueType
   public String getDisplayValue(final int value)
   {
     final long index = value - lowerBound;
-    if ((index < 0) || (index > 255)) {
-      return DISPLAY_VALUE_UNKNOWN;
-    }
     return Integer.toString((int)index, radix);
   }
 
