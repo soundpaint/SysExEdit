@@ -876,6 +876,9 @@ public class EditorFrame extends JFrame implements Runnable
     label = new JLabel("Device Name");
     label.setForeground(Color.black);
     vbox1.add(label);
+    label = new JLabel("Device Name Class");
+    label.setForeground(Color.black);
+    vbox1.add(label);
     label = new JLabel("Manufacturer ID");
     label.setForeground(Color.black);
     vbox1.add(label);
@@ -897,7 +900,10 @@ public class EditorFrame extends JFrame implements Runnable
     label = new JLabel("  :  ");
     label.setForeground(Color.black);
     vbox2.add(label);
-    label = new JLabel(mapDef.toString());
+    label = new JLabel(mapDef.getName());
+    label.setForeground(Color.black);
+    vbox3.add(label);
+    label = new JLabel(mapDef.getClass().getName());
     label.setForeground(Color.black);
     vbox3.add(label);
     label = new JLabel(Utils.intTo0xnn(mapDef.getManufacturerID()));
