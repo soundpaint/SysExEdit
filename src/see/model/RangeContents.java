@@ -58,13 +58,9 @@ public class RangeContents extends AbstractContents
 
   private Vector<ContentsChangeListener> listeners;
 
-  /**
-   * Creates a new RangeContents object with initially no range (and thus no
-   * range selection).
-   */
-  public RangeContents()
+  private RangeContents()
   {
-    this(null);
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -76,6 +72,21 @@ public class RangeContents extends AbstractContents
    */
   public RangeContents(final Range range)
   {
+    this(range, null);
+  }
+
+  /**
+   * Creates a new RangeContents for the given Range object. The range is
+   * selected as currently valid range.
+   * @param range The Range object that holds range and representation
+   *    information for this RangeContents.
+   * @param iconKey If non-null, overrides the associated
+   * Representation's iconKey.
+   * @exception NullPointerException If range equals null.
+   */
+  public RangeContents(final Range range, final String iconKey)
+  {
+    super(iconKey);
     if (range == null) {
       throw new NullPointerException("range");
     }
@@ -141,6 +152,19 @@ public class RangeContents extends AbstractContents
    *    the upper limit of 15.
    */
   public RangeContents(final int amount)
+  {
+    this(amount, null);
+  }
+
+  /**
+   * Creates a new RangeContents that represents a couple of unused bits.
+   * @param amount The amount of unused bits.
+   * @param iconKey If non-null, overrides the associated
+   * Representation's iconKey.
+   * @exception IllegalArgumentException If amount is below zero or above
+   *    the upper limit of 15.
+   */
+  public RangeContents(final int amount, final String iconKey)
   {
     this(getBitStringRange(amount));
     setBitSize(amount);

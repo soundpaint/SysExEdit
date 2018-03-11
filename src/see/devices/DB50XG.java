@@ -1705,84 +1705,84 @@ public class DB50XG extends AbstractDevice
                                       contents_rcv_bank_select));
 
     final RangeContents contents_scale_tuning_c =
-      new RangeContents(range_scale_tuning);
+      new RangeContents(range_scale_tuning, "internal-tune-c");
     contents_scale_tuning_c.setBitSize(7);
     contents_scale_tuning_c.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning C",
                                       contents_scale_tuning_c));
 
-    final RangeContents contents_scale_tuning_cs =
-      new RangeContents(range_scale_tuning);
-    contents_scale_tuning_cs.setBitSize(7);
-    contents_scale_tuning_cs.setDefaultValue(0x40);
+    final RangeContents contents_scale_tuning_c_sharp =
+      new RangeContents(range_scale_tuning, "internal-tune-c-sharp");
+    contents_scale_tuning_c_sharp.setBitSize(7);
+    contents_scale_tuning_c_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning C#",
-                                      contents_scale_tuning_cs));
+                                      contents_scale_tuning_c_sharp));
 
     final RangeContents contents_scale_tuning_d =
-      new RangeContents(range_scale_tuning);
+      new RangeContents(range_scale_tuning, "internal-tune-d");
     contents_scale_tuning_d.setBitSize(7);
     contents_scale_tuning_d.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning D",
                                       contents_scale_tuning_d));
 
-    final RangeContents contents_scale_tuning_ds =
-      new RangeContents(range_scale_tuning);
-    contents_scale_tuning_ds.setBitSize(7);
-    contents_scale_tuning_ds.setDefaultValue(0x40);
+    final RangeContents contents_scale_tuning_d_sharp =
+      new RangeContents(range_scale_tuning, "internal-tune-d-sharp");
+    contents_scale_tuning_d_sharp.setBitSize(7);
+    contents_scale_tuning_d_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning D#",
-                                      contents_scale_tuning_ds));
+                                      contents_scale_tuning_d_sharp));
 
     final RangeContents contents_scale_tuning_e =
-      new RangeContents(range_scale_tuning);
+      new RangeContents(range_scale_tuning, "internal-tune-e");
     contents_scale_tuning_e.setBitSize(7);
     contents_scale_tuning_e.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning E",
                                       contents_scale_tuning_e));
 
     final RangeContents contents_scale_tuning_f =
-      new RangeContents(range_scale_tuning);
+      new RangeContents(range_scale_tuning, "internal-tune-f");
     contents_scale_tuning_f.setBitSize(7);
     contents_scale_tuning_f.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning F",
                                       contents_scale_tuning_f));
 
-    final RangeContents contents_scale_tuning_fs =
-      new RangeContents(range_scale_tuning);
-    contents_scale_tuning_fs.setBitSize(7);
-    contents_scale_tuning_fs.setDefaultValue(0x40);
+    final RangeContents contents_scale_tuning_f_sharp =
+      new RangeContents(range_scale_tuning, "internal-tune-f-sharp");
+    contents_scale_tuning_f_sharp.setBitSize(7);
+    contents_scale_tuning_f_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning F#",
-                                      contents_scale_tuning_fs));
+                                      contents_scale_tuning_f_sharp));
 
     final RangeContents contents_scale_tuning_g =
-      new RangeContents(range_scale_tuning);
+      new RangeContents(range_scale_tuning, "internal-tune-g");
     contents_scale_tuning_g.setBitSize(7);
     contents_scale_tuning_g.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning G",
                                       contents_scale_tuning_g));
 
-    final RangeContents contents_scale_tuning_gs =
-      new RangeContents(range_scale_tuning);
-    contents_scale_tuning_gs.setBitSize(7);
-    contents_scale_tuning_gs.setDefaultValue(0x40);
+    final RangeContents contents_scale_tuning_g_sharp =
+      new RangeContents(range_scale_tuning, "internal-tune-g-sharp");
+    contents_scale_tuning_g_sharp.setBitSize(7);
+    contents_scale_tuning_g_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning G#",
-                                      contents_scale_tuning_gs));
+                                      contents_scale_tuning_g_sharp));
 
     final RangeContents contents_scale_tuning_a =
-      new RangeContents(range_scale_tuning);
+      new RangeContents(range_scale_tuning, "internal-tune-a");
     contents_scale_tuning_a.setBitSize(7);
     contents_scale_tuning_a.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning A",
                                       contents_scale_tuning_a));
 
-    final RangeContents contents_scale_tuning_as =
-      new RangeContents(range_scale_tuning);
-    contents_scale_tuning_as.setBitSize(7);
-    contents_scale_tuning_as.setDefaultValue(0x40);
+    final RangeContents contents_scale_tuning_a_sharp =
+      new RangeContents(range_scale_tuning, "internal-tune-a-sharp");
+    contents_scale_tuning_a_sharp.setBitSize(7);
+    contents_scale_tuning_a_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning A#",
-                                      contents_scale_tuning_as));
+                                      contents_scale_tuning_a_sharp));
 
     final RangeContents contents_scale_tuning_b =
-      new RangeContents(range_scale_tuning);
+      new RangeContents(range_scale_tuning, "internal-tune-b");
     contents_scale_tuning_b.setBitSize(7);
     contents_scale_tuning_b.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning B",

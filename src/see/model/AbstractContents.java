@@ -31,6 +31,9 @@ import javax.swing.UIManager;
  */
 public abstract class AbstractContents implements Contents
 {
+  /** If non-null, overrides associated Representation's iconKey. */
+  private final String iconKey;
+
   /** The current value. */
   private int value;
 
@@ -39,6 +42,16 @@ public abstract class AbstractContents implements Contents
 
   protected AbstractContents()
   {
+    this(null);
+  }
+
+  /**
+   * @param iconKey If non-null, overrides the associated
+   * Representation's iconKey.
+   */
+  protected AbstractContents(final String iconKey)
+  {
+    this.iconKey = iconKey;
     value = 0;
     defaultValue = 0;
   }
@@ -75,7 +88,8 @@ public abstract class AbstractContents implements Contents
     final Representation representation = getRepresentation();
     if (representation == null)
       return null;
-    final String iconKey = representation.getIconKey();
+    final String iconKey =
+      this.iconKey != null ? this.iconKey : representation.getIconKey();
     if (iconKey == null)
       return null;
     final Icon icon = UIManager.getIcon(iconKey);
