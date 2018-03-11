@@ -971,20 +971,20 @@ public class DB50XG extends AbstractDevice
 
     final Range range_tune_3 =
       new Range("internal-tune").
-      addSubrange(0x0, 0x7, Int8Type.defaultInstance);
+      addSubrange(0x0, 0x0, Int8Type.defaultInstance);
     final RangeContents contents_tune_3 =
       new RangeContents(range_tune_3);
     contents_tune_3.setBitSize(7);
-    contents_tune_3.setDefaultValue(0x4);
+    contents_tune_3.setDefaultValue(0x0);
     node_system.add(new MapNode("Master Tune[3]", contents_tune_3));
 
     final Range range_tune_2 =
       new Range("internal-tune").
-      addSubrange(0x0, 0xf, Int8Type.defaultInstance);
+      addSubrange(0x0, 0x7, Int8Type.defaultInstance);
     final RangeContents contents_tune_2 =
       new RangeContents(range_tune_2);
     contents_tune_2.setBitSize(7);
-    contents_tune_2.setDefaultValue(0x0);
+    contents_tune_2.setDefaultValue(0x4);
     node_system.add(new MapNode("Master Tune[2]", contents_tune_2));
 
     final Range range_tune_1 =
@@ -1808,8 +1808,19 @@ public class DB50XG extends AbstractDevice
                                       contents_ac2_controller_number));
     buildPartControl(node_multi_part_n, "AC2", 0x00);
 
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(7)));
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(7)));
+    final RangeContents contents_portamento_switch =
+      new RangeContents(range_switch);
+    contents_portamento_switch.setBitSize(7);
+    contents_portamento_switch.setDefaultValue(0x00);
+    node_multi_part_n.add(new MapNode("Portamento Switch",
+                                      contents_portamento_switch));
+
+    final RangeContents contents_portamento_time =
+      new RangeContents(range_non_negative_7bit);
+    contents_portamento_time.setBitSize(7);
+    contents_portamento_time.setDefaultValue(0x00);
+    node_multi_part_n.add(new MapNode("Portamento Time",
+                                      contents_portamento_time));
 
     final RangeContents contents_pitch_eg_initial_level =
       new RangeContents(range_signed_7bit);
