@@ -230,7 +230,7 @@ public class EditorFrame extends JFrame implements Runnable
 
   private void updateModelInfo()
   {
-    label_deviceName.setText("Dev Name: " + mapDef);
+    label_deviceName.setText("Dev Name: " + mapDef.getName());
     label_deviceName.updateUI();
     label_manID.
       setText("Man ID: " + Utils.intTo0xnn(mapDef.getManufacturerID()));
@@ -1058,8 +1058,7 @@ public class EditorFrame extends JFrame implements Runnable
             DialogDevID.showDialog(EditorFrame.this,
                                    "Device ID Selection",
                                    JOptionPane.QUESTION_MESSAGE,
-                                   UIManager.getDefaults().
-                                   getIcon("internal-control"),
+                                   UIManager.getIcon("internal-control"),
                                    deviceID);
           if (newDeviceID >= 0)
             {

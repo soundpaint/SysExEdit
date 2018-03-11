@@ -384,7 +384,7 @@ public class SysExEdit extends Applet implements FramesManager
    */
   private static void loadIcons()
   {
-    System.out.println("[loading icon properties...]");
+    System.out.print("[loading icon properties");
     System.out.flush();
     final Properties icons = new Properties();
     try
