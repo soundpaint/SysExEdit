@@ -322,8 +322,6 @@ public class EditorFrame extends JFrame implements Runnable
     map.setRowHeight(-1);
     map.addKeyListener(new KeyListener());
     map.getModel().addTreeModelListener(new TreeModelListener());
-    map.setToolTipText("The Input Area gets its data from disk or " +
-                       "via MIDI.");
     final JScrollPane scrollpane_map = new JScrollPane();
     scrollpane_map.setPreferredSize(new Dimension(450, 450));
     scrollpane_map.getViewport().add(map);
