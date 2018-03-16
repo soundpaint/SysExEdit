@@ -353,7 +353,7 @@ public class DB50XG extends AbstractDevice
   /**
    * Effect Data Value Assign Table #8
    */
-  private static final String[] REVERB_CUBE_SIZE =
+  private static final String[] REVERB_DIM_LENGTH =
   {
     "0.5m", "0.8m", "1.0m", "1.3m",
     "1.5m", "1.8m", "2.0m", "2.3m",
@@ -382,6 +382,119 @@ public class DB50XG extends AbstractDevice
     "27.5m", "27.8m", "28.1m", "28.5m",
     "28.8m", "29.2m", "29.5m", "29.9m",
     "30.2m"
+  };
+
+  /**
+   * Effect Data Value Assign Dry / Wet
+   */
+  private static final String[] DRY_WET =
+  {
+    "D63>W", "D62>W", "D61>W", "D60>W",
+    "D59>W", "D58>W", "D57>W", "D56>W",
+    "D55>W", "D54>W", "D53>W", "D52>W",
+    "D51>W", "D50>W", "D49>W", "D48>W",
+    "D47>W", "D46>W", "D45>W", "D44>W",
+    "D43>W", "D42>W", "D41>W", "D40>W",
+    "D39>W", "D38>W", "D37>W", "D36>W",
+    "D35>W", "D34>W", "D33>W", "D32>W",
+    "D31>W", "D30>W", "D29>W", "D28>W",
+    "D27>W", "D26>W", "D25>W", "D24>W",
+    "D23>W", "D22>W", "D21>W", "D20>W",
+    "D19>W", "D18>W", "D17>W", "D16>W",
+    "D15>W", "D14>W", "D13>W", "D12>W",
+    "D11>W", "D10>W", "D9>W", "D8>W",
+    "D7>W", "D6>W", "D5>W", "D4>W",
+    "D3>W", "D2>W", "D1>W", "D=W",
+    "D<W1", "D<W2", "D<W3", "D<W4",
+    "D<W5", "D<W6", "D<W7", "D<W8",
+    "D<W9", "D<W10", "D<W11", "D<W12",
+    "D<W13", "D<W14", "D<W15", "D<W16",
+    "D<W17", "D<W18", "D<W19", "D<W20",
+    "D<W21", "D<W22", "D<W23", "D<W24",
+    "D<W25", "D<W26", "D<W27", "D<W28",
+    "D<W29", "D<W30", "D<W31", "D<W32",
+    "D<W33", "D<W34", "D<W35", "D<W36",
+    "D<W37", "D<W38", "D<W39", "D<W40",
+    "D<W41", "D<W42", "D<W43", "D<W44",
+    "D<W45", "D<W46", "D<W47", "D<W48",
+    "D<W49", "D<W50", "D<W51", "D<W52",
+    "D<W53", "D<W54", "D<W55", "D<W56",
+    "D<W57", "D<W58", "D<W59", "D<W60",
+    "D<W61", "D<W62", "D<W63"
+  };
+
+  /**
+   * Effect Data Value Assign Er / Rev Balance
+   */
+  private static final String[] ER_REV_BALANCE =
+  {
+    "E63>R", "E62>R", "E61>R", "E60>R",
+    "E59>R", "E58>R", "E57>R", "E56>R",
+    "E55>R", "E54>R", "E53>R", "E52>R",
+    "E51>R", "E50>R", "E49>R", "E48>R",
+    "E47>R", "E46>R", "E45>R", "E44>R",
+    "E43>R", "E42>R", "E41>R", "E40>R",
+    "E39>R", "E38>R", "E37>R", "E36>R",
+    "E35>R", "E34>R", "E33>R", "E32>R",
+    "E31>R", "E30>R", "E29>R", "E28>R",
+    "E27>R", "E26>R", "E25>R", "E24>R",
+    "E23>R", "E22>R", "E21>R", "E20>R",
+    "E19>R", "E18>R", "E17>R", "E16>R",
+    "E15>R", "E14>R", "E13>R", "E12>R",
+    "E11>R", "E10>R", "E9>R", "E8>R",
+    "E7>R", "E6>R", "E5>R", "E4>R",
+    "E3>R", "E2>R", "E1>R", "E=R",
+    "E<R1", "E<R2", "E<R3", "E<R4",
+    "E<R5", "E<R6", "E<R7", "E<R8",
+    "E<R9", "E<R10", "E<R11", "E<R12",
+    "E<R13", "E<R14", "E<R15", "E<R16",
+    "E<R17", "E<R18", "E<R19", "E<R20",
+    "E<R21", "E<R22", "E<R23", "E<R24",
+    "E<R25", "E<R26", "E<R27", "E<R28",
+    "E<R29", "E<R30", "E<R31", "E<R32",
+    "E<R33", "E<R34", "E<R35", "E<R36",
+    "E<R37", "E<R38", "E<R39", "E<R40",
+    "E<R41", "E<R42", "E<R43", "E<R44",
+    "E<R45", "E<R46", "E<R47", "E<R48",
+    "E<R49", "E<R50", "E<R51", "E<R52",
+    "E<R53", "E<R54", "E<R55", "E<R56",
+    "E<R57", "E<R58", "E<R59", "E<R60",
+    "E<R61", "E<R62", "E<R63"
+  };
+
+  /**
+   * EQ Gain
+   */
+  private static final String[] EQ_GAIN =
+  {
+    "-12db", "-11db", "-10db", "-9db", "-8db", "-7db", "-6db", "-5db",
+    "-4db", "-3db", "-2db", "-1db", "0db", "+1db", "+2db", "+3db",
+     "+4db", "+5db", "+6db", "+7db", "+8db", "+9db", "+10db", "+11db",
+     "+12db"
+  };
+
+
+  /**
+   * Phase Difference
+   */
+  private static final String[] PHASE_DIFFERENCE =
+  {
+    "-180°", "-177°", "-174°", "-171°", "-168°", "-165°", "-162°", "-159°",
+    "-156°", "-153°", "-150°", "-147°", "-144°", "-141°", "-138°", "-135°",
+    "-132°", "-129°", "-126°", "-123°", "-120°", "-117°", "-114°", "-111°",
+    "-108°", "-105°", "-102°", "-99°", "-96°", "-93°", "-90°", "-87°",
+    "-84°", "-81°", "-78°", "-75°", "-72°", "-69°", "-66°", "-63°",
+    "-60°", "-57°", "-54°", "-51°", "-48°", "-45°", "-42°", "-39°",
+    "-36°", "-33°", "-30°", "-27°", "-24°", "-21°", "-18°", "-15°",
+    "-12°", "-9°", "-6°", "-3°", " 0°", "+3°", "+6°", "+9°",
+    "+12°", "+15°", "+18°", "+21°", "+24°", "+27°", "+30°", "+33°",
+    "+36°", "+39°", "+42°", "+45°", "+48°", "+51°", "+54°", "+57°",
+    "+60°", "+63°", "+66°", "+69°", "+72°", "+75°", "+78°", "+81°",
+    "+84°", "+87°", "+90°", "+93°", "+96°", "+99°", "+102°", "+105°",
+    "+108°", "+111°", "+114°", "+117°", "+120°", "+123°", "+126°", "+129°",
+    "+132°", "+135°", "+138°", "+141°", "+144°", "+147°", "+150°", "+153°",
+    "+156°", "+159°", "+162°", "+165°", "+168°", "+171°", "+174°", "+177°",
+    "+180°"
   };
 
   /**
@@ -618,10 +731,10 @@ public class DB50XG extends AbstractDevice
     "-3000ct", "-2850ct", "-2700ct", "-2550ct",
     "-2400ct", "-2250ct", "-2100ct", "-1950ct",
     "-1800ct", "-1650ct", "-1500ct", "-1350ct",
-    "-1200ct", "-1050ct", "-0900ct", "-0750ct",
-    "-0600ct", "-0450ct", "-0300ct", "-0150ct",
-    "+0000ct", "+0150ct", "+0300ct", "+0450ct",
-    "+0600ct", "+0750ct", "+0900ct", "+1050ct",
+    "-1200ct", "-1050ct", "-900ct",  "-750ct",
+    "-600ct",  "-450ct",  "-300ct",  "-150ct",
+    "0ct",     "+150ct",  "+300ct",  "+450ct",
+    "+600ct ", "+750ct",  "+900ct",  "+1050ct",
     "+1200ct", "+1350ct", "+1500ct", "+1650ct",
     "+1800ct", "+1950ct", "+2100ct", "+2250ct",
     "+2400ct", "+2550ct", "+2700ct", "+2850ct",
@@ -667,6 +780,14 @@ public class DB50XG extends AbstractDevice
   private static final String[] SWITCH =
   {
     "Off", "On"
+  };
+
+  /**
+   * Mono / Stereo
+   */
+  private static final String[] MONO_STEREO =
+  {
+    "Mono", "Stereo"
   };
 
   /**
@@ -793,24 +914,102 @@ public class DB50XG extends AbstractDevice
   }
 
   private static final ValueType
-    enumType_pan = new EnumType(1, PAN),
-    enumType_level = new EnumType(LEVEL),
-    enumType_modulation_delay_offset = new EnumType(MODULATION_DELAY_OFFSET),
-    enumType_eq_frequency = new EnumType(EQ_FREQUENCY),
-    enumType_reverb_time = new EnumType(REVERB_TIME),
-    enumType_delay_time_1 = new EnumType(DELAY_TIME_1),
-    enumType_room_size = new EnumType(ROOM_SIZE),
-    enumType_delay_time_2 = new EnumType(DELAY_TIME_2),
-    enumType_reverb_cube_size = new EnumType(REVERB_CUBE_SIZE);
+    enumType_pan = new EnumType(1, PAN);
 
   private static final ValueType
-    enumType_hall = new EnumType(0x0080, HALL),
-    enumType_room = new EnumType(0x0100, ROOM),
-    enumType_stage = new EnumType(0x0180, STAGE),
-    enumType_chorus = new EnumType(0x2080, CHORUS),
-    enumType_celeste = new EnumType(0x2100, CELESTE),
-    enumType_flanger = new EnumType(0x2180, FLANGER),
-    enumType_early_ref = new EnumType(0x0480, EARLY_REF),
+    enumType_level = new EnumType(LEVEL);
+
+  private static final ValueType
+    enumType_modulation_delay_offset = new EnumType(MODULATION_DELAY_OFFSET);
+  private static final Range range_modulation_delay_offset =
+    new Range("internal-control").
+    addSubrange(0x00, 0x7f, enumType_modulation_delay_offset);
+
+  private static final ValueType
+    enumType_eq_frequency = new EnumType(EQ_FREQUENCY);
+  private static final Range range_eq_frequency =
+    new Range("internal-tune").
+    addSubrange(0x00, 0x3c, enumType_eq_frequency);
+
+  private static final ValueType
+    enumType_reverb_time = new EnumType(REVERB_TIME);
+  private static final Range range_reverb_time =
+    new Range("internal-control").
+    addSubrange(0x00, 0x45, enumType_reverb_time);
+
+  private static final ValueType
+    enumType_delay_time_1 = new EnumType(DELAY_TIME_1);
+  private static final Range range_delay_time_1 =
+    new Range("internal-control").
+    addSubrange(0x00, 0x7f, enumType_delay_time_1);
+
+  private static final ValueType
+    enumType_room_size = new EnumType(ROOM_SIZE);
+
+  private static final ValueType
+    enumType_delay_time_2 = new EnumType(DELAY_TIME_2);
+  private static final Range range_delay_time_2 =
+    new Range("internal-control").
+    addSubrange(0x00, 0x7f, enumType_delay_time_2);
+
+  private static final ValueType
+    enumType_reverb_dim_length = new EnumType(REVERB_DIM_LENGTH);
+  private static final Range range_reverb_width =
+    new Range("internal-control").
+    addSubrange(0x00, 0x25, enumType_reverb_dim_length);
+  private static final Range range_reverb_height =
+    new Range("internal-control").
+    addSubrange(0x00, 0x49, enumType_reverb_dim_length);
+  private static final Range range_reverb_depth =
+    new Range("internal-control").
+    addSubrange(0x00, 0x68, enumType_reverb_dim_length);
+
+  private static final ValueType
+    enumType_dry_wet = new EnumType(0x01, DRY_WET);
+  private static final Range range_dry_wet =
+    new Range("internal-pan").
+    addSubrange(0x01, 0x7f, enumType_dry_wet);
+
+  private static final ValueType
+    enumType_er_rev_balance = new EnumType(0x01, ER_REV_BALANCE);
+  private static final Range range_er_rev_balance =
+    new Range("internal-pan").
+    addSubrange(0x01, 0x7f, enumType_er_rev_balance);
+
+  private static final ValueType
+    enumType_eq_gain = new EnumType(0x34, EQ_GAIN);
+  private static final Range range_eq_gain =
+    new Range("internal-volume").
+    addSubrange(0x34, 0x4c, enumType_eq_gain);
+
+  private static final ValueType
+    enumType_phase_difference = new EnumType(0x04, PHASE_DIFFERENCE);
+  private static final Range range_phase_difference =
+    new Range("internal-control").
+    addSubrange(0x4, 0x7c, enumType_phase_difference);
+
+  private static final ValueType
+    enumType_hall = new EnumType(0x0080, HALL);
+
+  private static final ValueType
+    enumType_room = new EnumType(0x0100, ROOM);
+
+  private static final ValueType
+    enumType_stage = new EnumType(0x0180, STAGE);
+
+  private static final ValueType
+    enumType_chorus = new EnumType(0x2080, CHORUS);
+
+  private static final ValueType
+    enumType_celeste = new EnumType(0x2100, CELESTE);
+
+  private static final ValueType
+    enumType_flanger = new EnumType(0x2180, FLANGER);
+
+  private static final ValueType
+    enumType_early_ref = new EnumType(0x0480, EARLY_REF);
+
+  private static final ValueType
     enumType_karaoke = new EnumType(0x0a00, KARAOKE);
 
   private static final ValueType
@@ -818,6 +1017,9 @@ public class DB50XG extends AbstractDevice
 
   private static final ValueType
     enumType_mono_poly_mode = new EnumType(MONO_POLY_MODE);
+  private static final Range range_mono_poly_mode =
+    new Range("internal-switch").
+    addSubrange(0x0000, 0x0001, enumType_mono_poly_mode);
 
   private static final ValueType
     enumType_key_assign = new EnumType(KEY_ASSIGN);
@@ -854,6 +1056,12 @@ public class DB50XG extends AbstractDevice
   private static final Range range_switch =
     new Range("internal-switch").
     addSubrange(0x00, 0x01, enumType_switch);
+
+  private static final ValueType
+    enumType_mono_stereo = new EnumType(MONO_STEREO);
+  private static final Range range_mono_stereo =
+    new Range("internal-switch").
+    addSubrange(0x00, 0x01, enumType_mono_stereo);
 
   private static final ValueType
     enumType_scale_tuning = new EnumType(SCALE_TUNING);
@@ -934,6 +1142,10 @@ public class DB50XG extends AbstractDevice
     new Range("internal-volume").
     addSubrange(0x00, 0x7f, enumType_level);
 
+  private static final Range range_volume =
+    new Range("internal-volume").
+    addSubrange(0x0, 0x7f, Int8Type.defaultInstance);
+
   private static final Range range_connection =
     new Range("internal-control").
     addSubrange(0x00, 0x01, enumType_connection);
@@ -1005,9 +1217,6 @@ public class DB50XG extends AbstractDevice
     contents_tune_0.setDefaultValue(0x0);
     node_system.add(new MapNode("Master Tune[0]", contents_tune_0));
 
-    final Range range_volume =
-      new Range("internal-volume").
-      addSubrange(0x0, 0x7f, Int8Type.defaultInstance);
     final RangeContents contents_volume =
       new RangeContents(range_volume);
     contents_volume.setBitSize(7);
@@ -1061,14 +1270,73 @@ public class DB50XG extends AbstractDevice
     contents_reverb_type.setDefaultValue(0x0080);
     node_reverb.add(new MapNode("Reverb Type", contents_reverb_type));
 
-    for (int i = 0; i < 10; i++) {
-      final RangeContents contents_7bit_value =
-        new RangeContents(range_non_negative_7bit);
-      contents_7bit_value.setBitSize(7);
-      contents_7bit_value.setDefaultValue(0x00);
-      node_reverb.add(new MapNode("Reverb Parameter " + (i + 1),
-                                  contents_7bit_value));
-    }
+    final RangeContents contents_reverb_time =
+      new RangeContents(range_reverb_time);
+    contents_reverb_type.setBitSize(7);
+    contents_reverb_type.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("Reverb Time", contents_reverb_time));
+
+    final Range range_diffusion =
+      new Range("internal-control").
+      addSubrange(0x00, 0x0a, Int8Type.defaultInstance);
+    final RangeContents contents_diffusion =
+      new RangeContents(range_diffusion);
+    contents_diffusion.setBitSize(7);
+    contents_diffusion.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("Diffusion",
+                                contents_diffusion));
+
+    final RangeContents contents_initial_delay =
+      new RangeContents(range_delay_time_1);
+    contents_initial_delay.setBitSize(7);
+    contents_initial_delay.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("Initial Delay", contents_initial_delay));
+
+    final RangeContents contents_hpf_cutoff =
+      new RangeContents(range_eq_frequency);
+    contents_hpf_cutoff.setBitSize(7);
+    contents_hpf_cutoff.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("HPF Cutoff", contents_hpf_cutoff));
+
+    final RangeContents contents_lpf_cutoff =
+      new RangeContents(range_eq_frequency);
+    contents_lpf_cutoff.setBitSize(7);
+    contents_lpf_cutoff.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("LPF Cutoff", contents_lpf_cutoff));
+
+    final RangeContents contents_width =
+      new RangeContents(range_reverb_width);
+    contents_width.setBitSize(7);
+    contents_width.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("Width", contents_width));
+
+    final RangeContents contents_height =
+      new RangeContents(range_reverb_height);
+    contents_height.setBitSize(7);
+    contents_height.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("Height", contents_height));
+
+    final RangeContents contents_depth =
+      new RangeContents(range_reverb_depth);
+    contents_depth.setBitSize(7);
+    contents_depth.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("Depth", contents_depth));
+
+    final Range range_wall_vary =
+      new Range("internal-control").
+      addSubrange(0x00, 0x1e, Int8Type.defaultInstance);
+    final RangeContents contents_wall_vary =
+      new RangeContents(range_wall_vary);
+    contents_wall_vary.setBitSize(7);
+    contents_wall_vary.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("Wall Vary",
+                                contents_wall_vary));
+
+    final RangeContents contents_dry_wet =
+      new RangeContents(range_dry_wet);
+    contents_dry_wet.setBitSize(7);
+    contents_dry_wet.setDefaultValue(0x040);
+    node_reverb.add(new MapNode("Dry / Wet", contents_dry_wet));
 
     final RangeContents contents_level = new RangeContents(range_level);
     contents_level.setBitSize(7);
@@ -1080,15 +1348,40 @@ public class DB50XG extends AbstractDevice
     contents_pan.setDefaultValue(0x40);
     node_reverb.add(new MapNode("Reverb Pan", contents_pan));
 
-    for (int i = 10; i < 16; i++) {
-      final RangeContents contents_7bit_value =
-        new RangeContents(range_non_negative_7bit);
-      contents_7bit_value.setBitSize(7);
-      contents_7bit_value.setDefaultValue(0x00);
-      final long offset = i == 10 ? addr2index(0x00, 0x00, 0x02) : 0;
-      node_reverb.add(new MapNode("Reverb Parameter " + (i + 1),
-                                  contents_7bit_value, offset));
-    }
+    final RangeContents contents_rev_delay =
+      new RangeContents(range_delay_time_1);
+    contents_rev_delay.setBitSize(7);
+    contents_rev_delay.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("Rev Delay", contents_rev_delay));
+
+    final Range range_density =
+      new Range("internal-control").
+      addSubrange(0x00, 0x03, Int8Type.defaultInstance);
+    final RangeContents contents_density =
+      new RangeContents(range_density);
+    contents_density.setBitSize(7);
+    contents_density.setDefaultValue(0x00);
+    node_reverb.add(new MapNode("Density",
+                                contents_density));
+
+    final RangeContents contents_er_rev_balance =
+      new RangeContents(range_er_rev_balance);
+    contents_er_rev_balance.setBitSize(7);
+    contents_er_rev_balance.setDefaultValue(0x040);
+    node_reverb.add(new MapNode("Er / Rev Balance", contents_er_rev_balance));
+
+    node_reverb.add(new MapNode("Unused", new RangeContents(7)));
+
+    final Range range_feedback_level =
+      new Range("internal-control").
+      addSubrange(0x01, 0x7f, new Int8Type(0x40));
+    final RangeContents contents_feedback_level =
+      new RangeContents(range_feedback_level);
+    contents_feedback_level.setBitSize(7);
+    contents_feedback_level.setDefaultValue(0x40);
+    node_reverb.add(new MapNode("Feedback Level", contents_feedback_level));
+
+    node_reverb.add(new MapNode("Unused", new RangeContents(7)));
 
     return node_reverb;
   }
@@ -1104,14 +1397,67 @@ public class DB50XG extends AbstractDevice
     contents_chorus_type.setDefaultValue(0x2080);
     node_chorus.add(new MapNode("Chorus Type", contents_chorus_type));
 
-    for (int i = 0; i < 10; i++) {
-      final RangeContents contents_7bit_value =
-        new RangeContents(range_non_negative_7bit);
-      contents_7bit_value.setBitSize(7);
-      contents_7bit_value.setDefaultValue(0x00);
-      node_chorus.add(new MapNode("Chorus Parameter " + (i + 1),
-                                  contents_7bit_value));
-    }
+    final RangeContents contents_lfo_frequency =
+      new RangeContents(range_lfo_frequency);
+    contents_lfo_frequency.setBitSize(7);
+    contents_lfo_frequency.setDefaultValue(0x00);
+    node_chorus.add(new MapNode("LFO Frequency", contents_lfo_frequency));
+
+    final RangeContents contents_lfo_pm_depth =
+      new RangeContents(range_non_negative_7bit);
+    contents_lfo_pm_depth.setBitSize(7);
+    contents_lfo_pm_depth.setDefaultValue(0x40);
+    node_chorus.add(new MapNode("LFO PM Depth", contents_lfo_pm_depth));
+
+    final Range range_feedback_level =
+      new Range("internal-control").
+      addSubrange(0x01, 0x7f, new Int8Type(0x40));
+    final RangeContents contents_feedback_level =
+      new RangeContents(range_feedback_level);
+    contents_feedback_level.setBitSize(7);
+    contents_feedback_level.setDefaultValue(0x40);
+    node_chorus.add(new MapNode("Feedback Level", contents_feedback_level));
+
+    final RangeContents contents_modulation_delay_offset =
+      new RangeContents(range_modulation_delay_offset);
+    contents_modulation_delay_offset.setBitSize(7);
+    contents_modulation_delay_offset.setDefaultValue(0x00);
+    node_chorus.add(new MapNode("Modulation Delay Offset",
+                                contents_modulation_delay_offset));
+
+    node_chorus.add(new MapNode("Unused", new RangeContents(7)));
+
+    final RangeContents contents_eq_low_frequency =
+      new RangeContents(range_eq_frequency);
+    contents_eq_low_frequency.setBitSize(7);
+    contents_eq_low_frequency.setDefaultValue(0x08);
+    node_chorus.add(new MapNode("EQ Low Frequency",
+                                contents_eq_low_frequency));
+
+    final RangeContents contents_eq_low_gain =
+      new RangeContents(range_eq_gain);
+    contents_eq_low_gain.setBitSize(7);
+    contents_eq_low_gain.setDefaultValue(0x40);
+    node_chorus.add(new MapNode("EQ Low Gain", contents_eq_low_gain));
+
+    final RangeContents contents_eq_high_frequency =
+      new RangeContents(range_eq_frequency);
+    contents_eq_high_frequency.setBitSize(7);
+    contents_eq_high_frequency.setDefaultValue(0x3a);
+    node_chorus.add(new MapNode("EQ High Frequency",
+                                contents_eq_high_frequency));
+
+    final RangeContents contents_eq_high_gain =
+      new RangeContents(range_eq_gain);
+    contents_eq_high_gain.setBitSize(7);
+    contents_eq_high_gain.setDefaultValue(0x40);
+    node_chorus.add(new MapNode("EQ High Gain", contents_eq_high_gain));
+
+    final RangeContents contents_dry_wet =
+      new RangeContents(range_dry_wet);
+    contents_dry_wet.setBitSize(7);
+    contents_dry_wet.setDefaultValue(0x040);
+    node_chorus.add(new MapNode("Dry / Wet", contents_dry_wet));
 
     final RangeContents contents_level = new RangeContents(range_level);
     contents_level.setBitSize(7);
@@ -1129,15 +1475,24 @@ public class DB50XG extends AbstractDevice
     node_chorus.add(new MapNode("Send Chorus To Reverb",
                                 contents_level_reverb));
 
-    for (int i = 10; i < 16; i++) {
-      final RangeContents contents_7bit_value =
-        new RangeContents(range_non_negative_7bit);
-      contents_7bit_value.setBitSize(7);
-      contents_7bit_value.setDefaultValue(0x00);
-      final long offset = i == 10 ? addr2index(0x00, 0x00, 0x01) : 0;
-      node_chorus.add(new MapNode("Chorus Parameter " + (i + 1),
-                                  contents_7bit_value, offset));
-    }
+    node_chorus.add(new MapNode("Unused", new RangeContents(7)));
+    node_chorus.add(new MapNode("Unused", new RangeContents(7)));
+    node_chorus.add(new MapNode("Unused", new RangeContents(7)));
+
+    final RangeContents contents_lfo_phase_difference =
+      new RangeContents(range_phase_difference);
+    contents_lfo_phase_difference.setBitSize(7);
+    contents_lfo_phase_difference.setDefaultValue(0x40);
+    node_chorus.add(new MapNode("LFO Phase Difference",
+                                contents_lfo_phase_difference));
+
+    final RangeContents contents_mono_stereo =
+      new RangeContents(range_mono_stereo);
+    contents_mono_stereo.setBitSize(7);
+    contents_mono_stereo.setDefaultValue(0x01);
+    node_chorus.add(new MapNode("Mono / Stereo", contents_mono_stereo));
+
+    node_chorus.add(new MapNode("Unused", new RangeContents(7)));
 
     return node_chorus;
   }
@@ -1352,9 +1707,6 @@ public class DB50XG extends AbstractDevice
     contents_rcv_channel.setDefaultValue(n);
     node_multi_part_n.add(new MapNode("Rcv Channel", contents_rcv_channel));
 
-    final Range range_mono_poly_mode =
-      new Range("internal-control").
-      addSubrange(0x0000, 0x0001, enumType_mono_poly_mode);
     final RangeContents contents_mono_poly_mode =
       new RangeContents(range_mono_poly_mode);
     contents_mono_poly_mode.setBitSize(7);
@@ -1417,7 +1769,7 @@ public class DB50XG extends AbstractDevice
     node_multi_part_n.add(new MapNode("Unused", new RangeContents(2)));
 
     final RangeContents contents_volume =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_volume);
     contents_volume.setBitSize(7);
     contents_volume.setDefaultValue(0x64);
     node_multi_part_n.add(new MapNode("Volume", contents_volume));
@@ -1455,25 +1807,25 @@ public class DB50XG extends AbstractDevice
                                       contents_note_limit_high));
 
     final RangeContents contents_dry_level =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_volume);
     contents_dry_level.setBitSize(7);
     contents_dry_level.setDefaultValue(0x7f);
     node_multi_part_n.add(new MapNode("Dry Level", contents_dry_level));
 
     final RangeContents contents_chorus_send =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_volume);
     contents_chorus_send.setBitSize(7);
     contents_chorus_send.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Chorus Send", contents_chorus_send));
 
     final RangeContents contents_reverb_send =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_volume);
     contents_reverb_send.setBitSize(7);
     contents_reverb_send.setDefaultValue(0x28);
     node_multi_part_n.add(new MapNode("Reverb Send", contents_reverb_send));
 
     final RangeContents contents_variation_send =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_volume);
     contents_variation_send.setBitSize(7);
     contents_variation_send.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Variation Send",
@@ -1897,7 +2249,7 @@ public class DB50XG extends AbstractDevice
                                            contents_pitch_fine));
 
     final RangeContents contents_level =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_volume);
     contents_level.setBitSize(7);
     contents_level.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Level", contents_level));
@@ -1919,21 +2271,21 @@ public class DB50XG extends AbstractDevice
     node_drum_setup_note_r.add(new MapNode("Pan", contents_pan));
 
     final RangeContents contents_reverb_send =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_volume);
     contents_reverb_send.setBitSize(7);
     contents_reverb_send.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Reverb Send",
                                            contents_reverb_send));
 
     final RangeContents contents_chorus_send =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_volume);
     contents_chorus_send.setBitSize(7);
     contents_chorus_send.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Chorus Send",
                                            contents_chorus_send));
 
     final RangeContents contents_variation_send =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_volume);
     contents_variation_send.setBitSize(7);
     contents_variation_send.setDefaultValue(0x7f);
     node_drum_setup_note_r.add(new MapNode("Variation Send",
