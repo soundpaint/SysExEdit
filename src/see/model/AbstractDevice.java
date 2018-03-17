@@ -63,7 +63,7 @@ public abstract class AbstractDevice implements MapDef
   {
     root = new MapRoot(getName());
     buildMap(root);
-    root.evaluateAddresses();
+    root.resolveAddresses(0);
     return root;
   }
 

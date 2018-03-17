@@ -893,26 +893,6 @@ public class DB50XG extends AbstractDevice
       7 * ((((long)(hi & 0x7f)) << 14) | ((mid & 0x7f) << 7) | (lo & 0x7f));
   }
 
-  /**
-   * Fills into map as many inaccessible bit locations such that the
-   * next address to be handled equals the given address.
-   * @param node The last node that was added and thus contains the uppermost
-   *    address.
-   * @param contents The Contents object that will the inaccessible bits
-   *    associated with.
-   * @param index The address which to fill up to.
-   * @exception IllegalArgumentException If the specified address already
-   *    has been passed.
-   */
-  private void skipToAddress(final MapNode node, final long index)
-  {
-    final long delta = index - node.getTotalSize();
-    if (delta < 0)
-      throw new IllegalArgumentException("address already passed");
-    if (delta > 0)
-      node.setOffset(delta);
-  }
-
   private static final ValueType
     enumType_pan = new EnumType(1, PAN);
 
@@ -1239,7 +1219,7 @@ public class DB50XG extends AbstractDevice
     contents_drums_setup_reset.setBitSize(7);
     contents_drums_setup_reset.setDefaultValue(0x00);
     node_system.add(new MapNode("Drum Setup Reset", contents_drums_setup_reset,
-                                addr2index(0x00, 0x00, 0x76)));
+                                addr2index(0x00, 0x00, 0x7d)));
 
     final Range range_xg_on =
       new Range("internal-error").
@@ -1272,8 +1252,8 @@ public class DB50XG extends AbstractDevice
 
     final RangeContents contents_reverb_time =
       new RangeContents(range_reverb_time);
-    contents_reverb_type.setBitSize(7);
-    contents_reverb_type.setDefaultValue(0x00);
+    contents_reverb_time.setBitSize(7);
+    contents_reverb_time.setDefaultValue(0x00);
     node_reverb.add(new MapNode("Reverb Time", contents_reverb_time));
 
     final Range range_diffusion =
@@ -1352,7 +1332,8 @@ public class DB50XG extends AbstractDevice
       new RangeContents(range_delay_time_1);
     contents_rev_delay.setBitSize(7);
     contents_rev_delay.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("Rev Delay", contents_rev_delay));
+    node_reverb.add(new MapNode("Rev Delay", contents_rev_delay,
+                                addr2index(0x02, 0x01, 0x10)));
 
     final Range range_density =
       new Range("internal-control").
@@ -1389,7 +1370,7 @@ public class DB50XG extends AbstractDevice
   private MapNode buildMapNodeChorus()
   {
     final MapNode node_chorus =
-      new MapNode("Chorus", addr2index(0x00, 0x00, 0x0a));
+      new MapNode("Chorus", addr2index(0x02, 0x01, 0x20));
 
     final RangeContents contents_chorus_type =
       new RangeContents(range_chorus_type);
@@ -1475,7 +1456,8 @@ public class DB50XG extends AbstractDevice
     node_chorus.add(new MapNode("Send Chorus To Reverb",
                                 contents_level_reverb));
 
-    node_chorus.add(new MapNode("Unused", new RangeContents(7)));
+    node_chorus.add(new MapNode("Unused", new RangeContents(7),
+                                addr2index(0x02, 0x01, 0x30)));
     node_chorus.add(new MapNode("Unused", new RangeContents(7)));
     node_chorus.add(new MapNode("Unused", new RangeContents(7)));
 
@@ -1500,7 +1482,7 @@ public class DB50XG extends AbstractDevice
   private MapNode buildMapNodeVariation()
   {
     final MapNode node_variation =
-      new MapNode("Variation", addr2index(0x00, 0x00, 0x0a));
+      new MapNode("Variation", addr2index(0x02, 0x01, 0x40));
 
     final RangeContents contents_variation_type =
       new RangeContents(range_variation_type);
@@ -1589,11 +1571,11 @@ public class DB50XG extends AbstractDevice
     for (int i = 10; i < 16; i++) {
       final RangeContents contents_7bit_value =
         new RangeContents(range_non_negative_7bit);
+      final long desiredAddress = i == 10 ? addr2index(0x02, 0x01, 0x70) : -1;
       contents_7bit_value.setBitSize(7);
       contents_7bit_value.setDefaultValue(0x00);
-      final long offset = i == 10 ? addr2index(0x00, 0x00, 0x0f) : 0;
       node_variation.add(new MapNode("Variation Parameter " + (i + 1),
-                                     contents_7bit_value));
+                                     contents_7bit_value, desiredAddress));
     }
 
     return node_variation;
@@ -1602,7 +1584,7 @@ public class DB50XG extends AbstractDevice
   private MapNode buildMapNodeEffect1()
   {
     final MapNode node_effect =
-      new MapNode("Effect1", addr2index(0x02, 0x00, 0x00));
+      new MapNode("Effect1", addr2index(0x02, 0x01, 0x00));
     node_effect.add(buildMapNodeReverb());
     node_effect.add(buildMapNodeChorus());
     node_effect.add(buildMapNodeVariation());
@@ -1659,7 +1641,7 @@ public class DB50XG extends AbstractDevice
   private MapNode buildMapNodeMultiPartN(final int n)
   {
     final MapNode node_multi_part_n =
-      new MapNode("Multi Part " + (n + 1), addr2index(0x00, 0x00, 0x7d));
+      new MapNode("Multi Part " + (n + 1), addr2index(0x08, n, 0x00));
 
     final Range range_element_reserve =
       new Range("internal-control").
@@ -1931,20 +1913,13 @@ public class DB50XG extends AbstractDevice
     node_multi_part_n.add(new MapNode("Bend LFO AMod Depth",
                                       contents_bend_lfo_amod_depth));
 
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(7)));
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(7)));
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(7)));
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(7)));
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(7)));
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(7)));
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(7)));
-
     final RangeContents contents_rcv_pitch_bend =
       new RangeContents(range_switch);
     contents_rcv_pitch_bend.setBitSize(7);
     contents_rcv_pitch_bend.setDefaultValue(0x01);
     node_multi_part_n.add(new MapNode("Rcv Pitch Bend",
-                                      contents_rcv_pitch_bend));
+                                      contents_rcv_pitch_bend,
+                                      addr2index(0x08, n, 0x30)));
 
     final RangeContents contents_rcv_ch_after_touch =
       new RangeContents(range_switch);
@@ -2222,7 +2197,7 @@ public class DB50XG extends AbstractDevice
   private MapNode buildMapNodeMultiPart()
   {
     final MapNode node_multi_part =
-      new MapNode("Multi Part", addr2index(0x05, 0x7e, 0x19));
+      new MapNode("Multi Part", addr2index(0x08, 0x00, 0x00));
     for (int n = 0; n < 16; n++) {
       node_multi_part.add(buildMapNodeMultiPartN(n));
     }
@@ -2232,7 +2207,7 @@ public class DB50XG extends AbstractDevice
   private MapNode buildMapNodeDrumSetupNoteNR(final int n, final int r)
   {
     final MapNode node_drum_setup_note_r =
-      new MapNode("Drum Setup Note " + r, addr2index(0x00, 0x00, 0x70));
+      new MapNode("Drum Setup Note " + r, addr2index(0x30 + n, r, 0x00));
 
     final RangeContents contents_pitch_coarse =
       new RangeContents(range_signed_7bit);
@@ -2322,6 +2297,13 @@ public class DB50XG extends AbstractDevice
     node_drum_setup_note_r.add(new MapNode("Filter Cutoff Frequency",
                                            contents_filter_cutoff_frequency));
 
+    final RangeContents contents_filter_resonance =
+      new RangeContents(range_signed_7bit);
+    contents_filter_resonance.setBitSize(7);
+    contents_filter_resonance.setDefaultValue(0x40);
+    node_drum_setup_note_r.add(new MapNode("Filter Resonance",
+                                           contents_filter_resonance));
+
     final RangeContents contents_eg_attack_rate =
       new RangeContents(range_signed_7bit);
     contents_eg_attack_rate.setBitSize(7);
@@ -2349,7 +2331,7 @@ public class DB50XG extends AbstractDevice
   private MapNode buildMapNodeDrumSetupN(final int n)
   {
     final MapNode node_drum_setup_n =
-      new MapNode("Drum Setup " + n, addr2index(0x00, 0x2d, 0x00));
+      new MapNode("Drum Setup " + n, addr2index(0x30 + n, 0x00, 0x00));
     for (int r = 0x0d; r < 0x5c; r++) {
       node_drum_setup_n.add(buildMapNodeDrumSetupNoteNR(n, r));
     }
@@ -2359,7 +2341,7 @@ public class DB50XG extends AbstractDevice
   private MapNode buildMapNodeDrumSetup()
   {
     final MapNode node_drum_setup =
-      new MapNode("Drum Setup", addr2index(0x26, 0x70, 0x12));
+      new MapNode("Drum Setup", addr2index(0x30, 0x00, 0x00));
     for (int n = 0x00; n < 0x02; n++) {
       node_drum_setup.add(buildMapNodeDrumSetupN(n));
     }

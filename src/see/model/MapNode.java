@@ -32,25 +32,40 @@ import javax.swing.tree.TreeNode;
 import see.gui.Map;
 
 /**
- * This class is used to represent a node in the hierarchical structure of
- * the whole memory of a device.<BR>
- * Addressing is done implicitly: the map is supposed to represent a linear
- * addressed array of bits of memory, starting with address 0x0.
- * If the device's accessible memory starts at some higher address, an
- * arbitrary amount of inaccessible memory bits may be specified as
- * address offset for first node in the map. An offset may be declared for
- * each node. This allows to define areas of inaccessible memory.
+ * This class is used to represent a node in the hierarchical
+ * structure of the whole memory of a device.  A node may or may not
+ * carry data contents.  Address mapping is done in two steps: First
+ * of all, the map is assumed to represent a linear addressed array of
+ * bits of memory, starting with address 0x0.  By default, addresses
+ * will be implicitly assigned to all nodes, such that the resulting
+ * map has no address gap.  However, for devices that use a sparse
+ * address layout, for every node, optionally, its desired address may
+ * be explicitly specified when creating the node.  Note that it is
+ * the responsibility of the device model to choose desired addresses
+ * in such a way, that the nodes inbetween fit into the address range
+ * resulting from the desired addresses.  After the memory map has
+ * been created, actually addresses are resolved, considering any
+ * desired address specified by the device model.  If it turns out
+ * that the desired addresses do not fit, an exception will be thrown.
  */
 public class MapNode extends DefaultMutableTreeNode
   implements MapChangeListener, ContentsChangeListener
 {
   private static final long serialVersionUID = -1726377369359671649L;
 
-  private long total_size; // the total bit size including all sub-trees
-  private long address; // the absolute bit address of this node
-  private long offset; // the number of inaccessible bits preceding this node
   private final String label;
-  private final Vector<MapChangeListener> listeners; // map change listeners
+
+  // map change listeners
+  private final Vector<MapChangeListener> listeners;
+
+  // the desired absolute bit address of this node
+  private final long desiredAddress;
+
+  // the confirmed absolute bit address of this node
+  private long address;
+
+  // the total bit size including all sub-trees
+  private long total_size;
 
   private MapNode()
   {
@@ -61,8 +76,7 @@ public class MapNode extends DefaultMutableTreeNode
    * Creates a new node with initially no children.
    */
   private MapNode(final boolean allowsChildren, final String label,
-                  final Contents contents, final long contents_size,
-                  final long offset)
+                  final Contents contents, final long desiredAddress)
   {
     super(contents, allowsChildren);
     if (!allowsChildren) {
@@ -71,12 +85,14 @@ public class MapNode extends DefaultMutableTreeNode
       }
     }
     this.label = label;
-    this.offset = offset;
-    this.total_size =  offset + contents_size;
-    address = -1; // evaluate later
+    this.desiredAddress = desiredAddress;
+    address = -1; // resolve later
     listeners = new Vector<MapChangeListener>();
     if (contents != null) {
+      total_size = contents.getBitSize();
       contents.addContentsChangeListener(this);
+    } else {
+      total_size = 0;
     }
   }
 
@@ -84,25 +100,35 @@ public class MapNode extends DefaultMutableTreeNode
    * Creates a node that allows children but does not contain a Contents
    * object.
    * @param label The label of this node.
-   * @param offset The address offset for the child. This allows to
-   *    define an area of inaccessible bits that precede the child's
-   *    data.
+   * @param desiredAddress If negative, automatically determine an
+   *    absolute address for this node.  If non-negative, request that
+   *    this node will appear at the specified absolute address in the
+   *    address space.  Effectively, by setting an absolute address,
+   *    an area of inaccessible memory bits will precede this node's
+   *    data in order to make this node appear at the desired address.
+   *    If specifying an absolute address, it must be chosen such that
+   *    all previous nodes' memory mapped contents (with respect to
+   *    depth first search order) fit into the address space range
+   *    preceding the desired address.  Note that validity check for
+   *    this restriction will be made only upon completion of the tree
+   *    and thus may result in throwing an exception some time later.
    * @exception NullPointerException If contents equals null.
    */
-  public MapNode(final String label, final long offset)
+  public MapNode(final String label, final long desiredAddress)
   {
-    this(true, label, null, 0, offset);
+    this(true, label, null, desiredAddress);
   }
 
   /**
-   * Creates a node that allows children but does not contain a Contents
-   * object. Offset is supposed to be 0.
+   * Creates a node that allows adding children but does not contain
+   * any content.  Automatically determines the absolute address for
+   * this node.
    * @param label The label of this node.
    * @exception NullPointerException If contents equals null.
    */
   public MapNode(final String label)
   {
-    this(label, 0);
+    this(label, -1);
   }
 
   /**
@@ -110,26 +136,37 @@ public class MapNode extends DefaultMutableTreeNode
    * allow children).
    * @param label The label of this node.
    * @param contents The underlying Contents object.
-   * @param offset The address offset for the child. This allows to
-   *    define an area of inaccessible bits that precede the child's
-   *    data.
+   * @param desiredAddress If negative, automatically determine an
+   *    absolute address for this node.  If non-negative, request that
+   *    this node will appear at the specified absolute address in the
+   *    address space.  Effectively, by setting an absolute address,
+   *    an area of inaccessible memory bits will precede this node's
+   *    data in order to make this node appear at the desired address.
+   *    If specifying an absolute address, it must be chosen such that
+   *    all previous nodes' memory mapped contents (with respect to
+   *    depth first search order) fit into the address space range
+   *    preceding the desired address.  Note that validity check for
+   *    this restriction will be made only upon completion of the tree
+   *    and thus may result in throwing an exception some time later.
    * @exception NullPointerException If contents equals null.
    */
-  public MapNode(final String label, final Contents contents, final long offset)
+  public MapNode(final String label, final Contents contents,
+                 final long desiredAddress)
   {
-    this(false, label, contents, contents.getBitSize(), offset);
+    this(false, label, contents, desiredAddress);
   }
 
   /**
-   * Creates a node that contains a Contents object (and hence does not
-   * allow children). Offset is supposed to be 0.
+   * Creates a node that contains a Contents object (and hence does
+   * not allow children) and automatically determines the absolute
+   * address for this node.
    * @param label The label of this node.
    * @param contents The underlying Contents object.
    * @exception NullPointerException If contents equals null.
    */
   public MapNode(final String label, final Contents contents)
   {
-    this(label, contents, 0);
+    this(label, contents, -1);
   }
 
   public void editingPathValueChanged(final Contents contents)
@@ -180,27 +217,10 @@ public class MapNode extends DefaultMutableTreeNode
   }
 
   /**
-   * Sets the address offset for this node.
-   * @param offset The address offset for this node. This allows to
-   *    define an area of inaccessible bits that precede this node's
-   *    data.
-   */
-  public void setOffset(final long offset)
-  {
-    this.offset = offset;
-  }
-
-  /**
-   * Returns the address offset for this node.
-   * @return The address offset for this node.
-   */
-  public long getOffset() { return offset; }
-
-  /**
    * Returns the address of this node.
-   * @return The address of this node or -1, if it has not been evaluated
-   *    yet.
-   * @see #evaluateAddresses
+   * @return The address of this node or -1, if it has not yet been
+   *    resolved.
+   * @see #resolveAddresses
    */
   public long getAddress()
   {
@@ -295,6 +315,7 @@ public class MapNode extends DefaultMutableTreeNode
    *    ancestor of this node.
    * @exception IllegalStateException If this node does not allow children.
    */
+  @Override
   public void insert(final MutableTreeNode newChild, final int childIndex)
   {
     super.insert(newChild, childIndex);
@@ -311,6 +332,7 @@ public class MapNode extends DefaultMutableTreeNode
    *    to remove.
    * @exception ArrayIndexOutOfBoundsException If childIndex is out of bounds.
    */
+  @Override
   public void remove(final int childIndex)
   {
     final MapNode child = (MapNode)getChildAt(childIndex);
@@ -348,30 +370,35 @@ public class MapNode extends DefaultMutableTreeNode
   }
 
   /**
-   * Evaluates the address information for the whole tree.<BR>
-   * For proper handling of address information, this must be called before
-   * using the address information whenever the map has been modified.
+   * Resolves the address information for this and all of its
+   * descendant nodes.  WARNING: For proper handling of address
+   * information, address resolution must be performed not only at
+   * startup, but also whenever the map has been modified.
+   * @param nextAvailableAddress The next absolute address that is no
+   * yet assigned.
    */
-  public void evaluateAddresses()
+  protected void resolveAddresses(final long nextAvailableAddress)
   {
-    ((MapNode)getRoot()).evaluateAddresses(0);
-  }
-
-  /**
-   * Evaluates the address information for this node and all of its
-   * children.<BR>
-   * For proper handling of address information, this must be called before
-   * using the address information whenever the map has been modified.
-   * @param externalOffset The offset address to start with.
-   */
-  private void evaluateAddresses(long externalOffset)
-  {
-    address = externalOffset + offset;
+    if (desiredAddress == -1) {
+      // no desired address specified => use default
+      address = nextAvailableAddress;
+    } else if (nextAvailableAddress > desiredAddress) {
+      throw new RuntimeException("invalid desired address " + desiredAddress +
+                                 " for node " + this + ": " +
+                                 "desired address must be " +
+                                 nextAvailableAddress + " or higher");
+    } else {
+      // use desired address
+      address = desiredAddress;
+    }
+    final Contents contents = getContents();
+    long childAddress =
+      address + (contents != null ? contents.getBitSize() : 0);
     for (int i = 0; i < getChildCount(); i++)
       {
         final MapNode child = (MapNode)getChildAt(i);
-        child.evaluateAddresses(externalOffset);
-        externalOffset += child.getTotalSize();
+        child.resolveAddresses(childAddress);
+        childAddress = child.address + child.getTotalSize();
       }
   }
 
@@ -601,6 +628,7 @@ public class MapNode extends DefaultMutableTreeNode
    * Returns a clone of this node and all of its children, if any.
    * @return A clone of this node and all of its children, if any.
    */
+  @Override
   public MapNode clone()
   {
     final MapNode newNode = (MapNode)super.clone();
@@ -608,6 +636,21 @@ public class MapNode extends DefaultMutableTreeNode
       for (int i = 0; i < getChildCount(); i++)
         newNode.add(((MapNode)getChildAt(i)).clone());
     return newNode;
+  }
+
+  @Override
+  public String toString()
+  {
+    final StringBuffer s = new StringBuffer();
+    final TreeNode[] path = getPath();
+    for (final TreeNode node : path) {
+      if (s.length() > 0) {
+        s.append(" => ");
+      }
+      final MapNode mapNode = (MapNode)node;
+      s.append(mapNode.label);
+    }
+    return "TreePath[" + s + "]";
   }
 }
 
