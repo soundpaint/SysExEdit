@@ -480,46 +480,66 @@ public class MapNode extends DefaultMutableTreeNode
    */
   public MapNode locate(final long address)
   {
-    if ((this.address <= address) && (address < this.address + total_size))
-      if (!getAllowsChildren())
-        return this;
-      else
-        {
-          MapNode next_node = null;
-          MapNode node = null;
-          long cumulative_address = this.address;
-          final Enumeration children_enum = children();
-          while ((cumulative_address < address) &&
-                 children_enum.hasMoreElements())
-            {
-              node = next_node;
-              next_node = (MapNode)children_enum.nextElement();
-              cumulative_address += next_node.total_size;
-            }
-          // Assertion[1] (node != null):
-          //   The while loop must always be executed at least twice, as
-          //   the parent node has the same address as the first child node.
-          //   If not, the map structure is corrupt.
-          //
-          // Assertion[2] (cumulative_address < address):
-          //   The location must somewhere among the childs because of the
-          //   if clauses that guard this block. Otherwise, the map
-          //   structure is corrupt.
-          //
-          if ((node == null) || (cumulative_address < address))
-            throw new IllegalStateException("map structure corrupt");
-          else if (node.address > address)
-            return null; // address is located in inaccessible (padding) area
-          else if (node.getAllowsChildren())
-            return node.locate(address); // more specific location required
-          else
-            return node; // gotcha!
-        }
-    else
-      if (parent != null)
+    if ((address < this.address) || (address >= this.address + total_size)) {
+      // address not among this node or its descendants
+      if (parent != null) {
+        // try looking at sister nodes
         return ((MapNode)parent).locate(address);
-      else
-        return null; // address is located in inaccessible (padding) area
+      }
+      // no such address
+      return null;
+    }
+
+    // wanted node must be among this node or its descendants
+
+    if (!getAllowsChildren()) {
+      // have no children => wanted node must be myself
+      return this;
+    }
+
+    MapNode previous_node = null;
+    MapNode node = null;
+    long next_address = -1;
+    for (int i = 0;
+         i < getChildCount() && (address > next_address);
+         i++) {
+      previous_node = node;
+      node = (MapNode)getChildAt(i);
+      next_address = node.address + node.total_size;
+    }
+
+    // Assertion[1] (previous_node != null):
+    //   The while loop must always be executed at least twice, as
+    //   the parent node has the same address as the first child node.
+    //   If not, the map structure is corrupted.
+    //
+
+    if (previous_node == null) {
+      throw new IllegalStateException("map structure corrupt");
+    }
+
+    // Assertion[2] (address <= next_address):
+    //   The location must somewhere among the childs because of the
+    //   if clauses that guard this block. Otherwise, the map
+    //   structure is corrupt.
+    //
+
+    if (address > next_address) {
+      throw new IllegalStateException("map structure corrupt");
+    }
+
+    if (address < previous_node.address) {
+      // address is located in inaccessible (padding) area
+      return null;
+    }
+
+    if (previous_node.getAllowsChildren()) {
+      // more specific location required
+      return previous_node.locate(address);
+    }
+
+    // gotcha!
+    return previous_node;
   }
 
   /**
