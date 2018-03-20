@@ -22,13 +22,11 @@ package see.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.MenuShortcut;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -36,23 +34,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -63,12 +53,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JViewport;
-import javax.swing.KeyStroke;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
-import javax.swing.border.BevelBorder;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -321,6 +308,7 @@ public class EditorFrame extends JFrame implements Runnable
     map.setShowsRootHandles(true);
     map.setRowHeight(-1);
     map.addKeyListener(new KeyListener());
+    map.addKeyListener(new TreeSelectionDumpListener(mapDef, map));
     map.getModel().addTreeModelListener(new TreeModelListener());
     final JScrollPane scrollpane_map = new JScrollPane();
     scrollpane_map.setPreferredSize(new Dimension(450, 450));
@@ -636,117 +624,6 @@ public class EditorFrame extends JFrame implements Runnable
   }
 
   /**
-   * The first node te be saved in a bulk of nodes.
-   */
-  private MapNode first_save_node;
-
-  /**
-   * The last node te be saved in a bulk of nodes.
-   */
-  private MapNode last_save_node;
-
-  /**
-   * The destination stream for save operation.
-   */
-  private OutputStream save_stream;
-
-  /**
-   * Initializes the save automaton.
-   */
-  private void save_init()
-  {
-    first_save_node = null;
-    last_save_node = null;
-  }
-
-  /**
-   * Notes down that the specified MapNode is to be saved; eventually
-   * saves a bulk of collected MapNode objects.
-   * @param node The MapNode to be saved eventually.
-   */
-  private void save_add(final MapNode node) throws IOException
-  {
-    if (node.getAllowsChildren())
-      {
-        final Enumeration children = node.children();
-        while (children.hasMoreElements())
-          save_add((MapNode)children.nextElement());
-      }
-    else
-      {
-        if (last_save_node != null)
-          if (last_save_node.getAddress() + last_save_node.getTotalSize() ==
-              node.getAddress())
-            {
-              // add to contigous block & quit
-              last_save_node = node;
-              return;
-            }
-          else
-            // end of contigous block; dump it
-            save_flush();
-        // start a new contigous block
-        first_save_node = node;
-        last_save_node = node;
-      }
-  }
-
-  /**
-   * Flushes the save automaton.
-   */
-  private void save_flush() throws IOException
-  {
-    if (first_save_node == null)
-      return; // nothing to flush
-    else
-      {
-        System.out.println("dump " + first_save_node.getAddress() + "-" +
-                           (last_save_node.getAddress() +
-                            last_save_node.getTotalSize()));
-        final InputStream bulkDump =
-          mapDef.bulkDump(first_save_node.getAddress(),
-                          last_save_node.getAddress() +
-                          last_save_node.getTotalSize());
-        int data;
-        while ((data = bulkDump.read()) >= 0)
-          {
-            System.out.println("data=" + data);
-            save_stream.write(data);
-          }
-        save_init();
-      }
-  }
-
-  /**
-   * Walks through the whole Map object and requests each selected
-   * MapNode to be saved.
-   */
-  private void save_selected(final Map map)
-  {
-    try
-      {
-        save_stream = new FileOutputStream("bulkdump.mid");
-        save_init();
-        int index = map.getMinSelectionRow();
-        if (index >= 0)
-          {
-            while (index <= map.getMaxSelectionRow())
-              {
-                if (map.isRowSelected(index))
-                  save_add((MapNode)map.getPathForRow(index).
-                           getLastPathComponent());
-                index++;
-              }
-            save_flush();
-          }
-      }
-    catch (final IOException e)
-      {
-        new MessageFrame(e.toString());
-      }
-  }
-
-  /**
    * Returns an array of all available map def classes.
    */
   private Class<MapDef>[] getMapDefClasses()
@@ -980,9 +857,6 @@ public class EditorFrame extends JFrame implements Runnable
         case '!':
           if (path != null)
             reset((DefaultTreeModel)map.getModel(), path);
-          break;
-        case '\u0013': // Ctrl-S
-          save_selected(map);
           break;
         }
     }
