@@ -75,24 +75,22 @@ public class TreeSelectionDumpListener extends KeyAdapter
    */
   private void flushDump(final OutputStream out) throws IOException
   {
-    if (bulkAreaStartAddress < 0)
+    if (bulkAreaStartAddress < 0) {
       return; // nothing to flush
-    else
+    }
+    System.out.println("dump " +
+                       bulkAreaStartAddress + "-" +
+                       bulkAreaStopBeforeAddress);
+    final InputStream bulkDump =
+      mapDef.bulkDump(bulkAreaStartAddress,
+                      bulkAreaStopBeforeAddress);
+    int data;
+    while ((data = bulkDump.read()) >= 0)
       {
-        System.out.println("dump " +
-                           bulkAreaStartAddress + "-" +
-                           bulkAreaStopBeforeAddress);
-        final InputStream bulkDump =
-          mapDef.bulkDump(bulkAreaStartAddress,
-                          bulkAreaStopBeforeAddress);
-        int data;
-        while ((data = bulkDump.read()) >= 0)
-          {
-            System.out.println("data=" + data);
-            out.write(data);
-          }
-        reset();
+        System.out.println("data=" + data);
+        out.write(data);
       }
+    reset();
   }
 
   /**
