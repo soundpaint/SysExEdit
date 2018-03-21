@@ -376,8 +376,10 @@ public class MapNode extends DefaultMutableTreeNode
    * startup, but also whenever the map has been modified.
    * @param nextAvailableAddress The next absolute address that is no
    * yet assigned.
+   * @return The next available address after the last descendant of
+   * this node (in depth first search order).
    */
-  protected void resolveAddresses(final long nextAvailableAddress)
+  protected long resolveAddresses(final long nextAvailableAddress)
   {
     if (desiredAddress == -1) {
       // no desired address specified => use default
@@ -392,14 +394,13 @@ public class MapNode extends DefaultMutableTreeNode
       address = desiredAddress;
     }
     final Contents contents = getContents();
-    long childAddress =
+    long result =
       address + (contents != null ? contents.getBitSize() : 0);
-    for (int i = 0; i < getChildCount(); i++)
-      {
-        final MapNode child = (MapNode)getChildAt(i);
-        child.resolveAddresses(childAddress);
-        childAddress = child.address + child.getTotalSize();
-      }
+    for (int i = 0; i < getChildCount(); i++) {
+      final MapNode child = (MapNode)getChildAt(i);
+      result = child.resolveAddresses(result);
+    }
+    return result;
   }
 
   /**
