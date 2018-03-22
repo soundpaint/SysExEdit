@@ -67,6 +67,24 @@ public class MapNode extends DefaultMutableTreeNode
   // the total bit size including all sub-trees
   private long total_size;
 
+  /**
+   * The node preceding this node in depth first search order, or null
+   * if there is no node preceding this one.
+   */
+  private MapNode dfsPreviousNode;
+
+  /**
+   * The node following this node in depth first search order, or null
+   * if there is no node follwing this one.
+   */
+  private MapNode dfsNextNode;
+
+  /**
+   * The last node in depth first search order of all descandants of
+   * this node, or <code>this</code>, if this node is a leaf node.
+   */
+  private MapNode dfsLastDescendant;
+
   private MapNode()
   {
     throw new UnsupportedOperationException();
@@ -346,6 +364,33 @@ public class MapNode extends DefaultMutableTreeNode
     // The user object is actually already updated in
     // RangeContents#editingPathValueChanged().
     // Hence, this method does not change anything in the map.
+  }
+
+  /**
+   * Resolves the links to the preceding and following node in depth
+   * first search order for this and all of its descendant nodes.
+   * WARNING: For proper handling of these links, link resolution must
+   * be performed not only at startup, but also whenever the map has
+   * been modified.
+   * @param dfsPreviousNode The node that has been visited previously
+   * to this node in depth first search order or null, if this node is
+   * the root node of the tree.
+   * @return The last visited node while traversing the complete
+   * subtree below this node in depth first search order.
+   */
+  protected MapNode resolveDfsLinkedNodes(final MapNode dfsPreviousNode)
+  {
+    this.dfsPreviousNode = dfsPreviousNode;
+    if (dfsPreviousNode != null) {
+      dfsPreviousNode.dfsNextNode = this;
+    }
+    MapNode dfsLastDescendant = this;
+    for (int i = 0; i < getChildCount(); i++) {
+      final MapNode child = (MapNode)getChildAt(i);
+      dfsLastDescendant = child.resolveDfsLinkedNodes(dfsLastDescendant);
+    }
+    this.dfsLastDescendant = dfsLastDescendant;
+    return dfsLastDescendant;
   }
 
   /**
