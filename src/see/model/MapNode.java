@@ -518,6 +518,12 @@ public class MapNode extends DefaultMutableTreeNode
       }
   }
 
+  private int getBitSize()
+  {
+    final Contents contents = getContents();
+    return contents != null ? contents.getBitSize() : 0;
+  }
+
   /**
    * Locates the node that covers the specified address.
    * @param address The address to be located.
@@ -526,9 +532,38 @@ public class MapNode extends DefaultMutableTreeNode
    */
   public MapNode locate(final long address)
   {
-    if ((address < this.address) || (address >= this.address + total_size)) {
+    final long fromAddress = this.address;
+
+    final MapNode toAddressNode = dfsLastDescendant.dfsNextNode;
+    final long toAddress =
+      toAddressNode != null ?
+      toAddressNode.address :
+      dfsLastDescendant.address + dfsLastDescendant.getBitSize();
+
+    if ((address < fromAddress) || (address >= toAddress)) {
+
+      // performance boost: due to mostly linear reads, first try next
+      // node in deapth first search order before searching anywhere
+      // else, thus reducing search from O(n) to O(1) for linear
+      // access patterns (TODO: rather than putting this performance
+      // hack here, the caller should try calling method locate()
+      // already on the best-known fitting node)
+      if (dfsNextNode != null) {
+        if (address >= dfsNextNode.address) {
+          final MapNode dfsNextNextNode = dfsNextNode.dfsNextNode;
+          if (dfsNextNextNode != null) {
+            if (address < dfsNextNextNode.address) {
+              return dfsNextNode;
+            }
+          }
+          if (address < dfsNextNode.address + dfsNextNode.getBitSize()) {
+            return dfsNextNode;
+          }
+        }
+      }
+
       // address not among this node or its descendants
-      if (parent != null) {
+      if ((parent != null) && (dfsNextNode != null)) {
         // try looking at sister nodes
         return ((MapNode)parent).locate(address);
       }
@@ -543,49 +578,30 @@ public class MapNode extends DefaultMutableTreeNode
       return this;
     }
 
-    MapNode previous_node = null;
-    MapNode node = null;
-    long next_address = -1;
+    MapNode child = null;
+    long nextAddress = -1;
     for (int i = 0;
-         i < getChildCount() && (address > next_address);
+         i < getChildCount() && (address >= nextAddress);
          i++) {
-      previous_node = node;
-      node = (MapNode)getChildAt(i);
-      next_address = node.address + node.total_size;
+      child = (MapNode)getChildAt(i);
+      final MapNode childDfs = child.dfsLastDescendant.dfsNextNode;
+      nextAddress =
+        childDfs != null ?
+        childDfs.address :
+        child.address + child.getBitSize();
     }
 
-    // Assertion[1] (previous_node != null):
-    //   The while loop must always be executed at least twice, as
-    //   the parent node has the same address as the first child node.
-    //   If not, the map structure is corrupted.
-    //
-
-    if (previous_node == null) {
-      throw new IllegalStateException("map structure corrupt");
+    if (child == null) {
+      throw new IllegalStateException("DFS structure corrupted");
     }
 
-    // Assertion[2] (address <= next_address):
-    //   The location must somewhere among the childs because of the
-    //   if clauses that guard this block. Otherwise, the map
-    //   structure is corrupt.
-    //
-
-    if (address > next_address) {
-      throw new IllegalStateException("map structure corrupt");
+    if (address < child.address) {
+      throw new IllegalStateException("no such address: " + address + " < " +
+                                      child.address +
+                                      "(child = " + child + ")");
     }
 
-    if (address < previous_node.address) {
-      // address is located in inaccessible (padding) area
-      return null;
-    }
-
-    if (previous_node.getAllowsChildren()) {
-      // more specific location required
-      return previous_node.locate(address);
-    }
-
-    // gotcha!
-    return previous_node;
+    return child.locate(address);
   }
 
   /**
@@ -637,7 +653,8 @@ public class MapNode extends DefaultMutableTreeNode
         final Contents contents = getContents();
         final int contents_size = contents.getBitSize();
         if (shift_size >= contents_size)
-          throw new IllegalStateException("locate failed [2]");
+          throw new IllegalStateException("invalid shift: " + shift_size +
+                                          " >=" + contents_size);
         final int[] local_data = contents.toBits();
         /*
          * [PENDING: incomplete implementation]
