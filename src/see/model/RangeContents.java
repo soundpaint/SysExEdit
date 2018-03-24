@@ -220,7 +220,7 @@ public class RangeContents extends AbstractContents
   public int[] toBits()
   {
     final int[] bits = new int[1];
-    bits[1] = getValue();
+    bits[0] = getValue();
     return bits;
   }
 
