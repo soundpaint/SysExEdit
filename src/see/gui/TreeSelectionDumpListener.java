@@ -131,7 +131,8 @@ public class TreeSelectionDumpListener extends KeyAdapter
   private void dumpSelection()
   {
     try {
-      final FileOutputStream out = new FileOutputStream("bulkdump.mid");
+      final FileOutputStream out = new FileOutputStream("mididump.raw");
+      // TODO: Dump to configurable MIDI port rather than to a file.
       reset();
       int index = map.getMinSelectionRow();
       if (index >= 0) {

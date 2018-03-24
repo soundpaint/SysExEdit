@@ -2475,6 +2475,8 @@ public class DB50XG extends AbstractDevice
     private int next_bulk_dump_byte()
     {
       node = node.locate(pos);
+      // TODO: Fix performance: node.getData() will call node.locate()
+      // once again, although we already know the node.
       final int data[] = node.getData(pos, 7);
       check_sum = (check_sum + data[0]) & 0x7f;
       pos += 7;
