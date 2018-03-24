@@ -89,7 +89,7 @@ public class DB50XG extends AbstractDevice
 
   /**
    * Level Data Value Assign Table
-   * LEVEL[i] = 6*log(i/64)/log(127/64); 0 <= i <= 127
+   * LEVEL[i] = 6*log(i/64)/log(127/64); 0 &lt;= i &lt;= 127
    */
   private static final String[] LEVEL =
   {
@@ -902,7 +902,7 @@ public class DB50XG extends AbstractDevice
   private static final ValueType
     enumType_modulation_delay_offset = new EnumType(MODULATION_DELAY_OFFSET);
   private static final Range range_modulation_delay_offset =
-    new Range("internal-control").
+    new Range("internal-time").
     addSubrange(0x00, 0x7f, enumType_modulation_delay_offset);
 
   private static final ValueType
@@ -914,13 +914,13 @@ public class DB50XG extends AbstractDevice
   private static final ValueType
     enumType_reverb_time = new EnumType(REVERB_TIME);
   private static final Range range_reverb_time =
-    new Range("internal-control").
+    new Range("internal-time").
     addSubrange(0x00, 0x45, enumType_reverb_time);
 
   private static final ValueType
     enumType_delay_time_1 = new EnumType(DELAY_TIME_1);
   private static final Range range_delay_time_1 =
-    new Range("internal-control").
+    new Range("internal-time").
     addSubrange(0x00, 0x7f, enumType_delay_time_1);
 
   private static final ValueType
@@ -929,19 +929,19 @@ public class DB50XG extends AbstractDevice
   private static final ValueType
     enumType_delay_time_2 = new EnumType(DELAY_TIME_2);
   private static final Range range_delay_time_2 =
-    new Range("internal-control").
+    new Range("internal-time").
     addSubrange(0x00, 0x7f, enumType_delay_time_2);
 
   private static final ValueType
     enumType_reverb_dim_length = new EnumType(REVERB_DIM_LENGTH);
   private static final Range range_reverb_width =
-    new Range("internal-control").
+    new Range("internal-length").
     addSubrange(0x00, 0x25, enumType_reverb_dim_length);
   private static final Range range_reverb_height =
-    new Range("internal-control").
+    new Range("internal-length").
     addSubrange(0x00, 0x49, enumType_reverb_dim_length);
   private static final Range range_reverb_depth =
-    new Range("internal-control").
+    new Range("internal-length").
     addSubrange(0x00, 0x68, enumType_reverb_dim_length);
 
   private static final ValueType
@@ -1354,7 +1354,7 @@ public class DB50XG extends AbstractDevice
     node_reverb.add(new MapNode("Unused", new RangeContents(7)));
 
     final Range range_feedback_level =
-      new Range("internal-control").
+      new Range("internal-volume").
       addSubrange(0x01, 0x7f, new Int8Type(0x40));
     final RangeContents contents_feedback_level =
       new RangeContents(range_feedback_level);
@@ -1391,7 +1391,7 @@ public class DB50XG extends AbstractDevice
     node_chorus.add(new MapNode("LFO PM Depth", contents_lfo_pm_depth));
 
     final Range range_feedback_level =
-      new Range("internal-control").
+      new Range("internal-volume").
       addSubrange(0x01, 0x7f, new Int8Type(0x40));
     final RangeContents contents_feedback_level =
       new RangeContents(range_feedback_level);
@@ -1624,14 +1624,14 @@ public class DB50XG extends AbstractDevice
                          contents_lfo_pmod_depth));
 
     final RangeContents contents_lfo_fmod_depth =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_non_negative_7bit, "internal-mod-fm");
     contents_lfo_fmod_depth.setBitSize(7);
     contents_lfo_fmod_depth.setDefaultValue(0x00);
     node.add(new MapNode(displayPrefix + " LFO FMod Depth",
                          contents_lfo_fmod_depth));
 
     final RangeContents contents_lfo_amod_depth =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_non_negative_7bit, "internal-mod-am");
     contents_lfo_amod_depth.setBitSize(7);
     contents_lfo_amod_depth.setDefaultValue(0x00);
     node.add(new MapNode(displayPrefix + " LFO AMod Depth",
@@ -1775,14 +1775,15 @@ public class DB50XG extends AbstractDevice
     contents_pan.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pan", contents_pan));
 
-    final RangeContents contents_note_limit_low = new RangeContents(range_note);
+    final RangeContents contents_note_limit_low =
+      new RangeContents(range_note, "internal-limit-bottom");
     contents_note_limit_low.setBitSize(7);
     contents_note_limit_low.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Note Limit Low",
                                       contents_note_limit_low));
 
     final RangeContents contents_note_limit_high =
-      new RangeContents(range_note);
+      new RangeContents(range_note, "internal-limit-top");
     contents_note_limit_high.setBitSize(7);
     contents_note_limit_high.setDefaultValue(0x7f);
     node_multi_part_n.add(new MapNode("Note Limit High",
@@ -1835,7 +1836,7 @@ public class DB50XG extends AbstractDevice
                                       contents_vibrato_delay));
 
     final RangeContents contents_filter_cutoff_frequency =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-tune");
     contents_filter_cutoff_frequency.setBitSize(7);
     contents_filter_cutoff_frequency.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Filter Cutoff Frequency",
@@ -1849,21 +1850,21 @@ public class DB50XG extends AbstractDevice
                                       contents_filter_resonance));
 
     final RangeContents contents_eg_attack_time =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-time");
     contents_eg_attack_time.setBitSize(7);
     contents_eg_attack_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("EG Attack Time",
                                       contents_eg_attack_time));
 
     final RangeContents contents_eg_decay_time =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-time");
     contents_eg_decay_time.setBitSize(7);
     contents_eg_decay_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("EG Decay Time",
                                       contents_eg_decay_time));
 
     final RangeContents contents_eg_release_time =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-time");
     contents_eg_release_time.setBitSize(7);
     contents_eg_release_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("EG Release Time",
@@ -1900,14 +1901,14 @@ public class DB50XG extends AbstractDevice
                                       contents_bend_lfo_pmod_depth));
 
     final RangeContents contents_bend_lfo_fmod_depth =
-      new RangeContents(range_bend_lfo_mod_depth);
+      new RangeContents(range_bend_lfo_mod_depth, "internal-mod-fm");
     contents_bend_lfo_fmod_depth.setBitSize(7);
     contents_bend_lfo_fmod_depth.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Bend LFO FMod Depth",
                                       contents_bend_lfo_fmod_depth));
 
     final RangeContents contents_bend_lfo_amod_depth =
-      new RangeContents(range_bend_lfo_mod_depth);
+      new RangeContents(range_bend_lfo_mod_depth, "internal-mod-am");
     contents_bend_lfo_amod_depth.setBitSize(7);
     contents_bend_lfo_amod_depth.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Bend LFO AMod Depth",
@@ -2143,49 +2144,49 @@ public class DB50XG extends AbstractDevice
                                       contents_portamento_switch));
 
     final RangeContents contents_portamento_time =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(range_non_negative_7bit, "internal-time");
     contents_portamento_time.setBitSize(7);
     contents_portamento_time.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Portamento Time",
                                       contents_portamento_time));
 
     final RangeContents contents_pitch_eg_initial_level =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-volume");
     contents_pitch_eg_initial_level.setBitSize(7);
     contents_pitch_eg_initial_level.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pitch EG Initial Level",
                                       contents_pitch_eg_initial_level));
 
     final RangeContents contents_pitch_eg_attack_time =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-time");
     contents_pitch_eg_attack_time.setBitSize(7);
     contents_pitch_eg_attack_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pitch EG Attack Time",
                                       contents_pitch_eg_attack_time));
 
     final RangeContents contents_pitch_eg_release_level =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-volume");
     contents_pitch_eg_release_level.setBitSize(7);
     contents_pitch_eg_release_level.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pitch EG Release Level",
                                       contents_pitch_eg_release_level));
 
     final RangeContents contents_pitch_eg_release_time =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-time");
     contents_pitch_eg_release_time.setBitSize(7);
     contents_pitch_eg_release_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pitch EG Release Time",
                                       contents_pitch_eg_release_time));
 
     final RangeContents contents_velocity_limit_low =
-      new RangeContents(range_positive_7bit);
+      new RangeContents(range_positive_7bit, "internal-limit-bottom");
     contents_velocity_limit_low.setBitSize(7);
     contents_velocity_limit_low.setDefaultValue(0x01);
     node_multi_part_n.add(new MapNode("Velocity Limit Low",
                                       contents_velocity_limit_low));
 
     final RangeContents contents_velocity_limit_high =
-      new RangeContents(range_positive_7bit);
+      new RangeContents(range_positive_7bit, "internal-limit-top");
     contents_velocity_limit_high.setBitSize(7);
     contents_velocity_limit_high.setDefaultValue(0x7f);
     node_multi_part_n.add(new MapNode("Velocity Limit High",
@@ -2210,7 +2211,7 @@ public class DB50XG extends AbstractDevice
       new MapNode("Drum Setup Note " + r, addr2index(0x30 + n, r, 0x00));
 
     final RangeContents contents_pitch_coarse =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-transpose");
     contents_pitch_coarse.setBitSize(7);
     contents_pitch_coarse.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Pitch Coarse",
@@ -2291,7 +2292,7 @@ public class DB50XG extends AbstractDevice
                                            contents_rcv_note_on));
 
     final RangeContents contents_filter_cutoff_frequency =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(range_signed_7bit, "internal-tune");
     contents_filter_cutoff_frequency.setBitSize(7);
     contents_filter_cutoff_frequency.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Filter Cutoff Frequency",
