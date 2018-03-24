@@ -64,9 +64,6 @@ public class MapNode extends DefaultMutableTreeNode
   // the confirmed absolute bit address of this node
   private long address;
 
-  // the total bit size including all sub-trees
-  private long total_size;
-
   /**
    * The node preceding this node in depth first search order, or null
    * if there is no node preceding this one.
@@ -107,10 +104,7 @@ public class MapNode extends DefaultMutableTreeNode
     address = -1; // resolve later
     listeners = new Vector<MapChangeListener>();
     if (contents != null) {
-      total_size = contents.getBitSize();
       contents.addContentsChangeListener(this);
-    } else {
-      total_size = 0;
     }
   }
 
@@ -339,7 +333,6 @@ public class MapNode extends DefaultMutableTreeNode
     super.insert(newChild, childIndex);
     final MapNode child = (MapNode)newChild;
     child.reset(null);
-    adjust_total_size(((MapNode)newChild).total_size);
   }
 
   /**
@@ -355,7 +348,6 @@ public class MapNode extends DefaultMutableTreeNode
   {
     final MapNode child = (MapNode)getChildAt(childIndex);
     super.remove(childIndex);
-    adjust_total_size(-child.total_size);
   }
 
   @Override
@@ -391,27 +383,6 @@ public class MapNode extends DefaultMutableTreeNode
     }
     this.dfsLastDescendant = dfsLastDescendant;
     return dfsLastDescendant;
-  }
-
-  /**
-   * Adjusts the total size of this map and all of its
-   * parent maps.
-   * @param delta_size The adjustment size.
-   */
-  private void adjust_total_size(final long delta_size)
-  {
-    total_size += delta_size;
-    if (parent != null)
-      ((MapNode)parent).adjust_total_size(delta_size);
-  }
-
-  /**
-   * Returns the total size of this node's memory in bits.
-   * @return The total size of this node's memory in bits.
-   */
-  public long getTotalSize()
-  {
-    return total_size;
   }
 
   /**
