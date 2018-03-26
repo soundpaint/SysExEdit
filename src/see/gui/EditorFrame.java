@@ -61,6 +61,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import see.Preferences;
 import see.model.MapDef;
 import see.model.MapNode;
 
@@ -141,12 +142,12 @@ public class EditorFrame extends JFrame implements Runnable
   /*
    * Other instance variables
    */
+  private final Preferences preferences;
   private final String filepath; // path of map def class
   private MapDef mapDef;
   private final FramesManager manager; // manages this and all other editor frames
   private File defaultLoadFile = null; // default load dialog file
   private File defaultSaveFile = null; // default save dialog file
-  private int deviceID; // the device ID used for bulk requests & dumps
   private DefaultTreeModel mapModel = null;
 
   private EditorFrame()
@@ -162,10 +163,12 @@ public class EditorFrame extends JFrame implements Runnable
    *    the user is prompted a window to manually select a device model.
    * @param manager A frames manager that manages all other editor frames.
    */
-  public EditorFrame(final String filepath,
+  public EditorFrame(final Preferences preferences,
+                     final String filepath,
                      final MapDef mapDef,
                      final FramesManager manager)
   {
+    this.preferences = preferences;
     this.filepath = filepath;
     this.mapDef = mapDef;
     this.manager = manager;
@@ -215,6 +218,16 @@ public class EditorFrame extends JFrame implements Runnable
     manager.removeFrame(this);
   }
 
+  private int getMIDIDeviceId()
+  {
+    return preferences.getMIDIDeviceId(mapDef.getName());
+  }
+
+  private void setMIDIDeviceId(final int midiDeviceId)
+  {
+    preferences.setMIDIDeviceId(mapDef.getName(), midiDeviceId);
+  }
+
   private void updateModelInfo()
   {
     label_deviceName.setText("Dev Name: " + mapDef.getName());
@@ -224,8 +237,8 @@ public class EditorFrame extends JFrame implements Runnable
     label_manID.updateUI();
     label_modelID.setText("Model ID: " + Utils.intTo0xnn(mapDef.getModelID()));
     label_modelID.updateUI();
-    deviceID = mapDef.getDefaultDeviceID();
-    label_deviceID.setText("Device ID: " + Utils.intTo0xnn(deviceID));
+    setMIDIDeviceId(mapDef.getDefaultDeviceID());
+    label_deviceID.setText("Device ID: " + Utils.intTo0xnn(getMIDIDeviceId()));
     label_deviceID.updateUI();
   }
 
@@ -890,7 +903,7 @@ public class EditorFrame extends JFrame implements Runnable
     {
       final String command = e.getActionCommand();
       if (command.equals(NEW))
-        new Thread(new EditorFrame(null, mapDef, manager)).start();
+        new Thread(new EditorFrame(preferences, null, mapDef, manager)).start();
       else if (command.equals(LOAD))
         {
           final JFileChooser chooser = newChooser(defaultLoadFile);
@@ -932,17 +945,17 @@ public class EditorFrame extends JFrame implements Runnable
         else {}
       else if (command.equals(DEVICE_ID))
         {
-          final int newDeviceID =
+          final int newDeviceId =
             DialogDevID.showDialog(EditorFrame.this,
                                    "Device ID Selection",
                                    JOptionPane.QUESTION_MESSAGE,
                                    UIManager.getIcon("internal-control"),
-                                   deviceID);
-          if (newDeviceID >= 0)
+                                   getMIDIDeviceId());
+          if (newDeviceId >= 0)
             {
-              deviceID = newDeviceID;
+              setMIDIDeviceId(newDeviceId);
               label_deviceID.setText("Device ID: " +
-                                     Utils.intTo0xnn(deviceID));
+                                     Utils.intTo0xnn(newDeviceId));
               label_deviceID.updateUI();
             }
         }

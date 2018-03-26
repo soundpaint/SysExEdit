@@ -84,7 +84,8 @@ public class SysExEdit extends Applet implements FramesManager
   private static int argVersion = 0;    /* dto. */
   private static int argCopyright = 0;  /* dto. */
 
-  private Hashtable<Frame, Integer> frames; // frames and their unique IDs
+  private final Preferences preferences;
+  private final Hashtable<Frame, Integer> frames; // frames and their unique IDs
   private boolean inAnApplet = false; // true, if run as an applet
 
   private static void print_version(final PrintWriter out)
@@ -225,6 +226,12 @@ public class SysExEdit extends Applet implements FramesManager
       }
   }
 
+  public SysExEdit()
+  {
+    preferences = Preferences.getDefault();
+    frames = new Hashtable<Frame, Integer>();
+  }
+
   /**
    * Starts an EditorFrame thread with the specified device model.
    * @param filepath The device model filepath to use in this thread.
@@ -233,7 +240,6 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public void createEditorFrame(final String filepath)
   {
-    frames = new Hashtable<Frame, Integer>();
     System.out.println("[loading & initializing swing...]");
     System.out.flush();
     if (JOptionPane.showConfirmDialog(null, APPL_INFO, "Application Info",
@@ -241,7 +247,7 @@ public class SysExEdit extends Applet implements FramesManager
         JOptionPane.OK_OPTION)
       {
         loadIcons();
-        new Thread(new EditorFrame(filepath, null, this)).start();
+        new Thread(new EditorFrame(preferences, filepath, null, this)).start();
       }
     else
       removeFrame(new Frame());
