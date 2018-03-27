@@ -41,6 +41,14 @@ public interface FramesManager
   String getCopyright();
 
   /**
+   * Starts an EditorFrame thread with the specified device model.
+   * @param filepath The device model filepath to use in this thread.
+   *    If null, the user will be prompted to select a device model from
+   *    a list.
+   */
+  void createEditorFrame(final String filepath);
+
+  /**
    * Registers a new frame. Whenever a frame is registered, it is assigned
    * an ID that is unique among all frames that are currently registered.
    * This ID is always a non-negative number; ideally, it is the smallest

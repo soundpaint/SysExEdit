@@ -26,6 +26,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -193,7 +194,7 @@ public class EditorFrame extends JFrame implements Runnable
       {
         System.out.println("[" + windowID + ": prompting for map def...]");
         System.out.flush();
-        loadDeviceModel();
+        mapDef = loadDeviceModel(this, mapDef);
       }
     if (mapDef != null)
       {
@@ -639,7 +640,7 @@ public class EditorFrame extends JFrame implements Runnable
   /**
    * Returns an array of all available map def classes.
    */
-  private Class<MapDef>[] getMapDefClasses()
+  private static Class<MapDef>[] getMapDefClasses()
   {
     final Vector<Class<MapDef>> classes = new Vector<Class<MapDef>>();
     try {
@@ -681,7 +682,7 @@ public class EditorFrame extends JFrame implements Runnable
     }
   }
 
-  private ComboBoxDeviceEntry[] createDeviceSelectionEntries()
+  private static ComboBoxDeviceEntry[] createDeviceSelectionEntries(final Frame parent)
   {
     final Class<MapDef>[] deviceClasses = getMapDefClasses();
     final ArrayList<ComboBoxDeviceEntry> deviceEntries =
@@ -694,49 +695,49 @@ public class EditorFrame extends JFrame implements Runnable
         final PrintWriter printWriter = new PrintWriter(stringWriter);
         e.printStackTrace(printWriter);
         printWriter.close();
-        JOptionPane.showMessageDialog(this, stringWriter, ERROR,
+        JOptionPane.showMessageDialog(parent, stringWriter, ERROR,
                                       JOptionPane.INFORMATION_MESSAGE);
       }
     }
     return deviceEntries.toArray(new ComboBoxDeviceEntry[0]);
   }
 
-  private MapDef loadDeviceModel()
+  private MapDef loadDeviceModel(final Frame parent, final MapDef currentDevice)
   {
     // [PENDING: Sometimes, the program hangs while calling
     // JOptionPane.showDialog() (after sucessfully calling
     // getMapDefClasses).]
     final ComboBoxDeviceEntry[] deviceSelectionEntries =
-      createDeviceSelectionEntries();
+      createDeviceSelectionEntries(parent);
     if (deviceSelectionEntries == null) {
-      JOptionPane.showMessageDialog(this,
+      JOptionPane.showMessageDialog(parent,
                                     "No device model available.",
                                     ERROR,
                                     JOptionPane.INFORMATION_MESSAGE);
-      return null;
+      return currentDevice;
     }
     final ComboBoxDeviceEntry selection =
       (ComboBoxDeviceEntry)JOptionPane.
-      showInputDialog(this, "Select a device model:",
+      showInputDialog(parent, "Select a device model:",
                       "Device Model Selection",
                       JOptionPane.QUESTION_MESSAGE, null,
                       deviceSelectionEntries, null);
-    if (selection != null) {
-      final MapDef device = selection.getDevice();
-      if (device != null) {
-        this.mapDef = device;
-        final TreeNode root = device.buildMap();
-        if (mapModel != null) // no need to re-create mapModel, if
-                              // already existing
-          mapModel.setRoot(root);
-        else
-          mapModel = new DefaultTreeModel(root);
-        if (label_deviceName != null) // gui already initialized
-          updateModelInfo();
-      }
-      return device;
+    if (selection == null) {
+      return currentDevice;
     }
-    return null;
+    final MapDef newDevice = selection.getDevice();
+    if (newDevice == null) {
+      return currentDevice;
+    }
+    final TreeNode root = newDevice.buildMap();
+    if (mapModel != null) // no need to re-create mapModel, if already
+                          // existing
+      mapModel.setRoot(root);
+    else
+      mapModel = new DefaultTreeModel(root);
+    if (label_deviceName != null) // gui already initialized
+      updateModelInfo();
+    return newDevice;
   }
 
   private void showAboutFrameApplicationDialog()
@@ -940,7 +941,9 @@ public class EditorFrame extends JFrame implements Runnable
                                            JOptionPane.YES_NO_OPTION)
              == JOptionPane.YES_OPTION))
           {
-            EditorFrame.this.loadDeviceModel();
+            EditorFrame.this.mapDef =
+              EditorFrame.this.loadDeviceModel(EditorFrame.this,
+                                               EditorFrame.this.mapDef);
           }
         else {}
       else if (command.equals(DEVICE_ID))

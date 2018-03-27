@@ -1,5 +1,5 @@
 /*
- * @(#)MIDIOptionsDialog.java 1.00 18/03/26
+ * @(#)Preferences.java 1.00 18/03/26
  *
  * Copyright (C) 2018 Jürgen Reuter
  *
