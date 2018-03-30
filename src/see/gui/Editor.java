@@ -34,6 +34,8 @@ public interface Editor
   void setAddressInfoEnabled(final boolean enabled);
 
   void showAboutDeviceModelDialog();
+
+  void setHaveUnsavedData(final boolean haveUnsavedData);
 }
 
 /*

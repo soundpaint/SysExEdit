@@ -83,9 +83,11 @@ public interface FramesManager
   int getID(final Frame frame);
 
   /**
-   * Closes all frames and exits the application.
+   * Close all frames and exit the application.  If there is unsaved
+   * data, the user is asked to confirm discarding all data or to
+   * abort the operation.
    */
-  void exitAll();
+  void tryExit();
 }
 
 /*

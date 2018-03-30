@@ -46,8 +46,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -109,6 +109,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
   private MapDef mapDef;
   private final FramesManager manager; // manages this and all other editor frames
   private final Controller controller;
+  private final DocumentMetaData documentMetaData;
   private DefaultTreeModel mapModel = null;
 
   private EditorFrame()
@@ -133,7 +134,9 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     this.filepath = filepath;
     this.mapDef = mapDef;
     this.manager = manager;
-    controller = new Controller(manager, this, new DocumentMetaData(), this);
+    documentMetaData = new DocumentMetaData();
+    controller = new Controller(manager, this, documentMetaData, this);
+    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   }
 
   /**
@@ -270,7 +273,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     map.setRowHeight(-1);
     map.addKeyListener(new KeyListener());
     map.addKeyListener(new TreeSelectionDumpListener(mapDef, map));
-    map.getModel().addTreeModelListener(new TreeModelListener());
+    map.getModel().addTreeModelListener(controller.getTreeModelListener());
     final JScrollPane scrollpane_map = new JScrollPane();
     scrollpane_map.setPreferredSize(new Dimension(450, 450));
     scrollpane_map.getViewport().add(map);
@@ -405,7 +408,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
   {
     public void windowClosing(final WindowEvent e)
     {
-      signalDelete();
+      tryClose();
     }
   }
 
@@ -578,40 +581,23 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     aboutDeviceModelDialog.showDialog(this, mapDef);
   }
 
-  public void exit()
+  public void tryClose()
   {
-    if ((!checkbox_md.isSelected()) ||
+    if ((!documentMetaData.getHaveUnsavedData()) ||
       (JOptionPane.showConfirmDialog(EditorFrame.this,
                                      "Window #" + manager.getID(this) +
                                      ": " + CONFIRM_CLOSE, CONFIRM,
                                      JOptionPane.YES_NO_OPTION)
        == JOptionPane.YES_OPTION))
       signalDelete();
-    else {}
+    else {
+      // close aborted by user => do nothing
+    }
   }
 
-  private class TreeModelListener
-    implements javax.swing.event.TreeModelListener
+  public void setHaveUnsavedData(final boolean haveUnsavedData)
   {
-    public void treeNodesChanged(final TreeModelEvent e)
-    {
-      checkbox_md.setSelected(true);
-    }
-
-    public void treeNodesInserted(final TreeModelEvent e)
-    {
-      checkbox_md.setSelected(true);
-    }
-
-    public void treeNodesRemoved(final TreeModelEvent e)
-    {
-      checkbox_md.setSelected(true);
-    }
-
-    public void treeStructureChanged(final TreeModelEvent e)
-    {
-      checkbox_md.setSelected(true);
-    }
+    checkbox_md.setSelected(haveUnsavedData);
   }
 
   private class KeyListener extends KeyAdapter

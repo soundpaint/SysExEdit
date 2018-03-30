@@ -286,7 +286,7 @@ public class SysExEdit extends Applet implements FramesManager
         new Thread(new EditorFrame(preferences, filepath, null, this)).start();
       }
     else
-      removeFrame(new Frame());
+      exitOnNoMoreFrame();
   }
 
   private class ButtonListener implements ActionListener
@@ -372,6 +372,14 @@ public class SysExEdit extends Applet implements FramesManager
       }
   }
 
+  private void exitOnNoMoreFrame()
+  {
+    if (frames.isEmpty() && !inAnApplet) {
+      System.out.println("[done]"); System.out.flush();
+      System.exit(1);
+    }
+  }
+
   /**
    * Removes a frame from the set of registered frames. If not in an
    * applet, calls System.exit(1), if no more frames are registered.
@@ -380,11 +388,7 @@ public class SysExEdit extends Applet implements FramesManager
   public void removeFrame(final Frame frame)
   {
     frames.remove(frame);
-    if (frames.isEmpty() && !inAnApplet)
-      {
-        System.out.println("[done]"); System.out.flush();
-        System.exit(1);
-      }
+    exitOnNoMoreFrame();
   }
 
   /**
@@ -401,11 +405,11 @@ public class SysExEdit extends Applet implements FramesManager
   /**
    * Closes all frames and exits the application.
    */
-  public void exitAll()
+  public void tryExit()
   {
     final Enumeration<Frame> enumeration = frames.keys();
     while (enumeration.hasMoreElements())
-      ((EditorFrame)enumeration.nextElement()).exit();
+      ((EditorFrame)enumeration.nextElement()).tryClose();
   }
 
   /**

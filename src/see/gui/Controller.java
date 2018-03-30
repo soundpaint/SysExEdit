@@ -31,6 +31,8 @@ import java.net.URL;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ToolTipManager;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 
 import see.SysExEdit;
 
@@ -92,6 +94,57 @@ public class Controller
       throws Throwable;
   }
 
+  private abstract class GuardedTreeModelListener implements TreeModelListener
+  {
+    public void treeNodesChanged(final TreeModelEvent event)
+    {
+      try {
+        unguardedTreeNodesChanged(event);
+      } catch (final Throwable t) {
+        ExceptionPanel.showException(frame, t, true);
+      }
+    }
+
+    abstract void unguardedTreeNodesChanged(final TreeModelEvent event)
+      throws Throwable;
+
+    public void treeNodesInserted(final TreeModelEvent event)
+    {
+      try {
+        unguardedTreeNodesInserted(event);
+      } catch (final Throwable t) {
+        ExceptionPanel.showException(frame, t, true);
+      }
+    }
+
+    abstract void unguardedTreeNodesInserted(final TreeModelEvent event)
+      throws Throwable;
+
+    public void treeNodesRemoved(final TreeModelEvent event)
+    {
+      try {
+        unguardedTreeNodesRemoved(event);
+      } catch (final Throwable t) {
+        ExceptionPanel.showException(frame, t, true);
+      }
+    }
+
+    abstract void unguardedTreeNodesRemoved(final TreeModelEvent event)
+      throws Throwable;
+
+    public void treeStructureChanged(final TreeModelEvent event)
+    {
+      try {
+        unguardedTreeStructureChanged(event);
+      } catch (final Throwable t) {
+        ExceptionPanel.showException(frame, t, true);
+      }
+    }
+
+    abstract void unguardedTreeStructureChanged(final TreeModelEvent event)
+      throws Throwable;
+  }
+
   private final ActionListener newListener = new GuardedActionListener()
     {
       public void unguardedActionPerformed(final ActionEvent event)
@@ -126,7 +179,7 @@ public class Controller
                                      chooser.getSelectedFile().getName());
           // TODO:
           //load(defaultLoadFile);
-          //documentMetaData.setHaveUnsavedMetaData(false);
+          //documentMetaData.setHaveUnsavedData(false);
         }
       }
     };
@@ -152,7 +205,7 @@ public class Controller
                                      chooser.getSelectedFile().getName());
           // TODO
           //saveAs(defaultSaveFile);
-          //documentMetaData.setHaveUnsavedMetaData(false);
+          //documentMetaData.setHaveUnsavedData(false);
         }
       }
     };
@@ -196,18 +249,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        // FIXME: There is one haveUnsavedData per frame, but not
-        // necessarily just one for the complete application.
-        if ((!documentMetaData.getHaveUnsavedData()) ||
-            (JOptionPane.showConfirmDialog(frame,
-                                           MSG_DISCARD_UNSAVED_DATA,
-                                           "Confirm Exit",
-                                           JOptionPane.YES_NO_OPTION) ==
-             JOptionPane.YES_OPTION)) {
-          manager.exitAll();
-        } else {
-          // action aborted
-        }
+        manager.tryExit();
       }
     };
 
@@ -492,6 +534,34 @@ public class Controller
       }
     };
 
+  private final TreeModelListener treeModelListener =
+    new GuardedTreeModelListener()
+    {
+      public void unguardedTreeNodesChanged(final TreeModelEvent event)
+      {
+        documentMetaData.setHaveUnsavedData(true);
+        editor.setHaveUnsavedData(true);
+      }
+
+      public void unguardedTreeNodesInserted(final TreeModelEvent event)
+      {
+        documentMetaData.setHaveUnsavedData(true);
+        editor.setHaveUnsavedData(true);
+      }
+
+      public void unguardedTreeNodesRemoved(final TreeModelEvent event)
+      {
+        documentMetaData.setHaveUnsavedData(true);
+        editor.setHaveUnsavedData(true);
+      }
+
+      public void unguardedTreeStructureChanged(final TreeModelEvent event)
+      {
+        documentMetaData.setHaveUnsavedData(true);
+        editor.setHaveUnsavedData(true);
+      }
+    };
+
   public ActionListener getNewListener()
   {
     return newListener;
@@ -675,6 +745,11 @@ public class Controller
   public ActionListener getLicenseListener()
   {
     return licenseListener;
+  }
+
+  public TreeModelListener getTreeModelListener()
+  {
+    return treeModelListener;
   }
 }
 
