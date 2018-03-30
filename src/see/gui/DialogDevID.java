@@ -33,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -157,18 +158,17 @@ class DialogDevID
    * @param parentComponent The parent Component for the dialog
    * @param title The String to display in the dialog title bar
    * @param messageType The type of message to be displayed.
-   * @param icon The Icon image to display.
    * @param initialValue The value used to initialize the input field.
    * @return device ID, or -1 meaning the user canceled the input
    */
   static int showDialog(final Component parentComponent,
                         final String title, final int messageType,
-                        final Icon icon, final int initialValue)
+                        final int initialValue)
   {
     final Panel panel = new Panel(initialValue);
     final JOptionPane pane =
-      new JOptionPane(panel, messageType,
-                      JOptionPane.OK_CANCEL_OPTION, icon, null, null);
+      new JOptionPane(panel, messageType, JOptionPane.OK_CANCEL_OPTION,
+                      UIManager.getIcon("internal-control"), null, null);
     pane.setWantsInput(false);
     final JDialog dialog = pane.createDialog(parentComponent, title);
     dialog.setVisible(true);

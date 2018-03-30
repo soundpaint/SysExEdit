@@ -24,7 +24,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -34,27 +33,18 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeModelEvent;
@@ -69,69 +59,40 @@ import see.model.MapNode;
 /**
  * This class implements the main window of the application.
  */
-public class EditorFrame extends JFrame implements Runnable
+public class EditorFrame extends JFrame implements Runnable, Editor
 {
   private static final long serialVersionUID = -8230511863227744503L;
 
   /*
-   * dialog titles
+   * dialog title "confirm"
    */
   private static final String CONFIRM = "Confirm";
 
+  /*
+   * dialog title "error"
+   */
   private static final String ERROR = "Error";
 
   /*
-   * dialog messages
+   * dialog message "confirm close"
    */
   private static final String CONFIRM_CLOSE = "Data modified.  Close anyway?";
-
-  private static final String
-  CONFIRM_LDM = "Data is modified and will be lost.  Load anyway?";
 
   /*
    * action commands
    */
-  private static final String FILE = "File";
-  private static final String NEW = "New";
+
   private static final String LOAD = "Load...";
   private static final String SAVE = "Save";
-  private static final String SAVE_AS = "Save as...";
   private static final String REQUEST = "Request";
   private static final String DUMP = "Dump";
   private static final String CLOSE = "Close";
-  private static final String EXIT = "Exit";
-  private static final String EDIT = "Edit";
-  private static final String SELECT_ALL = "Select All";
-  private static final String SELECT_NONE = "Select None";
-  private static final String INVERT_SELECTION = "Invert Selection";
-  private static final String COPY = "Copy";
-  private static final String PASTE = "Paste";
-  private static final String INCREMENT = "Increment";
-  private static final String DECREMENT = "Decrement";
-  private static final String UPPERMOST = "Uppermost";
-  private static final String LOWERMOST = "Lowermost";
-  private static final String RESET = "Reset";
-  private static final String EVENT = "Event";
-  private static final String OPTIONS = "Options";
-  private static final String LOAD_DEVICE_MODEL = "Load Device Model...";
-  private static final String DEVICE_ID = "Device ID...";
-  private static final String DISPLAY_ADDRESSES = "Display Addresses";
-  private static final String TOOL_TIPS = "Tool Tips";
-  private static final String LAF = "Look & Feel";
-  private static final String HELP = "Help";
-  private static final String TUTORIAL = "Tutorial...";
-  private static final String API = "API Specs...";
-  private static final String LICENSE = "License...";
-  private static final String ABOUT_FRAME_APPLICATION = "About Application...";
-  private static final String
-  ABOUT_DEVICE_MODEL_APPLICATION = "About Device Model...";
 
   /*
    * GUI elements
    */
+
   private Map map;
-  private JCheckBox checkbox_dispAddr;
-  private JCheckBox checkbox_toolTips;
   private JCheckBox checkbox_bd;
   private JCheckBox checkbox_br;
   private JCheckBox checkbox_md;
@@ -147,8 +108,7 @@ public class EditorFrame extends JFrame implements Runnable
   private final String filepath; // path of map def class
   private MapDef mapDef;
   private final FramesManager manager; // manages this and all other editor frames
-  private File defaultLoadFile = null; // default load dialog file
-  private File defaultSaveFile = null; // default save dialog file
+  private final Controller controller;
   private DefaultTreeModel mapModel = null;
 
   private EditorFrame()
@@ -173,6 +133,7 @@ public class EditorFrame extends JFrame implements Runnable
     this.filepath = filepath;
     this.mapDef = mapDef;
     this.manager = manager;
+    controller = new Controller(manager, this, new DocumentMetaData(), this);
   }
 
   /**
@@ -194,7 +155,7 @@ public class EditorFrame extends JFrame implements Runnable
       {
         System.out.println("[" + windowID + ": prompting for map def...]");
         System.out.flush();
-        mapDef = loadDeviceModel(this, mapDef);
+        loadDeviceModel(this);
       }
     if (mapDef != null)
       {
@@ -219,14 +180,16 @@ public class EditorFrame extends JFrame implements Runnable
     manager.removeFrame(this);
   }
 
-  private int getMIDIDeviceId()
+  public int getMIDIDeviceId()
   {
     return preferences.getMIDIDeviceId(mapDef.getName());
   }
 
-  private void setMIDIDeviceId(final int midiDeviceId)
+  public void setMIDIDeviceId(final int midiDeviceId)
   {
     preferences.setMIDIDeviceId(mapDef.getName(), midiDeviceId);
+    label_deviceID.setText("Device ID: " + Utils.intTo0xnn(midiDeviceId));
+    label_deviceID.updateUI();
   }
 
   private void updateModelInfo()
@@ -239,8 +202,12 @@ public class EditorFrame extends JFrame implements Runnable
     label_modelID.setText("Model ID: " + Utils.intTo0xnn(mapDef.getModelID()));
     label_modelID.updateUI();
     setMIDIDeviceId(mapDef.getDefaultDeviceID());
-    label_deviceID.setText("Device ID: " + Utils.intTo0xnn(getMIDIDeviceId()));
-    label_deviceID.updateUI();
+  }
+
+  public void setAddressInfoEnabled(final boolean enabled)
+  {
+    map.setAddressInfoEnabled(enabled);
+    map.updateUI();
   }
 
   private static UIManager.LookAndFeelInfo[] lookAndFeelInfo;
@@ -250,7 +217,7 @@ public class EditorFrame extends JFrame implements Runnable
     lookAndFeelInfo = UIManager.getInstalledLookAndFeels();
   }
 
-  private void setLookAndFeel(final String name) throws Exception
+  public void setLookAndFeel(final String name) throws Exception
   {
     String className = null;
     for (int i = 0; i < lookAndFeelInfo.length; i++)
@@ -266,8 +233,8 @@ public class EditorFrame extends JFrame implements Runnable
   private void initGUI()
   {
     JButton button;
-    final EditorActionListener actionListener = new EditorActionListener();
-    constructMenuBar(actionListener);
+
+    setJMenuBar(new MenuBar(controller));
 
     // tool icons area
     final JPanel panel_toolIcons = new JPanel();
@@ -276,14 +243,14 @@ public class EditorFrame extends JFrame implements Runnable
     final Insets insets = new Insets(0, 0, 0, 0);
 
     button = new JButton(UIManager.getIcon("internal-button-load"));
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getLoadListener());
     button.setActionCommand(LOAD);
     button.setToolTipText("Loads a File of Data from Disk");
     button.setMargin(insets);
     panel_toolIcons.add(button);
 
     button = new JButton(UIManager.getIcon("internal-button-save"));
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getSaveListener());
     button.setActionCommand(SAVE);
     button.setToolTipText("Saves Selected Data to a Disk File");
     button.setMargin(insets);
@@ -291,7 +258,7 @@ public class EditorFrame extends JFrame implements Runnable
 
     button = new JButton(UIManager.getIcon("internal-button-request"));
     button.setEnabled(false);
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getRequestListener());
     button.setActionCommand(REQUEST);
     button.setToolTipText("Requests Selected Data via MIDI");
     button.setMargin(insets);
@@ -299,14 +266,14 @@ public class EditorFrame extends JFrame implements Runnable
 
     button = new JButton(UIManager.getIcon("internal-button-dump"));
     button.setEnabled(false);
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getDumpListener());
     button.setActionCommand(DUMP);
     button.setToolTipText("Dumps Selected Data via MIDI");
     button.setMargin(insets);
     panel_toolIcons.add(button);
 
     button = new JButton(UIManager.getIcon("internal-button-exit"));
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getExitListener());
     button.setActionCommand(CLOSE);
     button.setToolTipText("Closes this editor window");
     button.setMargin(insets);
@@ -317,7 +284,7 @@ public class EditorFrame extends JFrame implements Runnable
     getContentPane().add(panel_map, "Center");
     map = mapDef.getMap();
     map.setAddressRepresentation(mapDef.getAddressRepresentation());
-    map.setAddressInfoEnabled(false);
+    setAddressInfoEnabled(false);
     map.setModel(mapModel);
     map.setShowsRootHandles(true);
     map.setRowHeight(-1);
@@ -359,27 +326,27 @@ public class EditorFrame extends JFrame implements Runnable
     panel_button_row.setLayout(gbl);
 
     button = new JButton(LOAD);
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getLoadListener());
     button.setMnemonic((int)'l');
     button.setToolTipText("Loads a File of Data from Disk");
     gbl.setConstraints(button, c);
     panel_button_row.add(button);
     button = new JButton(SAVE);
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getSaveListener());
     button.setMnemonic((int)'s');
     button.setToolTipText("Saves Selected Data to a Disk File");
     gbl.setConstraints(button, c);
     panel_button_row.add(button);
     button = new JButton(REQUEST);
     button.setEnabled(false);
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getRequestListener());
     button.setMnemonic((int)'r');
     button.setToolTipText("Requests Selected Data via MIDI");
     gbl.setConstraints(button, c);
     panel_button_row.add(button);
     button = new JButton(DUMP);
     button.setEnabled(false);
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getDumpListener());
     button.setMnemonic((int)'d');
     button.setToolTipText("Dumps Selected Data via MIDI");
     gbl.setConstraints(button, c);
@@ -443,7 +410,7 @@ public class EditorFrame extends JFrame implements Runnable
     gbl.setConstraints(checkbox_md, c);
     panel_footer.add(checkbox_md);
     button = new JButton(CLOSE);
-    button.addActionListener(actionListener);
+    button.addActionListener(controller.getCloseListener());
     button.setMnemonic((int)'x');
     button.setToolTipText("Closes this editor window");
     gbl.setConstraints(button, c);
@@ -459,126 +426,6 @@ public class EditorFrame extends JFrame implements Runnable
     public void windowClosing(final WindowEvent e)
     {
       signalDelete();
-    }
-  }
-
-  private void constructMenuBar(final ActionListener listener)
-  {
-    final JMenuBar menubar = new JMenuBar();
-    JMenu menu, submenu;
-    JMenuItem menuItem;
-
-    menu = new JMenu(FILE);
-    menu.setMnemonic((int)'f');
-    menu.add(new JMenuItem(NEW, (int)'n')).addActionListener(listener);
-    menu.add(new JMenuItem(LOAD, (int)'l')).addActionListener(listener);
-    menu.add(new JMenuItem(SAVE, (int)'s')).addActionListener(listener);
-    menu.add(new JMenuItem(SAVE_AS, (int)'a')).addActionListener(listener);
-    menu.add(new JSeparator());
-    menuItem = new JMenuItem(REQUEST, (int)'r');
-    menuItem.setEnabled(false);
-    menu.add(menuItem).addActionListener(listener);
-    menuItem = new JMenuItem(DUMP, (int)'d');
-    menuItem.setEnabled(false);
-    menu.add(menuItem).addActionListener(listener);
-    menu.add(new JSeparator());
-    menu.add(new JMenuItem(CLOSE, (int)'c')).addActionListener(listener);
-    menu.add(new JMenuItem(EXIT, (int)'x')).addActionListener(listener);
-    menubar.add(menu);
-
-    menu = new JMenu(EDIT);
-    menu.setMnemonic((int)'e');
-    menu.add(new JMenuItem(SELECT_ALL, (int)'a')).addActionListener(listener);
-    menu.add(new JMenuItem(SELECT_NONE, (int)'n')).addActionListener(listener);
-    menu.add(new JMenuItem(INVERT_SELECTION, (int)'v')).
-      addActionListener(listener);
-    menu.add(new JSeparator());
-    menu.add(new JMenuItem(COPY, (int)'c')).addActionListener(listener);
-    menu.add(new JMenuItem(PASTE, (int)'p')).addActionListener(listener);
-    menu.add(new JSeparator());
-    menu.add(new JMenuItem(INCREMENT, (int)'i')).addActionListener(listener);
-    menu.add(new JMenuItem(DECREMENT, (int)'d')).addActionListener(listener);
-    menu.add(new JMenuItem(UPPERMOST, (int)'u')).addActionListener(listener);
-    menu.add(new JMenuItem(LOWERMOST, (int)'l')).addActionListener(listener);
-    menu.add(new JSeparator());
-    menu.add(new JMenuItem(RESET, (int)'r')).addActionListener(listener);
-    menubar.add(menu);
-
-    menu = new JMenu(EVENT);
-    menu.setMnemonic((int)'v');
-    menu.add(new JMenuItem("Reset MIDI Devices")).addActionListener(listener);
-    menu.add(new JMenuItem("Prg Change...")).addActionListener(listener);
-    menu.add(new JMenuItem("Bank Select...")).addActionListener(listener);
-    menu.add(new JMenuItem("Ctrl Change...")).addActionListener(listener);
-    menu.add(new JMenuItem("RPN/NRPN...")).addActionListener(listener);
-    menu.add(new JSeparator());
-    menu.add(new JMenuItem("Options...")).addActionListener(listener);
-    menubar.add(menu);
-
-    submenu = new JMenu(LAF);
-    submenu.setMnemonic((int)'l');
-    for (int i = 0; i < lookAndFeelInfo.length; i++)
-      {
-        final UIManager.LookAndFeelInfo info = lookAndFeelInfo[i];
-        submenu.add(new JMenuItem(info.getName())).addActionListener(listener);
-      }
-
-    menu = new JMenu(OPTIONS);
-    menu.setMnemonic((int)'o');
-    menu.add(new JMenuItem(LOAD_DEVICE_MODEL)).addActionListener(listener);
-    menu.add(new JMenuItem("Set Current Device Model as Default")).
-      addActionListener(listener);
-    menu.add(new JMenuItem(DEVICE_ID)).addActionListener(listener);
-    menu.add(new JMenuItem("Manufacturer ID...")).addActionListener(listener);
-    menu.add(new JMenuItem("Message Interval Time...")).
-      addActionListener(listener);
-    checkbox_dispAddr = new JCheckBox(DISPLAY_ADDRESSES);
-    checkbox_dispAddr.setMnemonic((int)'a');
-    checkbox_dispAddr.addActionListener(listener);
-    checkbox_dispAddr.setSelected(false);
-    menu.add(checkbox_dispAddr);
-    checkbox_toolTips = new JCheckBox(TOOL_TIPS);
-    checkbox_toolTips.setMnemonic((int)'t');
-    checkbox_toolTips.addActionListener(listener);
-    checkbox_toolTips.setSelected(true);
-    ToolTipManager.sharedInstance().setEnabled(true);
-    menu.add(checkbox_toolTips);
-    menu.add(new JSeparator());
-    menu.add(submenu);
-    menubar.add(menu);
-
-    menu = new JMenu(HELP);
-    menu.setMnemonic((int)'h');
-    menu.add(new JMenuItem(TUTORIAL, (int)'t')).
-      addActionListener(listener);
-    menu.add(new JMenuItem(API, (int)'s')).
-      addActionListener(listener);
-    menu.add(new JMenuItem(ABOUT_FRAME_APPLICATION, (int)'a')).
-      addActionListener(listener);
-    menu.add(new JMenuItem(ABOUT_DEVICE_MODEL_APPLICATION, (int)'d')).
-      addActionListener(listener);
-    menu.add(new JMenuItem(LICENSE, (int)'l')).addActionListener(listener);
-    menubar.add(menu);
-
-    setJMenuBar(menubar);
-  }
-
-  private class IncrementAction implements ActionListener
-  {
-    private final Map map;
-
-    private IncrementAction()
-    {
-      throw new UnsupportedOperationException();
-    }
-
-    private IncrementAction(final Map map)
-    {
-      this.map = map;
-    }
-
-    public void actionPerformed(final ActionEvent e)
-    {
     }
   }
 
@@ -702,11 +549,12 @@ public class EditorFrame extends JFrame implements Runnable
     return deviceEntries.toArray(new ComboBoxDeviceEntry[0]);
   }
 
-  private MapDef loadDeviceModel(final Frame parent, final MapDef currentDevice)
+  public void loadDeviceModel(final Frame parent)
   {
     // [PENDING: Sometimes, the program hangs while calling
     // JOptionPane.showDialog() (after sucessfully calling
     // getMapDefClasses).]
+    final MapDef currentDevice = mapDef;
     final ComboBoxDeviceEntry[] deviceSelectionEntries =
       createDeviceSelectionEntries(parent);
     if (deviceSelectionEntries == null) {
@@ -714,7 +562,8 @@ public class EditorFrame extends JFrame implements Runnable
                                     "No device model available.",
                                     ERROR,
                                     JOptionPane.INFORMATION_MESSAGE);
-      return currentDevice;
+      mapDef = currentDevice;
+      return;
     }
     final ComboBoxDeviceEntry selection =
       (ComboBoxDeviceEntry)JOptionPane.
@@ -723,11 +572,13 @@ public class EditorFrame extends JFrame implements Runnable
                       JOptionPane.QUESTION_MESSAGE, null,
                       deviceSelectionEntries, null);
     if (selection == null) {
-      return currentDevice;
+      mapDef = currentDevice;
+      return;
     }
     final MapDef newDevice = selection.getDevice();
     if (newDevice == null) {
-      return currentDevice;
+      mapDef = currentDevice;
+      return;
     }
     final TreeNode root = newDevice.buildMap();
     if (mapModel != null) // no need to re-create mapModel, if already
@@ -737,75 +588,14 @@ public class EditorFrame extends JFrame implements Runnable
       mapModel = new DefaultTreeModel(root);
     if (label_deviceName != null) // gui already initialized
       updateModelInfo();
-    return newDevice;
+    mapDef = newDevice;
   }
 
-  private void showAboutFrameApplicationDialog()
+  public void showAboutDeviceModelDialog()
   {
-    final String msg =
-      manager.getVersion() + "\n" +
-      manager.getCopyright() + "\n" +
-      "\n" +
-      "Original distribution site is\n" +
-      "https://github.com/soundpaint/SysExEdit\n";
-    JOptionPane.showMessageDialog(this, msg, ABOUT_FRAME_APPLICATION,
-                                  JOptionPane.INFORMATION_MESSAGE);
-  }
-
-  private void showAboutDeviceModelApplicationDialog()
-  {
-    final Box hbox = Box.createHorizontalBox();
-    final Box vbox1 = Box.createVerticalBox();
-    final Box vbox2 = Box.createVerticalBox();
-    final Box vbox3 = Box.createVerticalBox();
-    hbox.add(vbox1);
-    hbox.add(vbox2);
-    hbox.add(vbox3);
-    JLabel label;
-    label = new JLabel("Device Name");
-    label.setForeground(Color.black);
-    vbox1.add(label);
-    label = new JLabel("Device Name Class");
-    label.setForeground(Color.black);
-    vbox1.add(label);
-    label = new JLabel("Manufacturer ID");
-    label.setForeground(Color.black);
-    vbox1.add(label);
-    label = new JLabel("Model ID");
-    label.setForeground(Color.black);
-    vbox1.add(label);
-    label = new JLabel("Entered by");
-    label.setForeground(Color.black);
-    vbox1.add(label);
-    label = new JLabel("  :  ");
-    label.setForeground(Color.black);
-    vbox2.add(label);
-    label = new JLabel("  :  ");
-    label.setForeground(Color.black);
-    vbox2.add(label);
-    label = new JLabel("  :  ");
-    label.setForeground(Color.black);
-    vbox2.add(label);
-    label = new JLabel("  :  ");
-    label.setForeground(Color.black);
-    vbox2.add(label);
-    label = new JLabel(mapDef.getName());
-    label.setForeground(Color.black);
-    vbox3.add(label);
-    label = new JLabel(mapDef.getClass().getName());
-    label.setForeground(Color.black);
-    vbox3.add(label);
-    label = new JLabel(Utils.intTo0xnn(mapDef.getManufacturerID()));
-    label.setForeground(Color.black);
-    vbox3.add(label);
-    label = new JLabel(Utils.intTo0xnn(mapDef.getModelID()));
-    label.setForeground(Color.black);
-    vbox3.add(label);
-    label = new JLabel(mapDef.getEnteredBy());
-    label.setForeground(Color.black);
-    vbox3.add(label);
-    JOptionPane.showMessageDialog(this, hbox, ABOUT_DEVICE_MODEL_APPLICATION,
-                                  JOptionPane.INFORMATION_MESSAGE);
+    final AboutDeviceModelDialog aboutDeviceModelDialog =
+      new AboutDeviceModelDialog();
+    aboutDeviceModelDialog.showDialog(this, mapDef);
   }
 
   public void exit()
@@ -873,147 +663,6 @@ public class EditorFrame extends JFrame implements Runnable
             reset((DefaultTreeModel)map.getModel(), path);
           break;
         }
-    }
-  }
-
-  private class EditorActionListener implements ActionListener
-  {
-    private JFileChooser newChooser(final File defaultFile)
-    {
-      final JFileChooser chooser = new JFileChooser();
-      final ExtensionFileFilter filter =
-        new ExtensionFileFilter(new String[] {"mid", "midi", "sysex"},
-                                "MIDI SysEx files");
-      chooser.addChoosableFileFilter(filter);
-      chooser.setFileFilter(filter);
-      if (defaultFile != null)
-        chooser.setSelectedFile(defaultFile);
-      return chooser;
-    }
-
-    public void actionPerformed(final ActionEvent e)
-    {
-      try {
-        unguardedActionPerformed(e);
-      } catch (final Throwable t) {
-        ExceptionPanel.showException(EditorFrame.this, t, true);
-      }
-    }
-
-    private void unguardedActionPerformed(final ActionEvent e) throws Throwable
-    {
-      final String command = e.getActionCommand();
-      if (command.equals(NEW))
-        new Thread(new EditorFrame(preferences, null, mapDef, manager)).start();
-      else if (command.equals(LOAD))
-        {
-          final JFileChooser chooser = newChooser(defaultLoadFile);
-          final int returnVal = chooser.showOpenDialog(EditorFrame.this);
-          if (returnVal == JFileChooser.APPROVE_OPTION)
-            {
-              defaultLoadFile = new File(chooser.getCurrentDirectory(),
-                                         chooser.getSelectedFile().getName());
-              //load(defaultLoadFile);
-              //checkbox_md.setSelected(false);
-            }
-        }
-      else if (command.equals(SAVE_AS) ||
-          (command.equals(SAVE) && defaultSaveFile == null))
-        {
-          final JFileChooser chooser = newChooser(defaultSaveFile);
-          final int returnVal = chooser.showSaveDialog(EditorFrame.this);
-          if (returnVal == JFileChooser.APPROVE_OPTION)
-            {
-              defaultSaveFile = new File(chooser.getCurrentDirectory(),
-                                         chooser.getSelectedFile().getName());
-              //saveAs(defaultSaveFile);
-              //checkbox_md.setSelected(false);
-            }
-        }
-      else if (command.equals(CLOSE))
-        exit();
-      else if (command.equals(EXIT))
-        manager.exitAll();
-      else if (command.equals(LOAD_DEVICE_MODEL))
-        if ((!checkbox_md.isSelected()) ||
-            (JOptionPane.showConfirmDialog(EditorFrame.this,
-                                           CONFIRM_LDM, CONFIRM,
-                                           JOptionPane.YES_NO_OPTION)
-             == JOptionPane.YES_OPTION))
-          {
-            EditorFrame.this.mapDef =
-              EditorFrame.this.loadDeviceModel(EditorFrame.this,
-                                               EditorFrame.this.mapDef);
-          }
-        else {}
-      else if (command.equals(DEVICE_ID))
-        {
-          final int newDeviceId =
-            DialogDevID.showDialog(EditorFrame.this,
-                                   "Device ID Selection",
-                                   JOptionPane.QUESTION_MESSAGE,
-                                   UIManager.getIcon("internal-control"),
-                                   getMIDIDeviceId());
-          if (newDeviceId >= 0)
-            {
-              setMIDIDeviceId(newDeviceId);
-              label_deviceID.setText("Device ID: " +
-                                     Utils.intTo0xnn(newDeviceId));
-              label_deviceID.updateUI();
-            }
-        }
-      else if (command.equals(DISPLAY_ADDRESSES))
-        {
-          map.setAddressInfoEnabled(checkbox_dispAddr.isSelected());
-          map.updateUI();
-        }
-      else if (command.equals(TOOL_TIPS))
-        {
-          ToolTipManager.sharedInstance().
-            setEnabled(checkbox_toolTips.isSelected());
-        }
-      else if (command.equals(TUTORIAL))
-        {
-          final URL url =
-            EditorFrame.class.getResource("/doc/tutorial/MissingPage.html");
-          if (url != null) {
-            final HtmlPanel panel = new HtmlPanel(url);
-            if (panel != null)
-              JOptionPane.showMessageDialog(EditorFrame.this, panel, TUTORIAL,
-                                            JOptionPane.INFORMATION_MESSAGE);
-          }
-        }
-      else if (command.equals(API))
-        {
-          final URL url = EditorFrame.class.getResource("/doc/api/index.html");
-          if (url != null) {
-            final HtmlPanel panel = new HtmlPanel(url);
-            if (panel != null)
-              JOptionPane.showMessageDialog(EditorFrame.this, panel, API,
-                                            JOptionPane.INFORMATION_MESSAGE);
-          }
-        }
-      else if (command.equals(ABOUT_FRAME_APPLICATION))
-        showAboutFrameApplicationDialog();
-      else if (command.equals(ABOUT_DEVICE_MODEL_APPLICATION))
-        showAboutDeviceModelApplicationDialog();
-      else if (command.equals(LICENSE))
-        {
-          final URL url = EditorFrame.class.getResource("/LICENSE.html");
-          if (url != null) {
-            final HtmlPanel panel = new HtmlPanel(url);
-            if (panel != null)
-              JOptionPane.showMessageDialog(EditorFrame.this, panel, LICENSE,
-                                            JOptionPane.INFORMATION_MESSAGE);
-          }
-        }
-      else
-        for (int i = 0; i < lookAndFeelInfo.length; i++)
-          if (command.equals(lookAndFeelInfo[i].getName()))
-            {
-              EditorFrame.this.setLookAndFeel(command);
-              break;
-            }
     }
   }
 
