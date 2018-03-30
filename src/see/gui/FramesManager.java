@@ -21,7 +21,6 @@
 package see.gui;
 
 import java.awt.Frame;
-import java.net.URL;
 
 /**
  * A class that implements this interface manages a set of bundled frames.
@@ -39,6 +38,12 @@ public interface FramesManager
    * @return The copyright mark of this application.
    */
   String getCopyright();
+
+  /**
+   * Sets the Swing Look and Feel for all frames.
+   * @param name The name of the Look and Feel flavour.
+   */
+  void setLookAndFeel(final String name) throws Exception;
 
   /**
    * Starts an EditorFrame thread with the specified device model.
@@ -76,11 +81,6 @@ public interface FramesManager
    * @see #addFrame
    */
   int getID(final Frame frame);
-
-  /**
-   * Executes SwingUtilities.updateComponentTreeUI on all registered frames.
-   */
-  void updateUI();
 
   /**
    * Closes all frames and exits the application.

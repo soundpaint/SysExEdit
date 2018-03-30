@@ -232,6 +232,42 @@ public class SysExEdit extends Applet implements FramesManager
     frames = new Hashtable<Frame, Integer>();
   }
 
+  private static UIManager.LookAndFeelInfo[] lookAndFeelInfo;
+
+  static
+  {
+    lookAndFeelInfo = UIManager.getInstalledLookAndFeels();
+  }
+
+  /**
+   * Executes SwingUtilities.updateComponentTreeUI on all registered frames.
+   */
+  private void updateUI()
+  {
+    final Enumeration<Frame> enumeration = frames.keys();
+    while (enumeration.hasMoreElements()) {
+      final Frame frame = enumeration.nextElement();
+      SwingUtilities.updateComponentTreeUI(frame);
+      frame.pack();
+    }
+  }
+
+  /**
+   * Sets the Swing Look and Feel for all registered frames.
+   */
+  public void setLookAndFeel(final String name) throws Exception
+  {
+    String className = null;
+    for (int i = 0; i < lookAndFeelInfo.length; i++)
+      if (name.equals(lookAndFeelInfo[i].getName()))
+        {
+          className = lookAndFeelInfo[i].getClassName();
+          break;
+        }
+    UIManager.setLookAndFeel(className);
+    updateUI();
+  }
+
   /**
    * Starts an EditorFrame thread with the specified device model.
    * @param filepath The device model filepath to use in this thread.
@@ -360,18 +396,6 @@ public class SysExEdit extends Applet implements FramesManager
   {
     final Integer id = frames.get(frame);
     return (id != null) ? id : -1;
-  }
-
-  /**
-   * Executes SwingUtilities.updateComponentTreeUI on all registered frames.
-   */
-  public void updateUI()
-  {
-    final Enumeration<Frame> enumeration = frames.keys();
-    while (enumeration.hasMoreElements())
-      {
-        SwingUtilities.updateComponentTreeUI(enumeration.nextElement());
-      }
   }
 
   /**

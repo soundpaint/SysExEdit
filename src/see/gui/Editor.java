@@ -33,8 +33,6 @@ public interface Editor
 
   void setAddressInfoEnabled(final boolean enabled);
 
-  void setLookAndFeel(final String name) throws Exception;
-
   void showAboutDeviceModelDialog();
 }
 

@@ -210,26 +210,6 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     map.updateUI();
   }
 
-  private static UIManager.LookAndFeelInfo[] lookAndFeelInfo;
-
-  static
-  {
-    lookAndFeelInfo = UIManager.getInstalledLookAndFeels();
-  }
-
-  public void setLookAndFeel(final String name) throws Exception
-  {
-    String className = null;
-    for (int i = 0; i < lookAndFeelInfo.length; i++)
-      if (name.equals(lookAndFeelInfo[i].getName()))
-        {
-          className = lookAndFeelInfo[i].getClassName();
-          break;
-        }
-    UIManager.setLookAndFeel(className);
-    manager.updateUI();
-  }
-
   private void initGUI()
   {
     JButton button;

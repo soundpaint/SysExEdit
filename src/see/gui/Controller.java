@@ -418,7 +418,7 @@ public class Controller
       public void unguardedActionPerformed(final ActionEvent event)
         throws Exception
       {
-        editor.setLookAndFeel(event.getActionCommand());
+        manager.setLookAndFeel(event.getActionCommand());
       }
     };
 
