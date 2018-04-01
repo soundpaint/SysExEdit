@@ -199,11 +199,11 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
       super("Event");
       setMnemonic('v');
 
-      final JMenuItem itemResetMIDIDevices = new JMenuItem("Reset MIDI Devices");
-      itemResetMIDIDevices.setMnemonic('r');
-      itemResetMIDIDevices.addActionListener(ctrl.getResetMIDIDevicesListener());
-      add(itemResetMIDIDevices);
-      itemResetMIDIDevices.setEnabled(false); // TODO
+      final JMenuItem itemResetMidiDevices = new JMenuItem("Reset MIDI Devices");
+      itemResetMidiDevices.setMnemonic('r');
+      itemResetMidiDevices.addActionListener(ctrl.getResetMidiDevicesListener());
+      add(itemResetMidiDevices);
+      itemResetMidiDevices.setEnabled(false); // TODO
 
       final JMenuItem itemPrgChange = new JMenuItem("Prg Change...");
       itemPrgChange.setMnemonic('p');

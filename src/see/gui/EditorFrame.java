@@ -183,14 +183,14 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     manager.removeFrame(this);
   }
 
-  public int getMIDIDeviceId()
+  public int getMidiDeviceId()
   {
-    return preferences.getMIDIDeviceId(mapDef.getName());
+    return preferences.getMidiDeviceId(mapDef.getName());
   }
 
-  public void setMIDIDeviceId(final int midiDeviceId)
+  public void setMidiDeviceId(final int midiDeviceId)
   {
-    preferences.setMIDIDeviceId(mapDef.getName(), midiDeviceId);
+    preferences.setMidiDeviceId(mapDef.getName(), midiDeviceId);
     label_deviceID.setText("Device ID: " + Utils.intTo0xnn(midiDeviceId));
     label_deviceID.updateUI();
   }
@@ -204,7 +204,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     label_manID.updateUI();
     label_modelID.setText("Model ID: " + Utils.intTo0xnn(mapDef.getModelID()));
     label_modelID.updateUI();
-    setMIDIDeviceId(mapDef.getDefaultDeviceID());
+    setMidiDeviceId(mapDef.getDefaultDeviceID());
   }
 
   public void setAddressInfoEnabled(final boolean enabled)

@@ -333,7 +333,7 @@ public class Controller
       }
     };
 
-  private final ActionListener resetMIDIDevicesListener = new GuardedActionListener()
+  private final ActionListener resetMidiDevicesListener = new GuardedActionListener()
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
@@ -414,9 +414,9 @@ public class Controller
           DialogDevID.showDialog(frame,
                                  "Device ID Selection",
                                  JOptionPane.QUESTION_MESSAGE,
-                                 editor.getMIDIDeviceId());
+                                 editor.getMidiDeviceId());
         if (newDeviceId >= 0) {
-          editor.setMIDIDeviceId(newDeviceId);
+          editor.setMidiDeviceId(newDeviceId);
         }
       }
     };
@@ -652,9 +652,9 @@ public class Controller
     return resetListener;
   }
 
-  public ActionListener getResetMIDIDevicesListener()
+  public ActionListener getResetMidiDevicesListener()
   {
-    return resetMIDIDevicesListener;
+    return resetMidiDevicesListener;
   }
 
   public ActionListener getPrgChangeListener()

@@ -27,9 +27,9 @@ public interface Editor
 {
   void loadDeviceModel(final Frame parent);
 
-  int getMIDIDeviceId();
+  int getMidiDeviceId();
 
-  void setMIDIDeviceId(final int midiDeviceId);
+  void setMidiDeviceId(final int midiDeviceId);
 
   void setAddressInfoEnabled(final boolean enabled);
 

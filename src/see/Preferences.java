@@ -49,33 +49,33 @@ public class Preferences
     prefs = java.util.prefs.Preferences.userNodeForPackage(getClass());
   }
 
-  public int getMIDIDeviceId(final String deviceModelName)
+  public int getMidiDeviceId(final String deviceModelName)
   {
     return prefs.getInt(PATH_MIDI_DEVICE_ID + "/" + deviceModelName, 0);
   }
 
-  public void setMIDIDeviceId(final String deviceModelName,
+  public void setMidiDeviceId(final String deviceModelName,
                               final int midiDeviceId)
   {
     prefs.putInt(PATH_MIDI_DEVICE_ID + "/" + deviceModelName, midiDeviceId);
   }
 
-  public String getMIDIInputConnection()
+  public String getMidiInputConnection()
   {
     return prefs.get(PATH_MIDI_INPUT_CONNECTION, "");
   }
 
-  public void setMIDIInputConnection(final String midiInputConnection)
+  public void setMidiInputConnection(final String midiInputConnection)
   {
     prefs.put(PATH_MIDI_INPUT_CONNECTION, midiInputConnection);
   }
 
-  public String getMIDIOutputConnection()
+  public String getMidiOutputConnection()
   {
     return prefs.get(PATH_MIDI_OUTPUT_CONNECTION, "");
   }
 
-  public void setMIDIOutputConnection(final String midiOutputConnection)
+  public void setMidiOutputConnection(final String midiOutputConnection)
   {
     prefs.put(PATH_MIDI_OUTPUT_CONNECTION, midiOutputConnection);
   }
