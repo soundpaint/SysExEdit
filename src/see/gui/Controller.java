@@ -45,6 +45,7 @@ public class Controller
   private final Editor editor;
   private final DocumentMetaData documentMetaData;
   private final Frame frame;
+  private final MidiOptionsDialog midiOptionsDialog;
 
   private Controller()
   {
@@ -60,6 +61,8 @@ public class Controller
     this.editor = editor;
     this.documentMetaData = documentMetaData;
     this.frame = frame;
+    midiOptionsDialog =
+      new MidiOptionsDialog(frame, documentMetaData);
   }
 
   private abstract class GuardedItemListener implements ItemListener
@@ -381,6 +384,14 @@ public class Controller
       }
     };
 
+  private final ActionListener midiOptionsListener = new GuardedActionListener()
+    {
+      public void unguardedActionPerformed(final ActionEvent event)
+      {
+        midiOptionsDialog.showDialog();
+      }
+    };
+
   private final ActionListener loadDeviceModelListener = new GuardedActionListener()
     {
       public void unguardedActionPerformed(final ActionEvent event)
@@ -680,6 +691,11 @@ public class Controller
   public ActionListener getOptionsListener()
   {
     return optionsListener;
+  }
+
+  public ActionListener getMidiOptionsListener()
+  {
+    return midiOptionsListener;
   }
 
   public ActionListener getLoadDeviceModelListener()

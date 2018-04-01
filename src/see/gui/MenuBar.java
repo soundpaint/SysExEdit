@@ -248,7 +248,13 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
       super("Options");
       setMnemonic('o');
 
-      final JMenuItem itemLoadDeviceModel = new JMenuItem("Load Device Model...");
+      final JMenuItem itemMidiOptions = new JMenuItem("MIDI Options...");
+      itemMidiOptions.setMnemonic('l');
+      itemMidiOptions.addActionListener(ctrl.getMidiOptionsListener());
+      add(itemMidiOptions);
+
+      final JMenuItem itemLoadDeviceModel =
+        new JMenuItem("Load Device Model...");
       itemLoadDeviceModel.setMnemonic('l');
       itemLoadDeviceModel.addActionListener(ctrl.getLoadDeviceModelListener());
       add(itemLoadDeviceModel);

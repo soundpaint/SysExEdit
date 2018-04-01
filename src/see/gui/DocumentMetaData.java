@@ -20,9 +20,15 @@
 
 package see.gui;
 
+import java.io.File;
+import javax.sound.midi.MidiDevice;
+
 public class DocumentMetaData
 {
   private boolean haveUnsavedData;
+  private MidiDevice.Info midiInput;
+  private MidiDevice.Info midiOutput;
+  private File dumpMidiFile;
 
   public DocumentMetaData()
   {
@@ -37,6 +43,36 @@ public class DocumentMetaData
   public boolean getHaveUnsavedData()
   {
     return haveUnsavedData;
+  }
+
+  public MidiDevice.Info getMidiInput()
+  {
+    return midiInput;
+  }
+
+  public void setMidiInput(final MidiDevice.Info midiInput)
+  {
+    this.midiInput = midiInput;
+  }
+
+  public MidiDevice.Info getMidiOutput()
+  {
+    return midiOutput;
+  }
+
+  public void setMidiOutput(final MidiDevice.Info midiOutput)
+  {
+    this.midiOutput = midiOutput;
+  }
+
+  public File getDumpMidiFile()
+  {
+    return dumpMidiFile;
+  }
+
+  public void setDumpMidiFile(final File dumpMidiFile)
+  {
+    this.dumpMidiFile = dumpMidiFile;
   }
 }
 
