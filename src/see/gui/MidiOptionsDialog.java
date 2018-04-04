@@ -38,6 +38,8 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Transmitter;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -87,6 +89,15 @@ public class MidiOptionsDialog extends JDialog
     }
   }
 
+  /**
+   * Detects if a MidiDevice represents a hardware MIDI port, as explained
+   * in the JavaDoc documentation of the MidiDevice class.
+   */
+  private static boolean representsHardwareMidiPort(final MidiDevice device)
+  {
+    return !(device instanceof Sequencer) && !(device instanceof Synthesizer);
+  }
+
   private static List<MidiDevice.Info> getMidiInputs()
   {
     final List<MidiDevice.Info> inputInfos = new ArrayList<MidiDevice.Info>();
@@ -94,8 +105,10 @@ public class MidiOptionsDialog extends JDialog
     for (final MidiDevice.Info info : infos) {
       try {
         final MidiDevice device = MidiSystem.getMidiDevice(info);
-        if (device.getMaxReceivers() != 0) {
-          inputInfos.add(info);
+        if (representsHardwareMidiPort(device)) {
+          if (device.getMaxReceivers() != 0) {
+            inputInfos.add(info);
+          }
         }
       } catch (final MidiUnavailableException ex) {
         // skip unavailable device
@@ -111,8 +124,10 @@ public class MidiOptionsDialog extends JDialog
     for (final MidiDevice.Info info : infos) {
       try {
         final MidiDevice device = MidiSystem.getMidiDevice(info);
-        if (device.getMaxTransmitters() != 0) {
-          outputInfos.add(info);
+        if (representsHardwareMidiPort(device)) {
+          if (device.getMaxTransmitters() != 0) {
+            outputInfos.add(info);
+          }
         }
       } catch (final MidiUnavailableException ex) {
         // skip unavailable device
