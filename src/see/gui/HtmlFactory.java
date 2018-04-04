@@ -117,12 +117,12 @@ public class HtmlFactory
     try {
       reader = new FileReader(filepath);
     } catch (final FileNotFoundException e) {
-      throw new IOException("could not load html page: " + e);
+      throw new IOException("could not load html page: " + e.getMessage(), e);
     }
     try {
       kit.read(reader, document, 0);
     } catch (final BadLocationException e) {
-      throw new IOException("could not read html page: " + e);
+      throw new IOException("could not read html page: " + e.getMessage(), e);
     }
     return document;
   }
