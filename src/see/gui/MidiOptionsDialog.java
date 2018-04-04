@@ -145,7 +145,7 @@ public class MidiOptionsDialog extends JDialog
     dumpMidiFileTF = new FixedHeightTextField();
     dumpMidiFileTF.setToolTipText("select file path for MIDI dump");
     dumpMidiFileTF.setEnabled(false);
-    dumpMidiFileBT = new JButton("...");
+    dumpMidiFileBT = new JButton("…");
     dumpMidiFileBT.addActionListener(new FileChooseListener());
     dumpMidiFileBT.setEnabled(false);
     dumpMidiFileLabel = new JLabel("Dump to MIDI File");

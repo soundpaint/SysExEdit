@@ -82,7 +82,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
    * action commands
    */
 
-  private static final String LOAD = "Load...";
+  private static final String LOAD = "Load…";
   private static final String SAVE = "Save";
   private static final String REQUEST = "Request";
   private static final String DUMP = "Dump";

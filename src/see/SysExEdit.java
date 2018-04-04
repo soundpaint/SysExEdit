@@ -64,7 +64,7 @@ public class SysExEdit extends Applet implements FramesManager
   COPYRIGHT + "\n" +
   "\n" +
   "SysExEdit comes with ABSOLUTELY NO WARRANTY;\n" +
-  "for details click on the menu item “License...” in\n" +
+  "for details click on the menu item “License…” in\n" +
   "the “Help” menu of the main window to view the full\n" +
   "license.\n" +
   "\n" +

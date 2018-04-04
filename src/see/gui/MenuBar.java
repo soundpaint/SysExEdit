@@ -64,12 +64,12 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
       super("File");
       setMnemonic('f');
 
-      final JMenuItem itemNew = new JMenuItem("New...");
+      final JMenuItem itemNew = new JMenuItem("New…");
       itemNew.setMnemonic('n');
       itemNew.addActionListener(ctrl.getNewListener());
       add(itemNew);
 
-      final JMenuItem itemLoad = new JMenuItem("Load...");
+      final JMenuItem itemLoad = new JMenuItem("Load…");
       itemLoad.setMnemonic('l');
       itemLoad.addActionListener(ctrl.getLoadListener());
       add(itemLoad);
@@ -80,7 +80,7 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
       add(itemSave);
       itemSave.setEnabled(false); // TODO
 
-      final JMenuItem itemSaveAs = new JMenuItem("Save as...");
+      final JMenuItem itemSaveAs = new JMenuItem("Save as…");
       itemSaveAs.setMnemonic('a');
       itemSaveAs.addActionListener(ctrl.getSaveAsListener());
       add(itemSaveAs);
@@ -205,25 +205,25 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
       add(itemResetMidiDevices);
       itemResetMidiDevices.setEnabled(false); // TODO
 
-      final JMenuItem itemPrgChange = new JMenuItem("Prg Change...");
+      final JMenuItem itemPrgChange = new JMenuItem("Prg Change…");
       itemPrgChange.setMnemonic('p');
       itemPrgChange.addActionListener(ctrl.getPrgChangeListener());
       add(itemPrgChange);
       itemPrgChange.setEnabled(false); // TODO
 
-      final JMenuItem itemBankSelect = new JMenuItem("Bank Select...");
+      final JMenuItem itemBankSelect = new JMenuItem("Bank Select…");
       itemBankSelect.setMnemonic('b');
       itemBankSelect.addActionListener(ctrl.getBankSelectListener());
       add(itemBankSelect);
       itemBankSelect.setEnabled(false); // TODO
 
-      final JMenuItem itemCtrlChange = new JMenuItem("Ctrl Change...");
+      final JMenuItem itemCtrlChange = new JMenuItem("Ctrl Change…");
       itemCtrlChange.setMnemonic('c');
       itemCtrlChange.addActionListener(ctrl.getCtrlChangeListener());
       add(itemCtrlChange);
       itemCtrlChange.setEnabled(false); // TODO
 
-      final JMenuItem itemRpnNrpn = new JMenuItem("RPN / NRPN...");
+      final JMenuItem itemRpnNrpn = new JMenuItem("RPN / NRPN…");
       itemRpnNrpn.setMnemonic('n');
       itemRpnNrpn.addActionListener(ctrl.getRpnNrpnListener());
       add(itemRpnNrpn);
@@ -231,7 +231,7 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
 
       addSeparator();
 
-      final JMenuItem itemOptions = new JMenuItem("Options...");
+      final JMenuItem itemOptions = new JMenuItem("Options…");
       itemOptions.setMnemonic('o');
       itemOptions.addActionListener(ctrl.getOptionsListener());
       add(itemOptions);
@@ -248,13 +248,13 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
       super("Options");
       setMnemonic('o');
 
-      final JMenuItem itemMidiOptions = new JMenuItem("MIDI Options...");
+      final JMenuItem itemMidiOptions = new JMenuItem("MIDI Options…");
       itemMidiOptions.setMnemonic('l');
       itemMidiOptions.addActionListener(ctrl.getMidiOptionsListener());
       add(itemMidiOptions);
 
       final JMenuItem itemLoadDeviceModel =
-        new JMenuItem("Load Device Model...");
+        new JMenuItem("Load Device Model…");
       itemLoadDeviceModel.setMnemonic('l');
       itemLoadDeviceModel.addActionListener(ctrl.getLoadDeviceModelListener());
       add(itemLoadDeviceModel);
@@ -266,18 +266,18 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
       add(itemSetDefaultDeviceModel);
       itemSetDefaultDeviceModel.setEnabled(false); // TODO
 
-      final JMenuItem itemDeviceId = new JMenuItem("Device ID...");
+      final JMenuItem itemDeviceId = new JMenuItem("Device ID…");
       itemDeviceId.setMnemonic('d');
       itemDeviceId.addActionListener(ctrl.getDeviceIdListener());
       add(itemDeviceId);
 
-      final JMenuItem itemManufacturerId = new JMenuItem("Manufacturer ID...");
+      final JMenuItem itemManufacturerId = new JMenuItem("Manufacturer ID…");
       itemManufacturerId.setMnemonic('m');
       itemManufacturerId.addActionListener(ctrl.getManufacturerIdListener());
       add(itemManufacturerId);
       itemManufacturerId.setEnabled(false); // TODO
 
-      final JMenuItem itemMsgIntervalTime = new JMenuItem("Message Interval Time...");
+      final JMenuItem itemMsgIntervalTime = new JMenuItem("Message Interval Time…");
       itemMsgIntervalTime.setMnemonic('i');
       itemMsgIntervalTime.addActionListener(ctrl.getMsgIntervalTimeListener());
       add(itemMsgIntervalTime);
@@ -321,27 +321,27 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
       super("Help");
       setMnemonic('h');
 
-      final JMenuItem itemTutorial = new JMenuItem("Tutorial...");
+      final JMenuItem itemTutorial = new JMenuItem("Tutorial…");
       itemTutorial.setMnemonic('t');
       itemTutorial.addActionListener(ctrl.getTutorialListener());
       add(itemTutorial);
 
-      final JMenuItem itemApiSpecs = new JMenuItem("API Specs...");
+      final JMenuItem itemApiSpecs = new JMenuItem("API Specs…");
       itemApiSpecs.setMnemonic('s');
       itemApiSpecs.addActionListener(ctrl.getApiSpecsListener());
       add(itemApiSpecs);
 
-      final JMenuItem itemAboutApplication = new JMenuItem("About Application...");
+      final JMenuItem itemAboutApplication = new JMenuItem("About Application…");
       itemAboutApplication.setMnemonic('a');
       itemAboutApplication.addActionListener(ctrl.getAboutApplicationListener());
       add(itemAboutApplication);
 
-      final JMenuItem itemAboutDeviceModel = new JMenuItem("About Device Model...");
+      final JMenuItem itemAboutDeviceModel = new JMenuItem("About Device Model…");
       itemAboutDeviceModel.setMnemonic('d');
       itemAboutDeviceModel.addActionListener(ctrl.getAboutDeviceModelListener());
       add(itemAboutDeviceModel);
 
-      final JMenuItem itemLicense = new JMenuItem("License...");
+      final JMenuItem itemLicense = new JMenuItem("License…");
       itemLicense.setMnemonic('l');
       itemLicense.addActionListener(ctrl.getLicenseListener());
       add(itemLicense);
