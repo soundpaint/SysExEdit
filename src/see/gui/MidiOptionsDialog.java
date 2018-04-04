@@ -31,8 +31,9 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.TreeSet;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
@@ -89,6 +90,14 @@ public class MidiOptionsDialog extends JDialog
     }
   }
 
+  private static final Comparator<MidiDevice.Info> midiDeviceInfoComparator =
+    new Comparator<MidiDevice.Info>() {
+      public int compare(final MidiDevice.Info info1,
+                         final MidiDevice.Info info2) {
+        return info1.getName().compareTo(info2.getName());
+      }
+    };
+
   /**
    * Detects if a MidiDevice represents a hardware MIDI port, as explained
    * in the JavaDoc documentation of the MidiDevice class.
@@ -98,9 +107,10 @@ public class MidiOptionsDialog extends JDialog
     return !(device instanceof Sequencer) && !(device instanceof Synthesizer);
   }
 
-  private static List<MidiDevice.Info> getMidiInputs()
+  private static Collection<MidiDevice.Info> getMidiInputs()
   {
-    final List<MidiDevice.Info> inputInfos = new ArrayList<MidiDevice.Info>();
+    final Collection<MidiDevice.Info> inputInfos =
+      new TreeSet<MidiDevice.Info>(midiDeviceInfoComparator);
     final MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
     for (final MidiDevice.Info info : infos) {
       try {
@@ -117,9 +127,10 @@ public class MidiOptionsDialog extends JDialog
     return inputInfos;
   }
 
-  private static List<MidiDevice.Info> getMidiOutputs()
+  private static Collection<MidiDevice.Info> getMidiOutputs()
   {
-    final List<MidiDevice.Info> outputInfos = new ArrayList<MidiDevice.Info>();
+    final Collection<MidiDevice.Info> outputInfos =
+      new TreeSet<MidiDevice.Info>(midiDeviceInfoComparator);
     final MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
     for (final MidiDevice.Info info : infos) {
       try {
@@ -277,17 +288,17 @@ public class MidiOptionsDialog extends JDialog
 
     private void updateConnections()
     {
-      final List<MidiDevice.Info> midiInputs = getMidiInputs();
+      final Collection<MidiDevice.Info> midiInputs = getMidiInputs();
       inputConnectionCB.removeAllItems();
       for (final MidiDevice.Info midiInput : midiInputs) {
         inputConnectionCB.addItem(midiInput);
       }
-      final List<MidiDevice.Info> midiOutputs = getMidiOutputs();
-      midiOutputs.add(DocumentMetaData.dumpMidiFileDeviceInfo);
+      final Collection<MidiDevice.Info> midiOutputs = getMidiOutputs();
       outputConnectionCB.removeAllItems();
       for (final MidiDevice.Info midiOutput : midiOutputs) {
         outputConnectionCB.addItem(midiOutput);
       }
+      outputConnectionCB.addItem(DocumentMetaData.dumpMidiFileDeviceInfo);
     }
 
     private MidiDevice.Info getSelectedMidiInput()
