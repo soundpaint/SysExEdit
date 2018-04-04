@@ -122,7 +122,7 @@ public class MidiOptionsDialog extends JDialog
       try {
         final MidiDevice device = MidiSystem.getMidiDevice(info);
         if (representsHardwareMidiPort(device)) {
-          if (device.getMaxReceivers() != 0) {
+          if (device.getMaxTransmitters() != 0) {
             inputInfos.add(info);
           }
         }
@@ -142,7 +142,7 @@ public class MidiOptionsDialog extends JDialog
       try {
         final MidiDevice device = MidiSystem.getMidiDevice(info);
         if (representsHardwareMidiPort(device)) {
-          if (device.getMaxTransmitters() != 0) {
+          if (device.getMaxReceivers() != 0) {
             outputInfos.add(info);
           }
         }

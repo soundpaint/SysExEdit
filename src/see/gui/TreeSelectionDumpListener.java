@@ -37,7 +37,6 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.SysexMessage;
 import javax.sound.midi.Receiver;
-import javax.sound.midi.Transmitter;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -131,14 +130,10 @@ public class TreeSelectionDumpListener extends KeyAdapter
   /**
    * Flushes the save automaton.
    */
-  private void flushDump(final Transmitter transmitter) throws IOException
+  private void flushDump(final Receiver receiver) throws IOException
   {
     if (bulkAreaStartAddress < 0) {
       return; // nothing to flush
-    }
-    final Receiver receiver = transmitter.getReceiver();
-    if (receiver == null) {
-      throw new IOException("failed retreiving receiver for transmitter");
     }
     final MidiMessage bulkDump = createMidiMessage();
     receiver.send(bulkDump, -1);
@@ -150,14 +145,14 @@ public class TreeSelectionDumpListener extends KeyAdapter
    * saves a bulk of collected MapNode objects.
    * @param node The MapNode to be saved eventually.
    */
-  private void addToDump(final Transmitter transmitter,
+  private void addToDump(final Receiver receiver,
                          final MapNode node) throws IOException
   {
     if (node.getAllowsChildren()) {
       // non-leaf node => add children to dump
       for (int i = 0; i < node.getChildCount(); i++) {
         final TreeNode child = node.getChildAt(i);
-        addToDump(transmitter, (MapNode)child);
+        addToDump(receiver, (MapNode)child);
       }
       return;
     }
@@ -168,7 +163,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
     }
     if (bulkAreaStopBeforeAddress >= 0) {
       // end of contiguous block; dump it
-      flushDump(transmitter);
+      flushDump(receiver);
     }
     // start a new contiguous block
     bulkAreaStartAddress = node.getAddress();
@@ -177,10 +172,10 @@ public class TreeSelectionDumpListener extends KeyAdapter
   }
 
   /**
-   * @return A transmitter for creating a dump MIDI file or null, if
+   * @return A receiver for creating a dump MIDI file or null, if
    * the operation has been aborted by the user.
    */
-  private Transmitter getTransmitterForDumpMidiFile() throws IOException
+  private Receiver getReceiverForDumpMidiFile() throws IOException
   {
     final File dumpMidiFile = documentMetaData.getDumpMidiFile();
     if ((dumpMidiFile == null) || (dumpMidiFile.toString().isEmpty())) {
@@ -202,7 +197,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
       return null;
     }
     try {
-      return new MidiFileTransmitter(dumpMidiFile);
+      return new MidiFileReceiver(dumpMidiFile);
     } catch (final IOException e) {
       throw new IOException("failed creating MIDI output file: " +
                             e.getMessage(), e);
@@ -217,9 +212,9 @@ public class TreeSelectionDumpListener extends KeyAdapter
   }
 
   /**
-   * @return A transmitter for the specified MIDI device.
+   * @return A receiver for the specified MIDI device.
    */
-  private Transmitter getTransmitterForDevice(final MidiDevice device)
+  private Receiver getReceiverForDevice(final MidiDevice device)
     throws IOException
   {
     if (!device.isOpen()) {
@@ -229,26 +224,26 @@ public class TreeSelectionDumpListener extends KeyAdapter
         throw new IOException("open MIDI device failed: " + e.getMessage(), e);
       }
     }
-    Transmitter transmitter = null;
+    Receiver receiver = null;
     try {
-      transmitter = device.getTransmitter();
+      receiver = device.getReceiver();
     } catch (final MidiUnavailableException e) {
-      throw new IOException("get transmitter for device " +
+      throw new IOException("get receiver for device " +
                             getDeviceName(device) + " failed: " +
                             e.getMessage(), e);
     }
-    if (transmitter == null) {
-      throw new IOException("no transmitter available for device " +
+    if (receiver == null) {
+      throw new IOException("no receiver available for device " +
                             getDeviceName(device));
     }
-    return transmitter;
+    return receiver;
   }
 
   /**
-   * @return A transmitter according to the configured MIDI options,
+   * @return A receiver according to the configured MIDI options,
    * or null, if the operation has been aborted by the user.
    */
-  private Transmitter getTransmitter() throws IOException
+  private Receiver getReceiver() throws IOException
   {
     final MidiDevice.Info deviceInfo = documentMetaData.getMidiOutput();
     if ((deviceInfo == null) ||
@@ -257,7 +252,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
     }
     System.out.println("deviceInfo=" + deviceInfo);
     if (deviceInfo == DocumentMetaData.dumpMidiFileDeviceInfo) {
-      return getTransmitterForDumpMidiFile();
+      return getReceiverForDumpMidiFile();
     }
     MidiDevice device = null;
     try {
@@ -266,7 +261,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
       System.out.println("get MIDI device: " + e.getMessage());
     }
     System.out.println("device=" + device);
-    return getTransmitterForDevice(device);
+    return getReceiverForDevice(device);
   }
 
   /**
@@ -276,8 +271,8 @@ public class TreeSelectionDumpListener extends KeyAdapter
   private void dumpSelection()
   {
     try {
-      final Transmitter transmitter = getTransmitter();
-      if (transmitter == null) {
+      final Receiver receiver = getReceiver();
+      if (receiver == null) {
         return; // operation aborted by user
       }
       try {
@@ -288,15 +283,15 @@ public class TreeSelectionDumpListener extends KeyAdapter
             if (map.isRowSelected(index)) {
               final MapNode node =
                 (MapNode)map.getPathForRow(index).getLastPathComponent();
-              addToDump(transmitter, node);
+              addToDump(receiver, node);
             }
             index++;
           }
           // final flush
-          flushDump(transmitter);
+          flushDump(receiver);
         }
       } finally {
-        transmitter.close();
+        receiver.close();
       }
     } catch (final IOException e) {
       JOptionPane.showMessageDialog(frame,
