@@ -32,16 +32,6 @@ import see.gui.Map;
 public interface MapDef
 {
   /**
-   * System Exclusive Status code
-   */
-  int SYS_EX_STAT = 0xf0;
-
-  /**
-   * End Of Exclusive Code
-   */
-  int SYS_EX_END = 0xf7;
-
-  /**
    * Returns the manufacturer ID as defined in the MIDI specification.
    * @return The manufacturer ID as defined in the MIDI specification.
    */

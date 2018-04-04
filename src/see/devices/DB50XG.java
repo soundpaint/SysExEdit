@@ -2407,7 +2407,7 @@ public class DB50XG extends AbstractDevice
       lo = (byte)(byte_start & 0x7f);
       pos = start;
       this.end = end;
-      extrapos = -9;
+      extrapos = -8;
       check_sum = 0x00;
       node = root;
     }
@@ -2416,9 +2416,6 @@ public class DB50XG extends AbstractDevice
     {
       final int data;
       switch (extrapos) {
-      case -9:
-        data = SYS_EX_STAT;
-        break;
       case -8:
         data = MANUFACTURER_ID;
         break;
@@ -2463,9 +2460,6 @@ public class DB50XG extends AbstractDevice
         check_sum = (~check_sum) & 0x7f;
         data = check_sum;
         break;
-      case 1:
-        data = SYS_EX_END;
-        break;
       default:
         throw new IllegalStateException("invalid extrapos");
       }
@@ -2492,7 +2486,7 @@ public class DB50XG extends AbstractDevice
         else
           return next_header_byte();
       else
-        if (extrapos < 2) // tail data
+        if (extrapos < 1) // tail data
           return next_tail_byte();
         else
           return -1; // EOF
@@ -2505,7 +2499,8 @@ public class DB50XG extends AbstractDevice
     try {
       return new BulkStream(root, start, end);
     } catch (final IOException e) {
-      throw new IllegalStateException(e.toString());
+      throw new IllegalStateException("failed creating bulk stream: " +
+                                      e.getMessage(), e);
     }
   }
 
