@@ -141,7 +141,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
       throw new IOException("failed retreiving receiver for transmitter");
     }
     final MidiMessage bulkDump = createMidiMessage();
-    receiver.send(bulkDump, 0);
+    receiver.send(bulkDump, -1);
     receiver.close();
     reset();
   }
