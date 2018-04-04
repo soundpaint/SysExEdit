@@ -39,6 +39,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
   private final MapDef mapDef;
 
   private final Map map;
+  private final DocumentMetaData documentMetaData;
   private final Frame frame;
 
   /**
@@ -58,10 +59,12 @@ public class TreeSelectionDumpListener extends KeyAdapter
   }
 
   public TreeSelectionDumpListener(final MapDef mapDef, final Map map,
+                                   final DocumentMetaData documentMetaData,
                                    final Frame frame)
   {
     this.mapDef = mapDef;
     this.map = map;
+    this.documentMetaData = documentMetaData;
     this.frame = frame;
     reset();
   }
@@ -170,3 +173,10 @@ public class TreeSelectionDumpListener extends KeyAdapter
     }
   }
 }
+
+/*
+ * Local Variables:
+ *   coding:utf-8
+ *   mode:java
+ * End:
+ */
