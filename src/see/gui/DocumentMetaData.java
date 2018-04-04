@@ -25,6 +25,12 @@ import javax.sound.midi.MidiDevice;
 
 public class DocumentMetaData
 {
+  public static final MidiDevice.Info dumpMidiFileDeviceInfo =
+    new MidiDevice.Info("Dump to MIDI File", "SysExEdit",
+                        "Dumps MIDI data to a configurable MIDI file", "1.0")
+    {
+    };
+
   private boolean haveUnsavedData;
   private MidiDevice.Info midiInput;
   private MidiDevice.Info midiOutput;

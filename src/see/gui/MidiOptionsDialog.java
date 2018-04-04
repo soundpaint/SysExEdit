@@ -87,12 +87,6 @@ public class MidiOptionsDialog extends JDialog
     }
   }
 
-  private static final MidiDevice.Info dumpMidiFileDeviceInfo =
-    new MidiDevice.Info("Dump to MIDI File", "SysExEdit",
-                        "Dumps MIDI data to a configurable MIDI file", "1.0")
-    {
-    };
-
   private static List<MidiDevice.Info> getMidiInputs()
   {
     final List<MidiDevice.Info> inputInfos = new ArrayList<MidiDevice.Info>();
@@ -163,7 +157,7 @@ public class MidiOptionsDialog extends JDialog
   {
     public void itemStateChanged(final ItemEvent event)
     {
-      if (event.getItem() == dumpMidiFileDeviceInfo) {
+      if (event.getItem() == DocumentMetaData.dumpMidiFileDeviceInfo) {
         boolean dumpMidiFileEnabled =
           event.getStateChange() == ItemEvent.SELECTED;
         dumpMidiFileLabel.setEnabled(dumpMidiFileEnabled);
@@ -274,7 +268,7 @@ public class MidiOptionsDialog extends JDialog
         inputConnectionCB.addItem(midiInput);
       }
       final List<MidiDevice.Info> midiOutputs = getMidiOutputs();
-      midiOutputs.add(dumpMidiFileDeviceInfo);
+      midiOutputs.add(DocumentMetaData.dumpMidiFileDeviceInfo);
       outputConnectionCB.removeAllItems();
       for (final MidiDevice.Info midiOutput : midiOutputs) {
         outputConnectionCB.addItem(midiOutput);
