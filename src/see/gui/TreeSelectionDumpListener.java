@@ -1,5 +1,5 @@
 /*
- * @(#)EditorFrame.java 1.00 98/02/06
+ * @(#)TreeSelectionDumpListener.java 1.00 18/03/20
  *
  * Copyright (C) 1998, 2018 Jürgen Reuter
  *
@@ -20,12 +20,14 @@
 
 package see.gui;
 
+import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.swing.JOptionPane;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -37,6 +39,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
   private final MapDef mapDef;
 
   private final Map map;
+  private final Frame frame;
 
   /**
    * The first adress of the current contiguous bulk area.
@@ -54,10 +57,12 @@ public class TreeSelectionDumpListener extends KeyAdapter
     throw new UnsupportedOperationException();
   }
 
-  public TreeSelectionDumpListener(final MapDef mapDef, final Map map)
+  public TreeSelectionDumpListener(final MapDef mapDef, final Map map,
+                                   final Frame frame)
   {
     this.mapDef = mapDef;
     this.map = map;
+    this.frame = frame;
     reset();
   }
 
@@ -148,7 +153,10 @@ public class TreeSelectionDumpListener extends KeyAdapter
         flushDump(out);
       }
     } catch (final IOException e) {
-      new MessageFrame(e.toString());
+      JOptionPane.showMessageDialog(frame,
+                                    e.getMessage(),
+                                    "Bulk Dump Failed",
+                                    JOptionPane.ERROR_MESSAGE);
     }
   }
 

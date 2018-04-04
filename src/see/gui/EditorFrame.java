@@ -272,7 +272,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     map.setShowsRootHandles(true);
     map.setRowHeight(-1);
     map.addKeyListener(new KeyListener());
-    map.addKeyListener(new TreeSelectionDumpListener(mapDef, map));
+    map.addKeyListener(new TreeSelectionDumpListener(mapDef, map, this));
     map.getModel().addTreeModelListener(controller.getTreeModelListener());
     final JScrollPane scrollpane_map = new JScrollPane();
     scrollpane_map.setPreferredSize(new Dimension(450, 450));
