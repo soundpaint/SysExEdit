@@ -23,10 +23,21 @@ package see.gui;
 import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.SysexMessage;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.Transmitter;
 import javax.swing.JOptionPane;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -36,8 +47,18 @@ import see.model.MapNode;
 
 public class TreeSelectionDumpListener extends KeyAdapter
 {
-  private final MapDef mapDef;
+  private static final String MSG_CONFIRM_OVERWRITE =
+    "MIDI Dump file %s already exists.  Overwrite file?";
+  private static final String MSG_NO_MIDI_OUTPUT_PORT =
+    "No MIDI output port selected.  " +
+    "Please select a MIDI output port under the " +
+    "Options → MIDI Options… dialog.";
+  private static final String MSG_NO_MIDI_OUTPUT_FILE =
+    "No MIDI output file selected.  " +
+    "Please select a MIDI output file under the " +
+    "Options → MIDI Options… dialog.";
 
+  private final MapDef mapDef;
   private final Map map;
   private final DocumentMetaData documentMetaData;
   private final Frame frame;
@@ -78,26 +99,50 @@ public class TreeSelectionDumpListener extends KeyAdapter
     bulkAreaStopBeforeAddress = -1;
   }
 
-  /**
-   * Flushes the save automaton.
-   */
-  private void flushDump(final OutputStream out) throws IOException
+  private MidiMessage createMidiMessage() throws IOException
   {
-    if (bulkAreaStartAddress < 0) {
-      return; // nothing to flush
-    }
     System.out.println("dump " +
                        bulkAreaStartAddress + "-" +
                        bulkAreaStopBeforeAddress);
     final InputStream bulkDump =
       mapDef.bulkDump(bulkAreaStartAddress,
                       bulkAreaStopBeforeAddress);
+    final List<Byte> sysexData = new ArrayList<Byte>();
     int data;
-    while ((data = bulkDump.read()) >= 0)
-      {
-        System.out.println("data=" + data);
-        out.write(data);
-      }
+    while ((data = bulkDump.read()) >= 0) {
+      System.out.println("data=" + data);
+      sysexData.add((byte)data);
+    }
+    final int msgSize = sysexData.size() + 2;
+    final byte[] bytes = new byte[msgSize];
+    bytes[0] = (byte)SysexMessage.SYSTEM_EXCLUSIVE;
+    for (int i = 0; i < msgSize - 2; i++) {
+      bytes[i + 1] = sysexData.get(i);
+    }
+    bytes[msgSize - 1] = (byte)SysexMessage.SPECIAL_SYSTEM_EXCLUSIVE;
+    try {
+      return new SysexMessage(bytes, bytes.length);
+    } catch (final InvalidMidiDataException e) {
+      throw new IOException("failed creating SysEx message: " + e.getMessage(),
+                            e);
+    }
+  }
+
+  /**
+   * Flushes the save automaton.
+   */
+  private void flushDump(final Transmitter transmitter) throws IOException
+  {
+    if (bulkAreaStartAddress < 0) {
+      return; // nothing to flush
+    }
+    final Receiver receiver = transmitter.getReceiver();
+    if (receiver == null) {
+      throw new IOException("failed retreiving receiver for transmitter");
+    }
+    final MidiMessage bulkDump = createMidiMessage();
+    receiver.send(bulkDump, 0);
+    receiver.close();
     reset();
   }
 
@@ -106,14 +151,14 @@ public class TreeSelectionDumpListener extends KeyAdapter
    * saves a bulk of collected MapNode objects.
    * @param node The MapNode to be saved eventually.
    */
-  private void addToDump(final OutputStream out,
+  private void addToDump(final Transmitter transmitter,
                          final MapNode node) throws IOException
   {
     if (node.getAllowsChildren()) {
       // non-leaf node => add children to dump
       for (int i = 0; i < node.getChildCount(); i++) {
         final TreeNode child = node.getChildAt(i);
-        addToDump(out, (MapNode)child);
+        addToDump(transmitter, (MapNode)child);
       }
       return;
     }
@@ -124,12 +169,104 @@ public class TreeSelectionDumpListener extends KeyAdapter
     }
     if (bulkAreaStopBeforeAddress >= 0) {
       // end of contiguous block; dump it
-      flushDump(out);
+      flushDump(transmitter);
     }
     // start a new contiguous block
     bulkAreaStartAddress = node.getAddress();
     bulkAreaStopBeforeAddress =
       bulkAreaStartAddress + node.getContents().getBitSize();
+  }
+
+  /**
+   * @return A transmitter for creating a dump MIDI file or null, if
+   * the operation has been aborted by the user.
+   */
+  private Transmitter getTransmitterForDumpMidiFile() throws IOException
+  {
+    final File dumpMidiFile = documentMetaData.getDumpMidiFile();
+    if ((dumpMidiFile == null) || (dumpMidiFile.toString().isEmpty())) {
+      throw new IOException(MSG_NO_MIDI_OUTPUT_FILE);
+    }
+    final boolean exists = dumpMidiFile.exists();
+    boolean canOverwrite = false;
+    if (exists) {
+      final String message =
+        String.format(MSG_CONFIRM_OVERWRITE, dumpMidiFile.toString());
+      canOverwrite =
+        JOptionPane.showConfirmDialog(frame,
+                                      message,
+                                      "Confirm Overwrite",
+                                      JOptionPane.YES_NO_OPTION) ==
+        JOptionPane.YES_OPTION;
+    }
+    if (exists && !canOverwrite) {
+      return null;
+    }
+    try {
+      return new MidiFileTransmitter(dumpMidiFile);
+    } catch (final IOException e) {
+      throw new IOException("failed creating MIDI output file: " +
+                            e.getMessage(), e);
+    }
+  }
+
+  private String getDeviceName(final MidiDevice device)
+  {
+    final MidiDevice.Info info = device.getDeviceInfo();
+    final String name = info.getName();
+    return name;
+  }
+
+  /**
+   * @return A transmitter for the specified MIDI device.
+   */
+  private Transmitter getTransmitterForDevice(final MidiDevice device)
+    throws IOException
+  {
+    try {
+      device.open();
+    } catch (final MidiUnavailableException e) {
+      throw new IOException("open MIDI device failed: " + e.getMessage(), e);
+    }
+    Transmitter transmitter = null;
+    try {
+      transmitter = device.getTransmitter();
+    } catch (final MidiUnavailableException e) {
+      throw new IOException("get transmitter for device " +
+                            getDeviceName(device) + " failed: " +
+                            e.getMessage(), e);
+    }
+    device.close();
+    if (transmitter == null) {
+      throw new IOException("no transmitter available for device " +
+                            getDeviceName(device));
+    }
+    return transmitter;
+  }
+
+  /**
+   * @return A transmitter according to the configured MIDI options,
+   * or null, if the operation has been aborted by the user.
+   */
+  private Transmitter getTransmitter() throws IOException
+  {
+    final MidiDevice.Info deviceInfo = documentMetaData.getMidiOutput();
+    if ((deviceInfo == null) ||
+        (deviceInfo == MidiOptionsDialog.pleaseSelect)) {
+      throw new IOException(MSG_NO_MIDI_OUTPUT_PORT);
+    }
+    System.out.println("deviceInfo=" + deviceInfo);
+    if (deviceInfo == DocumentMetaData.dumpMidiFileDeviceInfo) {
+      return getTransmitterForDumpMidiFile();
+    }
+    MidiDevice device = null;
+    try {
+      device = MidiSystem.getMidiDevice(deviceInfo);
+    } catch (final MidiUnavailableException e) {
+      System.out.println("get MIDI device: " + e.getMessage());
+    }
+    System.out.println("device=" + device);
+    return getTransmitterForDevice(device);
   }
 
   /**
@@ -139,7 +276,10 @@ public class TreeSelectionDumpListener extends KeyAdapter
   private void dumpSelection()
   {
     try {
-      final FileOutputStream out = new FileOutputStream("mididump.raw");
+      final Transmitter transmitter = getTransmitter();
+      if (transmitter == null) {
+        return; // operation aborted by user
+      }
       // TODO: Dump to configurable MIDI port rather than to a file.
       reset();
       int index = map.getMinSelectionRow();
@@ -148,12 +288,12 @@ public class TreeSelectionDumpListener extends KeyAdapter
           if (map.isRowSelected(index)) {
             final MapNode node =
               (MapNode)map.getPathForRow(index).getLastPathComponent();
-            addToDump(out, node);
+            addToDump(transmitter, node);
           }
           index++;
         }
         // final flush
-        flushDump(out);
+        flushDump(transmitter);
       }
     } catch (final IOException e) {
       JOptionPane.showMessageDialog(frame,
