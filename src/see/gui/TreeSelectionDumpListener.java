@@ -142,7 +142,6 @@ public class TreeSelectionDumpListener extends KeyAdapter
     }
     final MidiMessage bulkDump = createMidiMessage();
     receiver.send(bulkDump, -1);
-    receiver.close();
     reset();
   }
 
@@ -223,10 +222,12 @@ public class TreeSelectionDumpListener extends KeyAdapter
   private Transmitter getTransmitterForDevice(final MidiDevice device)
     throws IOException
   {
-    try {
-      device.open();
-    } catch (final MidiUnavailableException e) {
-      throw new IOException("open MIDI device failed: " + e.getMessage(), e);
+    if (!device.isOpen()) {
+      try {
+        device.open();
+      } catch (final MidiUnavailableException e) {
+        throw new IOException("open MIDI device failed: " + e.getMessage(), e);
+      }
     }
     Transmitter transmitter = null;
     try {
@@ -236,7 +237,6 @@ public class TreeSelectionDumpListener extends KeyAdapter
                             getDeviceName(device) + " failed: " +
                             e.getMessage(), e);
     }
-    device.close();
     if (transmitter == null) {
       throw new IOException("no transmitter available for device " +
                             getDeviceName(device));
@@ -280,20 +280,23 @@ public class TreeSelectionDumpListener extends KeyAdapter
       if (transmitter == null) {
         return; // operation aborted by user
       }
-      // TODO: Dump to configurable MIDI port rather than to a file.
-      reset();
-      int index = map.getMinSelectionRow();
-      if (index >= 0) {
-        while (index <= map.getMaxSelectionRow()) {
-          if (map.isRowSelected(index)) {
-            final MapNode node =
-              (MapNode)map.getPathForRow(index).getLastPathComponent();
-            addToDump(transmitter, node);
+      try {
+        reset();
+        int index = map.getMinSelectionRow();
+        if (index >= 0) {
+          while (index <= map.getMaxSelectionRow()) {
+            if (map.isRowSelected(index)) {
+              final MapNode node =
+                (MapNode)map.getPathForRow(index).getLastPathComponent();
+              addToDump(transmitter, node);
+            }
+            index++;
           }
-          index++;
+          // final flush
+          flushDump(transmitter);
         }
-        // final flush
-        flushDump(transmitter);
+      } finally {
+        transmitter.close();
       }
     } catch (final IOException e) {
       JOptionPane.showMessageDialog(frame,
