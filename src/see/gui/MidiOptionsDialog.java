@@ -64,6 +64,12 @@ public class MidiOptionsDialog extends JDialog
   }
   private static final long serialVersionUID = 5116563378752233886L;
 
+  public static final MidiDevice.Info pleaseSelect =
+    new MidiDevice.Info("Please Select", "SysExEdit",
+                        "Please select a MIDI device.", "1.0")
+    {
+    };
+
   private final DocumentMetaData documentMetaData;
   private final MidiConnectionsPane midiConnectionsPane;
   private final JLabel dumpMidiFileLabel;
@@ -290,11 +296,13 @@ public class MidiOptionsDialog extends JDialog
     {
       final Collection<MidiDevice.Info> midiInputs = getMidiInputs();
       inputConnectionCB.removeAllItems();
+      inputConnectionCB.addItem(pleaseSelect);
       for (final MidiDevice.Info midiInput : midiInputs) {
         inputConnectionCB.addItem(midiInput);
       }
       final Collection<MidiDevice.Info> midiOutputs = getMidiOutputs();
       outputConnectionCB.removeAllItems();
+      outputConnectionCB.addItem(pleaseSelect);
       for (final MidiDevice.Info midiOutput : midiOutputs) {
         outputConnectionCB.addItem(midiOutput);
       }
@@ -303,22 +311,28 @@ public class MidiOptionsDialog extends JDialog
 
     private MidiDevice.Info getSelectedMidiInput()
     {
-      return (MidiDevice.Info)inputConnectionCB.getSelectedItem();
+      final MidiDevice.Info info =
+        (MidiDevice.Info)inputConnectionCB.getSelectedItem();
+      return info == pleaseSelect ? null : info;
     }
 
     private void setSelectedMidiInput(final MidiDevice.Info midiInput)
     {
-      inputConnectionCB.setSelectedItem(midiInput);
+      inputConnectionCB.setSelectedItem(midiInput == null ?
+                                        pleaseSelect : midiInput);
     }
 
     private MidiDevice.Info getSelectedMidiOutput()
     {
-      return (MidiDevice.Info)outputConnectionCB.getSelectedItem();
+      final MidiDevice.Info info =
+       (MidiDevice.Info)outputConnectionCB.getSelectedItem();
+      return info == pleaseSelect ? null : info;
     }
 
     private void setSelectedMidiOutput(final MidiDevice.Info midiOutput)
     {
-      outputConnectionCB.setSelectedItem(midiOutput);
+      outputConnectionCB.setSelectedItem(midiOutput == null ?
+                                         pleaseSelect : midiOutput);
     }
   }
 
