@@ -283,7 +283,7 @@ public class SysExEdit extends Applet implements FramesManager
         JOptionPane.OK_OPTION)
       {
         loadIcons();
-        new Thread(new EditorFrame(preferences, filepath, null, this)).start();
+        new Thread(new EditorFrame(filepath, null, this)).start();
       }
     else
       exitOnNoMoreFrame();

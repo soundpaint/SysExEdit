@@ -91,7 +91,7 @@ class DialogDevID
 
     private final MyChangeListener myChangeListener;
 
-    private Panel(final int deviceID)
+    private Panel(final byte deviceID)
     {
       final Border emptyBorder =
         BorderFactory.createEmptyBorder(10, 10, 10, 10);
@@ -126,7 +126,15 @@ class DialogDevID
       final JLabel label_deviceID =
         new JLabel((String)null, SwingConstants.CENTER);
       panel_slider.add("North", label_deviceID);
+
+      // TODO: The range of the MIDI device ID depends on the specific
+      // MIDI device.  Therefore, the MapDef interface should provide
+      // a method that returns a range of valid values that can be
+      // used as device ID.  For now, we allow all values in the range
+      // 0x00..0x7f, which should cover all relevant devices (but also
+      // does not prevent to choose an invalid device ID).
       final JSlider slider = new JSlider(0, 127, deviceID);
+
       myChangeListener = new MyChangeListener(label_deviceID, slider);
       slider.addChangeListener(myChangeListener);
       slider.setOrientation(SwingConstants.HORIZONTAL);
@@ -161,9 +169,9 @@ class DialogDevID
    * @param initialValue The value used to initialize the input field.
    * @return device ID, or -1 meaning the user canceled the input
    */
-  static int showDialog(final Component parentComponent,
-                        final String title, final int messageType,
-                        final int initialValue)
+  static byte showDialog(final Component parentComponent,
+                         final String title, final int messageType,
+                         final byte initialValue)
   {
     final Panel panel = new Panel(initialValue);
     final JOptionPane pane =
@@ -175,7 +183,7 @@ class DialogDevID
     final Object value = pane.getValue();
     if (value instanceof Integer)
       if (((Integer)value).intValue() == JOptionPane.OK_OPTION)
-        return panel.myChangeListener.slider.getValue();
+        return (byte)panel.myChangeListener.slider.getValue();
     return -1;
   }
 }

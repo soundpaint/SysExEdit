@@ -104,7 +104,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
                        bulkAreaStartAddress + "-" +
                        bulkAreaStopBeforeAddress);
     final InputStream bulkDump =
-      mapDef.bulkDump(bulkAreaStartAddress,
+      mapDef.bulkDump(documentMetaData.getMidiDeviceId(), bulkAreaStartAddress,
                       bulkAreaStopBeforeAddress);
     final List<Byte> sysexData = new ArrayList<Byte>();
     int data;

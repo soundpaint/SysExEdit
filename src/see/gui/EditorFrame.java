@@ -52,7 +52,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import see.Preferences;
 import see.model.MapDef;
 import see.model.MapNode;
 
@@ -104,7 +103,6 @@ public class EditorFrame extends JFrame implements Runnable, Editor
   /*
    * Other instance variables
    */
-  private final Preferences preferences;
   private final String filepath; // path of map def class
   private MapDef mapDef;
   private final FramesManager manager; // manages this and all other editor frames
@@ -125,16 +123,17 @@ public class EditorFrame extends JFrame implements Runnable, Editor
    *    the user is prompted a window to manually select a device model.
    * @param manager A frames manager that manages all other editor frames.
    */
-  public EditorFrame(final Preferences preferences,
-                     final String filepath,
+  public EditorFrame(final String filepath,
                      final MapDef mapDef,
                      final FramesManager manager)
   {
-    this.preferences = preferences;
     this.filepath = filepath;
     this.mapDef = mapDef;
     this.manager = manager;
     documentMetaData = new DocumentMetaData();
+    if (mapDef != null) {
+      documentMetaData.setMidiDeviceId(mapDef.getDefaultDeviceID());
+    }
     controller = new Controller(manager, this, documentMetaData, this);
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   }
@@ -162,6 +161,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
       }
     if (mapDef != null)
       {
+        documentMetaData.setMidiDeviceId(mapDef.getDefaultDeviceID());
         System.out.println("[" + windowID + ": initializing GUI...]");
         System.out.flush();
         initGUI();
@@ -183,14 +183,8 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     manager.removeFrame(this);
   }
 
-  public int getMidiDeviceId()
-  {
-    return preferences.getMidiDeviceId(mapDef.getName());
-  }
-
   public void setMidiDeviceId(final int midiDeviceId)
   {
-    preferences.setMidiDeviceId(mapDef.getName(), midiDeviceId);
     label_deviceID.setText("Device ID: " + Utils.intTo0xnn(midiDeviceId));
     label_deviceID.updateUI();
   }
@@ -204,7 +198,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     label_manID.updateUI();
     label_modelID.setText("Model ID: " + Utils.intTo0xnn(mapDef.getModelID()));
     label_modelID.updateUI();
-    setMidiDeviceId(mapDef.getDefaultDeviceID());
+    setMidiDeviceId(documentMetaData.getMidiDeviceId());
   }
 
   public void setAddressInfoEnabled(final boolean enabled)

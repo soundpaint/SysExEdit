@@ -421,12 +421,13 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        final int newDeviceId =
+        final byte newDeviceId =
           DialogDevID.showDialog(frame,
                                  "Device ID Selection",
                                  JOptionPane.QUESTION_MESSAGE,
-                                 editor.getMidiDeviceId());
+                                 documentMetaData.getMidiDeviceId());
         if (newDeviceId >= 0) {
+          documentMetaData.setMidiDeviceId(newDeviceId);
           editor.setMidiDeviceId(newDeviceId);
         }
       }

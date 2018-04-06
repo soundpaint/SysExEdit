@@ -43,7 +43,6 @@ public class DB50XG extends AbstractDevice
 {
   private static final String DEVICE_NAME = "MU50 / DB50XG";
   private static final byte MANUFACTURER_ID = 0x43;
-  private static final byte DEVICE_NUMBER = 0x1f;
   private static final byte MODEL_ID = 0x4c;
   private static final String ENTERED_BY =
     "Jürgen Reuter, Copyright © 1998, 2018";
@@ -2373,6 +2372,7 @@ public class DB50XG extends AbstractDevice
 
   private class BulkStream extends InputStream
   {
+    private final byte deviceId;
     private final int byte_start;
     private final int byte_count;
     private final byte hi;
@@ -2389,7 +2389,8 @@ public class DB50XG extends AbstractDevice
       throw new UnsupportedOperationException();
     }
 
-    BulkStream(final MapNode root, final long start, final long end)
+    BulkStream(final byte deviceId,
+               final MapNode root, final long start, final long end)
       throws IOException
     {
       if (root == null)
@@ -2400,6 +2401,7 @@ public class DB50XG extends AbstractDevice
         throw new IOException("start < 0");
       if (end > 7 * 0x3fffff)
         throw new IOException("end > 7 * 0x3fffff");
+      this.deviceId = deviceId;
       byte_start = (int)(start / 7);
       byte_count = (int)((end - start + 6) / 7);
       hi = (byte)((byte_start >> 14) & 0x7f);
@@ -2420,7 +2422,7 @@ public class DB50XG extends AbstractDevice
         data = MANUFACTURER_ID;
         break;
       case -7:
-        data = DEVICE_NUMBER;
+        data = deviceId;
         break;
       case -6:
         data = MODEL_ID;
@@ -2493,11 +2495,16 @@ public class DB50XG extends AbstractDevice
     }
   }
 
-  public InputStream bulkDump(final MapNode root,
+  public InputStream bulkDump(final byte deviceId,
+                              final MapNode root,
                               final long start, final long end)
   {
+    if ((deviceId < 0x00) || (deviceId > 0x1f)) {
+      throw new IllegalArgumentException("MIDI device ID not in range " +
+                                         "0x00..0x1f: " + deviceId);
+    }
     try {
-      return new BulkStream(root, start, end);
+      return new BulkStream(deviceId, root, start, end);
     } catch (final IOException e) {
       throw new IllegalStateException("failed creating bulk stream: " +
                                       e.getMessage(), e);

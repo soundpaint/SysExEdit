@@ -24,7 +24,6 @@ import java.util.prefs.BackingStoreException;
 
 public class Preferences
 {
-  private final static String PATH_MIDI_DEVICE_ID = "midi/deviceId";
   private final static String PATH_MIDI_INPUT_CONNECTION =
     "midi/inputConnection";
   private final static String PATH_MIDI_OUTPUT_CONNECTION =
@@ -47,17 +46,6 @@ public class Preferences
   private Preferences()
   {
     prefs = java.util.prefs.Preferences.userNodeForPackage(getClass());
-  }
-
-  public int getMidiDeviceId(final String deviceModelName)
-  {
-    return prefs.getInt(PATH_MIDI_DEVICE_ID + "/" + deviceModelName, 0);
-  }
-
-  public void setMidiDeviceId(final String deviceModelName,
-                              final int midiDeviceId)
-  {
-    prefs.putInt(PATH_MIDI_DEVICE_ID + "/" + deviceModelName, midiDeviceId);
   }
 
   public String getMidiInputConnection()

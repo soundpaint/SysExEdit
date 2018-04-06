@@ -32,6 +32,7 @@ public class DocumentMetaData
     };
 
   private boolean haveUnsavedData;
+  private byte midiDeviceId;
   private MidiDevice.Info midiInput;
   private MidiDevice.Info midiOutput;
   private File dumpMidiFile;
@@ -49,6 +50,16 @@ public class DocumentMetaData
   public boolean getHaveUnsavedData()
   {
     return haveUnsavedData;
+  }
+
+  public void setMidiDeviceId(final byte midiDeviceId)
+  {
+    this.midiDeviceId = midiDeviceId;
+  }
+
+  public byte getMidiDeviceId()
+  {
+    return midiDeviceId;
   }
 
   public MidiDevice.Info getMidiInput()

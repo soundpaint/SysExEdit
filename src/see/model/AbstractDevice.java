@@ -73,14 +73,16 @@ public abstract class AbstractDevice implements MapDef
     return root.getMap();
   }
 
-  public InputStream bulkDump(final long start, final long end)
+  public InputStream bulkDump(final byte deviceId,
+                              final long start, final long end)
   {
-    return bulkDump(root, start, end);
+    return bulkDump(deviceId, root, start, end);
   }
 
   /**
    * Given a contigous area of memory, returns a a stream of MIDI bytes
    * that may be used to send the memory contents to the MIDI device.
+   * @param deviceId The MIDI device id.  Valid range is 0x00..0x7f.
    * @param root The root node of the map to use.
    * @param start The bit address in the memory map where to start.
    * @param end The bit address in the memory map where to end before;
@@ -88,7 +90,7 @@ public abstract class AbstractDevice implements MapDef
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  public abstract InputStream bulkDump(final MapNode root,
+  public abstract InputStream bulkDump(final byte deviceId, final MapNode root,
                                        final long start, final long end);
 
   public abstract String getName();

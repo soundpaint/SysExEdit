@@ -81,13 +81,14 @@ public interface MapDef
   /**
    * Given a contigous area of memory, returns a a stream of MIDI bytes
    * that may be used to send the memory contents to the MIDI device.
+   * @param deviceId The MIDI device id.  Valid range is 0x00..0x7f.
    * @param start The bit address in the memory map where to start.
    * @param end The bit address in the memory map where to end before;
    *    thus the total bulk dump size is (end - start) bits of memory.
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  InputStream bulkDump(final long start, final long end);
+  InputStream bulkDump(final byte deviceId, final long start, final long end);
 
   /**
    * Given an InputStream that represents a sequence of bulk dumped MIDI
