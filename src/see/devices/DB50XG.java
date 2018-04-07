@@ -830,7 +830,7 @@ public class DB50XG extends AbstractDevice
 
   private static final Range rangeDeviceId =
     new Range("internal-control").
-    addSubrange(0x0, 0x1f, new Int8Type(0, 16, true, "0x", "", (byte)4));
+    addSubrange(0x00, 0x1f, new Int8Type(0, 16, true, "0x", "", (byte)4));
 
   /**
    * Returns a Contents type model including default value for the
@@ -842,7 +842,7 @@ public class DB50XG extends AbstractDevice
     final RangeContents contentsDeviceId =
       new RangeContents(rangeDeviceId);
     contentsDeviceId.setBitSize(7);
-    contentsDeviceId.setDefaultValue(0x0);
+    contentsDeviceId.setDefaultValue(0x00);
     return contentsDeviceId;
   }
 
@@ -1006,7 +1006,7 @@ public class DB50XG extends AbstractDevice
     enumType_mono_poly_mode = new EnumType(MONO_POLY_MODE);
   private static final Range range_mono_poly_mode =
     new Range("internal-switch").
-    addSubrange(0x0000, 0x0001, enumType_mono_poly_mode);
+    addSubrange(0x0, 0x1, enumType_mono_poly_mode);
 
   private static final ValueType
     enumType_key_assign = new EnumType(KEY_ASSIGN);
@@ -1042,13 +1042,13 @@ public class DB50XG extends AbstractDevice
     enumType_switch = new EnumType(SWITCH);
   private static final Range range_switch =
     new Range("internal-switch").
-    addSubrange(0x00, 0x01, enumType_switch);
+    addSubrange(0x0, 0x1, enumType_switch);
 
   private static final ValueType
     enumType_mono_stereo = new EnumType(MONO_STEREO);
   private static final Range range_mono_stereo =
     new Range("internal-switch").
-    addSubrange(0x00, 0x01, enumType_mono_stereo);
+    addSubrange(0x0, 0x1, enumType_mono_stereo);
 
   private static final ValueType
     enumType_scale_tuning = new EnumType(SCALE_TUNING);
@@ -1131,11 +1131,11 @@ public class DB50XG extends AbstractDevice
 
   private static final Range range_volume =
     new Range("internal-volume").
-    addSubrange(0x0, 0x7f, Int8Type.defaultInstance);
+    addSubrange(0x00, 0x7f, Int8Type.defaultInstance);
 
   private static final Range range_connection =
     new Range("internal-control").
-    addSubrange(0x00, 0x01, enumType_connection);
+    addSubrange(0x0, 0x1, enumType_connection);
 
   private static final EnumType enumType_part = new EnumType(PART);
   private static final Range range_part =
@@ -1162,7 +1162,7 @@ public class DB50XG extends AbstractDevice
   private static final ValueType lfo_frequency = new EnumType(LFO_FREQUENCY);
   private static final Range range_lfo_frequency =
     new Range("internal-tune").
-    addSubrange(0, 127, lfo_frequency);
+    addSubrange(0x00, 0x7f, lfo_frequency);
 
   private MapNode buildMapNodeSystem()
   {
@@ -1220,28 +1220,28 @@ public class DB50XG extends AbstractDevice
 
     final Range range_drums_setup_reset =
       new Range("internal-error").
-      addSubrange(0x00, 0x01, Int8Type.defaultInstance);
+      addSubrange(0x0, 0x1, Int8Type.defaultInstance);
     final RangeContents contents_drums_setup_reset =
       new RangeContents(range_drums_setup_reset);
     contents_drums_setup_reset.setBitSize(7);
-    contents_drums_setup_reset.setDefaultValue(0x00);
+    contents_drums_setup_reset.setDefaultValue(0x0);
     node_system.add(new MapNode("Drum Setup Reset", contents_drums_setup_reset,
                                 addr2index(0x00, 0x00, 0x7d)));
 
     final Range range_xg_on =
       new Range("internal-error").
-      addSingleValue(0x00, Int8Type.defaultInstance);
+      addSingleValue(0x0, Int8Type.defaultInstance);
     final RangeContents contents_xg_on = new RangeContents(range_xg_on);
     contents_xg_on.setBitSize(7);
-    contents_xg_on.setDefaultValue(0x00);
+    contents_xg_on.setDefaultValue(0x0);
     node_system.add(new MapNode("XG System On", contents_xg_on));
 
     final Range range_all_reset =
       new Range("internal-error").
-      addSingleValue(0x00, Int8Type.defaultInstance);
+      addSingleValue(0x0, Int8Type.defaultInstance);
     final RangeContents contents_all_reset = new RangeContents(range_all_reset);
     contents_all_reset.setBitSize(7);
-    contents_all_reset.setDefaultValue(0x00);
+    contents_all_reset.setDefaultValue(0x0);
     node_system.add(new MapNode("All Parameter Reset", contents_all_reset));
 
     return node_system;
@@ -1322,7 +1322,7 @@ public class DB50XG extends AbstractDevice
     final RangeContents contents_dry_wet =
       new RangeContents(range_dry_wet);
     contents_dry_wet.setBitSize(7);
-    contents_dry_wet.setDefaultValue(0x040);
+    contents_dry_wet.setDefaultValue(0x40);
     node_reverb.add(new MapNode("Dry / Wet", contents_dry_wet));
 
     final RangeContents contents_level = new RangeContents(range_level);
@@ -1344,18 +1344,18 @@ public class DB50XG extends AbstractDevice
 
     final Range range_density =
       new Range("internal-control").
-      addSubrange(0x00, 0x03, Int8Type.defaultInstance);
+      addSubrange(0x0, 0x3, Int8Type.defaultInstance);
     final RangeContents contents_density =
       new RangeContents(range_density);
     contents_density.setBitSize(7);
-    contents_density.setDefaultValue(0x00);
+    contents_density.setDefaultValue(0x0);
     node_reverb.add(new MapNode("Density",
                                 contents_density));
 
     final RangeContents contents_er_rev_balance =
       new RangeContents(range_er_rev_balance);
     contents_er_rev_balance.setBitSize(7);
-    contents_er_rev_balance.setDefaultValue(0x040);
+    contents_er_rev_balance.setDefaultValue(0x40);
     node_reverb.add(new MapNode("Er / Rev Balance", contents_er_rev_balance));
 
     node_reverb.add(new MapNode("Unused", new RangeContents(7)));
@@ -1444,7 +1444,7 @@ public class DB50XG extends AbstractDevice
     final RangeContents contents_dry_wet =
       new RangeContents(range_dry_wet);
     contents_dry_wet.setBitSize(7);
-    contents_dry_wet.setDefaultValue(0x040);
+    contents_dry_wet.setDefaultValue(0x40);
     node_chorus.add(new MapNode("Dry / Wet", contents_dry_wet));
 
     final RangeContents contents_level = new RangeContents(range_level);
@@ -1478,7 +1478,7 @@ public class DB50XG extends AbstractDevice
     final RangeContents contents_mono_stereo =
       new RangeContents(range_mono_stereo);
     contents_mono_stereo.setBitSize(7);
-    contents_mono_stereo.setDefaultValue(0x01);
+    contents_mono_stereo.setDefaultValue(0x1);
     node_chorus.add(new MapNode("Mono / Stereo", contents_mono_stereo));
 
     node_chorus.add(new MapNode("Unused", new RangeContents(7)));
@@ -1537,7 +1537,7 @@ public class DB50XG extends AbstractDevice
     final RangeContents contents_connection =
       new RangeContents(range_connection);
     contents_connection.setBitSize(7);
-    contents_connection.setDefaultValue(0x00);
+    contents_connection.setDefaultValue(0x0);
     node_variation.add(new MapNode("Variation Connection",
                                    contents_connection));
 
@@ -1652,11 +1652,11 @@ public class DB50XG extends AbstractDevice
 
     final Range range_element_reserve =
       new Range("internal-control").
-      addSubrange(0x0, 0x1f, Int8Type.defaultInstance);
+      addSubrange(0x00, 0x1f, Int8Type.defaultInstance);
     final RangeContents contents_element_reserve =
       new RangeContents(range_element_reserve);
     contents_element_reserve.setBitSize(7);
-    contents_element_reserve.setDefaultValue(n == 9 ? 0x0 : 0x2);
+    contents_element_reserve.setDefaultValue(n == 9 ? 0x00 : 0x02);
     node_multi_part_n.add(new MapNode("Element Reserve",
                                       contents_element_reserve));
 
@@ -1678,7 +1678,7 @@ public class DB50XG extends AbstractDevice
 
     final Range range_program_number =
       new Range("internal-control").
-      addSubrange(0x0, 0x7f, VALUE_TYPE_1_TO_N);
+      addSubrange(0x00, 0x7f, VALUE_TYPE_1_TO_N);
     final RangeContents contents_program_number =
       new RangeContents(range_program_number);
     contents_program_number.setBitSize(7);
@@ -1699,27 +1699,27 @@ public class DB50XG extends AbstractDevice
     final RangeContents contents_mono_poly_mode =
       new RangeContents(range_mono_poly_mode);
     contents_mono_poly_mode.setBitSize(7);
-    contents_mono_poly_mode.setDefaultValue(0x01);
+    contents_mono_poly_mode.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Mono / Poly Mode",
                                       contents_mono_poly_mode));
 
     final Range range_key_on_assign =
       new Range("internal-control").
-      addSubrange(0x0000, 0x0002, enumType_key_on_assign);
+      addSubrange(0x0, 0x2, enumType_key_on_assign);
     final RangeContents contents_key_on_assign =
       new RangeContents(range_key_on_assign);
     contents_key_on_assign.setBitSize(7);
-    contents_key_on_assign.setDefaultValue(n == 9 ? 0x02 : 0x00);
+    contents_key_on_assign.setDefaultValue(n == 9 ? 0x2 : 0x0);
     node_multi_part_n.add(new MapNode("Same Not Number Key on Assign",
                                       contents_key_on_assign));
 
     final Range range_part_mode =
       new Range("internal-control").
-      addSubrange(0x0000, 0x0003, enumType_part_mode);
+      addSubrange(0x0, 0x3, enumType_part_mode);
     final RangeContents contents_part_mode =
       new RangeContents(range_part_mode);
     contents_part_mode.setBitSize(7);
-    contents_part_mode.setDefaultValue(n == 9 ? 0x02 : 0x00);
+    contents_part_mode.setDefaultValue(n == 9 ? 0x2 : 0x0);
     node_multi_part_n.add(new MapNode("Part Mode", contents_part_mode));
 
     final RangeContents contents_note_shift =
@@ -1749,7 +1749,7 @@ public class DB50XG extends AbstractDevice
      */
     final Range range_detune =
       new Range("internal-tune").
-      addSubrange(0x0000, 0x00ff, enumType_detune);
+      addSubrange(0x00, 0xff, enumType_detune);
     final RangeContents contents_detune = new RangeContents(range_detune);
     contents_detune.setBitSize(8);
     contents_detune.setDefaultValue(0x80);
@@ -1924,7 +1924,7 @@ public class DB50XG extends AbstractDevice
     final RangeContents contents_rcv_pitch_bend =
       new RangeContents(range_switch);
     contents_rcv_pitch_bend.setBitSize(7);
-    contents_rcv_pitch_bend.setDefaultValue(0x01);
+    contents_rcv_pitch_bend.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Pitch Bend",
                                       contents_rcv_pitch_bend,
                                       addr2index(0x08, n, 0x30)));
@@ -1932,110 +1932,110 @@ public class DB50XG extends AbstractDevice
     final RangeContents contents_rcv_ch_after_touch =
       new RangeContents(range_switch);
     contents_rcv_ch_after_touch.setBitSize(7);
-    contents_rcv_ch_after_touch.setDefaultValue(0x01);
+    contents_rcv_ch_after_touch.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Ch After Touch (CAT)",
                                       contents_rcv_ch_after_touch));
 
     final RangeContents contents_rcv_program_change =
       new RangeContents(range_switch);
     contents_rcv_program_change.setBitSize(7);
-    contents_rcv_program_change.setDefaultValue(0x01);
+    contents_rcv_program_change.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Program Change",
                                       contents_rcv_program_change));
 
     final RangeContents contents_rcv_control_change =
       new RangeContents(range_switch);
     contents_rcv_control_change.setBitSize(7);
-    contents_rcv_control_change.setDefaultValue(0x01);
+    contents_rcv_control_change.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Control Change",
                                       contents_rcv_control_change));
 
     final RangeContents contents_rcv_poly_after_touch =
       new RangeContents(range_switch);
     contents_rcv_poly_after_touch.setBitSize(7);
-    contents_rcv_poly_after_touch.setDefaultValue(0x01);
+    contents_rcv_poly_after_touch.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Poly After Touch (PAT)",
                                       contents_rcv_ch_after_touch));
 
     final RangeContents contents_rcv_note_message =
       new RangeContents(range_switch);
     contents_rcv_note_message.setBitSize(7);
-    contents_rcv_note_message.setDefaultValue(0x01);
+    contents_rcv_note_message.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Note Message",
                                       contents_rcv_note_message));
 
     final RangeContents contents_rcv_rpn =
       new RangeContents(range_switch);
     contents_rcv_rpn.setBitSize(7);
-    contents_rcv_rpn.setDefaultValue(0x01);
+    contents_rcv_rpn.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv RPN", contents_rcv_rpn));
 
     final RangeContents contents_rcv_nrpn =
       new RangeContents(range_switch);
     contents_rcv_nrpn.setBitSize(7);
-    contents_rcv_nrpn.setDefaultValue(0x01);
+    contents_rcv_nrpn.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv NRPN", contents_rcv_nrpn));
 
     final RangeContents contents_rcv_modulation =
       new RangeContents(range_switch);
     contents_rcv_modulation.setBitSize(7);
-    contents_rcv_modulation.setDefaultValue(0x01);
+    contents_rcv_modulation.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Modulation",
                                       contents_rcv_modulation));
 
     final RangeContents contents_rcv_volume =
       new RangeContents(range_switch);
     contents_rcv_volume.setBitSize(7);
-    contents_rcv_volume.setDefaultValue(0x01);
+    contents_rcv_volume.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Volume",
                                       contents_rcv_volume));
 
     final RangeContents contents_rcv_pan =
       new RangeContents(range_switch);
     contents_rcv_pan.setBitSize(7);
-    contents_rcv_pan.setDefaultValue(0x01);
+    contents_rcv_pan.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Pan",
                                       contents_rcv_pan));
 
     final RangeContents contents_rcv_expression =
       new RangeContents(range_switch);
     contents_rcv_expression.setBitSize(7);
-    contents_rcv_expression.setDefaultValue(0x01);
+    contents_rcv_expression.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Expression",
                                       contents_rcv_expression));
 
     final RangeContents contents_rcv_hold1 =
       new RangeContents(range_switch);
     contents_rcv_hold1.setBitSize(7);
-    contents_rcv_hold1.setDefaultValue(0x01);
+    contents_rcv_hold1.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Hold1",
                                       contents_rcv_hold1));
 
     final RangeContents contents_rcv_portamento =
       new RangeContents(range_switch);
     contents_rcv_portamento.setBitSize(7);
-    contents_rcv_portamento.setDefaultValue(0x01);
+    contents_rcv_portamento.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Portamento",
                                       contents_rcv_portamento));
 
     final RangeContents contents_rcv_sostenuto =
       new RangeContents(range_switch);
     contents_rcv_sostenuto.setBitSize(7);
-    contents_rcv_sostenuto.setDefaultValue(0x01);
+    contents_rcv_sostenuto.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Sostenuto",
                                       contents_rcv_sostenuto));
 
     final RangeContents contents_rcv_soft_pedal =
       new RangeContents(range_switch);
     contents_rcv_soft_pedal.setBitSize(7);
-    contents_rcv_soft_pedal.setDefaultValue(0x01);
+    contents_rcv_soft_pedal.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Soft Pedal",
                                       contents_rcv_soft_pedal));
 
     final RangeContents contents_rcv_bank_select =
       new RangeContents(range_switch);
     contents_rcv_bank_select.setBitSize(7);
-    contents_rcv_bank_select.setDefaultValue(0x01);
+    contents_rcv_bank_select.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Bank Select",
                                       contents_rcv_bank_select));
 
@@ -2146,7 +2146,7 @@ public class DB50XG extends AbstractDevice
     final RangeContents contents_portamento_switch =
       new RangeContents(range_switch);
     contents_portamento_switch.setBitSize(7);
-    contents_portamento_switch.setDefaultValue(0x00);
+    contents_portamento_switch.setDefaultValue(0x0);
     node_multi_part_n.add(new MapNode("Portamento Switch",
                                       contents_portamento_switch));
 
@@ -2280,21 +2280,21 @@ public class DB50XG extends AbstractDevice
     final RangeContents contents_key_assign =
       new RangeContents(range_key_assign);
     contents_key_assign.setBitSize(7);
-    contents_key_assign.setDefaultValue(0x00);
+    contents_key_assign.setDefaultValue(0x0);
     node_drum_setup_note_r.add(new MapNode("Key Assign",
                                            contents_key_assign));
 
     final RangeContents contents_rcv_note_off =
       new RangeContents(range_switch);
     contents_rcv_note_off.setBitSize(7);
-    contents_rcv_note_off.setDefaultValue(0x00);
+    contents_rcv_note_off.setDefaultValue(0x0);
     node_drum_setup_note_r.add(new MapNode("Rcv Note Off",
                                            contents_rcv_note_off));
 
     final RangeContents contents_rcv_note_on =
       new RangeContents(range_switch);
     contents_rcv_note_on.setBitSize(7);
-    contents_rcv_note_on.setDefaultValue(0x00);
+    contents_rcv_note_on.setDefaultValue(0x0);
     node_drum_setup_note_r.add(new MapNode("Rcv Note On",
                                            contents_rcv_note_on));
 
@@ -2350,7 +2350,7 @@ public class DB50XG extends AbstractDevice
   {
     final MapNode node_drum_setup =
       new MapNode("Drum Setup", addr2index(0x30, 0x00, 0x00));
-    for (int n = 0x00; n < 0x02; n++) {
+    for (int n = 0x0; n < 0x2; n++) {
       node_drum_setup.add(buildMapNodeDrumSetupN(n));
     }
     return node_drum_setup;
