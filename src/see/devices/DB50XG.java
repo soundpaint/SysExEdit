@@ -830,7 +830,7 @@ public class DB50XG extends AbstractDevice
 
   private static final Range rangeDeviceId =
     new Range("internal-control").
-    addSubrange(0x00, 0x1f, new Int8Type(0, 16, true, "0x", "", (byte)4));
+    addSubrange(0x0, 0xf, new Int8Type(0, 16, true, "0x", "", (byte)4));
 
   /**
    * Returns a Contents type model including default value for the
@@ -2437,26 +2437,24 @@ public class DB50XG extends AbstractDevice
         break;
       case -5:
         data = byte_count >> 7;
-        check_sum = (check_sum + data) & 0x7f;
         break;
       case -4:
         data = byte_count & 0x7f;
-        check_sum = (check_sum + data) & 0x7f;
         break;
       case -3:
         data = hi;
-        check_sum = (check_sum + data) & 0x7f;
         break;
       case -2:
         data = mid;
-        check_sum = (check_sum + data) & 0x7f;
         break;
       case -1:
         data = lo;
-        check_sum = (check_sum + data) & 0x7f;
         break;
       default:
         throw new IllegalStateException("invalid extrapos");
+      }
+      if (extrapos >= -5) {
+        check_sum = (check_sum + data) & 0x7f;
       }
       extrapos++;
       return data;
@@ -2467,7 +2465,7 @@ public class DB50XG extends AbstractDevice
       final int data;
       switch (extrapos) {
       case 0:
-        check_sum = (~check_sum) & 0x7f;
+        check_sum = (0x100 - check_sum) & 0x7f;
         data = check_sum;
         break;
       default:
