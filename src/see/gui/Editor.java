@@ -21,19 +21,19 @@
 package see.gui;
 
 import java.awt.Frame;
-import java.io.IOException;
+import java.awt.event.ActionListener;
 
 public interface Editor
 {
   void loadDeviceModel(final Frame parent);
-
-  void setMidiDeviceId(final int midiDeviceId);
 
   void setAddressInfoEnabled(final boolean enabled);
 
   void showAboutDeviceModelDialog();
 
   void setHaveUnsavedData(final boolean haveUnsavedData);
+
+  ActionListener getDeviceChangeListener();
 }
 
 /*

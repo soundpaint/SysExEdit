@@ -100,12 +100,11 @@ public class TreeSelectionDumpListener extends KeyAdapter
 
   private MidiMessage createMidiMessage() throws IOException
   {
-    System.out.println("dump " +
-                       bulkAreaStartAddress + "-" +
-                       bulkAreaStopBeforeAddress);
+    System.out.println("dump " + bulkAreaStartAddress +
+                       "-" + bulkAreaStopBeforeAddress);
     final InputStream bulkDump =
-      mapDef.bulkDump(documentMetaData.getMidiDeviceId(), bulkAreaStartAddress,
-                      bulkAreaStopBeforeAddress);
+      mapDef.bulkDump(documentMetaData.getMidiDeviceId(),
+                      bulkAreaStartAddress, bulkAreaStopBeforeAddress);
     final List<Byte> sysexData = new ArrayList<Byte>();
     int data;
     while ((data = bulkDump.read()) >= 0) {

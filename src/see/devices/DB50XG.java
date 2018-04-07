@@ -829,13 +829,34 @@ public class DB50XG extends AbstractDevice
   }
 
   /**
-   * Returns the default device model ID. As the synthesizer specs do not
-   * explicitly specify such a value, we return the value 0, which may be
-   * a good choice.
+   * MIDI Device IDs
    */
-  public byte getDefaultDeviceID()
+  private static final String[] DEVICE_ID =
   {
-    return 0;
+    "0x00", "0x01", "0x02", "0x03", "0x04", "0x05", "0x06", "0x07",
+    "0x08", "0x09", "0x0a", "0x0b", "0x0c", "0x0d", "0x0e", "0x0f",
+    "0x10", "0x11", "0x12", "0x13", "0x14", "0x15", "0x16", "0x17",
+    "0x18", "0x19", "0x1a", "0x1b", "0x1c", "0x1d", "0x1e", "0x1f",
+  };
+
+  private static final EnumType enumTypeDeviceId = new EnumType(DEVICE_ID);
+
+  private static final Range rangeDeviceId =
+    new Range("internal-control").
+    addSubrange(0x00, 0x1f, enumTypeDeviceId);
+
+  /**
+   * Returns a Contents type model including default value for the
+   * device model ID.  As the synthesizer specs do not explicitly
+   * specify such a value, we assume default value 0.
+   */
+  public Contents createDeviceIdContents()
+  {
+    final RangeContents contentsDeviceId =
+      new RangeContents(rangeDeviceId);
+    contentsDeviceId.setBitSize(7);
+    contentsDeviceId.setDefaultValue(0x0);
+    return contentsDeviceId;
   }
 
   /**
@@ -2495,16 +2516,12 @@ public class DB50XG extends AbstractDevice
     }
   }
 
-  public InputStream bulkDump(final byte deviceId,
+  public InputStream bulkDump(final Contents deviceId,
                               final MapNode root,
                               final long start, final long end)
   {
-    if ((deviceId < 0x00) || (deviceId > 0x1f)) {
-      throw new IllegalArgumentException("MIDI device ID not in range " +
-                                         "0x00..0x1f: " + deviceId);
-    }
     try {
-      return new BulkStream(deviceId, root, start, end);
+      return new BulkStream((byte)deviceId.getValue(), root, start, end);
     } catch (final IOException e) {
       throw new IllegalStateException("failed creating bulk stream: " +
                                       e.getMessage(), e);

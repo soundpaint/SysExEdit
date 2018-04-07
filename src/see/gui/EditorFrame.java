@@ -52,6 +52,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import see.model.Contents;
 import see.model.MapDef;
 import see.model.MapNode;
 
@@ -132,7 +133,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     this.manager = manager;
     documentMetaData = new DocumentMetaData();
     if (mapDef != null) {
-      documentMetaData.setMidiDeviceId(mapDef.getDefaultDeviceID());
+      documentMetaData.setMidiDeviceId(mapDef.createDeviceIdContents());
     }
     controller = new Controller(manager, this, documentMetaData, this);
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -161,7 +162,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
       }
     if (mapDef != null)
       {
-        documentMetaData.setMidiDeviceId(mapDef.getDefaultDeviceID());
+        documentMetaData.setMidiDeviceId(mapDef.createDeviceIdContents());
         System.out.println("[" + windowID + ": initializing GUI...]");
         System.out.flush();
         initGUI();
@@ -183,9 +184,9 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     manager.removeFrame(this);
   }
 
-  public void setMidiDeviceId(final int midiDeviceId)
+  public void setMidiDeviceId(final Contents midiDeviceId)
   {
-    label_deviceID.setText("Device ID: " + Utils.intTo0xnn(midiDeviceId));
+    label_deviceID.setText("Device ID: " + midiDeviceId.getDisplayValue());
     label_deviceID.updateUI();
   }
 
@@ -199,6 +200,19 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     label_modelID.setText("Model ID: " + Utils.intTo0xnn(mapDef.getModelID()));
     label_modelID.updateUI();
     setMidiDeviceId(documentMetaData.getMidiDeviceId());
+  }
+
+  private final ActionListener deviceChangeListener =
+    new ActionListener() {
+      public void actionPerformed(final ActionEvent event)
+      {
+        updateModelInfo();
+      }
+    };
+
+  public ActionListener getDeviceChangeListener()
+  {
+    return deviceChangeListener;
   }
 
   public void setAddressInfoEnabled(final boolean enabled)

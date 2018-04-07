@@ -20,142 +20,151 @@
 
 package see.gui;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.util.Hashtable;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
+import see.model.Contents;
+import see.model.Editor;
 
 /**
  * This class implements a dialog that prompts the user for a new
  * Device ID.
  */
-class DialogDevID
+class DialogDevID extends JDialog
 {
-  private static final Hashtable<Integer, JLabel> labels;
+  private static final long serialVersionUID = 2731367018460251157L;
 
-  static
+  private static class FixedHeightPanel extends JPanel
   {
-    labels = new Hashtable<Integer, JLabel>();
-    for (int i = 0; i < 128; i+=0x20)
-      labels.put(new Integer(i), new JLabel(Utils.intTo0xnn(i)));
-    labels.put(new Integer(0x7f), new JLabel(Utils.intTo0xnn(0x7f)));
-  }
+    private static final long serialVersionUID = 4644066253251498788L;
 
-  private DialogDevID() {}
-
-  /**
-   * A listener that updates a label according to a slider's state.
-   */
-  private static class MyChangeListener implements ChangeListener
-  {
-    private final JLabel deviceID;
-    private final JSlider slider;
-
-    public MyChangeListener(final JLabel deviceID, final JSlider slider)
+    public Dimension getMaximumSize()
     {
-      this.deviceID = deviceID;
-      this.slider = slider;
-    }
-
-    /**
-     * Invoked when the target of the listener has changed its state.
-     *
-     * @param e The change event.
-     */
-    public void stateChanged(final ChangeEvent e)
-    {
-      deviceID.setText(Utils.intTo0xnn(slider.getValue()));
-      deviceID.updateUI();
+      return new Dimension(Short.MAX_VALUE, getPreferredSize().height);
     }
   }
 
-  /**
-   * A panel with all gui elements of the dialog.
-   */
-  private static class Panel extends JPanel
+  private final Controller controller;
+  private final DocumentMetaData documentMetaData;
+  private final JPanel deviceIdValuePanel;
+  private final JPanel iconPanel;
+
+  private DialogDevID()
   {
-    private static final long serialVersionUID = -6988609099484329685L;
+    throw new UnsupportedOperationException();
+  }
 
-    private final MyChangeListener myChangeListener;
-
-    private Panel(final byte deviceID)
-    {
-      final Border emptyBorder =
-        BorderFactory.createEmptyBorder(10, 10, 10, 10);
-
-      final BorderLayout layout = new BorderLayout();
-      layout.setHgap(10);
-      layout.setVgap(10);
-      setLayout(layout);
-      setBorder(emptyBorder);
-      // BasicOptionPaneUI splits up Strings that contain '\n'. We must
-      // do it here manually, i.e. create a sequence of labels
-      final JPanel panel_label = new JPanel(); // keep lines close together
-      final GridLayout layout_panel_label = new GridLayout(0, 1);
-      layout_panel_label.setHgap(0);
-      layout_panel_label.setVgap(0);
-      panel_label.setLayout(layout_panel_label);
-      JLabel label_text;
-      label_text = new JLabel("Select a value (0x00..0x7f) to be used as");
-      label_text.setForeground(Color.black);
-      panel_label.add(label_text);
-      label_text = new JLabel("Device ID for SysEx messages.");
-      label_text.setForeground(Color.black);
-      panel_label.add(label_text);
-      add(panel_label, "North");
-
-      final JPanel panel_slider = new JPanel();
-      panel_slider.setLayout(new BorderLayout());
-      panel_slider.setBorder(emptyBorder);
-      panel_slider.setToolTipText("Adjust a new value for the Device ID");
-      //panel_slider.add("West", new JLabel("0x00"));
-      //panel_slider.add("East", new JLabel("0x7f"));
-      final JLabel label_deviceID =
-        new JLabel((String)null, SwingConstants.CENTER);
-      panel_slider.add("North", label_deviceID);
-
-      // TODO: The range of the MIDI device ID depends on the specific
-      // MIDI device.  Therefore, the MapDef interface should provide
-      // a method that returns a range of valid values that can be
-      // used as device ID.  For now, we allow all values in the range
-      // 0x00..0x7f, which should cover all relevant devices (but also
-      // does not prevent to choose an invalid device ID).
-      final JSlider slider = new JSlider(0, 127, deviceID);
-
-      myChangeListener = new MyChangeListener(label_deviceID, slider);
-      slider.addChangeListener(myChangeListener);
-      slider.setOrientation(SwingConstants.HORIZONTAL);
-      slider.setLabelTable(labels);
-      slider.setPaintLabels(true);
-      slider.setPaintTicks(true);
-      slider.setMajorTickSpacing(0x10);
-      myChangeListener.stateChanged(null); // update label
-      panel_slider.add("Center", slider);
-
-      final JPanel panel_panel_slider = new JPanel();
-      panel_panel_slider.setLayout(new BorderLayout());
-      panel_panel_slider.setBorder(BorderFactory.createEtchedBorder());
-      panel_panel_slider.add(panel_slider, "Center");
-
-      final JPanel panel_panel_panel_slider = new JPanel();
-      panel_panel_panel_slider.setLayout(new BorderLayout());
-      panel_panel_panel_slider.add(panel_panel_slider, "North");
-
-      add(panel_panel_panel_slider, "Center");
+  public DialogDevID(final Frame owner, final Controller controller,
+                     final DocumentMetaData documentMetaData)
+  {
+    super(owner);
+    if (controller == null) {
+      throw new NullPointerException("controller");
     }
+    this.controller = controller;
+    if (documentMetaData == null) {
+      throw new NullPointerException("documentMetaData");
+    }
+    this.documentMetaData = documentMetaData;
+    setModal(true);
+    setTitle("MIDI Device ID");
+    setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+
+    final Container contentPane = getContentPane();
+    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+
+    final JPanel labelPanel = new JPanel();
+    labelPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.X_AXIS));
+    iconPanel = new JPanel();
+    labelPanel.add(iconPanel);
+    final JLabel deviceIdLabel =
+      new JLabel("<html>Select a value to be used as<br></br>" +
+                 "Device ID for SysEx messages.</html>");
+    labelPanel.add(deviceIdLabel);
+    contentPane.add(labelPanel);
+
+    deviceIdValuePanel = new FixedHeightPanel();
+    deviceIdValuePanel.setLayout(new BoxLayout(deviceIdValuePanel,
+                                               BoxLayout.Y_AXIS));
+    deviceIdValuePanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+    deviceIdValuePanel.setToolTipText("Adjust a new value for the Device ID");
+    contentPane.add(deviceIdValuePanel);
+
+    contentPane.add(Box.createVerticalGlue());
+    contentPane.add(new ButtonRow());
+  }
+
+  private class ButtonRow extends JPanel
+  {
+    private static final long serialVersionUID = -2382996892216093540L;
+
+    public ButtonRow()
+    {
+      setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+      setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+      final JButton buttonCancel = new JButton("Discard");
+      buttonCancel.setMnemonic('d');
+      buttonCancel.setToolTipText("discard any changed options");
+      buttonCancel.addActionListener(new ButtonCancelListener());
+      add(buttonCancel);
+      add(Box.createHorizontalGlue());
+      final JButton buttonOk = new JButton("Apply");
+      buttonOk.setMnemonic('a');
+      buttonOk.setToolTipText("apply any changed options");
+      buttonOk.addActionListener(new ButtonOkListener());
+      add(buttonOk);
+    }
+  }
+
+  private class ButtonCancelListener implements ActionListener
+  {
+    public void actionPerformed(final ActionEvent e)
+    {
+      setVisible(false);
+    }
+  }
+
+  private class ButtonOkListener implements ActionListener
+  {
+    public void actionPerformed(final ActionEvent event)
+    {
+      saveInputFields();
+      setVisible(false);
+      controller.getDeviceChangeListener().actionPerformed(event);
+    }
+  }
+
+  private void saveInputFields()
+  {
+    final Contents midiDeviceIdContents = documentMetaData.getMidiDeviceId();
+    final Editor editor = (Editor)deviceIdValuePanel.getComponent(0);
+    final Contents contents = editor.getSelectedContents();
+    midiDeviceIdContents.setValue(contents.getValue());
+  }
+
+  private void loadInputFields()
+  {
+    final Contents deviceIdContents = documentMetaData.getMidiDeviceId();
+    deviceIdValuePanel.removeAll();
+    iconPanel.removeAll();
+    iconPanel.add(new JLabel(deviceIdContents.getIcon()));
+    final Component deviceIdEditor = deviceIdContents.getEditor();
+    deviceIdValuePanel.add(deviceIdEditor);
+    deviceIdValuePanel.updateUI();
+    pack();
+    setMinimumSize(getPreferredSize());
   }
 
   /**
@@ -169,22 +178,10 @@ class DialogDevID
    * @param initialValue The value used to initialize the input field.
    * @return device ID, or -1 meaning the user canceled the input
    */
-  static byte showDialog(final Component parentComponent,
-                         final String title, final int messageType,
-                         final byte initialValue)
+  public void showDialog()
   {
-    final Panel panel = new Panel(initialValue);
-    final JOptionPane pane =
-      new JOptionPane(panel, messageType, JOptionPane.OK_CANCEL_OPTION,
-                      UIManager.getIcon("internal-control"), null, null);
-    pane.setWantsInput(false);
-    final JDialog dialog = pane.createDialog(parentComponent, title);
-    dialog.setVisible(true);
-    final Object value = pane.getValue();
-    if (value instanceof Integer)
-      if (((Integer)value).intValue() == JOptionPane.OK_OPTION)
-        return (byte)panel.myChangeListener.slider.getValue();
-    return -1;
+    loadInputFields();
+    setVisible(true);
   }
 }
 

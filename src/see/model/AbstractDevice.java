@@ -24,6 +24,7 @@ import java.io.InputStream;
 import javax.swing.tree.TreeNode;
 
 import see.gui.Map;
+import see.model.Contents;
 
 /**
  * Abstract device implementation.  Handles root node.
@@ -50,10 +51,6 @@ public abstract class AbstractDevice implements MapDef
 
   private MapRoot root;
 
-  public AbstractDevice()
-  {
-  }
-
   /**
    * Creates a map that represents the device's internal memory.
    */
@@ -73,7 +70,7 @@ public abstract class AbstractDevice implements MapDef
     return root.getMap();
   }
 
-  public InputStream bulkDump(final byte deviceId,
+  public InputStream bulkDump(final Contents deviceId,
                               final long start, final long end)
   {
     return bulkDump(deviceId, root, start, end);
@@ -90,10 +87,9 @@ public abstract class AbstractDevice implements MapDef
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  public abstract InputStream bulkDump(final byte deviceId, final MapNode root,
+  public abstract InputStream bulkDump(final Contents deviceId,
+                                       final MapNode root,
                                        final long start, final long end);
-
-  public abstract String getName();
 }
 
 /*

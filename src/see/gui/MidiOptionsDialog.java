@@ -20,7 +20,6 @@
 
 package see.gui;
 
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -29,19 +28,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.TreeSet;
 import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
-import javax.sound.midi.Transmitter;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -56,12 +50,6 @@ import javax.swing.JTextField;
 
 public class MidiOptionsDialog extends JDialog
 {
-  // FIXME: Override does not show any effect?
-  @Override
-  public Dimension getMinimumSize()
-  {
-    return getPreferredSize();
-  }
   private static final long serialVersionUID = 5116563378752233886L;
 
   public static final MidiDevice.Info pleaseSelect =
@@ -162,12 +150,15 @@ public class MidiOptionsDialog extends JDialog
                            final DocumentMetaData documentMetaData)
   {
     super(owner);
+    if (documentMetaData == null) {
+      throw new NullPointerException("documentMetaData");
+    }
     this.documentMetaData = documentMetaData;
     setModal(true);
     setTitle("MIDI Options");
     setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
     final Container contentPane = getContentPane();
-    contentPane.setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
     dumpMidiFileTF = new FixedHeightTextField();
     dumpMidiFileTF.setToolTipText("select file path for MIDI dump");
     dumpMidiFileTF.setEnabled(false);
@@ -183,6 +174,7 @@ public class MidiOptionsDialog extends JDialog
     contentPane.add(new ButtonRow());
     loadInputFields();
     pack();
+    setMinimumSize(getPreferredSize());
   }
 
   private class FileDumpSelectionListener implements ItemListener

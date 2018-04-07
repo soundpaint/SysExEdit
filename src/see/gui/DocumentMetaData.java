@@ -23,6 +23,8 @@ package see.gui;
 import java.io.File;
 import javax.sound.midi.MidiDevice;
 
+import see.model.Contents;
+
 public class DocumentMetaData
 {
   public static final MidiDevice.Info dumpMidiFileDeviceInfo =
@@ -32,7 +34,7 @@ public class DocumentMetaData
     };
 
   private boolean haveUnsavedData;
-  private byte midiDeviceId;
+  private Contents midiDeviceId;
   private MidiDevice.Info midiInput;
   private MidiDevice.Info midiOutput;
   private File dumpMidiFile;
@@ -52,12 +54,12 @@ public class DocumentMetaData
     return haveUnsavedData;
   }
 
-  public void setMidiDeviceId(final byte midiDeviceId)
+  public void setMidiDeviceId(final Contents midiDeviceId)
   {
     this.midiDeviceId = midiDeviceId;
   }
 
-  public byte getMidiDeviceId()
+  public Contents getMidiDeviceId()
   {
     return midiDeviceId;
   }

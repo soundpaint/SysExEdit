@@ -46,6 +46,7 @@ public class Controller
   private final DocumentMetaData documentMetaData;
   private final Frame frame;
   private final MidiOptionsDialog midiOptionsDialog;
+  private final DialogDevID dialogDevId;
 
   private Controller()
   {
@@ -61,8 +62,8 @@ public class Controller
     this.editor = editor;
     this.documentMetaData = documentMetaData;
     this.frame = frame;
-    midiOptionsDialog =
-      new MidiOptionsDialog(frame, documentMetaData);
+    midiOptionsDialog = new MidiOptionsDialog(frame, documentMetaData);
+    dialogDevId = new DialogDevID(frame, this, documentMetaData);
   }
 
   private abstract class GuardedItemListener implements ItemListener
@@ -409,6 +410,22 @@ public class Controller
       }
     };
 
+  private final ActionListener deviceChangeListener = new GuardedActionListener()
+    {
+      private ActionListener editorDeviceChangeListener = null;
+
+      public void unguardedActionPerformed(final ActionEvent event)
+      {
+        if (editorDeviceChangeListener == null) {
+          // lazy initialization of editorDeviceChangeListener member,
+          // since editor variable is only available after constructor
+          // of Controller class has been executed
+          editorDeviceChangeListener = editor.getDeviceChangeListener();
+        }
+        editorDeviceChangeListener.actionPerformed(event);
+      }
+    };
+
   private final ActionListener setDefaultDeviceModelListener = new GuardedActionListener()
     {
       public void unguardedActionPerformed(final ActionEvent event)
@@ -421,15 +438,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        final byte newDeviceId =
-          DialogDevID.showDialog(frame,
-                                 "Device ID Selection",
-                                 JOptionPane.QUESTION_MESSAGE,
-                                 documentMetaData.getMidiDeviceId());
-        if (newDeviceId >= 0) {
-          documentMetaData.setMidiDeviceId(newDeviceId);
-          editor.setMidiDeviceId(newDeviceId);
-        }
+        dialogDevId.showDialog();
       }
     };
 
@@ -702,6 +711,11 @@ public class Controller
   public ActionListener getLoadDeviceModelListener()
   {
     return loadDeviceModelListener;
+  }
+
+  public ActionListener getDeviceChangeListener()
+  {
+    return deviceChangeListener;
   }
 
   public ActionListener getSetDefaultDeviceModelListener()

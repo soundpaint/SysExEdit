@@ -24,6 +24,7 @@ import java.io.InputStream;
 import javax.swing.tree.TreeNode;
 
 import see.gui.Map;
+import see.model.Contents;
 
 /**
  * By subclassing this abstract class, you can customize SysExEdit to a
@@ -44,12 +45,10 @@ public interface MapDef
   byte getModelID();
 
   /**
-   * Returns the default device model ID. If the synthesizer specs do not
-   * explicitly specify such a value, the value 0 may be a good choice as
-   * return value.
-   * @return The default device model ID.
+   * Returns the range of possible values and default value for this
+   * device's device ID.
    */
-  byte getDefaultDeviceID();
+  Contents createDeviceIdContents();
 
   /**
    * Returns the name of the author; optionally, a copyright message.
@@ -88,7 +87,8 @@ public interface MapDef
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  InputStream bulkDump(final byte deviceId, final long start, final long end);
+  InputStream bulkDump(final Contents deviceId,
+                       final long start, final long end);
 
   /**
    * Given an InputStream that represents a sequence of bulk dumped MIDI
