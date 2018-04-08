@@ -611,71 +611,183 @@ public class DB50XG extends AbstractDevice
     "Normal", "Drum", "Drums 1", "Drums 2"
   };
 
-  /**
-   * Detune
+  /* Detune is an 8 bits value split into to 2 nybbles distributed
+   * over two memory locations with each having 7 bit, i.e. a sparse
+   * 14 bits value.  We model this special case by composing the 14
+   * bits value from subranges enumerating over the upper nybble value
+   * (DETUNE_0x0 ..  DETUNE_0xf).
    */
-  private static final String[] DETUNE =
+
+  /**
+   * Detune_0x0
+   */
+  private static final String[] DETUNE_0x0 =
   {
     "-12.8Hz", "-12.7Hz", "-12.6Hz", "-12.5Hz",
     "-12.4Hz", "-12.3Hz", "-12.2Hz", "-12.1Hz",
     "-12.0Hz", "-11.9Hz", "-11.8Hz", "-11.7Hz",
-    "-11.6Hz", "-11.5Hz", "-11.4Hz", "-11.3Hz",
+    "-11.6Hz", "-11.5Hz", "-11.4Hz", "-11.3Hz"
+  };
+
+  /**
+   * Detune_0x1
+   */
+  private static final String[] DETUNE_0x1 =
+  {
     "-11.2Hz", "-11.1Hz", "-11.0Hz", "-10.9Hz",
     "-10.8Hz", "-10.7Hz", "-10.6Hz", "-10.5Hz",
     "-10.4Hz", "-10.3Hz", "-10.2Hz", "-10.1Hz",
-    "-10.0Hz", "-9.9Hz", "-9.8Hz", "-9.7Hz",
+    "-10.0Hz", "-9.9Hz", "-9.8Hz", "-9.7Hz"
+  };
+
+  /**
+   * Detune_0x2
+   */
+  private static final String[] DETUNE_0x2 =
+  {
     "-9.6Hz", "-9.5Hz", "-9.4Hz", "-9.3Hz",
     "-9.2Hz", "-9.1Hz", "-9.0Hz", "-8.9Hz",
     "-8.8Hz", "-8.7Hz", "-8.6Hz", "-8.5Hz",
-    "-8.4Hz", "-8.3Hz", "-8.2Hz", "-8.1Hz",
+    "-8.4Hz", "-8.3Hz", "-8.2Hz", "-8.1Hz"
+  };
+
+  /**
+   * Detune_0x3
+   */
+  private static final String[] DETUNE_0x3 =
+  {
     "-8.0Hz", "-7.9Hz", "-7.8Hz", "-7.7Hz",
     "-7.6Hz", "-7.5Hz", "-7.4Hz", "-7.3Hz",
     "-7.2Hz", "-7.1Hz", "-7.0Hz", "-6.9Hz",
-    "-6.8Hz", "-6.7Hz", "-6.6Hz", "-6.5Hz",
+    "-6.8Hz", "-6.7Hz", "-6.6Hz", "-6.5Hz"
+  };
+
+  /**
+   * Detune_0x4
+   */
+  private static final String[] DETUNE_0x4 =
+  {
     "-6.4Hz", "-6.3Hz", "-6.2Hz", "-6.1Hz",
     "-6.0Hz", "-5.9Hz", "-5.8Hz", "-5.7Hz",
     "-5.6Hz", "-5.5Hz", "-5.4Hz", "-5.3Hz",
-    "-5.2Hz", "-5.1Hz", "-5.0Hz", "-4.9Hz",
+    "-5.2Hz", "-5.1Hz", "-5.0Hz", "-4.9Hz"
+  };
+
+  /**
+   * Detune_0x5
+   */
+  private static final String[] DETUNE_0x5 =
+  {
     "-4.8Hz", "-4.7Hz", "-4.6Hz", "-4.5Hz",
     "-4.4Hz", "-4.3Hz", "-4.2Hz", "-4.1Hz",
     "-4.0Hz", "-3.9Hz", "-3.8Hz", "-3.7Hz",
-    "-3.6Hz", "-3.5Hz", "-3.4Hz", "-3.3Hz",
+    "-3.6Hz", "-3.5Hz", "-3.4Hz", "-3.3Hz"
+  };
+
+  /**
+   * Detune_0x6
+   */
+  private static final String[] DETUNE_0x6 =
+  {
     "-3.2Hz", "-3.1Hz", "-3.0Hz", "-2.9Hz",
     "-2.8Hz", "-2.7Hz", "-2.6Hz", "-2.5Hz",
     "-2.4Hz", "-2.3Hz", "-2.2Hz", "-2.1Hz",
-    "-2.0Hz", "-1.9Hz", "-1.8Hz", "-1.7Hz",
+    "-2.0Hz", "-1.9Hz", "-1.8Hz", "-1.7Hz"
+  };
+
+  /**
+   * Detune_0x7
+   */
+  private static final String[] DETUNE_0x7 =
+  {
     "-1.6Hz", "-1.5Hz", "-1.4Hz", "-1.3Hz",
     "-1.2Hz", "-1.1Hz", "-1.0Hz", "-0.9Hz",
     "-0.8Hz", "-0.7Hz", "-0.6Hz", "-0.5Hz",
-    "-0.4Hz", "-0.3Hz", "-0.2Hz", "-0.1Hz",
+    "-0.4Hz", "-0.3Hz", "-0.2Hz", "-0.1Hz"
+  };
+
+  /**
+   * Detune_0x8
+   */
+  private static final String[] DETUNE_0x8 =
+  {
     "0.0Hz", "0.1Hz", "0.2Hz", "0.3Hz",
     "0.4Hz", "0.5Hz", "0.6Hz", "0.7Hz",
     "0.8Hz", "0.9Hz", "1.0Hz", "1.1Hz",
-    "1.2Hz", "1.3Hz", "1.4Hz", "1.5Hz",
+    "1.2Hz", "1.3Hz", "1.4Hz", "1.5Hz"
+  };
+
+  /**
+   * Detune_0x9
+   */
+  private static final String[] DETUNE_0x9 =
+  {
     "1.6Hz", "1.7Hz", "1.8Hz", "1.9Hz",
     "2.0Hz", "2.1Hz", "2.2Hz", "2.3Hz",
     "2.4Hz", "2.5Hz", "2.6Hz", "2.7Hz",
-    "2.8Hz", "2.9Hz", "3.0Hz", "3.1Hz",
+    "2.8Hz", "2.9Hz", "3.0Hz", "3.1Hz"
+  };
+
+  /**
+   * Detune_0xa
+   */
+  private static final String[] DETUNE_0xa =
+  {
     "3.2Hz", "3.3Hz", "3.4Hz", "3.5Hz",
     "3.6Hz", "3.7Hz", "3.8Hz", "3.9Hz",
     "4.0Hz", "4.1Hz", "4.2Hz", "4.3Hz",
-    "4.4Hz", "4.5Hz", "4.6Hz", "4.7Hz",
+    "4.4Hz", "4.5Hz", "4.6Hz", "4.7Hz"
+  };
+
+  /**
+   * Detune_0xb
+   */
+  private static final String[] DETUNE_0xb =
+  {
     "4.8Hz", "4.9Hz", "5.0Hz", "5.1Hz",
     "5.2Hz", "5.3Hz", "5.4Hz", "5.5Hz",
     "5.6Hz", "5.7Hz", "5.8Hz", "5.9Hz",
-    "6.0Hz", "6.1Hz", "6.2Hz", "6.3Hz",
+    "6.0Hz", "6.1Hz", "6.2Hz", "6.3Hz"
+  };
+
+  /**
+   * Detune_0xc
+   */
+  private static final String[] DETUNE_0xc =
+  {
     "6.4Hz", "6.5Hz", "6.6Hz", "6.7Hz",
     "6.8Hz", "6.9Hz", "7.0Hz", "7.1Hz",
     "7.2Hz", "7.3Hz", "7.4Hz", "7.5Hz",
-    "7.6Hz", "7.7Hz", "7.8Hz", "7.9Hz",
+    "7.6Hz", "7.7Hz", "7.8Hz", "7.9Hz"
+  };
+
+  /**
+   * Detune_0xd
+   */
+  private static final String[] DETUNE_0xd =
+  {
     "8.0Hz", "8.1Hz", "8.2Hz", "8.3Hz",
     "8.4Hz", "8.5Hz", "8.6Hz", "8.7Hz",
     "8.8Hz", "8.9Hz", "9.0Hz", "9.1Hz",
-    "9.2Hz", "9.3Hz", "9.4Hz", "9.5Hz",
+    "9.2Hz", "9.3Hz", "9.4Hz", "9.5Hz"
+  };
+
+  /**
+   * Detune_0xe
+   */
+  private static final String[] DETUNE_0xe =
+  {
     "9.6Hz", "9.7Hz", "9.8Hz", "9.9Hz",
     "10.0Hz", "10.1Hz", "10.2Hz", "10.3Hz",
     "10.4Hz", "10.5Hz", "10.6Hz", "10.7Hz",
-    "10.8Hz", "10.9Hz", "11.0Hz", "11.1Hz",
+    "10.8Hz", "10.9Hz", "11.0Hz", "11.1Hz"
+  };
+
+  /**
+   * Detune_0xf
+   */
+  private static final String[] DETUNE_0xf =
+  {
     "11.2Hz", "11.3Hz", "11.4Hz", "11.5Hz",
     "11.6Hz", "11.7Hz", "11.8Hz", "11.9Hz",
     "12.0Hz", "12.1Hz", "12.2Hz", "12.3Hz",
@@ -1018,7 +1130,55 @@ public class DB50XG extends AbstractDevice
     enumType_part_mode = new EnumType(PART_MODE);
 
   private static final ValueType
-    enumType_detune = new EnumType(DETUNE);
+    enumType_detune_0x0 = new EnumType(0x0000, DETUNE_0x0);
+  private static final ValueType
+    enumType_detune_0x1 = new EnumType(0x0080, DETUNE_0x1);
+  private static final ValueType
+    enumType_detune_0x2 = new EnumType(0x0100, DETUNE_0x2);
+  private static final ValueType
+    enumType_detune_0x3 = new EnumType(0x0180, DETUNE_0x3);
+  private static final ValueType
+    enumType_detune_0x4 = new EnumType(0x0200, DETUNE_0x4);
+  private static final ValueType
+    enumType_detune_0x5 = new EnumType(0x0280, DETUNE_0x5);
+  private static final ValueType
+    enumType_detune_0x6 = new EnumType(0x0300, DETUNE_0x6);
+  private static final ValueType
+    enumType_detune_0x7 = new EnumType(0x0380, DETUNE_0x7);
+  private static final ValueType
+    enumType_detune_0x8 = new EnumType(0x0400, DETUNE_0x8);
+  private static final ValueType
+    enumType_detune_0x9 = new EnumType(0x0480, DETUNE_0x9);
+  private static final ValueType
+    enumType_detune_0xa = new EnumType(0x0500, DETUNE_0xa);
+  private static final ValueType
+    enumType_detune_0xb = new EnumType(0x0580, DETUNE_0xb);
+  private static final ValueType
+    enumType_detune_0xc = new EnumType(0x0600, DETUNE_0xc);
+  private static final ValueType
+    enumType_detune_0xd = new EnumType(0x0680, DETUNE_0xd);
+  private static final ValueType
+    enumType_detune_0xe = new EnumType(0x0700, DETUNE_0xe);
+  private static final ValueType
+    enumType_detune_0xf = new EnumType(0x0780, DETUNE_0xf);
+  private static final Range range_detune =
+    new Range("internal-transpose").
+    addSubrange(0x0000, 0x000f, enumType_detune_0x0).
+    addSubrange(0x0080, 0x008f, enumType_detune_0x1).
+    addSubrange(0x0100, 0x010f, enumType_detune_0x2).
+    addSubrange(0x0180, 0x018f, enumType_detune_0x3).
+    addSubrange(0x0200, 0x020f, enumType_detune_0x4).
+    addSubrange(0x0280, 0x028f, enumType_detune_0x5).
+    addSubrange(0x0300, 0x030f, enumType_detune_0x6).
+    addSubrange(0x0380, 0x038f, enumType_detune_0x7).
+    addSubrange(0x0400, 0x040f, enumType_detune_0x8).
+    addSubrange(0x0480, 0x048f, enumType_detune_0x9).
+    addSubrange(0x0500, 0x050f, enumType_detune_0xa).
+    addSubrange(0x0580, 0x058f, enumType_detune_0xb).
+    addSubrange(0x0600, 0x060f, enumType_detune_0xc).
+    addSubrange(0x0680, 0x068f, enumType_detune_0xd).
+    addSubrange(0x0700, 0x070f, enumType_detune_0xe).
+    addSubrange(0x0780, 0x078f, enumType_detune_0xf);
 
   private static final ValueType
     enumType_note = new EnumType(NOTE);
@@ -1728,34 +1888,10 @@ public class DB50XG extends AbstractDevice
     contents_note_shift.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Note Shift", contents_note_shift));
 
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(5)));
-
-    /*
-     * NOTE: Together with the surrounding unused 5 + 2
-     * bits, the values (aligned to the otherwise 7 bit
-     * data size) effectively equal the following series:
-     *
-     * 0x0000, 0x0020, 0x0040, 0x0060,
-     * 0x0080, 0x0100, 0x0120, 0x0140,
-     * ...
-     * 0x0f80, 0x0fa0, 0x0fc0, 0x0fe0.
-     *
-     * instead of
-     *
-     * 0x0000, 0x0001, 0x0002, 0x0003,
-     * 0x0004, 0x0005, 0x0006, 0x0007,
-     * ...
-     * 0x00fc, 0x00fd, 0x00fe, 0x00ff
-     */
-    final Range range_detune =
-      new Range("internal-tune").
-      addSubrange(0x00, 0xff, enumType_detune);
     final RangeContents contents_detune = new RangeContents(range_detune);
-    contents_detune.setBitSize(8);
-    contents_detune.setDefaultValue(0x80);
+    contents_detune.setBitSize(14);
+    contents_detune.setDefaultValue(0x0400);
     node_multi_part_n.add(new MapNode("Detune", contents_detune));
-
-    node_multi_part_n.add(new MapNode("Unused", new RangeContents(2)));
 
     final RangeContents contents_volume =
       new RangeContents(range_volume);
