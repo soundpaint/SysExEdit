@@ -22,7 +22,8 @@ package see.model;
 
 import java.awt.Component;
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -56,7 +57,7 @@ public class MapNode extends DefaultMutableTreeNode
   private final String label;
 
   // map change listeners
-  private final Vector<MapChangeListener> listeners;
+  private final List<MapChangeListener> listeners;
 
   // the desired absolute bit address of this node
   private final long desiredAddress;
@@ -102,7 +103,7 @@ public class MapNode extends DefaultMutableTreeNode
     this.label = label;
     this.desiredAddress = desiredAddress;
     address = -1; // resolve later
-    listeners = new Vector<MapChangeListener>();
+    listeners = new ArrayList<MapChangeListener>();
     if (contents != null) {
       contents.addContentsChangeListener(this);
     }
@@ -204,28 +205,28 @@ public class MapNode extends DefaultMutableTreeNode
    */
   private void fireMapChangeEvents(final DefaultTreeModel model)
   {
-    final Enumeration<MapChangeListener> listeners_enum = listeners.elements();
-    final MapChangeEvent e = new MapChangeEvent(this, model);
-    while (listeners_enum.hasMoreElements())
-      (listeners_enum.nextElement()).mapChangePerformed(e);
+    final MapChangeEvent event = new MapChangeEvent(this, model);
+    for (final MapChangeListener listener : listeners) {
+      listener.mapChangePerformed(event);
+    }
   }
 
   /**
    * Adds a MapChangeListener to this Contents node.
-   * @param l The MapChangeListener to add.
+   * @param listener The MapChangeListener to add.
    */
-  public void addMapChangeListener(final MapChangeListener l)
+  public void addMapChangeListener(final MapChangeListener listener)
   {
-    listeners.addElement(l);
+    listeners.add(listener);
   }
 
   /**
    * Removes a MapChangeListener from this Contents node.
-   * @param l The MapChangeListener to remove.
+   * @param listener The MapChangeListener to remove.
    */
-  public void removeMapChangeListener(final MapChangeListener l)
+  public void removeMapChangeListener(final MapChangeListener listener)
   {
-    listeners.removeElement(l);
+    listeners.remove(listener);
   }
 
   /**
