@@ -576,6 +576,8 @@ public class MapNode extends DefaultMutableTreeNode
     return child.locate(address);
   }
 
+  private static final Integer[] EMPTY_INTEGER_ARRAY = new Integer[0];
+
   /**
    * Returns data contents according to the given address and amount.
    * The data, that is returned, may not go beyond the node that contains
@@ -591,17 +593,21 @@ public class MapNode extends DefaultMutableTreeNode
    * @exception IllegalArgumentException If size goes beyond the addressed
    *    node.
    */
-  public int[] getData(final long address, final int size)
+  public Integer[] getData(final long address, final int size)
   {
-    if (size < 0)
+    if (size < 0) {
       throw new IllegalArgumentException("size < 0");
-    if (size == 0)
-      return new int[0];
+    }
+    if (size == 0) {
+      return new Integer[0];
+    }
     final MapNode node = locate(address);
-    if (node == null)
+    if (node == null) {
       throw new IllegalArgumentException("address not accessible");
-    else
-      return node.getLocalData(address, size);
+    }
+    final List<Integer> resultList = new ArrayList<Integer>();
+    node.appendDataToResult(address, size, resultList);
+    return resultList.toArray(EMPTY_INTEGER_ARRAY);
   }
 
   /**
@@ -615,68 +621,42 @@ public class MapNode extends DefaultMutableTreeNode
    * @excveption IllegalArgumentException If size goes beyond the addressed
    *    node.
    */
-  private int[] getLocalData(final long address, final int size)
+  private void appendDataToResult(final long address, final int size,
+                                  final List<Integer> resultList)
   {
-    if (getAllowsChildren())
-      throw new IllegalArgumentException("internal error: locate failed [1]");
-    else
-      {
-        final int shift_size = (int)(address - this.address);
-        final Contents contents = getContents();
-        final int contents_size = contents.getBitSize();
-        if (shift_size >= contents_size)
-          throw new IllegalStateException("invalid shift: " + shift_size +
-                                          " >=" + contents_size);
-        final int[] local_data = contents.toBits();
-        /*
-         * [PENDING: incomplete implementation]
-         *
-        final int local_size = Math.min(size, contents_size - shift_size);
-        local_data = shiftLeft(local_data, shift_size);
-        local_data = trim(local_data, local_size);
-        if (local_size < size)
-          local_data |=
-            (locate(address + local_size).
-             getLocalData(address + local_size, size - local_size)
-             << local_size);
-             */
-        return local_data;
-      }
-  }
-
-  /**
-   * Given an array of bits (which is, for performance reasons, organized as
-   * an array of int values), shifts the data n bit positions to the right,
-   * thereby loosing the n lowermost bits.
-   * @param data The data to be shifted.
-   * @param n The number of bit positions to shift.
-   * @return The shifted data.
-   */
-  private static int[] shiftRight(final int[] data, final int n)
-  {
-    final int intShift = n / 32;
-    final int bitShift = n % 32;
-    final int[] shiftedData = new int[data.length - intShift];
-    for (int i = 0; i < shiftedData.length; i++)
-      {
-        shiftedData[i] = data[i + intShift] >> bitShift;
-        if ((bitShift > 0) && ((i + intShift + 1) < data.length))
-          shiftedData[i] |= data[i + intShift + 1] << (32 - bitShift);
-      }
-    return shiftedData;
-  }
-
-  /**
-   * Returns a clone of the specified boolean array.
-   * @param source The boolean array to be cloned.
-   * @return The clone of the specified boolean array.
-   */
-  private static boolean[] cloneBooleanArray(final boolean[] source)
-  {
-    final boolean[] target = new boolean[source.length];
-    for (int i = 0; i < source.length; i++)
-      target[i] = source[i];
-    return target;
+    if (getAllowsChildren()) {
+      throw new UnsupportedOperationException("only leaf nodes carry contents");
+    }
+    final int addrOffs = (int)(address - this.address);
+    final Contents contents = getContents();
+    final int contentsSize = contents.getBitSize();
+    final int shiftSize = contentsSize - size - addrOffs;
+    if (shiftSize < 0) {
+      throw new IllegalStateException("Partial addresses nodes not yet fully supported");
+    }
+    final int[] localData = contents.toBits();
+    final int localDataIndex = shiftSize / 32;
+    final int localDataBitOffs = shiftSize % 32;
+    final int dataValue = localDataBitOffs >= 0 ?
+      localData[localDataIndex] >> localDataBitOffs :
+      localData[localDataIndex] << -localDataBitOffs;
+    final int needClearUppermostBits =
+      32 - size - Math.max(localDataBitOffs, 0);
+    // TODO: Corner-case for (shiftSize < 0), e.g. single unused bits
+    // in map not yet supported: If (localDataBitOffs < 0), fetch
+    // remaining lower bits from (new_address := address + size +
+    // localDataBitOffs, new_size := -localDataBitOffs).
+    final int trimmedDataValue;
+    if (needClearUppermostBits > 0) {
+      final int mask = 0xffffffff >>> needClearUppermostBits;
+      trimmedDataValue = dataValue & mask;
+    } else {
+      trimmedDataValue = dataValue;
+    }
+    resultList.add(trimmedDataValue);
+    if (size > 32) {
+      appendDataToResult(address + 32, size - 32, resultList);
+    }
   }
 
   /**

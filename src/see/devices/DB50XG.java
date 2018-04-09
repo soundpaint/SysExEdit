@@ -2616,7 +2616,7 @@ public class DB50XG extends AbstractDevice
       node = node.locate(pos);
       // TODO: Fix performance: node.getData() will call node.locate()
       // once again, although we already know the node.
-      final int data[] = node.getData(pos, 7);
+      final Integer data[] = node.getData(pos, 7);
       check_sum = (check_sum + data[0]) & 0x7f;
       pos += 7;
       return data[0];
