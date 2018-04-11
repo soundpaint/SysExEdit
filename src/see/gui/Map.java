@@ -26,6 +26,7 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
 
@@ -53,13 +54,21 @@ public class Map extends JTree
    */
   private boolean addressInfoEnabled = false;
 
-  public Map()
+  private Map()
+  {
+    throw new UnsupportedOperationException();
+  }
+
+  public Map(final TreeSelectionListener selectionListener,
+             final MapContextMenu mapContextMenu)
   {
     super();
     setEditable(true);
     final CellRenderer renderer = new CellRenderer();
     setCellRenderer(renderer);
     setCellEditor(new MapCellEditor());
+    setComponentPopupMenu(mapContextMenu);
+    addTreeSelectionListener(selectionListener);
   }
 
   public void setForeground(final Color value)

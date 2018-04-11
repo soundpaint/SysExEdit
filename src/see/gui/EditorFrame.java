@@ -59,7 +59,8 @@ import see.model.MapNode;
 /**
  * This class implements the main window of the application.
  */
-public class EditorFrame extends JFrame implements Runnable, Editor
+public class EditorFrame extends JFrame
+  implements Runnable, Editor, DocumentMetaDataChangeListener
 {
   private static final long serialVersionUID = -8230511863227744503L;
 
@@ -93,6 +94,10 @@ public class EditorFrame extends JFrame implements Runnable, Editor
    */
 
   private Map map;
+  private JButton btDump;
+  private JButton btSave;
+  private JButton btToolBarDump;
+  private JButton btToolBarSave;
   private JCheckBox checkbox_bd;
   private JCheckBox checkbox_br;
   private JCheckBox checkbox_md;
@@ -108,8 +113,10 @@ public class EditorFrame extends JFrame implements Runnable, Editor
   private MapDef mapDef;
   private final FramesManager manager; // manages this and all other editor frames
   private final Controller controller;
+  private final MapContextMenu mapContextMenu;
   private final DocumentMetaData documentMetaData;
   private DefaultTreeModel mapModel = null;
+  private TreeSelectionDumpListener treeSelectionDumpListener = null;
 
   private EditorFrame()
   {
@@ -132,10 +139,13 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     this.mapDef = mapDef;
     this.manager = manager;
     documentMetaData = new DocumentMetaData();
+    documentMetaData.addListener(this);
     if (mapDef != null) {
       documentMetaData.setMidiDeviceId(mapDef.createDeviceIdContents());
     }
     controller = new Controller(manager, this, documentMetaData, this);
+    mapContextMenu = new MapContextMenu(controller);
+    documentMetaData.addListener(mapContextMenu);
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   }
 
@@ -225,7 +235,9 @@ public class EditorFrame extends JFrame implements Runnable, Editor
   {
     JButton button;
 
-    setJMenuBar(new MenuBar(controller));
+    final MenuBar menuBar = new MenuBar(controller);
+    documentMetaData.addListener(menuBar);
+    setJMenuBar(menuBar);
 
     // tool icons area
     final JPanel panel_toolIcons = new JPanel();
@@ -240,12 +252,12 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     button.setMargin(insets);
     panel_toolIcons.add(button);
 
-    button = new JButton(UIManager.getIcon("internal-button-save"));
-    button.addActionListener(controller.getSaveListener());
-    button.setActionCommand(SAVE);
-    button.setToolTipText("Saves Selected Data to a Disk File");
-    button.setMargin(insets);
-    panel_toolIcons.add(button);
+    btToolBarSave = new JButton(UIManager.getIcon("internal-button-save"));
+    btToolBarSave.addActionListener(controller.getSaveListener());
+    btToolBarSave.setActionCommand(SAVE);
+    btToolBarSave.setToolTipText("Saves Selected Data to a Disk File");
+    btToolBarSave.setMargin(insets);
+    panel_toolIcons.add(btToolBarSave);
 
     button = new JButton(UIManager.getIcon("internal-button-request"));
     button.setEnabled(false);
@@ -255,13 +267,13 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     button.setMargin(insets);
     panel_toolIcons.add(button);
 
-    button = new JButton(UIManager.getIcon("internal-button-dump"));
-    button.setEnabled(false);
-    button.addActionListener(controller.getDumpListener());
-    button.setActionCommand(DUMP);
-    button.setToolTipText("Dumps Selected Data via MIDI");
-    button.setMargin(insets);
-    panel_toolIcons.add(button);
+    btToolBarDump = new JButton(UIManager.getIcon("internal-button-dump"));
+    btToolBarDump.setEnabled(false);
+    btToolBarDump.addActionListener(controller.getBulkDumpListener());
+    btToolBarDump.setActionCommand(DUMP);
+    btToolBarDump.setToolTipText("Dumps Selected Data via MIDI");
+    btToolBarDump.setMargin(insets);
+    panel_toolIcons.add(btToolBarDump);
 
     button = new JButton(UIManager.getIcon("internal-button-exit"));
     button.addActionListener(controller.getExitListener());
@@ -280,8 +292,9 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     map.setShowsRootHandles(true);
     map.setRowHeight(-1);
     map.addKeyListener(new KeyListener());
-    map.addKeyListener(new TreeSelectionDumpListener(mapDef, map,
-                                                     documentMetaData, this));
+    treeSelectionDumpListener =
+      new TreeSelectionDumpListener(mapDef, map, documentMetaData, this);
+    map.addKeyListener(treeSelectionDumpListener);
     map.getModel().addTreeModelListener(controller.getTreeModelListener());
     final JScrollPane scrollpane_map = new JScrollPane();
     scrollpane_map.setPreferredSize(new Dimension(450, 450));
@@ -323,12 +336,12 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     button.setToolTipText("Loads a File of Data from Disk");
     gbl.setConstraints(button, c);
     panel_button_row.add(button);
-    button = new JButton(SAVE);
-    button.addActionListener(controller.getSaveListener());
-    button.setMnemonic((int)'s');
-    button.setToolTipText("Saves Selected Data to a Disk File");
-    gbl.setConstraints(button, c);
-    panel_button_row.add(button);
+    btSave = new JButton(SAVE);
+    btSave.addActionListener(controller.getSaveListener());
+    btSave.setMnemonic((int)'s');
+    btSave.setToolTipText("Saves Selected Data to a Disk File");
+    gbl.setConstraints(btSave, c);
+    panel_button_row.add(btSave);
     button = new JButton(REQUEST);
     button.setEnabled(false);
     button.addActionListener(controller.getRequestListener());
@@ -336,13 +349,13 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     button.setToolTipText("Requests Selected Data via MIDI");
     gbl.setConstraints(button, c);
     panel_button_row.add(button);
-    button = new JButton(DUMP);
-    button.setEnabled(false);
-    button.addActionListener(controller.getDumpListener());
-    button.setMnemonic((int)'d');
-    button.setToolTipText("Dumps Selected Data via MIDI");
-    gbl.setConstraints(button, c);
-    panel_button_row.add(button);
+    btDump = new JButton(DUMP);
+    btDump.setEnabled(false);
+    btDump.addActionListener(controller.getBulkDumpListener());
+    btDump.setMnemonic((int)'d');
+    btDump.setToolTipText("Dumps Selected Data via MIDI");
+    gbl.setConstraints(btDump, c);
+    panel_button_row.add(btDump);
     panel_pad = new JPanel();
     c.fill = GridBagConstraints.HORIZONTAL;
     c.weightx = 1.0; c.weighty = 0.0;
@@ -421,59 +434,99 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     }
   }
 
-  private void increment(final DefaultTreeModel mapModel, final TreePath path)
+  public void incrementSelected()
   {
+    final TreePath[] paths = map.getSelectionPaths();
+    if (paths.length != 1) {
+      // no unique node to apply
+      return;
+    }
+    final TreePath path = map.getSelectionPath();
     final MapNode node = (MapNode)path.getLastPathComponent();
-    try
-      {
-        node.increment(mapModel);
-      }
-    catch (final Exception e) {} // ignore
+    final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
+    try {
+      node.increment(mapModel);
+    } catch (final Exception e) {
+      // ignore
+    }
     mapModel.nodeChanged(node);
   }
 
-  private void decrement(final DefaultTreeModel mapModel, final TreePath path)
+  public void decrementSelected()
   {
+    final TreePath[] paths = map.getSelectionPaths();
+    if (paths.length != 1) {
+      // no unique node to apply
+      return;
+    }
+    final TreePath path = map.getSelectionPath();
     final MapNode node = (MapNode)path.getLastPathComponent();
-    try
-      {
-        node.decrement(mapModel);
-      }
-    catch (final Exception e) {} // ignore
+    final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
+    try {
+      node.decrement(mapModel);
+    } catch (final Exception e) {
+      // ignore
+    }
     mapModel.nodeChanged(node);
   }
 
-  private void lowermost(final DefaultTreeModel mapModel, final TreePath path)
+  public void minimizeSelected()
   {
+    final TreePath[] paths = map.getSelectionPaths();
+    if (paths.length != 1) {
+      // no unique node to apply
+      return;
+    }
+    final TreePath path = map.getSelectionPath();
     final MapNode node = (MapNode)path.getLastPathComponent();
-    try
-      {
-        node.lowermost(mapModel);
-      }
-    catch (final Exception e) {} // ignore
+    final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
+    try {
+      node.lowermost(mapModel);
+    } catch (final Exception e) {
+      // ignore
+    }
     mapModel.nodeChanged(node);
   }
 
-  private void uppermost(final DefaultTreeModel mapModel, final TreePath path)
+  public void maximizeSelected()
   {
+    final TreePath[] paths = map.getSelectionPaths();
+    if (paths.length != 1) {
+      // no unique node to apply
+      return;
+    }
+    final TreePath path = map.getSelectionPath();
     final MapNode node = (MapNode)path.getLastPathComponent();
-    try
-      {
-        node.uppermost(mapModel);
-      }
-    catch (final Exception e) {} // ignore
+    final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
+    try {
+      node.uppermost(mapModel);
+    } catch (final Exception e) {
+      // ignore
+    }
     mapModel.nodeChanged(node);
   }
 
-  private void reset(final DefaultTreeModel mapModel, final TreePath path)
+  public void resetSelected()
   {
+    final TreePath[] paths = map.getSelectionPaths();
+    if (paths.length != 1) {
+      // no unique node to apply
+      return;
+    }
+    final TreePath path = map.getSelectionPath();
     final MapNode node = (MapNode)path.getLastPathComponent();
-    try
-      {
-        node.reset(mapModel);
-      }
-    catch (final Exception e) {} // ignore
+    final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
+    try {
+      node.reset(mapModel);
+    } catch (final Exception e) {
+      // ignore
+    }
     mapModel.nodeChanged(node);
+  }
+
+  public void bulkDumpSelected()
+  {
+    treeSelectionDumpListener.dumpSelection();
   }
 
   /**
@@ -572,7 +625,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
       mapDef = currentDevice;
       return;
     }
-    final TreeNode root = newDevice.buildMap();
+    final TreeNode root = newDevice.buildMap(documentMetaData, mapContextMenu);
     if (mapModel != null) // no need to re-create mapModel, if already
                           // existing
       mapModel.setRoot(root);
@@ -592,7 +645,7 @@ public class EditorFrame extends JFrame implements Runnable, Editor
 
   public void tryClose()
   {
-    if ((!documentMetaData.getHaveUnsavedData()) ||
+    if ((!documentMetaData.getHasUnsavedData()) ||
       (JOptionPane.showConfirmDialog(EditorFrame.this,
                                      "Window #" + manager.getID(this) +
                                      ": " + CONFIRM_CLOSE, CONFIRM,
@@ -604,9 +657,9 @@ public class EditorFrame extends JFrame implements Runnable, Editor
     }
   }
 
-  public void setHaveUnsavedData(final boolean haveUnsavedData)
+  public void setHasUnsavedData(final boolean hasUnsavedData)
   {
-    checkbox_md.setSelected(haveUnsavedData);
+    checkbox_md.setSelected(hasUnsavedData);
   }
 
   private class KeyListener extends KeyAdapter
@@ -619,23 +672,23 @@ public class EditorFrame extends JFrame implements Runnable, Editor
         {
         case '+':
           if (path != null)
-            increment((DefaultTreeModel)map.getModel(), path);
+            incrementSelected();
           break;
         case '-':
           if (path != null)
-            decrement((DefaultTreeModel)map.getModel(), path);
+            decrementSelected();
           break;
         case '<':
           if (path != null)
-            lowermost((DefaultTreeModel)map.getModel(), path);
+            minimizeSelected();
           break;
         case '>':
           if (path != null)
-            uppermost((DefaultTreeModel)map.getModel(), path);
+            maximizeSelected();
           break;
         case '!':
           if (path != null)
-            reset((DefaultTreeModel)map.getModel(), path);
+            resetSelected();
           break;
         }
     }
@@ -659,6 +712,18 @@ public class EditorFrame extends JFrame implements Runnable, Editor
           }
         catch (final InterruptedException e) {}
       }
+  }
+
+  public void hasUnsavedDataChanged(final boolean hasUnsavedData)
+  {
+    btDump.setEnabled(hasUnsavedData);
+    btToolBarDump.setEnabled(hasUnsavedData);
+  }
+
+  public void selectionChanged(final SelectionMultiplicity multiplicity)
+  {
+    btDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
+    btToolBarDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
   }
 }
 

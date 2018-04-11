@@ -22,8 +22,10 @@ package see.model;
 
 import java.io.InputStream;
 import javax.swing.tree.TreeNode;
+import javax.swing.event.TreeSelectionListener;
 
 import see.gui.Map;
+import see.gui.MapContextMenu;
 import see.model.Contents;
 
 /**
@@ -69,7 +71,8 @@ public interface MapDef
    * creates a <CODE>new MapNode(...)</CODE> as root node and then inserts
    * MapNode objects as children at will.
    */
-  TreeNode buildMap();
+  TreeNode buildMap(final TreeSelectionListener selectionListener,
+                    final MapContextMenu mapContextMenu);
 
   /**
    * Returns the associated tree component.

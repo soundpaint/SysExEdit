@@ -21,11 +21,17 @@
 package see.gui;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javax.sound.midi.MidiDevice;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import see.model.Contents;
 
-public class DocumentMetaData
+public class DocumentMetaData implements TreeSelectionListener
 {
   public static final MidiDevice.Info dumpMidiFileDeviceInfo =
     new MidiDevice.Info("Dump to MIDI File", "SysExEdit",
@@ -33,7 +39,9 @@ public class DocumentMetaData
     {
     };
 
-  private boolean haveUnsavedData;
+  private final List<DocumentMetaDataChangeListener> listeners;
+  private boolean hasUnsavedData;
+  private int selectionCount;
   private Contents midiDeviceId;
   private MidiDevice.Info midiInput;
   private MidiDevice.Info midiOutput;
@@ -41,17 +49,32 @@ public class DocumentMetaData
 
   public DocumentMetaData()
   {
-    haveUnsavedData = false;
+    listeners = new ArrayList<DocumentMetaDataChangeListener>();
+    hasUnsavedData = false;
+    selectionCount = 0;
   }
 
-  public void setHaveUnsavedData(final boolean haveUnsavedData)
+  public void addListener(final DocumentMetaDataChangeListener listener)
   {
-    this.haveUnsavedData = haveUnsavedData;
+    listeners.add(listener);
   }
 
-  public boolean getHaveUnsavedData()
+  public void removeListener(final DocumentMetaDataChangeListener listener)
   {
-    return haveUnsavedData;
+    listeners.remove(listener);
+  }
+
+  public void setHasUnsavedData(final boolean hasUnsavedData)
+  {
+    this.hasUnsavedData = hasUnsavedData;
+    for (final DocumentMetaDataChangeListener listener : listeners) {
+      listener.hasUnsavedDataChanged(hasUnsavedData);
+    }
+  }
+
+  public boolean getHasUnsavedData()
+  {
+    return hasUnsavedData;
   }
 
   public void setMidiDeviceId(final Contents midiDeviceId)
@@ -92,6 +115,37 @@ public class DocumentMetaData
   public void setDumpMidiFile(final File dumpMidiFile)
   {
     this.dumpMidiFile = dumpMidiFile;
+  }
+
+  private void selectionChanged(final SelectionMultiplicity multiplicity)
+  {
+    for (final DocumentMetaDataChangeListener listener : listeners) {
+      listener.selectionChanged(multiplicity);
+    }
+  }
+
+  public void valueChanged(final TreeSelectionEvent event)
+  {
+    for (final TreePath path : event.getPaths()) {
+      if (event.isAddedPath(path)) {
+        selectionCount++;
+      } else {
+        selectionCount--;
+      }
+    }
+    if (selectionCount == 0) {
+      selectionChanged(SelectionMultiplicity.NONE);
+    } else if (selectionCount == 1) {
+      final TreePath path = event.getPath();
+      final TreeNode node = (TreeNode)path.getLastPathComponent();
+      if (!node.getAllowsChildren()) {
+        selectionChanged(SelectionMultiplicity.SINGLE_LEAF);
+      } else {
+        selectionChanged(SelectionMultiplicity.SINGLE_PARENT);
+      }
+    } else /* (selectionCount > 1) */ {
+      selectionChanged(SelectionMultiplicity.MULTIPLE);
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 /*
- * @(#)DocumentMetaDataChangeListener.java 1.00 18/03/26
+ * @(#)SelectionMultiplicity.java 1.00 18/04/11
  *
  * Copyright (C) 2018 Jürgen Reuter
  *
@@ -20,22 +20,9 @@
 
 package see.gui;
 
-/**
- * Interface for listening to changes in document meta data.
- */
-public interface DocumentMetaDataChangeListener
+public enum SelectionMultiplicity
 {
-  /**
-   * This method is called whenever the state of having unsaved data
-   * changes.
-   */
-  void hasUnsavedDataChanged(final boolean hasUnsavedData);
-
-  /**
-   * This method is called whenever the selection changes
-   * from none to at least one node or the other way around.
-   */
-  void selectionChanged(final SelectionMultiplicity multiplicity);
+  NONE, SINGLE_LEAF, SINGLE_PARENT, MULTIPLE
 }
 
 /*

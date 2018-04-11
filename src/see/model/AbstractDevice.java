@@ -22,8 +22,10 @@ package see.model;
 
 import java.io.InputStream;
 import javax.swing.tree.TreeNode;
+import javax.swing.event.TreeSelectionListener;
 
 import see.gui.Map;
+import see.gui.MapContextMenu;
 import see.model.Contents;
 
 /**
@@ -37,10 +39,12 @@ public abstract class AbstractDevice implements MapDef
 
     private final Map map;
 
-    private MapRoot(final String deviceName)
+    private MapRoot(final String deviceName,
+                    final TreeSelectionListener selectionListener,
+                    final MapContextMenu mapContextMenu)
     {
       super(deviceName);
-      map = new Map();
+      map = new Map(selectionListener, mapContextMenu);
     }
 
     public Map getMap()
@@ -56,9 +60,10 @@ public abstract class AbstractDevice implements MapDef
    */
   public abstract void buildMap(final MapRoot root);
 
-  public TreeNode buildMap()
+  public TreeNode buildMap(final TreeSelectionListener selectionListener,
+                           final MapContextMenu mapContextMenu)
   {
-    root = new MapRoot(getName());
+    root = new MapRoot(getName(), selectionListener, mapContextMenu);
     buildMap(root);
     root.resolveDfsLinkedNodes(null);
     root.resolveAddresses(0);

@@ -1,7 +1,7 @@
 /*
  * @(#)TreeSelectionDumpListener.java 1.00 18/03/20
  *
- * Copyright (C) 1998, 2018 Jürgen Reuter
+ * Copyright (C) 2018 Jürgen Reuter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -264,7 +264,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
    * Walks through the whole Map object and schedules the contents of
    * each selected node for bulk dump.
    */
-  private void dumpSelection()
+  public void dumpSelection()
   {
     try {
       final Receiver receiver = getReceiver();

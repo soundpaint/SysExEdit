@@ -33,6 +33,9 @@ import javax.swing.JOptionPane;
 import javax.swing.ToolTipManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import see.SysExEdit;
 
@@ -183,7 +186,7 @@ public class Controller
                                      chooser.getSelectedFile().getName());
           // TODO:
           //load(defaultLoadFile);
-          //documentMetaData.setHaveUnsavedData(false);
+          //documentMetaData.setHasUnsavedData(false);
         }
       }
     };
@@ -209,7 +212,7 @@ public class Controller
                                      chooser.getSelectedFile().getName());
           // TODO
           //saveAs(defaultSaveFile);
-          //documentMetaData.setHaveUnsavedData(false);
+          //documentMetaData.setHasUnsavedData(false);
         }
       }
     };
@@ -218,7 +221,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        if ((!documentMetaData.getHaveUnsavedData()) ||
+        if ((!documentMetaData.getHasUnsavedData()) ||
             (JOptionPane.showConfirmDialog(frame,
                                            MSG_DISCARD_UNSAVED_DATA,
                                            "Confirm Close",
@@ -241,11 +244,11 @@ public class Controller
       }
     };
 
-  private final ActionListener dumpListener = new GuardedActionListener()
+  private final ActionListener bulkDumpListener = new GuardedActionListener()
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        // TODO
+        editor.bulkDumpSelected();
       }
     };
 
@@ -301,7 +304,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        // TODO
+        editor.incrementSelected();
       }
     };
 
@@ -309,15 +312,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        // TODO
-      }
-    };
-
-  private final ActionListener uppermostListener = new GuardedActionListener()
-    {
-      public void unguardedActionPerformed(final ActionEvent event)
-      {
-        // TODO
+        editor.decrementSelected();
       }
     };
 
@@ -325,7 +320,15 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        // TODO
+        editor.minimizeSelected();
+      }
+    };
+
+  private final ActionListener uppermostListener = new GuardedActionListener()
+    {
+      public void unguardedActionPerformed(final ActionEvent event)
+      {
+        editor.maximizeSelected();
       }
     };
 
@@ -333,7 +336,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        // TODO
+        editor.resetSelected();
       }
     };
 
@@ -397,7 +400,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        if ((!documentMetaData.getHaveUnsavedData()) ||
+        if ((!documentMetaData.getHasUnsavedData()) ||
             (JOptionPane.showConfirmDialog(frame,
                                            MSG_DISCARD_UNSAVED_DATA,
                                            "Confirm Load",
@@ -560,26 +563,26 @@ public class Controller
     {
       public void unguardedTreeNodesChanged(final TreeModelEvent event)
       {
-        documentMetaData.setHaveUnsavedData(true);
-        editor.setHaveUnsavedData(true);
+        documentMetaData.setHasUnsavedData(true);
+        editor.setHasUnsavedData(true);
       }
 
       public void unguardedTreeNodesInserted(final TreeModelEvent event)
       {
-        documentMetaData.setHaveUnsavedData(true);
-        editor.setHaveUnsavedData(true);
+        documentMetaData.setHasUnsavedData(true);
+        editor.setHasUnsavedData(true);
       }
 
       public void unguardedTreeNodesRemoved(final TreeModelEvent event)
       {
-        documentMetaData.setHaveUnsavedData(true);
-        editor.setHaveUnsavedData(true);
+        documentMetaData.setHasUnsavedData(true);
+        editor.setHasUnsavedData(true);
       }
 
       public void unguardedTreeStructureChanged(final TreeModelEvent event)
       {
-        documentMetaData.setHaveUnsavedData(true);
-        editor.setHaveUnsavedData(true);
+        documentMetaData.setHasUnsavedData(true);
+        editor.setHasUnsavedData(true);
       }
     };
 
@@ -613,9 +616,9 @@ public class Controller
     return requestListener;
   }
 
-  public ActionListener getDumpListener()
+  public ActionListener getBulkDumpListener()
   {
-    return dumpListener;
+    return bulkDumpListener;
   }
 
   public ActionListener getExitListener()
@@ -658,14 +661,14 @@ public class Controller
     return decrementListener;
   }
 
-  public ActionListener getUppermostListener()
-  {
-    return uppermostListener;
-  }
-
   public ActionListener getLowermostListener()
   {
     return lowermostListener;
+  }
+
+  public ActionListener getUppermostListener()
+  {
+    return uppermostListener;
   }
 
   public ActionListener getResetListener()
