@@ -34,8 +34,7 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
 {
   private static final long serialVersionUID = -7319508134978167717L;
 
-  private JMenuItem itemSave;
-  private JMenuItem itemDump;
+  private final FileMenu fileMenu;
 
   private MenuBar()
   {
@@ -44,7 +43,7 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
 
   public MenuBar(final Controller ctrl)
   {
-    add(new FileMenu(ctrl));
+    add(fileMenu = new FileMenu(ctrl));
     add(new EditMenu(ctrl));
     add(new EventMenu(ctrl));
     add(new OptionsMenu(ctrl));
@@ -53,17 +52,20 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
 
   public void hasUnsavedDataChanged(final boolean hasUnsavedData)
   {
-    itemSave.setEnabled(hasUnsavedData);
+    fileMenu.itemSave.setEnabled(hasUnsavedData);
   }
 
   public void selectionChanged(final SelectionMultiplicity multiplicity)
   {
-    itemDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
+    fileMenu.itemDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
   }
 
   private class FileMenu extends JMenu
   {
     private static final long serialVersionUID = -8667602152603261461L;
+
+    private final JMenuItem itemSave;
+    private final JMenuItem itemDump;
 
     private FileMenu(final Controller ctrl)
     {
@@ -83,8 +85,8 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
       itemSave = new JMenuItem("Save");
       itemSave.setMnemonic('s');
       itemSave.addActionListener(ctrl.getSaveListener());
+      itemSave.setEnabled(false);
       add(itemSave);
-      itemSave.setEnabled(false); // TODO
 
       final JMenuItem itemSaveAs = new JMenuItem("Save as…");
       itemSaveAs.setMnemonic('a');

@@ -96,8 +96,6 @@ public class EditorFrame extends JFrame
   private Map map;
   private JButton btDump;
   private JButton btSave;
-  private JButton btToolBarDump;
-  private JButton btToolBarSave;
   private JCheckBox checkbox_bd;
   private JCheckBox checkbox_br;
   private JCheckBox checkbox_md;
@@ -239,48 +237,9 @@ public class EditorFrame extends JFrame
     documentMetaData.addListener(menuBar);
     setJMenuBar(menuBar);
 
-    // tool icons area
-    final JPanel panel_toolIcons = new JPanel();
-    panel_toolIcons.setLayout(new FlowLayout(FlowLayout.LEFT));
-    getContentPane().add(panel_toolIcons, "North");
-    final Insets insets = new Insets(0, 0, 0, 0);
-
-    button = new JButton(UIManager.getIcon("internal-button-load"));
-    button.addActionListener(controller.getLoadListener());
-    button.setActionCommand(LOAD);
-    button.setToolTipText("Loads a File of Data from Disk");
-    button.setMargin(insets);
-    panel_toolIcons.add(button);
-
-    btToolBarSave = new JButton(UIManager.getIcon("internal-button-save"));
-    btToolBarSave.addActionListener(controller.getSaveListener());
-    btToolBarSave.setActionCommand(SAVE);
-    btToolBarSave.setToolTipText("Saves Selected Data to a Disk File");
-    btToolBarSave.setMargin(insets);
-    panel_toolIcons.add(btToolBarSave);
-
-    button = new JButton(UIManager.getIcon("internal-button-request"));
-    button.setEnabled(false);
-    button.addActionListener(controller.getRequestListener());
-    button.setActionCommand(REQUEST);
-    button.setToolTipText("Requests Selected Data via MIDI");
-    button.setMargin(insets);
-    panel_toolIcons.add(button);
-
-    btToolBarDump = new JButton(UIManager.getIcon("internal-button-dump"));
-    btToolBarDump.setEnabled(false);
-    btToolBarDump.addActionListener(controller.getBulkDumpListener());
-    btToolBarDump.setActionCommand(DUMP);
-    btToolBarDump.setToolTipText("Dumps Selected Data via MIDI");
-    btToolBarDump.setMargin(insets);
-    panel_toolIcons.add(btToolBarDump);
-
-    button = new JButton(UIManager.getIcon("internal-button-exit"));
-    button.addActionListener(controller.getExitListener());
-    button.setActionCommand(CLOSE);
-    button.setToolTipText("Closes this editor window");
-    button.setMargin(insets);
-    panel_toolIcons.add(button);
+    final ToolBar toolBar = new ToolBar(controller);
+    documentMetaData.addListener(toolBar);
+    getContentPane().add(toolBar, "North");
 
     // map area
     final JPanel panel_map = new JPanel();
@@ -717,13 +676,11 @@ public class EditorFrame extends JFrame
   public void hasUnsavedDataChanged(final boolean hasUnsavedData)
   {
     btDump.setEnabled(hasUnsavedData);
-    btToolBarDump.setEnabled(hasUnsavedData);
   }
 
   public void selectionChanged(final SelectionMultiplicity multiplicity)
   {
     btDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
-    btToolBarDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
   }
 }
 
