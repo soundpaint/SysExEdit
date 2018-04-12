@@ -23,6 +23,8 @@ package see.gui;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 
+import see.model.Contents;
+
 public class MapContextMenu extends JPopupMenu
   implements DocumentMetaDataChangeListener
 {
@@ -95,6 +97,11 @@ public class MapContextMenu extends JPopupMenu
       throw new IllegalArgumentException("unexpected multiplicity value: " +
                                          multiplicity);
     }
+  }
+
+  public void setMidiDeviceId(final Contents midiDeviceId)
+  {
+    // ignore
   }
 }
 

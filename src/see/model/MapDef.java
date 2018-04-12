@@ -38,13 +38,13 @@ public interface MapDef
    * Returns the manufacturer ID as defined in the MIDI specification.
    * @return The manufacturer ID as defined in the MIDI specification.
    */
-  byte getManufacturerID();
+  byte getManufacturerId();
 
   /**
    * Returns the model ID.
    * @return The model ID.
    */
-  byte getModelID();
+  byte getModelId();
 
   /**
    * Returns the range of possible values and default value for this

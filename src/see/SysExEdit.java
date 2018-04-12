@@ -345,7 +345,7 @@ public class SysExEdit extends Applet implements FramesManager
     return APPL_INFO;
   }
 
-  private int maxID = 0;
+  private int maxId = 0;
 
   /**
    * Returns the version id of this application.
@@ -366,7 +366,7 @@ public class SysExEdit extends Applet implements FramesManager
   {
     synchronized(frames)
       {
-        final int id = ++maxID;
+        final int id = ++maxId;
         frames.put(frame, id);
         return id;
       }
@@ -396,7 +396,7 @@ public class SysExEdit extends Applet implements FramesManager
    * @param frame The frame.
    * @return The unique ID or -1, if the frame is not registered.
    */
-  public int getID(final Frame frame)
+  public int getId(final Frame frame)
   {
     final Integer id = frames.get(frame);
     return (id != null) ? id : -1;

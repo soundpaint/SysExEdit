@@ -20,6 +20,8 @@
 
 package see.gui;
 
+import see.model.Contents;
+
 /**
  * Interface for listening to changes in document meta data.
  */
@@ -36,6 +38,11 @@ public interface DocumentMetaDataChangeListener
    * from none to at least one node or the other way around.
    */
   void selectionChanged(final SelectionMultiplicity multiplicity);
+
+  /**
+   * This method is called whenever the MIDI device ID changes.
+   */
+  void setMidiDeviceId(final Contents midiDeviceId);
 }
 
 /*

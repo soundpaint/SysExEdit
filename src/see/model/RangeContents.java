@@ -47,9 +47,6 @@ public class RangeContents extends AbstractContents
   /** The effective size of this contents in bits (0..32). */
   private byte bit_size;
 
-  /** The currently valid range. */
-  private int selectionID;
-
   /** Range object for this contents. */
   private final Range range;
 

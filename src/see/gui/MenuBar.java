@@ -27,6 +27,8 @@ import javax.swing.JMenuItem;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
+import see.model.Contents;
+
 /**
  * This class holds the menu bar of the application and related logic.
  */
@@ -58,6 +60,11 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
   public void selectionChanged(final SelectionMultiplicity multiplicity)
   {
     fileMenu.itemDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
+  }
+
+  public void setMidiDeviceId(final Contents midiDeviceId)
+  {
+    // ignore
   }
 
   private class FileMenu extends JMenu

@@ -61,7 +61,7 @@ public interface FramesManager
    * @param frame The frame to be registered.
    * @return The unique ID.
    * @see #removeFrame
-   * @see #getID
+   * @see #getId
    */
   int addFrame(final Frame frame);
 
@@ -80,7 +80,7 @@ public interface FramesManager
    * @return The unique ID or -1, if the frame is not registered.
    * @see #addFrame
    */
-  int getID(final Frame frame);
+  int getId(final Frame frame);
 
   /**
    * Close all frames and exit the application.  If there is unsaved

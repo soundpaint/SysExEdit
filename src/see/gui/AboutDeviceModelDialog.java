@@ -89,8 +89,8 @@ public class AboutDeviceModelDialog
     {
       valueDeviceName.setText(mapDef.getName());
       valueDeviceClass.setText(mapDef.getClass().getName());
-      valueManId.setText(Utils.intTo0xnn(mapDef.getManufacturerID()));
-      valueModelId.setText(Utils.intTo0xnn(mapDef.getModelID()));
+      valueManId.setText(Utils.intTo0xnn(mapDef.getManufacturerId()));
+      valueModelId.setText(Utils.intTo0xnn(mapDef.getModelId()));
       valueEnteredBy.setText(mapDef.getEnteredBy());
     }
   }

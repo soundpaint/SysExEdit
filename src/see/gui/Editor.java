@@ -31,8 +31,6 @@ public interface Editor
 
   void showAboutDeviceModelDialog();
 
-  void setHasUnsavedData(final boolean hasUnsavedData);
-
   ActionListener getDeviceChangeListener();
 
   void incrementSelected();

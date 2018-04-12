@@ -21,7 +21,6 @@
 package see.gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Dimension;
@@ -41,11 +40,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.tree.DefaultTreeModel;
@@ -80,29 +77,15 @@ public class EditorFrame extends JFrame
   private static final String CONFIRM_CLOSE = "Data modified.  Close anyway?";
 
   /*
-   * action commands
-   */
-
-  private static final String LOAD = "Load…";
-  private static final String SAVE = "Save";
-  private static final String REQUEST = "Request";
-  private static final String DUMP = "Dump";
-  private static final String CLOSE = "Close";
-
-  /*
    * GUI elements
    */
 
   private Map map;
+  private StatusLine statusLine;
   private JButton btDump;
   private JButton btSave;
   private JCheckBox checkbox_bd;
   private JCheckBox checkbox_br;
-  private JCheckBox checkbox_md;
-  private JLabel label_deviceName;
-  private JLabel label_manID;
-  private JLabel label_modelID;
-  private JLabel label_deviceID;
 
   /*
    * Other instance variables
@@ -153,8 +136,8 @@ public class EditorFrame extends JFrame
    */
   public void run()
   {
-    final String windowID = "Window #" + manager.addFrame(this);
-    setTitle(manager.getVersion() + " " + windowID);
+    final String windowId = "Window #" + manager.addFrame(this);
+    setTitle(manager.getVersion() + " " + windowId);
     if (filepath != null)
       {
         //mapDef = loadMapFrom(filepath);
@@ -164,57 +147,48 @@ public class EditorFrame extends JFrame
       }
     if (mapDef == null)
       {
-        System.out.println("[" + windowID + ": prompting for map def...]");
+        System.out.println("[" + windowId + ": prompting for map def...]");
         System.out.flush();
         loadDeviceModel(this);
       }
     if (mapDef != null)
       {
         documentMetaData.setMidiDeviceId(mapDef.createDeviceIdContents());
-        System.out.println("[" + windowID + ": initializing GUI...]");
+        System.out.println("[" + windowId + ": initializing GUI...]");
         System.out.flush();
         initGUI();
-        System.out.println("[" + windowID + ": opening window...]");
+        updateStatusLine();
+        System.out.println("[" + windowId + ": opening window...]");
         System.out.flush();
         pack();
         setVisible(true);
         awaitDelete();
         setVisible(false);
-        System.out.println("[" + windowID + ": window closed]");
+        System.out.println("[" + windowId + ": window closed]");
         System.out.flush();
       }
     else
       {
-        System.out.println("[" + windowID + " aborted]");
+        System.out.println("[" + windowId + " aborted]");
         System.out.flush();
       }
     dispose();
     manager.removeFrame(this);
   }
 
-  public void setMidiDeviceId(final Contents midiDeviceId)
+  private void updateStatusLine()
   {
-    label_deviceID.setText("Device ID: " + midiDeviceId.getDisplayValue());
-    label_deviceID.updateUI();
-  }
-
-  private void updateModelInfo()
-  {
-    label_deviceName.setText("Dev Name: " + mapDef.getName());
-    label_deviceName.updateUI();
-    label_manID.
-      setText("Man ID: " + Utils.intTo0xnn(mapDef.getManufacturerID()));
-    label_manID.updateUI();
-    label_modelID.setText("Model ID: " + Utils.intTo0xnn(mapDef.getModelID()));
-    label_modelID.updateUI();
-    setMidiDeviceId(documentMetaData.getMidiDeviceId());
+    statusLine.setMidiDeviceId(documentMetaData.getMidiDeviceId());
+    statusLine.setModelInfo(mapDef.getName(),
+                            mapDef.getManufacturerId(),
+                            mapDef.getModelId());
   }
 
   private final ActionListener deviceChangeListener =
     new ActionListener() {
       public void actionPerformed(final ActionEvent event)
       {
-        updateModelInfo();
+        statusLine.setMidiDeviceId(documentMetaData.getMidiDeviceId());
       }
     };
 
@@ -289,26 +263,27 @@ public class EditorFrame extends JFrame
     gbl = new GridBagLayout();
     panel_button_row.setLayout(gbl);
 
-    button = new JButton(LOAD);
+    button = new JButton("Load…");
     button.addActionListener(controller.getLoadListener());
     button.setMnemonic((int)'l');
     button.setToolTipText("Loads a File of Data from Disk");
     gbl.setConstraints(button, c);
     panel_button_row.add(button);
-    btSave = new JButton(SAVE);
+    btSave = new JButton("Save");
+    btSave.setEnabled(false);
     btSave.addActionListener(controller.getSaveListener());
     btSave.setMnemonic((int)'s');
     btSave.setToolTipText("Saves Selected Data to a Disk File");
     gbl.setConstraints(btSave, c);
     panel_button_row.add(btSave);
-    button = new JButton(REQUEST);
+    button = new JButton("Request");
     button.setEnabled(false);
     button.addActionListener(controller.getRequestListener());
     button.setMnemonic((int)'r');
     button.setToolTipText("Requests Selected Data via MIDI");
     gbl.setConstraints(button, c);
     panel_button_row.add(button);
-    btDump = new JButton(DUMP);
+    btDump = new JButton("Dump");
     btDump.setEnabled(false);
     btDump.addActionListener(controller.getBulkDumpListener());
     btDump.setMnemonic((int)'d');
@@ -335,52 +310,9 @@ public class EditorFrame extends JFrame
     panel_button_row.add(checkbox_br);
     panel_map.add("South", panel_button_row);
 
-    // Layout Definitions for operations panel
-    final JPanel panel_footer = new JPanel();
-    gbl = new GridBagLayout();
-    panel_footer.setLayout(gbl);
-    c.gridwidth = 1;
-    c.gridheight = GridBagConstraints.REMAINDER;
-
-    // operations panel components
-    label_deviceName = new JLabel("Device Name: [none]");
-    label_deviceName.setToolTipText("The name of the device");
-    gbl.setConstraints(label_deviceName, c);
-    panel_footer.add(label_deviceName);
-    label_manID = new JLabel("Manufacturer ID: [none]");
-    label_manID.setToolTipText("The Manufacturer ID of the device");
-    gbl.setConstraints(label_manID, c);
-    panel_footer.add(label_manID);
-    label_modelID = new JLabel("Model ID: [none]");
-    label_modelID.setToolTipText("The Model ID of the device");
-    gbl.setConstraints(label_modelID, c);
-    panel_footer.add(label_modelID);
-    label_deviceID = new JLabel("Device ID: [none]");
-    label_deviceID.setToolTipText("The Device ID of the device");
-    gbl.setConstraints(label_deviceID, c);
-    panel_footer.add(label_deviceID);
-    updateModelInfo();
-    panel_pad = new JPanel();
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.weightx = 1.0; c.weighty = 0.0;
-    gbl.setConstraints(panel_pad, c);
-    panel_footer.add(panel_pad);
-    c.fill = GridBagConstraints.NONE;
-    c.weightx = 0.0; c.weighty = 0.0;
-    checkbox_md = new JCheckBox("Modified");
-    checkbox_md.setEnabled(false);
-    checkbox_md.setToolTipText("True, if the output window has been " +
-                               "modified " + "since the last save");
-    gbl.setConstraints(checkbox_md, c);
-    panel_footer.add(checkbox_md);
-    button = new JButton(CLOSE);
-    button.addActionListener(controller.getCloseListener());
-    button.setMnemonic((int)'x');
-    button.setToolTipText("Closes this editor window");
-    gbl.setConstraints(button, c);
-    panel_footer.add(button);
-
-    getContentPane().add("South", panel_footer);
+    statusLine = new StatusLine(controller);
+    documentMetaData.addListener(statusLine);
+    getContentPane().add("South", statusLine);
 
     addWindowListener(new EditorWindowListener());
   }
@@ -590,8 +522,6 @@ public class EditorFrame extends JFrame
       mapModel.setRoot(root);
     else
       mapModel = new DefaultTreeModel(root);
-    if (label_deviceName != null) // gui already initialized
-      updateModelInfo();
     mapDef = newDevice;
   }
 
@@ -606,7 +536,7 @@ public class EditorFrame extends JFrame
   {
     if ((!documentMetaData.getHasUnsavedData()) ||
       (JOptionPane.showConfirmDialog(EditorFrame.this,
-                                     "Window #" + manager.getID(this) +
+                                     "Window #" + manager.getId(this) +
                                      ": " + CONFIRM_CLOSE, CONFIRM,
                                      JOptionPane.YES_NO_OPTION)
        == JOptionPane.YES_OPTION))
@@ -614,11 +544,6 @@ public class EditorFrame extends JFrame
     else {
       // close aborted by user => do nothing
     }
-  }
-
-  public void setHasUnsavedData(final boolean hasUnsavedData)
-  {
-    checkbox_md.setSelected(hasUnsavedData);
   }
 
   private class KeyListener extends KeyAdapter
@@ -675,12 +600,17 @@ public class EditorFrame extends JFrame
 
   public void hasUnsavedDataChanged(final boolean hasUnsavedData)
   {
-    btDump.setEnabled(hasUnsavedData);
+    btSave.setEnabled(hasUnsavedData);
   }
 
   public void selectionChanged(final SelectionMultiplicity multiplicity)
   {
     btDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
+  }
+
+  public void setMidiDeviceId(final Contents midiDeviceId)
+  {
+    // ignore
   }
 }
 

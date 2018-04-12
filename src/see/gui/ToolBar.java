@@ -20,12 +20,12 @@
 
 package see.gui;
 
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
+
+import see.model.Contents;
 
 public class ToolBar extends JToolBar implements DocumentMetaDataChangeListener
 {
@@ -98,6 +98,11 @@ public class ToolBar extends JToolBar implements DocumentMetaDataChangeListener
   public void selectionChanged(final SelectionMultiplicity multiplicity)
   {
     buttonDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
+  }
+
+  public void setMidiDeviceId(final Contents midiDeviceId)
+  {
+    // ignore
   }
 }
 

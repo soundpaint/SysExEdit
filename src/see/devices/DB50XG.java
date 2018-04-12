@@ -927,7 +927,7 @@ public class DB50XG extends AbstractDevice
   /**
    * Returns the manufacturer ID as defined in the MIDI specification.
    */
-  public byte getManufacturerID()
+  public byte getManufacturerId()
   {
     return MANUFACTURER_ID;
   }
@@ -935,7 +935,7 @@ public class DB50XG extends AbstractDevice
   /**
    * Returns the model ID.
    */
-  public byte getModelID()
+  public byte getModelId()
   {
     return MODEL_ID;
   }

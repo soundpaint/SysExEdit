@@ -564,25 +564,21 @@ public class Controller
       public void unguardedTreeNodesChanged(final TreeModelEvent event)
       {
         documentMetaData.setHasUnsavedData(true);
-        editor.setHasUnsavedData(true);
       }
 
       public void unguardedTreeNodesInserted(final TreeModelEvent event)
       {
         documentMetaData.setHasUnsavedData(true);
-        editor.setHasUnsavedData(true);
       }
 
       public void unguardedTreeNodesRemoved(final TreeModelEvent event)
       {
         documentMetaData.setHasUnsavedData(true);
-        editor.setHasUnsavedData(true);
       }
 
       public void unguardedTreeStructureChanged(final TreeModelEvent event)
       {
         documentMetaData.setHasUnsavedData(true);
-        editor.setHasUnsavedData(true);
       }
     };
 
