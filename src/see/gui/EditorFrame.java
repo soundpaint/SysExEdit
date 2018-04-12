@@ -57,7 +57,8 @@ import see.model.MapNode;
  * This class implements the main window of the application.
  */
 public class EditorFrame extends JFrame
-  implements Runnable, Editor, DocumentMetaDataChangeListener
+  implements Runnable, Editor,
+             DocumentMetaDataChangeListener, MapSelectionChangeListener
 {
   private static final long serialVersionUID = -8230511863227744503L;
 
@@ -120,13 +121,14 @@ public class EditorFrame extends JFrame
     this.mapDef = mapDef;
     this.manager = manager;
     documentMetaData = new DocumentMetaData();
-    documentMetaData.addListener(this);
+    documentMetaData.addMetaDataChangeListener(this);
+    documentMetaData.addSelectionChangeListener(this);
     if (mapDef != null) {
       documentMetaData.setMidiDeviceId(mapDef.createDeviceIdContents());
     }
     controller = new Controller(manager, this, documentMetaData, this);
     mapContextMenu = new MapContextMenu(controller);
-    documentMetaData.addListener(mapContextMenu);
+    documentMetaData.addSelectionChangeListener(mapContextMenu);
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   }
 
@@ -208,11 +210,13 @@ public class EditorFrame extends JFrame
     JButton button;
 
     final MenuBar menuBar = new MenuBar(controller);
-    documentMetaData.addListener(menuBar);
+    documentMetaData.addMetaDataChangeListener(menuBar);
+    documentMetaData.addSelectionChangeListener(menuBar);
     setJMenuBar(menuBar);
 
     final ToolBar toolBar = new ToolBar(controller);
-    documentMetaData.addListener(toolBar);
+    documentMetaData.addMetaDataChangeListener(toolBar);
+    documentMetaData.addSelectionChangeListener(toolBar);
     getContentPane().add(toolBar, "North");
 
     // map area
@@ -311,7 +315,7 @@ public class EditorFrame extends JFrame
     panel_map.add("South", panel_button_row);
 
     statusLine = new StatusLine(controller);
-    documentMetaData.addListener(statusLine);
+    documentMetaData.addMetaDataChangeListener(statusLine);
     getContentPane().add("South", statusLine);
 
     addWindowListener(new EditorWindowListener());
@@ -603,14 +607,24 @@ public class EditorFrame extends JFrame
     btSave.setEnabled(hasUnsavedData);
   }
 
-  public void selectionChanged(final SelectionMultiplicity multiplicity)
-  {
-    btDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
-  }
-
   public void setMidiDeviceId(final Contents midiDeviceId)
   {
     // ignore
+  }
+
+  public void selectionChanged(final SelectionMultiplicity multiplicity)
+  {
+    // ignore
+  }
+
+  public void singleLeafSelectedChanged(final boolean hasSingleLeafSelected)
+  {
+    // ignore
+  }
+
+  public void anythingSelectedChanged(final boolean hasAnythingSelected)
+  {
+    btDump.setEnabled(hasAnythingSelected);
   }
 }
 

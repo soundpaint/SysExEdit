@@ -27,7 +27,8 @@ import javax.swing.UIManager;
 
 import see.model.Contents;
 
-public class ToolBar extends JToolBar implements DocumentMetaDataChangeListener
+public class ToolBar extends JToolBar
+  implements DocumentMetaDataChangeListener, MapSelectionChangeListener
 {
   private static final long serialVersionUID = 7539331823973840058L;
 
@@ -95,14 +96,24 @@ public class ToolBar extends JToolBar implements DocumentMetaDataChangeListener
     buttonSave.setEnabled(hasUnsavedData);
   }
 
-  public void selectionChanged(final SelectionMultiplicity multiplicity)
-  {
-    buttonDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
-  }
-
   public void setMidiDeviceId(final Contents midiDeviceId)
   {
     // ignore
+  }
+
+  public void selectionChanged(final SelectionMultiplicity multiplicity)
+  {
+    // ignore
+  }
+
+  public void singleLeafSelectedChanged(final boolean hasSingleLeafSelected)
+  {
+    // ignore
+  }
+
+  public void anythingSelectedChanged(final boolean hasAnythingSelected)
+  {
+    buttonDump.setEnabled(hasAnythingSelected);
   }
 }
 

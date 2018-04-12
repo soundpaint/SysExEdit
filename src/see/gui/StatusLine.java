@@ -99,11 +99,6 @@ public class StatusLine extends JPanel implements DocumentMetaDataChangeListener
     checkBoxModified.setSelected(hasUnsavedData);
   }
 
-  public void selectionChanged(final SelectionMultiplicity multiplicity)
-  {
-    // ignore
-  }
-
   public void setMidiDeviceId(final Contents deviceId)
   {
     labelDeviceId.setText("Device ID: " + deviceId.getDisplayValue());

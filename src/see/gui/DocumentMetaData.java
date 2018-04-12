@@ -39,35 +39,50 @@ public class DocumentMetaData implements TreeSelectionListener
     {
     };
 
-  private final List<DocumentMetaDataChangeListener> listeners;
+  private final List<DocumentMetaDataChangeListener> metaDataChangeListeners;
+  private final List<MapSelectionChangeListener> selectionChangeListeners;
   private boolean hasUnsavedData;
   private int selectionCount;
   private Contents midiDeviceId;
   private MidiDevice.Info midiInput;
   private MidiDevice.Info midiOutput;
   private File dumpMidiFile;
+  private SelectionMultiplicity lastSelectionMultiplicity;
 
   public DocumentMetaData()
   {
-    listeners = new ArrayList<DocumentMetaDataChangeListener>();
+    metaDataChangeListeners = new ArrayList<DocumentMetaDataChangeListener>();
+    selectionChangeListeners = new ArrayList<MapSelectionChangeListener>();
     hasUnsavedData = false;
     selectionCount = 0;
+    lastSelectionMultiplicity = SelectionMultiplicity.NONE;
   }
 
-  public void addListener(final DocumentMetaDataChangeListener listener)
+  public void addMetaDataChangeListener(final DocumentMetaDataChangeListener listener)
   {
-    listeners.add(listener);
+    metaDataChangeListeners.add(listener);
   }
 
-  public void removeListener(final DocumentMetaDataChangeListener listener)
+  public void removeMetaDataChangeListener(final DocumentMetaDataChangeListener listener)
   {
-    listeners.remove(listener);
+    metaDataChangeListeners.remove(listener);
+  }
+
+  public void addSelectionChangeListener(final MapSelectionChangeListener listener)
+  {
+    selectionChangeListeners.add(listener);
+  }
+
+  public void removeSelectionChangeListener(final MapSelectionChangeListener listener)
+  {
+    selectionChangeListeners.remove(listener);
   }
 
   public void setHasUnsavedData(final boolean hasUnsavedData)
   {
     this.hasUnsavedData = hasUnsavedData;
-    for (final DocumentMetaDataChangeListener listener : listeners) {
+    for (final DocumentMetaDataChangeListener listener :
+           metaDataChangeListeners) {
       listener.hasUnsavedDataChanged(hasUnsavedData);
     }
   }
@@ -119,8 +134,53 @@ public class DocumentMetaData implements TreeSelectionListener
 
   private void selectionChanged(final SelectionMultiplicity multiplicity)
   {
-    for (final DocumentMetaDataChangeListener listener : listeners) {
+    for (final MapSelectionChangeListener listener : selectionChangeListeners) {
       listener.selectionChanged(multiplicity);
+    }
+    switch (multiplicity) {
+    case NONE:
+      if (lastSelectionMultiplicity != SelectionMultiplicity.NONE) {
+        anythingSelectedChanged(false);
+      }
+      if (lastSelectionMultiplicity == SelectionMultiplicity.SINGLE_LEAF) {
+        singleLeafSelectedChanged(false);
+      }
+      break;
+    case SINGLE_LEAF:
+      if (lastSelectionMultiplicity == SelectionMultiplicity.NONE) {
+        anythingSelectedChanged(true);
+      }
+      if (lastSelectionMultiplicity != SelectionMultiplicity.SINGLE_LEAF) {
+        singleLeafSelectedChanged(true);
+      }
+      break;
+    case SINGLE_PARENT:
+    case MULTIPLE:
+      if (lastSelectionMultiplicity == SelectionMultiplicity.NONE) {
+        anythingSelectedChanged(true);
+      }
+      if (lastSelectionMultiplicity == SelectionMultiplicity.SINGLE_LEAF) {
+        singleLeafSelectedChanged(false);
+      }
+      break;
+    default:
+      throw new IllegalArgumentException("unexpected multiplicity value: " +
+                                         multiplicity);
+    }
+    lastSelectionMultiplicity = multiplicity;
+  }
+
+  private void singleLeafSelectedChanged(final boolean haveSingleLeafSelected)
+  {
+    for (final MapSelectionChangeListener listener : selectionChangeListeners) {
+      listener.singleLeafSelectedChanged(haveSingleLeafSelected);
+    }
+  }
+
+  private void anythingSelectedChanged(final boolean haveAnythingSelected)
+  {
+    for (final MapSelectionChangeListener listener : selectionChangeListeners) {
+      listener.anythingSelectedChanged(haveAnythingSelected);
     }
   }
 

@@ -26,7 +26,7 @@ import javax.swing.JMenuItem;
 import see.model.Contents;
 
 public class MapContextMenu extends JPopupMenu
-  implements DocumentMetaDataChangeListener
+  implements MapSelectionChangeListener
 {
   private static final long serialVersionUID = 2035908881059488806L;
 
@@ -59,49 +59,27 @@ public class MapContextMenu extends JPopupMenu
     menuItemBulkDump = new JMenuItem("Bulk Dump Selection");
     menuItemBulkDump.addActionListener(ctrl.getBulkDumpListener());
     add(menuItemBulkDump);
-    setEnabledLeafActions(false);
+    singleLeafSelectedChanged(false);
     menuItemBulkDump.setEnabled(false);
-  }
-
-  public void hasUnsavedDataChanged(final boolean hasUnsavedData)
-  {
-    // nothing yet
-  }
-
-  private void setEnabledLeafActions(final boolean enabled)
-  {
-    menuItemMinValue.setEnabled(enabled);
-    menuItemMaxValue.setEnabled(enabled);
-    menuItemIncValue.setEnabled(enabled);
-    menuItemDecValue.setEnabled(enabled);
-    menuItemResetValue.setEnabled(enabled);
   }
 
   public void selectionChanged(final SelectionMultiplicity multiplicity)
   {
-    switch (multiplicity) {
-    case NONE:
-      menuItemBulkDump.setEnabled(false);
-      setEnabledLeafActions(false);
-      break;
-    case SINGLE_LEAF:
-      menuItemBulkDump.setEnabled(true);
-      setEnabledLeafActions(true);
-      break;
-    case SINGLE_PARENT:
-    case MULTIPLE:
-      menuItemBulkDump.setEnabled(true);
-      setEnabledLeafActions(false);
-      break;
-    default:
-      throw new IllegalArgumentException("unexpected multiplicity value: " +
-                                         multiplicity);
-    }
+    // ignore
   }
 
-  public void setMidiDeviceId(final Contents midiDeviceId)
+  public void singleLeafSelectedChanged(final boolean hasSingleLeafSelected)
   {
-    // ignore
+    menuItemMinValue.setEnabled(hasSingleLeafSelected);
+    menuItemMaxValue.setEnabled(hasSingleLeafSelected);
+    menuItemIncValue.setEnabled(hasSingleLeafSelected);
+    menuItemDecValue.setEnabled(hasSingleLeafSelected);
+    menuItemResetValue.setEnabled(hasSingleLeafSelected);
+  }
+
+  public void anythingSelectedChanged(final boolean hasAnythingSelected)
+  {
+    menuItemBulkDump.setEnabled(hasAnythingSelected);
   }
 }
 

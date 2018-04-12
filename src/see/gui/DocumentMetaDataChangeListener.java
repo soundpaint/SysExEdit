@@ -34,12 +34,6 @@ public interface DocumentMetaDataChangeListener
   void hasUnsavedDataChanged(final boolean hasUnsavedData);
 
   /**
-   * This method is called whenever the selection changes
-   * from none to at least one node or the other way around.
-   */
-  void selectionChanged(final SelectionMultiplicity multiplicity);
-
-  /**
    * This method is called whenever the MIDI device ID changes.
    */
   void setMidiDeviceId(final Contents midiDeviceId);

@@ -32,11 +32,13 @@ import see.model.Contents;
 /**
  * This class holds the menu bar of the application and related logic.
  */
-public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
+public class MenuBar extends JMenuBar
+  implements DocumentMetaDataChangeListener, MapSelectionChangeListener
 {
   private static final long serialVersionUID = -7319508134978167717L;
 
   private final FileMenu fileMenu;
+  private final EditMenu editMenu;
 
   private MenuBar()
   {
@@ -46,7 +48,7 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
   public MenuBar(final Controller ctrl)
   {
     add(fileMenu = new FileMenu(ctrl));
-    add(new EditMenu(ctrl));
+    add(editMenu = new EditMenu(ctrl));
     add(new EventMenu(ctrl));
     add(new OptionsMenu(ctrl));
     add(new HelpMenu(ctrl));
@@ -57,14 +59,28 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
     fileMenu.itemSave.setEnabled(hasUnsavedData);
   }
 
-  public void selectionChanged(final SelectionMultiplicity multiplicity)
-  {
-    fileMenu.itemDump.setEnabled(multiplicity != SelectionMultiplicity.NONE);
-  }
-
   public void setMidiDeviceId(final Contents midiDeviceId)
   {
     // ignore
+  }
+
+  public void selectionChanged(final SelectionMultiplicity multiplicity)
+  {
+    // ignore
+  }
+
+  public void singleLeafSelectedChanged(final boolean hasSingleLeafSelected)
+  {
+    editMenu.itemIncrement.setEnabled(hasSingleLeafSelected);
+    editMenu.itemDecrement.setEnabled(hasSingleLeafSelected);
+    editMenu.itemUppermost.setEnabled(hasSingleLeafSelected);
+    editMenu.itemLowermost.setEnabled(hasSingleLeafSelected);
+    editMenu.itemReset.setEnabled(hasSingleLeafSelected);
+  }
+
+  public void anythingSelectedChanged(final boolean hasAnythingSelected)
+  {
+    fileMenu.itemDump.setEnabled(hasAnythingSelected);
   }
 
   private class FileMenu extends JMenu
@@ -132,6 +148,12 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
   {
     private static final long serialVersionUID = 4653424577586668740L;
 
+    private final JMenuItem itemIncrement;
+    private final JMenuItem itemDecrement;
+    private final JMenuItem itemUppermost;
+    private final JMenuItem itemLowermost;
+    private final JMenuItem itemReset;
+
     private EditMenu(final Controller ctrl)
     {
       super("Edit");
@@ -171,25 +193,25 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
 
       addSeparator();
 
-      final JMenuItem itemIncrement = new JMenuItem("Increment");
+      itemIncrement = new JMenuItem("Increment");
       itemIncrement.setMnemonic('i');
       itemIncrement.addActionListener(ctrl.getIncrementListener());
       add(itemIncrement);
       itemIncrement.setEnabled(false); // TODO
 
-      final JMenuItem itemDecrement = new JMenuItem("Decrement");
+      itemDecrement = new JMenuItem("Decrement");
       itemDecrement.setMnemonic('d');
       itemDecrement.addActionListener(ctrl.getDecrementListener());
       add(itemDecrement);
       itemDecrement.setEnabled(false); // TODO
 
-      final JMenuItem itemUppermost = new JMenuItem("Uppermost");
+      itemUppermost = new JMenuItem("Uppermost");
       itemUppermost.setMnemonic('u');
       itemUppermost.addActionListener(ctrl.getUppermostListener());
       add(itemUppermost);
       itemUppermost.setEnabled(false); // TODO
 
-      final JMenuItem itemLowermost = new JMenuItem("Lowermost");
+      itemLowermost = new JMenuItem("Lowermost");
       itemLowermost.setMnemonic('l');
       itemLowermost.addActionListener(ctrl.getLowermostListener());
       add(itemLowermost);
@@ -197,7 +219,7 @@ public class MenuBar extends JMenuBar implements DocumentMetaDataChangeListener
 
       addSeparator();
 
-      final JMenuItem itemReset = new JMenuItem("Reset");
+      itemReset = new JMenuItem("Reset");
       itemReset.setMnemonic('r');
       itemReset.addActionListener(ctrl.getResetListener());
       add(itemReset);
