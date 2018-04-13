@@ -268,6 +268,16 @@ public class SysExEdit extends Applet implements FramesManager
     updateUI();
   }
 
+  private boolean confirmTermsOfUse()
+  {
+    System.out.println("[loading & initializing swing...]");
+    System.out.flush();
+    return
+      (JOptionPane.showConfirmDialog(null, APPL_INFO, "Terms of Use",
+                                     JOptionPane.OK_CANCEL_OPTION) ==
+       JOptionPane.OK_OPTION);
+  }
+
   /**
    * Starts an EditorFrame thread with the specified device model.
    * @param filepath The device model filepath to use in this thread.
@@ -276,17 +286,14 @@ public class SysExEdit extends Applet implements FramesManager
    */
   public void createEditorFrame(final String filepath)
   {
-    System.out.println("[loading & initializing swing...]");
-    System.out.flush();
-    if (JOptionPane.showConfirmDialog(null, APPL_INFO, "Application Info",
-                                      JOptionPane.OK_CANCEL_OPTION) ==
-        JOptionPane.OK_OPTION)
-      {
-        loadIcons();
-        new Thread(new EditorFrame(filepath, null, this)).start();
-      }
-    else
+    final boolean termsOfUseConfirmed =
+      !frames.isEmpty() || confirmTermsOfUse();
+    if (termsOfUseConfirmed) {
+      loadIcons();
+      new Thread(new EditorFrame(filepath, null, this)).start();
+    } else {
       exitOnNoMoreFrame();
+    }
   }
 
   private class ButtonListener implements ActionListener
