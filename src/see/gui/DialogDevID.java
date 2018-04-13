@@ -30,7 +30,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -41,7 +40,7 @@ import see.model.Editor;
  * This class implements a dialog that prompts the user for a new
  * Device ID.
  */
-class DialogDevID extends JDialog
+public class DialogDevID extends Dialog
 {
   private static final long serialVersionUID = 2731367018460251157L;
 
@@ -60,15 +59,10 @@ class DialogDevID extends JDialog
   private final JPanel deviceIdValuePanel;
   private final JPanel iconPanel;
 
-  private DialogDevID()
-  {
-    throw new UnsupportedOperationException();
-  }
-
   public DialogDevID(final Frame owner, final Controller controller,
                      final DocumentMetaData documentMetaData)
   {
-    super(owner);
+    super(owner, "MIDI Device ID", true);
     if (controller == null) {
       throw new NullPointerException("controller");
     }
@@ -77,9 +71,6 @@ class DialogDevID extends JDialog
       throw new NullPointerException("documentMetaData");
     }
     this.documentMetaData = documentMetaData;
-    setModal(true);
-    setTitle("MIDI Device ID");
-    setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 
     final Container contentPane = getContentPane();
     contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));

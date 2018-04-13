@@ -42,13 +42,12 @@ import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class MidiOptionsDialog extends JDialog
+public class MidiOptionsDialog extends Dialog
 {
   private static final long serialVersionUID = 5116563378752233886L;
 
@@ -141,22 +140,14 @@ public class MidiOptionsDialog extends JDialog
     return outputInfos;
   }
 
-  private MidiOptionsDialog()
-  {
-    throw new UnsupportedOperationException();
-  }
-
   public MidiOptionsDialog(final Frame owner,
                            final DocumentMetaData documentMetaData)
   {
-    super(owner);
+    super(owner, "MIDI Options", true);
     if (documentMetaData == null) {
       throw new NullPointerException("documentMetaData");
     }
     this.documentMetaData = documentMetaData;
-    setModal(true);
-    setTitle("MIDI Options");
-    setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
     final Container contentPane = getContentPane();
     contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
     dumpMidiFileTF = new FixedHeightTextField();
