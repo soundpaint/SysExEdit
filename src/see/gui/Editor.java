@@ -44,6 +44,10 @@ public interface Editor
   void resetSelected();
 
   void bulkDumpSelected();
+
+  void selectAll();
+
+  void selectNone();
 }
 
 /*

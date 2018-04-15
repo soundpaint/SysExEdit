@@ -329,6 +329,16 @@ public class EditorFrame extends JFrame
     }
   }
 
+  public void selectAll()
+  {
+    map.setSelectionInterval(0, 0);
+  }
+
+  public void selectNone()
+  {
+    map.setSelectionInterval(-1, -1);
+  }
+
   public void incrementSelected()
   {
     final TreePath[] paths = map.getSelectionPaths();

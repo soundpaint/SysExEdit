@@ -29,6 +29,7 @@ import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
+import javax.swing.tree.TreeSelectionModel;
 
 import see.model.AddressRepresentation;
 import see.model.Editor;
@@ -63,6 +64,8 @@ public class Map extends JTree
              final MapContextMenu mapContextMenu)
   {
     super();
+    getSelectionModel().
+      setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     setEditable(true);
     final CellRenderer renderer = new CellRenderer();
     setCellRenderer(renderer);

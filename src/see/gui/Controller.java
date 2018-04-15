@@ -264,7 +264,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        // TODO
+        editor.selectAll();
       }
     };
 
@@ -272,15 +272,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        // TODO
-      }
-    };
-
-  private final ActionListener invertSelectionListener = new GuardedActionListener()
-    {
-      public void unguardedActionPerformed(final ActionEvent event)
-      {
-        // TODO
+        editor.selectNone();
       }
     };
 
@@ -630,11 +622,6 @@ public class Controller
   public ActionListener getSelectNoneListener()
   {
     return selectNoneListener;
-  }
-
-  public ActionListener getInvertSelectionListener()
-  {
-    return invertSelectionListener;
   }
 
   public ActionListener getCopyListener()

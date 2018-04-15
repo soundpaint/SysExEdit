@@ -163,19 +163,11 @@ public class MenuBar extends JMenuBar
       itemSelectAll.setMnemonic('a');
       itemSelectAll.addActionListener(ctrl.getSelectAllListener());
       add(itemSelectAll);
-      itemSelectAll.setEnabled(false); // TODO
 
       final JMenuItem itemSelectNone = new JMenuItem("Select none");
       itemSelectNone.setMnemonic('n');
       itemSelectNone.addActionListener(ctrl.getSelectNoneListener());
       add(itemSelectNone);
-      itemSelectNone.setEnabled(false); // TODO
-
-      final JMenuItem itemInvertSelection = new JMenuItem("Invert selection");
-      itemInvertSelection.setMnemonic('v');
-      itemInvertSelection.addActionListener(ctrl.getInvertSelectionListener());
-      add(itemInvertSelection);
-      itemInvertSelection.setEnabled(false); // TODO
 
       addSeparator();
 
@@ -197,25 +189,25 @@ public class MenuBar extends JMenuBar
       itemIncrement.setMnemonic('i');
       itemIncrement.addActionListener(ctrl.getIncrementListener());
       add(itemIncrement);
-      itemIncrement.setEnabled(false); // TODO
+      itemIncrement.setEnabled(false);
 
       itemDecrement = new JMenuItem("Decrement");
       itemDecrement.setMnemonic('d');
       itemDecrement.addActionListener(ctrl.getDecrementListener());
       add(itemDecrement);
-      itemDecrement.setEnabled(false); // TODO
+      itemDecrement.setEnabled(false);
 
       itemUppermost = new JMenuItem("Uppermost");
       itemUppermost.setMnemonic('u');
       itemUppermost.addActionListener(ctrl.getUppermostListener());
       add(itemUppermost);
-      itemUppermost.setEnabled(false); // TODO
+      itemUppermost.setEnabled(false);
 
       itemLowermost = new JMenuItem("Lowermost");
       itemLowermost.setMnemonic('l');
       itemLowermost.addActionListener(ctrl.getLowermostListener());
       add(itemLowermost);
-      itemLowermost.setEnabled(false); // TODO
+      itemLowermost.setEnabled(false);
 
       addSeparator();
 
@@ -223,7 +215,7 @@ public class MenuBar extends JMenuBar
       itemReset.setMnemonic('r');
       itemReset.addActionListener(ctrl.getResetListener());
       add(itemReset);
-      itemReset.setEnabled(false); // TODO
+      itemReset.setEnabled(false);
     }
   }
 
