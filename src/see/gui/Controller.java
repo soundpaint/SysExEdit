@@ -38,6 +38,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import see.SysExEdit;
+import see.model.MapDef;
 
 public class Controller
 {
@@ -47,6 +48,7 @@ public class Controller
   private final FramesManager manager;
   private final Editor editor;
   private final DocumentMetaData documentMetaData;
+  private final StatusLine statusLine;
   private final Frame frame;
   private final MidiOptionsDialog midiOptionsDialog;
   private final DialogDevID dialogDevId;
@@ -59,11 +61,13 @@ public class Controller
   public Controller(final FramesManager manager,
                     final Editor editor,
                     final DocumentMetaData documentMetaData,
+                    final StatusLine statusLine,
                     final Frame frame)
   {
     this.manager = manager;
     this.editor = editor;
     this.documentMetaData = documentMetaData;
+    this.statusLine = statusLine;
     this.frame = frame;
     midiOptionsDialog = new MidiOptionsDialog(frame, documentMetaData);
     dialogDevId = new DialogDevID(frame, this, documentMetaData);
@@ -399,6 +403,11 @@ public class Controller
                                            JOptionPane.YES_NO_OPTION) ==
              JOptionPane.YES_OPTION)) {
           editor.loadDeviceModel(frame);
+          statusLine.midiDeviceIdChanged(documentMetaData.getMidiDeviceId());
+          final MapDef mapDef = documentMetaData.getDevice();
+          statusLine.modelInfoChanged(mapDef.getName(),
+                                      mapDef.getManufacturerId(),
+                                      mapDef.getModelId());
         } else {
           // action aborted
         }
@@ -411,13 +420,7 @@ public class Controller
 
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        if (editorDeviceChangeListener == null) {
-          // lazy initialization of editorDeviceChangeListener member,
-          // since editor variable is only available after constructor
-          // of Controller class has been executed
-          editorDeviceChangeListener = editor.getDeviceChangeListener();
-        }
-        editorDeviceChangeListener.actionPerformed(event);
+        statusLine.midiDeviceIdChanged(documentMetaData.getMidiDeviceId());
       }
     };
 

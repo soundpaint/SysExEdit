@@ -92,7 +92,6 @@ public class EditorFrame extends JFrame
    * Other instance variables
    */
   private final String filepath; // path of map def class
-  private MapDef mapDef;
   private final FramesManager manager; // manages this and all other editor frames
   private final Controller controller;
   private final MapContextMenu mapContextMenu;
@@ -118,15 +117,14 @@ public class EditorFrame extends JFrame
                      final FramesManager manager)
   {
     this.filepath = filepath;
-    this.mapDef = mapDef;
     this.manager = manager;
-    documentMetaData = new DocumentMetaData();
+    documentMetaData = new DocumentMetaData(mapDef);
     documentMetaData.addMetaDataChangeListener(this);
     documentMetaData.addSelectionChangeListener(this);
-    if (mapDef != null) {
-      documentMetaData.setMidiDeviceId(mapDef.createDeviceIdContents());
-    }
-    controller = new Controller(manager, this, documentMetaData, this);
+    statusLine = new StatusLine();
+    documentMetaData.addMetaDataChangeListener(statusLine);
+    controller =
+      new Controller(manager, this, documentMetaData, statusLine, this);
     mapContextMenu = new MapContextMenu(controller);
     documentMetaData.addSelectionChangeListener(mapContextMenu);
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -140,8 +138,10 @@ public class EditorFrame extends JFrame
   {
     final String windowId = "Window #" + manager.addFrame(this);
     setTitle(manager.getVersion() + " " + windowId);
+    MapDef mapDef = null;
     if (filepath != null)
       {
+        //TODO:
         //mapDef = loadMapFrom(filepath);
         System.err.println("[WARNING: loading map def by cmd line arg " +
                            "not supported by now - sorry!]");
@@ -152,14 +152,14 @@ public class EditorFrame extends JFrame
         System.out.println("[" + windowId + ": prompting for map def...]");
         System.out.flush();
         loadDeviceModel(this);
+        mapDef = documentMetaData.getDevice();
       }
     if (mapDef != null)
       {
-        documentMetaData.setMidiDeviceId(mapDef.createDeviceIdContents());
+        documentMetaData.setDevice(mapDef);
         System.out.println("[" + windowId + ": initializing GUI...]");
         System.out.flush();
         initGUI();
-        updateStatusLine();
         System.out.println("[" + windowId + ": opening window...]");
         System.out.flush();
         pack();
@@ -176,27 +176,6 @@ public class EditorFrame extends JFrame
       }
     dispose();
     manager.removeFrame(this);
-  }
-
-  private void updateStatusLine()
-  {
-    statusLine.setMidiDeviceId(documentMetaData.getMidiDeviceId());
-    statusLine.setModelInfo(mapDef.getName(),
-                            mapDef.getManufacturerId(),
-                            mapDef.getModelId());
-  }
-
-  private final ActionListener deviceChangeListener =
-    new ActionListener() {
-      public void actionPerformed(final ActionEvent event)
-      {
-        statusLine.setMidiDeviceId(documentMetaData.getMidiDeviceId());
-      }
-    };
-
-  public ActionListener getDeviceChangeListener()
-  {
-    return deviceChangeListener;
   }
 
   public void setAddressInfoEnabled(final boolean enabled)
@@ -222,6 +201,7 @@ public class EditorFrame extends JFrame
     // map area
     final JPanel panel_map = new JPanel();
     getContentPane().add(panel_map, "Center");
+    final MapDef mapDef = documentMetaData.getDevice();
     map = mapDef.getMap();
     map.setAddressRepresentation(mapDef.getAddressRepresentation());
     setAddressInfoEnabled(false);
@@ -314,9 +294,10 @@ public class EditorFrame extends JFrame
     panel_button_row.add(checkbox_br);
     panel_map.add("South", panel_button_row);
 
-    statusLine = new StatusLine(controller);
-    documentMetaData.addMetaDataChangeListener(statusLine);
     getContentPane().add("South", statusLine);
+    statusLine.modelInfoChanged(mapDef.getName(),
+                                mapDef.getManufacturerId(),
+                                mapDef.getModelId());
 
     addWindowListener(new EditorWindowListener());
   }
@@ -504,7 +485,6 @@ public class EditorFrame extends JFrame
     // [PENDING: Sometimes, the program hangs while calling
     // JOptionPane.showDialog() (after sucessfully calling
     // getMapDefClasses).]
-    final MapDef currentDevice = mapDef;
     final ComboBoxDeviceEntry[] deviceSelectionEntries =
       createDeviceSelectionEntries(parent);
     if (deviceSelectionEntries == null) {
@@ -512,7 +492,6 @@ public class EditorFrame extends JFrame
                                     "No device model available.",
                                     ERROR,
                                     JOptionPane.INFORMATION_MESSAGE);
-      mapDef = currentDevice;
       return;
     }
     final ComboBoxDeviceEntry selection =
@@ -522,28 +501,27 @@ public class EditorFrame extends JFrame
                       JOptionPane.QUESTION_MESSAGE, null,
                       deviceSelectionEntries, null);
     if (selection == null) {
-      mapDef = currentDevice;
       return;
     }
-    final MapDef newDevice = selection.getDevice();
-    if (newDevice == null) {
-      mapDef = currentDevice;
+    final MapDef mapDef = selection.getDevice();
+    if (mapDef == null) {
       return;
     }
-    final TreeNode root = newDevice.buildMap(documentMetaData, mapContextMenu);
+    final TreeNode root = mapDef.buildMap(documentMetaData, mapContextMenu);
     if (mapModel != null) // no need to re-create mapModel, if already
                           // existing
       mapModel.setRoot(root);
     else
       mapModel = new DefaultTreeModel(root);
-    mapDef = newDevice;
+    documentMetaData.setDevice(mapDef);
+    return;
   }
 
   public void showAboutDeviceModelDialog()
   {
     final AboutDeviceModelDialog aboutDeviceModelDialog =
       new AboutDeviceModelDialog();
-    aboutDeviceModelDialog.showDialog(this, mapDef);
+    aboutDeviceModelDialog.showDialog(this, documentMetaData.getDevice());
   }
 
   public void tryClose()
@@ -617,7 +595,14 @@ public class EditorFrame extends JFrame
     btSave.setEnabled(hasUnsavedData);
   }
 
-  public void setMidiDeviceId(final Contents midiDeviceId)
+  public void modelInfoChanged(final String deviceName,
+                               final int manId,
+                               final int modelId)
+  {
+    // ignore
+  }
+
+  public void midiDeviceIdChanged(final Contents midiDeviceId)
   {
     // ignore
   }

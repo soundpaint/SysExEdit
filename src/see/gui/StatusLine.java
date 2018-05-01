@@ -22,7 +22,7 @@ package see.gui;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import javax.swing.JButton;
+import java.awt.Insets;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,17 +39,15 @@ public class StatusLine extends JPanel implements DocumentMetaDataChangeListener
   private final JLabel labelDeviceId;
   private final JCheckBox checkBoxModified;
 
-  private StatusLine()
-  {
-    throw new UnsupportedOperationException();
-  }
-
-  public StatusLine(final Controller controller)
+  public StatusLine()
   {
     final GridBagLayout gbl = new GridBagLayout();
     setLayout(gbl);
 
     final GridBagConstraints c = new GridBagConstraints();
+    c.ipadx = 5; /* internal padding */
+    c.ipady = 0; /* internal padding */
+    c.insets = new Insets(0, 5, 0, 5); /* external padding */
     c.gridwidth = 1;
     c.gridheight = GridBagConstraints.REMAINDER;
 
@@ -86,12 +84,6 @@ public class StatusLine extends JPanel implements DocumentMetaDataChangeListener
                                     "modified " + "since the last save");
     gbl.setConstraints(checkBoxModified, c);
     add(checkBoxModified);
-    final JButton buttonClose = new JButton("Close");
-    buttonClose.addActionListener(controller.getCloseListener());
-    buttonClose.setMnemonic((int)'x');
-    buttonClose.setToolTipText("Closes this editor window");
-    gbl.setConstraints(buttonClose, c);
-    add(buttonClose);
   }
 
   public void hasUnsavedDataChanged(final boolean hasUnsavedData)
@@ -99,15 +91,9 @@ public class StatusLine extends JPanel implements DocumentMetaDataChangeListener
     checkBoxModified.setSelected(hasUnsavedData);
   }
 
-  public void setMidiDeviceId(final Contents deviceId)
-  {
-    labelDeviceId.setText("Device ID: " + deviceId.getDisplayValue());
-    labelDeviceId.updateUI();
-  }
-
-  public void setModelInfo(final String deviceName,
-                           final int manId,
-                           final int modelId)
+  public void modelInfoChanged(final String deviceName,
+                               final int manId,
+                               final int modelId)
   {
     labelDeviceName.setText("Dev Name: " + deviceName);
     labelDeviceName.updateUI();
@@ -115,6 +101,12 @@ public class StatusLine extends JPanel implements DocumentMetaDataChangeListener
     labelManId.updateUI();
     labelModelId.setText("Model ID: " + Utils.intTo0xnn(modelId));
     labelModelId.updateUI();
+  }
+
+  public void midiDeviceIdChanged(final Contents deviceId)
+  {
+    labelDeviceId.setText("Device ID: " + deviceId.getDisplayValue());
+    labelDeviceId.updateUI();
   }
 }
 

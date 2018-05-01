@@ -96,7 +96,14 @@ public class ToolBar extends JToolBar
     buttonSave.setEnabled(hasUnsavedData);
   }
 
-  public void setMidiDeviceId(final Contents midiDeviceId)
+  public void modelInfoChanged(final String deviceName,
+                               final int manId,
+                               final int modelId)
+  {
+    // ignore
+  }
+
+  public void midiDeviceIdChanged(final Contents midiDeviceId)
   {
     // ignore
   }

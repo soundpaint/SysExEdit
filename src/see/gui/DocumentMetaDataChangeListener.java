@@ -34,9 +34,16 @@ public interface DocumentMetaDataChangeListener
   void hasUnsavedDataChanged(final boolean hasUnsavedData);
 
   /**
+   * This method is called whenever the MIDI device changes.
+   */
+  void modelInfoChanged(final String deviceName,
+                        final int manId,
+                        final int modelId);
+  /**
    * This method is called whenever the MIDI device ID changes.
    */
-  void setMidiDeviceId(final Contents midiDeviceId);
+  void midiDeviceIdChanged(final Contents midiDeviceId);
+
 }
 
 /*

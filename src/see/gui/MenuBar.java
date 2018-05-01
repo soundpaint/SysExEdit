@@ -59,7 +59,14 @@ public class MenuBar extends JMenuBar
     fileMenu.itemSave.setEnabled(hasUnsavedData);
   }
 
-  public void setMidiDeviceId(final Contents midiDeviceId)
+  public void modelInfoChanged(final String deviceName,
+                               final int manId,
+                               final int modelId)
+  {
+    // ignore
+  }
+
+  public void midiDeviceIdChanged(final Contents midiDeviceId)
   {
     // ignore
   }

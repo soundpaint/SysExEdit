@@ -31,8 +31,6 @@ public interface Editor
 
   void showAboutDeviceModelDialog();
 
-  ActionListener getDeviceChangeListener();
-
   void incrementSelected();
 
   void decrementSelected();

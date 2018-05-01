@@ -30,6 +30,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import see.model.Contents;
+import see.model.MapDef;
 
 public class DocumentMetaData implements TreeSelectionListener
 {
@@ -43,19 +44,38 @@ public class DocumentMetaData implements TreeSelectionListener
   private final List<MapSelectionChangeListener> selectionChangeListeners;
   private boolean hasUnsavedData;
   private int selectionCount;
+  private MapDef mapDef;
   private Contents midiDeviceId;
   private MidiDevice.Info midiInput;
   private MidiDevice.Info midiOutput;
   private File dumpMidiFile;
   private SelectionMultiplicity lastSelectionMultiplicity;
 
-  public DocumentMetaData()
+  public DocumentMetaData(final MapDef mapDef)
   {
+    setDevice(mapDef);
     metaDataChangeListeners = new ArrayList<DocumentMetaDataChangeListener>();
     selectionChangeListeners = new ArrayList<MapSelectionChangeListener>();
     hasUnsavedData = false;
     selectionCount = 0;
     lastSelectionMultiplicity = SelectionMultiplicity.NONE;
+  }
+
+  public void setDevice(final MapDef mapDef)
+  {
+    this.mapDef = mapDef;
+    // FIXME: Currently, mapDef may be initially null,
+    // since model selection will follow later.  This
+    // should be changed such that model selection
+    // occurs before instantiating the editor frame.
+    if (mapDef != null) {
+      setMidiDeviceId(mapDef.createDeviceIdContents());
+    }
+  }
+
+  public MapDef getDevice()
+  {
+    return mapDef;
   }
 
   public void addMetaDataChangeListener(final DocumentMetaDataChangeListener listener)
@@ -95,6 +115,10 @@ public class DocumentMetaData implements TreeSelectionListener
   public void setMidiDeviceId(final Contents midiDeviceId)
   {
     this.midiDeviceId = midiDeviceId;
+    for (final DocumentMetaDataChangeListener listener :
+           metaDataChangeListeners) {
+      listener.midiDeviceIdChanged(midiDeviceId);
+    }
   }
 
   public Contents getMidiDeviceId()
