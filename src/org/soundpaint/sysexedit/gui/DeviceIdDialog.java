@@ -1,5 +1,5 @@
 /*
- * @(#)DialogDeviceID.java 1.00 98/02/06
+ * @(#)DeviceIdDialog.java 1.00 98/02/06
  *
  * Copyright (C) 1998, 2018 Jürgen Reuter
  *
@@ -40,7 +40,7 @@ import org.soundpaint.sysexedit.model.Editor;
  * This class implements a dialog that prompts the user for a new
  * Device ID.
  */
-public class DialogDevID extends Dialog
+public class DeviceIdDialog extends Dialog
 {
   private static final long serialVersionUID = 2731367018460251157L;
 
@@ -59,8 +59,8 @@ public class DialogDevID extends Dialog
   private final JPanel deviceIdValuePanel;
   private final JPanel iconPanel;
 
-  public DialogDevID(final Frame owner, final Controller controller,
-                     final DocumentMetaData documentMetaData)
+  public DeviceIdDialog(final Frame owner, final Controller controller,
+                        final DocumentMetaData documentMetaData)
   {
     super(owner, "MIDI Device ID", true);
     if (controller == null) {

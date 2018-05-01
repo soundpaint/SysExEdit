@@ -51,7 +51,7 @@ public class Controller
   private final StatusLine statusLine;
   private final Frame frame;
   private final MidiOptionsDialog midiOptionsDialog;
-  private final DialogDevID dialogDevId;
+  private final DeviceIdDialog deviceIdDialog;
 
   private Controller()
   {
@@ -70,7 +70,7 @@ public class Controller
     this.statusLine = statusLine;
     this.frame = frame;
     midiOptionsDialog = new MidiOptionsDialog(frame, documentMetaData);
-    dialogDevId = new DialogDevID(frame, this, documentMetaData);
+    deviceIdDialog = new DeviceIdDialog(frame, this, documentMetaData);
   }
 
   private abstract class GuardedItemListener implements ItemListener
@@ -436,7 +436,7 @@ public class Controller
     {
       public void unguardedActionPerformed(final ActionEvent event)
       {
-        dialogDevId.showDialog();
+        deviceIdDialog.showDialog();
       }
     };
 
