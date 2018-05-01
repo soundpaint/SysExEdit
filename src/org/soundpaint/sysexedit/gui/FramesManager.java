@@ -28,8 +28,8 @@ import java.awt.Frame;
 public interface FramesManager
 {
   /**
-   * Returns the version id of this application.
-   * @return The version id of this application.
+   * Returns the version ID of this application.
+   * @return The version ID of this application.
    */
   String getVersion();
 

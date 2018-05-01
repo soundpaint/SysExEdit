@@ -83,7 +83,7 @@ public abstract class AbstractDevice implements Device
   /**
    * Given a contigous area of memory, returns a a stream of MIDI bytes
    * that may be used to send the memory contents to the MIDI device.
-   * @param deviceId The MIDI device id.  Valid range is 0x00..0x7f.
+   * @param deviceId The MIDI device ID.  Valid range is 0x00..0x7f.
    * @param root The root node of the map to use.
    * @param start The bit address in the memory map where to start.
    * @param end The bit address in the memory map where to end before;

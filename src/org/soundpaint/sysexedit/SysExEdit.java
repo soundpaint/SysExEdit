@@ -355,7 +355,7 @@ public class SysExEdit extends Applet implements FramesManager
   private int maxId = 0;
 
   /**
-   * Returns the version id of this application.
+   * Returns the version ID of this application.
    */
   public String getVersion() { return VERSION; }
 
