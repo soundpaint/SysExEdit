@@ -22,17 +22,19 @@ include defs.mak
 # Packages
 #
 
-PACKAGES=see see.model see.gui see.devices
+PACKAGES=\
+	org.soundpaint.sysexedit org.soundpaint.sysexedit.model \
+	org.soundpaint.sysexedit.gui org.soundpaint.sysexedit.devices
 
 #
 # Source Files
 #
 
-JAVA=$(wildcard $(SRC_ROOT)/see/*.java) \
-	$(wildcard $(SRC_ROOT)/see/model/*.java) \
-	$(wildcard $(SRC_ROOT)/see/gui/*.java) \
-	$(wildcard $(SRC_ROOT)/see/devices/*.java) \
-	$(wildcard $(SRC_ROOT)/see/midi/*.java)
+JAVA=$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/*.java) \
+	$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/model/*.java) \
+	$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/gui/*.java) \
+	$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/devices/*.java) \
+	$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/midi/*.java)
 
 CLASS=$(patsubst $(SRC_ROOT)/%.java,$(CLS_ROOT)/%.class,$(JAVA))
 
@@ -87,7 +89,7 @@ $(CLS_ROOT)/doc/api/images: $(CLS_ROOT)/doc/api
 $(CLS_ROOT)/doc/api/images/%: $(SRC_ROOT)/doc/api/images/%
 	cp -fp $< $@
 
-$(CLS_ROOT)/doc/api/packages.html: $(SRC_ROOT)/see $(SRC_ROOT)/see/midi $(SRC_ROOT)/see/model $(SRC_ROOT)/see/gui $(SRC_ROOT)/see/devices | classes
+$(CLS_ROOT)/doc/api/packages.html: $(SRC_ROOT)/org/soundpaint/sysexedit $(SRC_ROOT)/org/soundpaint/sysexedit/midi $(SRC_ROOT)/org/soundpaint/sysexedit/model $(SRC_ROOT)/org/soundpaint/sysexedit/gui $(SRC_ROOT)/org/soundpaint/sysexedit/devices | classes
 	javadoc -d $(CLS_ROOT)/doc/api -classpath $(CLASSPATH) \
 		$(DOC_OTHER) $(PACKAGES)
 
@@ -113,15 +115,18 @@ clean:
 	- cd icons ; make clean
 
 modelclean:
-	- rm -f $(CLS_ROOT)/see/model/*.class
+	- rm -f $(CLS_ROOT)/org/soundpaint/sysexedit/model/*.class
 
 guiclean:
-	- rm -f $(CLS_ROOT)/see/gui/*.class
+	- rm -f $(CLS_ROOT)/org/soundpaint/sysexedit/gui/*.class
 
 devicesclean:
-	- rm -f $(CLS_ROOT)/see/devices/*.class
+	- rm -f $(CLS_ROOT)/org/soundpaint/sysexedit/devices/*.class
 
-seeclean: modelclean guiclean devicesclean
+midiclean:
+	- rm -f $(CLS_ROOT)/org/soundpaint/sysexedit/midi/*.class
+
+objclean: modelclean guiclean devicesclean midiclean
 
 bkpclean:
 	- find $(SRC_ROOT) -name \*~ -exec /bin/rm -f {} \; -print

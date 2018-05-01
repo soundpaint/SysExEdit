@@ -16,22 +16,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-# the see home directory
-SEE_HOME = $(PWD)/..
+# the project home directory
+SYSEXEDIT_HOME = $(PWD)/..
 
 # the java runtime environment (JRE) home directory
 JRE_HOME = $(PWD)/../../JRE
 
 # java source files root dircetory
-SRC_ROOT = $(SEE_HOME)/src
+SRC_ROOT = $(SYSEXEDIT_HOME)/src
 
 # compiled class files root directory
 # (run 'make classes' to generate)
-CLS_ROOT = $(SEE_HOME)/classes
+CLS_ROOT = $(SYSEXEDIT_HOME)/classes
 
 # binary target directory; contains archive file with the compiled classes
 # (run 'make jar' to generate)
-JAR_DIR = $(SEE_HOME)/jar
+JAR_DIR = $(SYSEXEDIT_HOME)/jar
 
 # other (external) packages to be included when running javadoc
 DOC_OTHER =

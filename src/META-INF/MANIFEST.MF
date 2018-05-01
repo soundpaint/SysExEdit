@@ -4,5 +4,5 @@ Created-By: Jürgen Reuter
 Implementation-Title: SysExEdit
 Specification-Vendor: Juergen Reuter
 Implementation-Vendor: Juergen Reuter
-Main-Class: see.SysExEdit
+Main-Class: org.soundpaint.sysexedit.SysExEdit
 SplashScreen-Image: icon/internal-waveform-sawtooth.gif
