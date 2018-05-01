@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import org.soundpaint.sysexedit.model.MapDef;
+import org.soundpaint.sysexedit.model.Device;
 
 /**
  * This class provides a dialog that informs the user about the device
@@ -84,13 +84,13 @@ public class AboutDeviceModelDialog
       add(rows);
     }
 
-    public void updateValues(final MapDef mapDef)
+    public void updateValues(final Device device)
     {
-      valueDeviceName.setText(mapDef.getName());
-      valueDeviceClass.setText(mapDef.getClass().getName());
-      valueManId.setText(Utils.intTo0xnn(mapDef.getManufacturerId()));
-      valueModelId.setText(Utils.intTo0xnn(mapDef.getModelId()));
-      valueEnteredBy.setText(mapDef.getEnteredBy());
+      valueDeviceName.setText(device.getName());
+      valueDeviceClass.setText(device.getClass().getName());
+      valueManId.setText(Utils.intTo0xnn(device.getManufacturerId()));
+      valueModelId.setText(Utils.intTo0xnn(device.getModelId()));
+      valueEnteredBy.setText(device.getEnteredBy());
     }
   }
 
@@ -100,9 +100,9 @@ public class AboutDeviceModelDialog
    * @param parentComponent The parent Component for the dialog.
    */
   public void showDialog(final Component parentComponent,
-                         final MapDef mapDef)
+                         final Device device)
   {
-    panel.updateValues(mapDef);
+    panel.updateValues(device);
     JOptionPane.showMessageDialog(parentComponent, panel,
                                   "About Device Model",
                                   JOptionPane.INFORMATION_MESSAGE);

@@ -41,7 +41,7 @@ import javax.swing.JOptionPane;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.soundpaint.sysexedit.model.MapDef;
+import org.soundpaint.sysexedit.model.Device;
 import org.soundpaint.sysexedit.model.MapNode;
 
 public class TreeSelectionDumpListener extends KeyAdapter
@@ -57,7 +57,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
     "Please select a MIDI output file under the " +
     "Options → MIDI Options… dialog.";
 
-  private final MapDef mapDef;
+  private final Device device;
   private final Map map;
   private final DocumentMetaData documentMetaData;
   private final Frame frame;
@@ -78,11 +78,11 @@ public class TreeSelectionDumpListener extends KeyAdapter
     throw new UnsupportedOperationException();
   }
 
-  public TreeSelectionDumpListener(final MapDef mapDef, final Map map,
+  public TreeSelectionDumpListener(final Device device, final Map map,
                                    final DocumentMetaData documentMetaData,
                                    final Frame frame)
   {
-    this.mapDef = mapDef;
+    this.device = device;
     this.map = map;
     this.documentMetaData = documentMetaData;
     this.frame = frame;
@@ -101,7 +101,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
   private MidiMessage createMidiMessage() throws IOException
   {
     final InputStream bulkDump =
-      mapDef.bulkDump(documentMetaData.getMidiDeviceId(),
+      device.bulkDump(documentMetaData.getMidiDeviceId(),
                       bulkAreaStartAddress, bulkAreaStopBeforeAddress);
     final List<Byte> sysexData = new ArrayList<Byte>();
     int data;

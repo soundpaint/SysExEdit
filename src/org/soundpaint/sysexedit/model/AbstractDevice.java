@@ -30,7 +30,7 @@ import org.soundpaint.sysexedit.gui.MapContextMenu;
 /**
  * Abstract device implementation.  Handles root node.
  */
-public abstract class AbstractDevice implements MapDef
+public abstract class AbstractDevice implements Device
 {
   public class MapRoot extends MapNode
   {

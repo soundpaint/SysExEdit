@@ -30,7 +30,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.soundpaint.sysexedit.model.Contents;
-import org.soundpaint.sysexedit.model.MapDef;
+import org.soundpaint.sysexedit.model.Device;
 
 public class DocumentMetaData implements TreeSelectionListener
 {
@@ -44,16 +44,16 @@ public class DocumentMetaData implements TreeSelectionListener
   private final List<MapSelectionChangeListener> selectionChangeListeners;
   private boolean hasUnsavedData;
   private int selectionCount;
-  private MapDef mapDef;
+  private Device device;
   private Contents midiDeviceId;
   private MidiDevice.Info midiInput;
   private MidiDevice.Info midiOutput;
   private File dumpMidiFile;
   private SelectionMultiplicity lastSelectionMultiplicity;
 
-  public DocumentMetaData(final MapDef mapDef)
+  public DocumentMetaData(final Device device)
   {
-    setDevice(mapDef);
+    setDevice(device);
     metaDataChangeListeners = new ArrayList<DocumentMetaDataChangeListener>();
     selectionChangeListeners = new ArrayList<MapSelectionChangeListener>();
     hasUnsavedData = false;
@@ -61,21 +61,21 @@ public class DocumentMetaData implements TreeSelectionListener
     lastSelectionMultiplicity = SelectionMultiplicity.NONE;
   }
 
-  public void setDevice(final MapDef mapDef)
+  public void setDevice(final Device device)
   {
-    this.mapDef = mapDef;
-    // FIXME: Currently, mapDef may be initially null,
+    this.device = device;
+    // FIXME: Currently, device may be initially null,
     // since model selection will follow later.  This
     // should be changed such that model selection
     // occurs before instantiating the editor frame.
-    if (mapDef != null) {
-      setMidiDeviceId(mapDef.createDeviceIdContents());
+    if (device != null) {
+      setMidiDeviceId(device.createDeviceIdContents());
     }
   }
 
-  public MapDef getDevice()
+  public Device getDevice()
   {
-    return mapDef;
+    return device;
   }
 
   public void addMetaDataChangeListener(final DocumentMetaDataChangeListener listener)

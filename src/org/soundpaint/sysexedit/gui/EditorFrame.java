@@ -50,7 +50,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.soundpaint.sysexedit.model.Contents;
-import org.soundpaint.sysexedit.model.MapDef;
+import org.soundpaint.sysexedit.model.Device;
 import org.soundpaint.sysexedit.model.MapNode;
 
 /**
@@ -107,18 +107,18 @@ public class EditorFrame extends JFrame
   /**
    * @param filepath The device model to use on startup.<BR>
    *    [PENDING: not implemented yet.]
-   * @param mapDef If filepath equals null, this MapDef object is used
-   *    as the device model. If filepath and mapDef are both null,
+   * @param device If filepath equals null, this Device object is used
+   *    as the device model. If filepath and device are both null,
    *    the user is prompted a window to manually select a device model.
    * @param manager A frames manager that manages all other editor frames.
    */
   public EditorFrame(final String filepath,
-                     final MapDef mapDef,
+                     final Device device,
                      final FramesManager manager)
   {
     this.filepath = filepath;
     this.manager = manager;
-    documentMetaData = new DocumentMetaData(mapDef);
+    documentMetaData = new DocumentMetaData(device);
     documentMetaData.addMetaDataChangeListener(this);
     documentMetaData.addSelectionChangeListener(this);
     statusLine = new StatusLine();
@@ -138,25 +138,25 @@ public class EditorFrame extends JFrame
   {
     final String windowId = "Window #" + manager.addFrame(this);
     setTitle(manager.getVersion() + " " + windowId);
-    MapDef mapDef = null;
+    Device device = null;
     if (filepath != null)
       {
         //TODO:
-        //mapDef = loadMapFrom(filepath);
+        //device = loadMapFrom(filepath);
         System.err.println("[WARNING: loading map def by cmd line arg " +
                            "not supported by now - sorry!]");
         System.err.flush();
       }
-    if (mapDef == null)
+    if (device == null)
       {
         System.out.println("[" + windowId + ": prompting for map def...]");
         System.out.flush();
         loadDeviceModel(this);
-        mapDef = documentMetaData.getDevice();
+        device = documentMetaData.getDevice();
       }
-    if (mapDef != null)
+    if (device != null)
       {
-        documentMetaData.setDevice(mapDef);
+        documentMetaData.setDevice(device);
         System.out.println("[" + windowId + ": initializing GUI...]");
         System.out.flush();
         initGUI();
@@ -201,16 +201,16 @@ public class EditorFrame extends JFrame
     // map area
     final JPanel panel_map = new JPanel();
     getContentPane().add(panel_map, "Center");
-    final MapDef mapDef = documentMetaData.getDevice();
-    map = mapDef.getMap();
-    map.setAddressRepresentation(mapDef.getAddressRepresentation());
+    final Device device = documentMetaData.getDevice();
+    map = device.getMap();
+    map.setAddressRepresentation(device.getAddressRepresentation());
     setAddressInfoEnabled(false);
     map.setModel(mapModel);
     map.setShowsRootHandles(true);
     map.setRowHeight(-1);
     map.addKeyListener(new KeyListener());
     treeSelectionDumpListener =
-      new TreeSelectionDumpListener(mapDef, map, documentMetaData, this);
+      new TreeSelectionDumpListener(device, map, documentMetaData, this);
     map.addKeyListener(treeSelectionDumpListener);
     map.getModel().addTreeModelListener(controller.getTreeModelListener());
     final JScrollPane scrollpane_map = new JScrollPane();
@@ -295,9 +295,9 @@ public class EditorFrame extends JFrame
     panel_map.add("South", panel_button_row);
 
     getContentPane().add("South", statusLine);
-    statusLine.modelInfoChanged(mapDef.getName(),
-                                mapDef.getManufacturerId(),
-                                mapDef.getModelId());
+    statusLine.modelInfoChanged(device.getName(),
+                                device.getManufacturerId(),
+                                device.getModelId());
 
     addWindowListener(new EditorWindowListener());
   }
@@ -418,18 +418,18 @@ public class EditorFrame extends JFrame
   /**
    * Returns an array of all available map def classes.
    */
-  private static Class<MapDef>[] getMapDefClasses()
+  private static Class<Device>[] getDeviceClasses()
   {
-    final Vector<Class<MapDef>> classes = new Vector<Class<MapDef>>();
+    final Vector<Class<Device>> classes = new Vector<Class<Device>>();
     try {
       // TODO: The list of available device class names should be read
       // from a file.
-      classes.addElement((Class<MapDef>)Class.forName("org.soundpaint.sysexedit.devices.DB50XG"));
+      classes.addElement((Class<Device>)Class.forName("org.soundpaint.sysexedit.devices.DB50XG"));
     } catch (final Exception e) {
       System.err.println("[WARNING: Failed loading device: " + e + "]");
       System.err.flush();
     }
-    return classes.toArray((Class<MapDef>[])new Class[0]);
+    return classes.toArray((Class<Device>[])new Class[0]);
   }
 
   /**
@@ -438,14 +438,14 @@ public class EditorFrame extends JFrame
    */
   private static class ComboBoxDeviceEntry
   {
-    private final MapDef device;
+    private final Device device;
 
-    private ComboBoxDeviceEntry(final MapDef device)
+    private ComboBoxDeviceEntry(final Device device)
     {
       this.device = device;
     }
 
-    public MapDef getDevice()
+    public Device getDevice()
     {
       return device;
     }
@@ -462,10 +462,10 @@ public class EditorFrame extends JFrame
 
   private static ComboBoxDeviceEntry[] createDeviceSelectionEntries(final Frame parent)
   {
-    final Class<MapDef>[] deviceClasses = getMapDefClasses();
+    final Class<Device>[] deviceClasses = getDeviceClasses();
     final ArrayList<ComboBoxDeviceEntry> deviceEntries =
       new ArrayList<ComboBoxDeviceEntry>();
-    for (final Class<MapDef> deviceClass : deviceClasses) {
+    for (final Class<Device> deviceClass : deviceClasses) {
       try {
         deviceEntries.add(new ComboBoxDeviceEntry(deviceClass.newInstance()));
       } catch (final Exception e) {
@@ -484,7 +484,7 @@ public class EditorFrame extends JFrame
   {
     // [PENDING: Sometimes, the program hangs while calling
     // JOptionPane.showDialog() (after sucessfully calling
-    // getMapDefClasses).]
+    // getDeviceClasses).]
     final ComboBoxDeviceEntry[] deviceSelectionEntries =
       createDeviceSelectionEntries(parent);
     if (deviceSelectionEntries == null) {
@@ -503,17 +503,17 @@ public class EditorFrame extends JFrame
     if (selection == null) {
       return;
     }
-    final MapDef mapDef = selection.getDevice();
-    if (mapDef == null) {
+    final Device device = selection.getDevice();
+    if (device == null) {
       return;
     }
-    final TreeNode root = mapDef.buildMap(documentMetaData, mapContextMenu);
+    final TreeNode root = device.buildMap(documentMetaData, mapContextMenu);
     if (mapModel != null) // no need to re-create mapModel, if already
                           // existing
       mapModel.setRoot(root);
     else
       mapModel = new DefaultTreeModel(root);
-    documentMetaData.setDevice(mapDef);
+    documentMetaData.setDevice(device);
     return;
   }
 

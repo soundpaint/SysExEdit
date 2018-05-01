@@ -1,5 +1,5 @@
 /*
- * @(#)MapDef.java 1.00 98/01/31
+ * @(#)Device.java 1.00 98/01/31
  *
  * Copyright (C) 1998, 2018 Jürgen Reuter
  *
@@ -29,10 +29,10 @@ import org.soundpaint.sysexedit.gui.MapContextMenu;
 import org.soundpaint.sysexedit.model.Contents;
 
 /**
- * By subclassing this abstract class, you can customize SysExEdit to a
+ * By implementing this interface, you can customize SysExEdit to a
  * variety of MIDI hardware.
  */
-public interface MapDef
+public interface Device
 {
   /**
    * Returns the manufacturer ID as defined in the MIDI specification.

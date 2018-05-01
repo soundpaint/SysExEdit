@@ -38,7 +38,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.soundpaint.sysexedit.SysExEdit;
-import org.soundpaint.sysexedit.model.MapDef;
+import org.soundpaint.sysexedit.model.Device;
 
 public class Controller
 {
@@ -404,10 +404,10 @@ public class Controller
              JOptionPane.YES_OPTION)) {
           editor.loadDeviceModel(frame);
           statusLine.midiDeviceIdChanged(documentMetaData.getMidiDeviceId());
-          final MapDef mapDef = documentMetaData.getDevice();
-          statusLine.modelInfoChanged(mapDef.getName(),
-                                      mapDef.getManufacturerId(),
-                                      mapDef.getModelId());
+          final Device device = documentMetaData.getDevice();
+          statusLine.modelInfoChanged(device.getName(),
+                                      device.getManufacturerId(),
+                                      device.getModelId());
         } else {
           // action aborted
         }
