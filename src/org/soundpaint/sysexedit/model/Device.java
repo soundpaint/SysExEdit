@@ -81,8 +81,9 @@ public interface Device
   Map getMap();
 
   /**
-   * Given a contigous area of memory, returns a a stream of MIDI bytes
-   * that may be used to send the memory contents to the MIDI device.
+   * Given a contiguous area of memory, returns a a stream of MIDI
+   * bytes that may be used to send the memory contents to the MIDI
+   * device.
    * @param deviceId The MIDI device ID.  Valid range is 0x00..0x7f.
    * @param start The bit address in the memory map where to start.
    * @param end The bit address in the memory map where to end before;

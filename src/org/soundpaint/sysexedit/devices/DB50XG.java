@@ -30,7 +30,8 @@ import org.soundpaint.sysexedit.model.AbstractDevice;
 import org.soundpaint.sysexedit.model.Contents;
 import org.soundpaint.sysexedit.model.RangeContents;
 import org.soundpaint.sysexedit.model.MapNode;
-import org.soundpaint.sysexedit.model.Range;
+import org.soundpaint.sysexedit.model.SparseType;
+import org.soundpaint.sysexedit.model.SparseTypeImpl;
 import org.soundpaint.sysexedit.model.ValueType;
 import org.soundpaint.sysexedit.model.EnumType;
 import org.soundpaint.sysexedit.model.Int8Type;
@@ -940,8 +941,8 @@ public class DB50XG extends AbstractDevice
     return MODEL_ID;
   }
 
-  private static final Range rangeDeviceId =
-    new Range("internal-control").
+  private static final SparseType rangeDeviceId =
+    new SparseTypeImpl("internal-control").
     addSubrange(0x0, 0xf, new Int8Type(0, 16, true, "0x", "", (byte)4));
 
   /**
@@ -1020,26 +1021,26 @@ public class DB50XG extends AbstractDevice
 
   private static final ValueType
     enumType_modulation_delay_offset = new EnumType(MODULATION_DELAY_OFFSET);
-  private static final Range range_modulation_delay_offset =
-    new Range("internal-time").
+  private static final SparseType sparseType_modulation_delay_offset =
+    new SparseTypeImpl("internal-time").
     addSubrange(0x00, 0x7f, enumType_modulation_delay_offset);
 
   private static final ValueType
     enumType_eq_frequency = new EnumType(EQ_FREQUENCY);
-  private static final Range range_eq_frequency =
-    new Range("internal-tune").
+  private static final SparseType sparseType_eq_frequency =
+    new SparseTypeImpl("internal-tune").
     addSubrange(0x00, 0x3c, enumType_eq_frequency);
 
   private static final ValueType
     enumType_reverb_time = new EnumType(REVERB_TIME);
-  private static final Range range_reverb_time =
-    new Range("internal-time").
+  private static final SparseType sparseType_reverb_time =
+    new SparseTypeImpl("internal-time").
     addSubrange(0x00, 0x45, enumType_reverb_time);
 
   private static final ValueType
     enumType_delay_time_1 = new EnumType(DELAY_TIME_1);
-  private static final Range range_delay_time_1 =
-    new Range("internal-time").
+  private static final SparseType sparseType_delay_time_1 =
+    new SparseTypeImpl("internal-time").
     addSubrange(0x00, 0x7f, enumType_delay_time_1);
 
   private static final ValueType
@@ -1047,44 +1048,44 @@ public class DB50XG extends AbstractDevice
 
   private static final ValueType
     enumType_delay_time_2 = new EnumType(DELAY_TIME_2);
-  private static final Range range_delay_time_2 =
-    new Range("internal-time").
+  private static final SparseType sparseType_delay_time_2 =
+    new SparseTypeImpl("internal-time").
     addSubrange(0x00, 0x7f, enumType_delay_time_2);
 
   private static final ValueType
     enumType_reverb_dim_length = new EnumType(REVERB_DIM_LENGTH);
-  private static final Range range_reverb_width =
-    new Range("internal-length").
+  private static final SparseType sparseType_reverb_width =
+    new SparseTypeImpl("internal-length").
     addSubrange(0x00, 0x25, enumType_reverb_dim_length);
-  private static final Range range_reverb_height =
-    new Range("internal-length").
+  private static final SparseType sparseType_reverb_height =
+    new SparseTypeImpl("internal-length").
     addSubrange(0x00, 0x49, enumType_reverb_dim_length);
-  private static final Range range_reverb_depth =
-    new Range("internal-length").
+  private static final SparseType sparseType_reverb_depth =
+    new SparseTypeImpl("internal-length").
     addSubrange(0x00, 0x68, enumType_reverb_dim_length);
 
   private static final ValueType
     enumType_dry_wet = new EnumType(0x01, DRY_WET);
-  private static final Range range_dry_wet =
-    new Range("internal-pan").
+  private static final SparseType sparseType_dry_wet =
+    new SparseTypeImpl("internal-pan").
     addSubrange(0x01, 0x7f, enumType_dry_wet);
 
   private static final ValueType
     enumType_er_rev_balance = new EnumType(0x01, ER_REV_BALANCE);
-  private static final Range range_er_rev_balance =
-    new Range("internal-pan").
+  private static final SparseType sparseType_er_rev_balance =
+    new SparseTypeImpl("internal-pan").
     addSubrange(0x01, 0x7f, enumType_er_rev_balance);
 
   private static final ValueType
     enumType_eq_gain = new EnumType(0x34, EQ_GAIN);
-  private static final Range range_eq_gain =
-    new Range("internal-volume").
+  private static final SparseType sparseType_eq_gain =
+    new SparseTypeImpl("internal-volume").
     addSubrange(0x34, 0x4c, enumType_eq_gain);
 
   private static final ValueType
     enumType_phase_difference = new EnumType(0x04, PHASE_DIFFERENCE);
-  private static final Range range_phase_difference =
-    new Range("internal-control").
+  private static final SparseType sparseType_phase_difference =
+    new SparseTypeImpl("internal-control").
     addSubrange(0x4, 0x7c, enumType_phase_difference);
 
   private static final ValueType
@@ -1116,8 +1117,8 @@ public class DB50XG extends AbstractDevice
 
   private static final ValueType
     enumType_mono_poly_mode = new EnumType(MONO_POLY_MODE);
-  private static final Range range_mono_poly_mode =
-    new Range("internal-switch").
+  private static final SparseType sparseType_mono_poly_mode =
+    new SparseTypeImpl("internal-switch").
     addSubrange(0x0, 0x1, enumType_mono_poly_mode);
 
   private static final ValueType
@@ -1161,8 +1162,8 @@ public class DB50XG extends AbstractDevice
     enumType_detune_0xe = new EnumType(0x0700, DETUNE_0xe);
   private static final ValueType
     enumType_detune_0xf = new EnumType(0x0780, DETUNE_0xf);
-  private static final Range range_detune =
-    new Range("internal-transpose").
+  private static final SparseType sparseType_detune =
+    new SparseTypeImpl("internal-transpose").
     addSubrange(0x0000, 0x000f, enumType_detune_0x0).
     addSubrange(0x0080, 0x008f, enumType_detune_0x1).
     addSubrange(0x0100, 0x010f, enumType_detune_0x2).
@@ -1182,46 +1183,46 @@ public class DB50XG extends AbstractDevice
 
   private static final ValueType
     enumType_note = new EnumType(NOTE);
-  private static final Range range_note =
-    new Range("internal-transpose").
+  private static final SparseType sparseType_note =
+    new SparseTypeImpl("internal-transpose").
     addSubrange(0x00, 0x7f, enumType_note);
 
   private static final ValueType
     enumType_filter_control = new EnumType(FILTER_CONTROL);
-  private static final Range range_filter_control =
-    new Range("internal-tune").
+  private static final SparseType sparseType_filter_control =
+    new SparseTypeImpl("internal-tune").
     addSubrange(0x00, 0x7f, enumType_filter_control);
 
   private static final ValueType
     enumType_bend_lfo_mod_depth = new EnumType(BEND_LFO_MOD_DEPTH);
-  private static final Range range_bend_lfo_mod_depth =
-    new Range("internal-control").
+  private static final SparseType sparseType_bend_lfo_mod_depth =
+    new SparseTypeImpl("internal-control").
     addSubrange(0x00, 0x7f, enumType_bend_lfo_mod_depth);
 
   private static final ValueType
     enumType_switch = new EnumType(SWITCH);
-  private static final Range range_switch =
-    new Range("internal-switch").
+  private static final SparseType sparseType_switch =
+    new SparseTypeImpl("internal-switch").
     addSubrange(0x0, 0x1, enumType_switch);
 
   private static final ValueType
     enumType_mono_stereo = new EnumType(MONO_STEREO);
-  private static final Range range_mono_stereo =
-    new Range("internal-switch").
+  private static final SparseType sparseType_mono_stereo =
+    new SparseTypeImpl("internal-switch").
     addSubrange(0x0, 0x1, enumType_mono_stereo);
 
   private static final ValueType
     enumType_scale_tuning = new EnumType(SCALE_TUNING);
-  private static final Range range_scale_tuning =
-    new Range("internal-tune").
+  private static final SparseType sparseType_scale_tuning =
+    new SparseTypeImpl("internal-tune").
     addSubrange(0x00, 0x7f, enumType_scale_tuning);
 
-  private static final Range range_transpose =
-    new Range("internal-transpose").
+  private static final SparseType sparseType_transpose =
+    new SparseTypeImpl("internal-transpose").
     addSubrange(0x28, 0x58, new Int8Type(0x40));
 
-  private static final Range range_reverb_type =
-    new Range("internal-fx-reverb").
+  private static final SparseType sparseType_reverb_type =
+    new SparseTypeImpl("internal-fx-reverb").
     addSingleValue(0x0000, "No Effect").
     addSubrange(0x0080, 0x0081, enumType_hall).
     addSubrange(0x0100, 0x0102, enumType_room).
@@ -1231,8 +1232,8 @@ public class DB50XG extends AbstractDevice
     addSingleValue(0x0880, "Tunnel").
     addSingleValue(0x0980, "Basement");
 
-  private static final Range range_chorus_type =
-    new Range("internal-fx-chorus").
+  private static final SparseType sparseType_chorus_type =
+    new SparseTypeImpl("internal-fx-chorus").
     addSingleValue(0x0000, "No Effect").
     addSubrange(0x2080, 0x2082, enumType_chorus).
     addSingleValue(0x2088, "Chorus 4").
@@ -1241,8 +1242,8 @@ public class DB50XG extends AbstractDevice
     addSubrange(0x2180, 0x2181, enumType_flanger).
     addSingleValue(0x2188, "Flanger 3");
 
-  private static final Range range_variation_type =
-    new Range("internal-control").
+  private static final SparseType sparseType_variation_type =
+    new SparseTypeImpl("internal-control").
     addSingleValue(0x0000, "No Effect").
     addSubrange(0x0080, 0x0081, enumType_hall).
     addSubrange(0x0100, 0x0102, enumType_room).
@@ -1276,96 +1277,96 @@ public class DB50XG extends AbstractDevice
     addSingleValue(0x2700, "Auto Wah (LFO)").
     addSingleValue(0x2000, "Thru");
 
-  private static final Range range_pan =
-    new Range("internal-pan").
+  private static final SparseType sparseType_pan =
+    new SparseTypeImpl("internal-pan").
     addSubrange(0x01, 0x7f, enumType_pan);
 
-  private static final Range range_pan_extended =
-    new Range("internal-pan").
+  private static final SparseType sparseType_pan_extended =
+    new SparseTypeImpl("internal-pan").
     addSingleValue(0x00, "Random").
     addSubrange(0x01, 0x7f, enumType_pan);
 
-  private static final Range range_level =
-    new Range("internal-volume").
+  private static final SparseType sparseType_level =
+    new SparseTypeImpl("internal-volume").
     addSubrange(0x00, 0x7f, enumType_level);
 
-  private static final Range range_volume =
-    new Range("internal-volume").
+  private static final SparseType sparseType_volume =
+    new SparseTypeImpl("internal-volume").
     addSubrange(0x00, 0x7f, Int8Type.defaultInstance);
 
-  private static final Range range_connection =
-    new Range("internal-control").
+  private static final SparseType sparseType_connection =
+    new SparseTypeImpl("internal-control").
     addSubrange(0x0, 0x1, enumType_connection);
 
   private static final EnumType enumType_part = new EnumType(PART);
-  private static final Range range_part =
-    new Range("internal-control").
+  private static final SparseType sparseType_part =
+    new SparseTypeImpl("internal-control").
     addSubrange(0x00, 0x0f, enumType_part).
     addSingleValue(0x7f, "Off");
 
-  private static final Range range_non_negative_7bit =
-    new Range("internal-control").
+  private static final SparseType sparseType_non_negative_7bit =
+    new SparseTypeImpl("internal-control").
     addSubrange(0x00, 0x7f, Int8Type.defaultInstance);
 
-  private static final Range range_positive_7bit =
-    new Range("internal-control").
+  private static final SparseType sparseType_positive_7bit =
+    new SparseTypeImpl("internal-control").
     addSubrange(0x01, 0x7f, Int8Type.defaultInstance);
 
-  private static final Range range_signed_7bit =
-    new Range("internal-control").
+  private static final SparseType sparseType_signed_7bit =
+    new SparseTypeImpl("internal-control").
     addSubrange(0x00, 0x7f, new Int8Type(0x40));
 
-  private static final Range range_controller_number =
-    new Range("internal-control").
+  private static final SparseType sparseType_controller_number =
+    new SparseTypeImpl("internal-control").
     addSubrange(0x00, 0x5f, Int8Type.defaultInstance);
 
   private static final ValueType lfo_frequency = new EnumType(LFO_FREQUENCY);
-  private static final Range range_lfo_frequency =
-    new Range("internal-tune").
+  private static final SparseType sparseType_lfo_frequency =
+    new SparseTypeImpl("internal-tune").
     addSubrange(0x00, 0x7f, lfo_frequency);
 
   private MapNode buildMapNodeSystem()
   {
     MapNode node_system = new MapNode("System");
 
-    final Range range_tune_3 =
-      new Range("internal-tune").
+    final SparseType sparseType_tune_3 =
+      new SparseTypeImpl("internal-tune").
       addSubrange(0x0, 0x0, Int8Type.defaultInstance);
     final RangeContents contents_tune_3 =
-      new RangeContents(range_tune_3);
+      new RangeContents(sparseType_tune_3);
     contents_tune_3.setBitSize(7);
     contents_tune_3.setDefaultValue(0x0);
     node_system.add(new MapNode("Master Tune[3]", contents_tune_3));
 
-    final Range range_tune_2 =
-      new Range("internal-tune").
+    final SparseType sparseType_tune_2 =
+      new SparseTypeImpl("internal-tune").
       addSubrange(0x0, 0x7, Int8Type.defaultInstance);
     final RangeContents contents_tune_2 =
-      new RangeContents(range_tune_2);
+      new RangeContents(sparseType_tune_2);
     contents_tune_2.setBitSize(7);
     contents_tune_2.setDefaultValue(0x4);
     node_system.add(new MapNode("Master Tune[2]", contents_tune_2));
 
-    final Range range_tune_1 =
-      new Range("internal-tune").
+    final SparseType sparseType_tune_1 =
+      new SparseTypeImpl("internal-tune").
       addSubrange(0x0, 0xf, Int8Type.defaultInstance);
     final RangeContents contents_tune_1 =
-      new RangeContents(range_tune_1);
+      new RangeContents(sparseType_tune_1);
     contents_tune_1.setBitSize(7);
     contents_tune_1.setDefaultValue(0x0);
     node_system.add(new MapNode("Master Tune[1]", contents_tune_1));
 
-    final Range range_tune_0 =
-      new Range("internal-tune").
+    final SparseType sparseType_tune_0 =
+      new SparseTypeImpl("internal-tune").
       addSubrange(0x0, 0xf, Int8Type.defaultInstance);
     final RangeContents contents_tune_0 =
-      new RangeContents(range_tune_0);
+      new RangeContents(sparseType_tune_0);
     contents_tune_0.setBitSize(7);
     contents_tune_0.setDefaultValue(0x0);
     node_system.add(new MapNode("Master Tune[0]", contents_tune_0));
 
     final RangeContents contents_volume =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_volume.setBitSize(7);
     contents_volume.setDefaultValue(0x7f);
     node_system.add(new MapNode("Master Volume", contents_volume));
@@ -1373,33 +1374,34 @@ public class DB50XG extends AbstractDevice
     node_system.add(new MapNode("Unused", new RangeContents(7)));
 
     final RangeContents contents_transpose =
-      new RangeContents(range_transpose);
+      new RangeContents(sparseType_transpose);
     contents_transpose.setBitSize(7);
     contents_transpose.setDefaultValue(0x40);
     node_system.add(new MapNode("Transpose", contents_transpose));
 
-    final Range range_drums_setup_reset =
-      new Range("internal-error").
+    final SparseType sparseType_drums_setup_reset =
+      new SparseTypeImpl("internal-error").
       addSubrange(0x0, 0x1, Int8Type.defaultInstance);
     final RangeContents contents_drums_setup_reset =
-      new RangeContents(range_drums_setup_reset);
+      new RangeContents(sparseType_drums_setup_reset);
     contents_drums_setup_reset.setBitSize(7);
     contents_drums_setup_reset.setDefaultValue(0x0);
     node_system.add(new MapNode("Drum Setup Reset", contents_drums_setup_reset,
                                 addr2index(0x00, 0x00, 0x7d)));
 
-    final Range range_xg_on =
-      new Range("internal-error").
+    final SparseType sparseType_xg_on =
+      new SparseTypeImpl("internal-error").
       addSingleValue(0x0, Int8Type.defaultInstance);
-    final RangeContents contents_xg_on = new RangeContents(range_xg_on);
+    final RangeContents contents_xg_on = new RangeContents(sparseType_xg_on);
     contents_xg_on.setBitSize(7);
     contents_xg_on.setDefaultValue(0x0);
     node_system.add(new MapNode("XG System On", contents_xg_on));
 
-    final Range range_all_reset =
-      new Range("internal-error").
+    final SparseType sparseType_all_reset =
+      new SparseTypeImpl("internal-error").
       addSingleValue(0x0, Int8Type.defaultInstance);
-    final RangeContents contents_all_reset = new RangeContents(range_all_reset);
+    final RangeContents contents_all_reset =
+      new RangeContents(sparseType_all_reset);
     contents_all_reset.setBitSize(7);
     contents_all_reset.setDefaultValue(0x0);
     node_system.add(new MapNode("All Parameter Reset", contents_all_reset));
@@ -1412,119 +1414,119 @@ public class DB50XG extends AbstractDevice
     final MapNode node_reverb = new MapNode("Reverb");
 
     final RangeContents contents_reverb_type =
-      new RangeContents(range_reverb_type);
+      new RangeContents(sparseType_reverb_type);
     contents_reverb_type.setBitSize(14);
     contents_reverb_type.setDefaultValue(0x0080);
     node_reverb.add(new MapNode("Reverb Type", contents_reverb_type));
 
     final RangeContents contents_reverb_time =
-      new RangeContents(range_reverb_time);
+      new RangeContents(sparseType_reverb_time);
     contents_reverb_time.setBitSize(7);
     contents_reverb_time.setDefaultValue(0x00);
     node_reverb.add(new MapNode("Reverb Time", contents_reverb_time));
 
-    final Range range_diffusion =
-      new Range("internal-control").
+    final SparseType sparseType_diffusion =
+      new SparseTypeImpl("internal-control").
       addSubrange(0x00, 0x0a, Int8Type.defaultInstance);
     final RangeContents contents_diffusion =
-      new RangeContents(range_diffusion);
+      new RangeContents(sparseType_diffusion);
     contents_diffusion.setBitSize(7);
     contents_diffusion.setDefaultValue(0x00);
     node_reverb.add(new MapNode("Diffusion",
                                 contents_diffusion));
 
     final RangeContents contents_initial_delay =
-      new RangeContents(range_delay_time_1);
+      new RangeContents(sparseType_delay_time_1);
     contents_initial_delay.setBitSize(7);
     contents_initial_delay.setDefaultValue(0x00);
     node_reverb.add(new MapNode("Initial Delay", contents_initial_delay));
 
     final RangeContents contents_hpf_cutoff =
-      new RangeContents(range_eq_frequency);
+      new RangeContents(sparseType_eq_frequency);
     contents_hpf_cutoff.setBitSize(7);
     contents_hpf_cutoff.setDefaultValue(0x00);
     node_reverb.add(new MapNode("HPF Cutoff", contents_hpf_cutoff));
 
     final RangeContents contents_lpf_cutoff =
-      new RangeContents(range_eq_frequency);
+      new RangeContents(sparseType_eq_frequency);
     contents_lpf_cutoff.setBitSize(7);
     contents_lpf_cutoff.setDefaultValue(0x00);
     node_reverb.add(new MapNode("LPF Cutoff", contents_lpf_cutoff));
 
     final RangeContents contents_width =
-      new RangeContents(range_reverb_width);
+      new RangeContents(sparseType_reverb_width);
     contents_width.setBitSize(7);
     contents_width.setDefaultValue(0x00);
     node_reverb.add(new MapNode("Width", contents_width));
 
     final RangeContents contents_height =
-      new RangeContents(range_reverb_height);
+      new RangeContents(sparseType_reverb_height);
     contents_height.setBitSize(7);
     contents_height.setDefaultValue(0x00);
     node_reverb.add(new MapNode("Height", contents_height));
 
     final RangeContents contents_depth =
-      new RangeContents(range_reverb_depth);
+      new RangeContents(sparseType_reverb_depth);
     contents_depth.setBitSize(7);
     contents_depth.setDefaultValue(0x00);
     node_reverb.add(new MapNode("Depth", contents_depth));
 
-    final Range range_wall_vary =
-      new Range("internal-control").
+    final SparseType sparseType_wall_vary =
+      new SparseTypeImpl("internal-control").
       addSubrange(0x00, 0x1e, Int8Type.defaultInstance);
     final RangeContents contents_wall_vary =
-      new RangeContents(range_wall_vary);
+      new RangeContents(sparseType_wall_vary);
     contents_wall_vary.setBitSize(7);
     contents_wall_vary.setDefaultValue(0x00);
     node_reverb.add(new MapNode("Wall Vary",
                                 contents_wall_vary));
 
     final RangeContents contents_dry_wet =
-      new RangeContents(range_dry_wet);
+      new RangeContents(sparseType_dry_wet);
     contents_dry_wet.setBitSize(7);
     contents_dry_wet.setDefaultValue(0x40);
     node_reverb.add(new MapNode("Dry / Wet", contents_dry_wet));
 
-    final RangeContents contents_level = new RangeContents(range_level);
+    final RangeContents contents_level = new RangeContents(sparseType_level);
     contents_level.setBitSize(7);
     contents_level.setDefaultValue(0x40);
     node_reverb.add(new MapNode("Reverb Return", contents_level));
 
-    final RangeContents contents_pan = new RangeContents(range_pan);
+    final RangeContents contents_pan = new RangeContents(sparseType_pan);
     contents_pan.setBitSize(7);
     contents_pan.setDefaultValue(0x40);
     node_reverb.add(new MapNode("Reverb Pan", contents_pan));
 
     final RangeContents contents_rev_delay =
-      new RangeContents(range_delay_time_1);
+      new RangeContents(sparseType_delay_time_1);
     contents_rev_delay.setBitSize(7);
     contents_rev_delay.setDefaultValue(0x00);
     node_reverb.add(new MapNode("Rev Delay", contents_rev_delay,
                                 addr2index(0x02, 0x01, 0x10)));
 
-    final Range range_density =
-      new Range("internal-control").
+    final SparseType sparseType_density =
+      new SparseTypeImpl("internal-control").
       addSubrange(0x0, 0x3, Int8Type.defaultInstance);
     final RangeContents contents_density =
-      new RangeContents(range_density);
+      new RangeContents(sparseType_density);
     contents_density.setBitSize(7);
     contents_density.setDefaultValue(0x0);
     node_reverb.add(new MapNode("Density",
                                 contents_density));
 
     final RangeContents contents_er_rev_balance =
-      new RangeContents(range_er_rev_balance);
+      new RangeContents(sparseType_er_rev_balance);
     contents_er_rev_balance.setBitSize(7);
     contents_er_rev_balance.setDefaultValue(0x40);
     node_reverb.add(new MapNode("Er / Rev Balance", contents_er_rev_balance));
 
     node_reverb.add(new MapNode("Unused", new RangeContents(7)));
 
-    final Range range_feedback_level =
-      new Range("internal-volume").
+    final SparseType sparseType_feedback_level =
+      new SparseTypeImpl("internal-volume").
       addSubrange(0x01, 0x7f, new Int8Type(0x40));
     final RangeContents contents_feedback_level =
-      new RangeContents(range_feedback_level);
+      new RangeContents(sparseType_feedback_level);
     contents_feedback_level.setBitSize(7);
     contents_feedback_level.setDefaultValue(0x40);
     node_reverb.add(new MapNode("Feedback Level", contents_feedback_level));
@@ -1540,34 +1542,34 @@ public class DB50XG extends AbstractDevice
       new MapNode("Chorus", addr2index(0x02, 0x01, 0x20));
 
     final RangeContents contents_chorus_type =
-      new RangeContents(range_chorus_type);
+      new RangeContents(sparseType_chorus_type);
     contents_chorus_type.setBitSize(14);
     contents_chorus_type.setDefaultValue(0x2080);
     node_chorus.add(new MapNode("Chorus Type", contents_chorus_type));
 
     final RangeContents contents_lfo_frequency =
-      new RangeContents(range_lfo_frequency);
+      new RangeContents(sparseType_lfo_frequency);
     contents_lfo_frequency.setBitSize(7);
     contents_lfo_frequency.setDefaultValue(0x00);
     node_chorus.add(new MapNode("LFO Frequency", contents_lfo_frequency));
 
     final RangeContents contents_lfo_pm_depth =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(sparseType_non_negative_7bit);
     contents_lfo_pm_depth.setBitSize(7);
     contents_lfo_pm_depth.setDefaultValue(0x40);
     node_chorus.add(new MapNode("LFO PM Depth", contents_lfo_pm_depth));
 
-    final Range range_feedback_level =
-      new Range("internal-volume").
+    final SparseType sparseType_feedback_level =
+      new SparseTypeImpl("internal-volume").
       addSubrange(0x01, 0x7f, new Int8Type(0x40));
     final RangeContents contents_feedback_level =
-      new RangeContents(range_feedback_level);
+      new RangeContents(sparseType_feedback_level);
     contents_feedback_level.setBitSize(7);
     contents_feedback_level.setDefaultValue(0x40);
     node_chorus.add(new MapNode("Feedback Level", contents_feedback_level));
 
     final RangeContents contents_modulation_delay_offset =
-      new RangeContents(range_modulation_delay_offset);
+      new RangeContents(sparseType_modulation_delay_offset);
     contents_modulation_delay_offset.setBitSize(7);
     contents_modulation_delay_offset.setDefaultValue(0x00);
     node_chorus.add(new MapNode("Modulation Delay Offset",
@@ -1576,48 +1578,49 @@ public class DB50XG extends AbstractDevice
     node_chorus.add(new MapNode("Unused", new RangeContents(7)));
 
     final RangeContents contents_eq_low_frequency =
-      new RangeContents(range_eq_frequency);
+      new RangeContents(sparseType_eq_frequency);
     contents_eq_low_frequency.setBitSize(7);
     contents_eq_low_frequency.setDefaultValue(0x08);
     node_chorus.add(new MapNode("EQ Low Frequency",
                                 contents_eq_low_frequency));
 
     final RangeContents contents_eq_low_gain =
-      new RangeContents(range_eq_gain);
+      new RangeContents(sparseType_eq_gain);
     contents_eq_low_gain.setBitSize(7);
     contents_eq_low_gain.setDefaultValue(0x40);
     node_chorus.add(new MapNode("EQ Low Gain", contents_eq_low_gain));
 
     final RangeContents contents_eq_high_frequency =
-      new RangeContents(range_eq_frequency);
+      new RangeContents(sparseType_eq_frequency);
     contents_eq_high_frequency.setBitSize(7);
     contents_eq_high_frequency.setDefaultValue(0x3a);
     node_chorus.add(new MapNode("EQ High Frequency",
                                 contents_eq_high_frequency));
 
     final RangeContents contents_eq_high_gain =
-      new RangeContents(range_eq_gain);
+      new RangeContents(sparseType_eq_gain);
     contents_eq_high_gain.setBitSize(7);
     contents_eq_high_gain.setDefaultValue(0x40);
     node_chorus.add(new MapNode("EQ High Gain", contents_eq_high_gain));
 
     final RangeContents contents_dry_wet =
-      new RangeContents(range_dry_wet);
+      new RangeContents(sparseType_dry_wet);
     contents_dry_wet.setBitSize(7);
     contents_dry_wet.setDefaultValue(0x40);
     node_chorus.add(new MapNode("Dry / Wet", contents_dry_wet));
 
-    final RangeContents contents_level = new RangeContents(range_level);
+    final RangeContents contents_level = new RangeContents(sparseType_level);
     contents_level.setBitSize(7);
     contents_level.setDefaultValue(0x40);
     node_chorus.add(new MapNode("Chorus Return", contents_level));
 
-    final RangeContents contents_pan = new RangeContents(range_pan);
+    final RangeContents contents_pan = new RangeContents(sparseType_pan);
     contents_pan.setBitSize(7);
     contents_pan.setDefaultValue(0x40);
     node_chorus.add(new MapNode("Chorus Pan", contents_pan));
 
-    final RangeContents contents_level_reverb = new RangeContents(range_level);
+    final RangeContents contents_level_reverb =
+      new RangeContents(sparseType_level);
     contents_level_reverb.setBitSize(7);
     contents_level_reverb.setDefaultValue(0x00);
     node_chorus.add(new MapNode("Send Chorus To Reverb",
@@ -1629,14 +1632,14 @@ public class DB50XG extends AbstractDevice
     node_chorus.add(new MapNode("Unused", new RangeContents(7)));
 
     final RangeContents contents_lfo_phase_difference =
-      new RangeContents(range_phase_difference);
+      new RangeContents(sparseType_phase_difference);
     contents_lfo_phase_difference.setBitSize(7);
     contents_lfo_phase_difference.setDefaultValue(0x40);
     node_chorus.add(new MapNode("LFO Phase Difference",
                                 contents_lfo_phase_difference));
 
     final RangeContents contents_mono_stereo =
-      new RangeContents(range_mono_stereo);
+      new RangeContents(sparseType_mono_stereo);
     contents_mono_stereo.setBitSize(7);
     contents_mono_stereo.setDefaultValue(0x1);
     node_chorus.add(new MapNode("Mono / Stereo", contents_mono_stereo));
@@ -1652,84 +1655,91 @@ public class DB50XG extends AbstractDevice
       new MapNode("Variation", addr2index(0x02, 0x01, 0x40));
 
     final RangeContents contents_variation_type =
-      new RangeContents(range_variation_type);
+      new RangeContents(sparseType_variation_type);
     contents_variation_type.setBitSize(14);
     contents_variation_type.setDefaultValue(0x0280);
     node_variation.add(new MapNode("Variation Type", contents_variation_type));
 
     for (int i = 0; i < 10; i++) {
       final RangeContents contents_7bit_value_msb =
-        new RangeContents(range_non_negative_7bit);
+        new RangeContents(sparseType_non_negative_7bit);
       contents_7bit_value_msb.setBitSize(7);
       contents_7bit_value_msb.setDefaultValue(0x00);
       node_variation.add(new MapNode("Variation Parameter " + (i + 1) + " MSB",
                                      contents_7bit_value_msb));
       final RangeContents contents_7bit_value_lsb =
-        new RangeContents(range_non_negative_7bit);
+        new RangeContents(sparseType_non_negative_7bit);
       contents_7bit_value_lsb.setBitSize(7);
       contents_7bit_value_lsb.setDefaultValue(0x00);
       node_variation.add(new MapNode("Variation Parameter " + (i + 1) + " LSB",
                                      contents_7bit_value_lsb));
     }
 
-    final RangeContents contents_level = new RangeContents(range_level);
+    final RangeContents contents_level = new RangeContents(sparseType_level);
     contents_level.setBitSize(7);
     contents_level.setDefaultValue(0x40);
     node_variation.add(new MapNode("Variation Return", contents_level));
 
-    final RangeContents contents_pan = new RangeContents(range_pan);
+    final RangeContents contents_pan = new RangeContents(sparseType_pan);
     contents_pan.setBitSize(7);
     contents_pan.setDefaultValue(0x40);
     node_variation.add(new MapNode("Variation Pan", contents_pan));
 
-    final RangeContents contents_level_reverb = new RangeContents(range_level);
+    final RangeContents contents_level_reverb =
+      new RangeContents(sparseType_level);
     contents_level_reverb.setBitSize(7);
     contents_level_reverb.setDefaultValue(0x00);
     node_variation.add(new MapNode("Send Variation To Reverb",
                                    contents_level_reverb));
 
-    final RangeContents contents_level_chorus = new RangeContents(range_level);
+    final RangeContents contents_level_chorus =
+      new RangeContents(sparseType_level);
     contents_level_chorus.setBitSize(7);
     contents_level_chorus.setDefaultValue(0x00);
     node_variation.add(new MapNode("Send Variation To Chorus",
                                    contents_level_chorus));
 
     final RangeContents contents_connection =
-      new RangeContents(range_connection);
+      new RangeContents(sparseType_connection);
     contents_connection.setBitSize(7);
     contents_connection.setDefaultValue(0x0);
     node_variation.add(new MapNode("Variation Connection",
                                    contents_connection));
 
-    final RangeContents contents_part = new RangeContents(range_part);
+    final RangeContents contents_part = new RangeContents(sparseType_part);
     contents_part.setBitSize(7);
     contents_part.setDefaultValue(0x7f);
     node_variation.add(new MapNode("Variation Part", contents_part));
 
-    final RangeContents contents_mw = new RangeContents(range_signed_7bit);
+    final RangeContents contents_mw =
+      new RangeContents(sparseType_signed_7bit);
     contents_mw.setBitSize(7);
     contents_mw.setDefaultValue(0x40);
     node_variation.add(new MapNode("MW Variation Control Depth", contents_mw));
 
-    final RangeContents contents_bend = new RangeContents(range_signed_7bit);
+    final RangeContents contents_bend =
+      new RangeContents(sparseType_signed_7bit);
     contents_bend.setBitSize(7);
     contents_bend.setDefaultValue(0x40);
     node_variation.add(new MapNode("Bend Variation Control Depth",
                                    contents_bend));
 
-    final RangeContents contents_cat = new RangeContents(range_signed_7bit);
+    final RangeContents contents_cat =
+      new RangeContents(sparseType_signed_7bit);
     contents_cat.setBitSize(7);
     contents_cat.setDefaultValue(0x40);
     node_variation.add(new MapNode("CAT Variation Control Depth",
                                    contents_cat));
 
-    final RangeContents contents_ac1 = new RangeContents(range_signed_7bit);
+    final RangeContents contents_ac1 =
+      new RangeContents(sparseType_signed_7bit);
     contents_ac1.setBitSize(7);
     contents_ac1.setDefaultValue(0x40);
     node_variation.add(new MapNode("AC1 Variation Control Depth",
                                    contents_ac1));
 
-    final RangeContents contents_ac2 = new RangeContents(range_signed_7bit);
+    final RangeContents contents_ac2 =
+      new RangeContents(sparseType_signed_7bit);
     contents_ac2.setBitSize(7);
     contents_ac2.setDefaultValue(0x40);
     node_variation.add(new MapNode("AC2 Variation Control Depth",
@@ -1737,7 +1747,7 @@ public class DB50XG extends AbstractDevice
 
     for (int i = 10; i < 16; i++) {
       final RangeContents contents_7bit_value =
-        new RangeContents(range_non_negative_7bit);
+        new RangeContents(sparseType_non_negative_7bit);
       final long desiredAddress = i == 10 ? addr2index(0x02, 0x01, 0x70) : -1;
       contents_7bit_value.setBitSize(7);
       contents_7bit_value.setDefaultValue(0x00);
@@ -1763,42 +1773,42 @@ public class DB50XG extends AbstractDevice
                                 final int defaultPModeDepth)
   {
     final RangeContents contents_pitch_control =
-      new RangeContents(range_transpose);
+      new RangeContents(sparseType_transpose);
     contents_pitch_control.setBitSize(7);
     contents_pitch_control.setDefaultValue(0x40);
     node.add(new MapNode(displayPrefix + " Pitch Control",
                          contents_pitch_control));
 
     final RangeContents contents_filter_control =
-      new RangeContents(range_filter_control);
+      new RangeContents(sparseType_filter_control);
     contents_filter_control.setBitSize(7);
     contents_filter_control.setDefaultValue(0x40);
     node.add(new MapNode(displayPrefix + " Filter Control",
                          contents_filter_control));
 
     final RangeContents contents_amplitude_control =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_amplitude_control.setBitSize(7);
     contents_amplitude_control.setDefaultValue(0x40);
     node.add(new MapNode(displayPrefix + " Amplitude Control",
                          contents_amplitude_control));
 
     final RangeContents contents_lfo_pmod_depth =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(sparseType_non_negative_7bit);
     contents_lfo_pmod_depth.setBitSize(7);
     contents_lfo_pmod_depth.setDefaultValue(defaultPModeDepth);
     node.add(new MapNode(displayPrefix + " LFO PMod Depth",
                          contents_lfo_pmod_depth));
 
     final RangeContents contents_lfo_fmod_depth =
-      new RangeContents(range_non_negative_7bit, "internal-mod-fm");
+      new RangeContents(sparseType_non_negative_7bit, "internal-mod-fm");
     contents_lfo_fmod_depth.setBitSize(7);
     contents_lfo_fmod_depth.setDefaultValue(0x00);
     node.add(new MapNode(displayPrefix + " LFO FMod Depth",
                          contents_lfo_fmod_depth));
 
     final RangeContents contents_lfo_amod_depth =
-      new RangeContents(range_non_negative_7bit, "internal-mod-am");
+      new RangeContents(sparseType_non_negative_7bit, "internal-mod-am");
     contents_lfo_amod_depth.setBitSize(7);
     contents_lfo_amod_depth.setDefaultValue(0x00);
     node.add(new MapNode(displayPrefix + " LFO AMod Depth",
@@ -1810,25 +1820,25 @@ public class DB50XG extends AbstractDevice
     final MapNode node_multi_part_n =
       new MapNode("Multi Part " + (n + 1), addr2index(0x08, n, 0x00));
 
-    final Range range_element_reserve =
-      new Range("internal-control").
+    final SparseType sparseType_element_reserve =
+      new SparseTypeImpl("internal-control").
       addSubrange(0x00, 0x1f, Int8Type.defaultInstance);
     final RangeContents contents_element_reserve =
-      new RangeContents(range_element_reserve);
+      new RangeContents(sparseType_element_reserve);
     contents_element_reserve.setBitSize(7);
     contents_element_reserve.setDefaultValue(n == 9 ? 0x00 : 0x02);
     node_multi_part_n.add(new MapNode("Element Reserve",
                                       contents_element_reserve));
 
     final RangeContents contents_bank_select_msb =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(sparseType_non_negative_7bit);
     contents_bank_select_msb.setBitSize(7);
     contents_bank_select_msb.setDefaultValue(n == 9 ? 0x7f : 0x00);
     node_multi_part_n.add(new MapNode("Bank Select MSB",
                                       contents_bank_select_msb));
 
     final RangeContents contents_bank_select_lsb =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(sparseType_non_negative_7bit);
     contents_bank_select_lsb.setBitSize(7);
     contents_bank_select_lsb.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Bank Select LSB",
@@ -1836,178 +1846,180 @@ public class DB50XG extends AbstractDevice
 
     final ValueType VALUE_TYPE_1_TO_N = new Int8Type(-1);
 
-    final Range range_program_number =
-      new Range("internal-control").
+    final SparseType sparseType_program_number =
+      new SparseTypeImpl("internal-control").
       addSubrange(0x00, 0x7f, VALUE_TYPE_1_TO_N);
     final RangeContents contents_program_number =
-      new RangeContents(range_program_number);
+      new RangeContents(sparseType_program_number);
     contents_program_number.setBitSize(7);
     contents_program_number.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Program Number",
                                       contents_program_number));
 
-    final Range range_rcv_channel =
-      new Range("internal-control").
+    final SparseType sparseType_rcv_channel =
+      new SparseTypeImpl("internal-control").
       addSubrange(0x00, 0x0f, VALUE_TYPE_1_TO_N).
       addSingleValue(0x10, "Off");
     final RangeContents contents_rcv_channel =
-      new RangeContents(range_rcv_channel);
+      new RangeContents(sparseType_rcv_channel);
     contents_rcv_channel.setBitSize(7);
     contents_rcv_channel.setDefaultValue(n);
     node_multi_part_n.add(new MapNode("Rcv Channel", contents_rcv_channel));
 
     final RangeContents contents_mono_poly_mode =
-      new RangeContents(range_mono_poly_mode);
+      new RangeContents(sparseType_mono_poly_mode);
     contents_mono_poly_mode.setBitSize(7);
     contents_mono_poly_mode.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Mono / Poly Mode",
                                       contents_mono_poly_mode));
 
-    final Range range_key_on_assign =
-      new Range("internal-control").
+    final SparseType sparseType_key_on_assign =
+      new SparseTypeImpl("internal-control").
       addSubrange(0x0, 0x2, enumType_key_on_assign);
     final RangeContents contents_key_on_assign =
-      new RangeContents(range_key_on_assign);
+      new RangeContents(sparseType_key_on_assign);
     contents_key_on_assign.setBitSize(7);
     contents_key_on_assign.setDefaultValue(n == 9 ? 0x2 : 0x0);
     node_multi_part_n.add(new MapNode("Same Not Number Key on Assign",
                                       contents_key_on_assign));
 
-    final Range range_part_mode =
-      new Range("internal-control").
+    final SparseType sparseType_part_mode =
+      new SparseTypeImpl("internal-control").
       addSubrange(0x0, 0x3, enumType_part_mode);
     final RangeContents contents_part_mode =
-      new RangeContents(range_part_mode);
+      new RangeContents(sparseType_part_mode);
     contents_part_mode.setBitSize(7);
     contents_part_mode.setDefaultValue(n == 9 ? 0x2 : 0x0);
     node_multi_part_n.add(new MapNode("Part Mode", contents_part_mode));
 
     final RangeContents contents_note_shift =
-      new RangeContents(range_transpose);
+      new RangeContents(sparseType_transpose);
     contents_note_shift.setBitSize(7);
     contents_note_shift.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Note Shift", contents_note_shift));
 
-    final RangeContents contents_detune = new RangeContents(range_detune);
+    final RangeContents contents_detune =
+      new RangeContents(sparseType_detune);
     contents_detune.setBitSize(14);
     contents_detune.setDefaultValue(0x0400);
     node_multi_part_n.add(new MapNode("Detune", contents_detune));
 
     final RangeContents contents_volume =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_volume.setBitSize(7);
     contents_volume.setDefaultValue(0x64);
     node_multi_part_n.add(new MapNode("Volume", contents_volume));
 
     final RangeContents contents_velocity_sense_depth =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(sparseType_non_negative_7bit);
     contents_velocity_sense_depth.setBitSize(7);
     contents_velocity_sense_depth.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Velocity Sense Depth",
                                       contents_velocity_sense_depth));
 
     final RangeContents contents_velocity_sense_offset =
-      new RangeContents(range_non_negative_7bit);
+      new RangeContents(sparseType_non_negative_7bit);
     contents_velocity_sense_offset.setBitSize(7);
     contents_velocity_sense_offset.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Velocity Sense Offset",
                                       contents_velocity_sense_offset));
 
-    final RangeContents contents_pan = new RangeContents(range_pan_extended);
+    final RangeContents contents_pan =
+      new RangeContents(sparseType_pan_extended);
     contents_pan.setBitSize(7);
     contents_pan.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pan", contents_pan));
 
     final RangeContents contents_note_limit_low =
-      new RangeContents(range_note, "internal-limit-bottom");
+      new RangeContents(sparseType_note, "internal-limit-bottom");
     contents_note_limit_low.setBitSize(7);
     contents_note_limit_low.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Note Limit Low",
                                       contents_note_limit_low));
 
     final RangeContents contents_note_limit_high =
-      new RangeContents(range_note, "internal-limit-top");
+      new RangeContents(sparseType_note, "internal-limit-top");
     contents_note_limit_high.setBitSize(7);
     contents_note_limit_high.setDefaultValue(0x7f);
     node_multi_part_n.add(new MapNode("Note Limit High",
                                       contents_note_limit_high));
 
     final RangeContents contents_dry_level =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_dry_level.setBitSize(7);
     contents_dry_level.setDefaultValue(0x7f);
     node_multi_part_n.add(new MapNode("Dry Level", contents_dry_level));
 
     final RangeContents contents_chorus_send =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_chorus_send.setBitSize(7);
     contents_chorus_send.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Chorus Send", contents_chorus_send));
 
     final RangeContents contents_reverb_send =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_reverb_send.setBitSize(7);
     contents_reverb_send.setDefaultValue(0x28);
     node_multi_part_n.add(new MapNode("Reverb Send", contents_reverb_send));
 
     final RangeContents contents_variation_send =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_variation_send.setBitSize(7);
     contents_variation_send.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Variation Send",
                                       contents_variation_send));
 
     final RangeContents contents_vibrato_rate =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_vibrato_rate.setBitSize(7);
     contents_vibrato_rate.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Vibrato Rate",
                                       contents_vibrato_rate));
 
     final RangeContents contents_vibrato_depth =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_vibrato_depth.setBitSize(7);
     contents_vibrato_depth.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Vibrato Depth",
                                       contents_vibrato_depth));
 
     final RangeContents contents_vibrato_delay =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_vibrato_delay.setBitSize(7);
     contents_vibrato_delay.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Vibrato Delay",
                                       contents_vibrato_delay));
 
     final RangeContents contents_filter_cutoff_frequency =
-      new RangeContents(range_signed_7bit, "internal-tune");
+      new RangeContents(sparseType_signed_7bit, "internal-tune");
     contents_filter_cutoff_frequency.setBitSize(7);
     contents_filter_cutoff_frequency.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Filter Cutoff Frequency",
                                       contents_filter_cutoff_frequency));
 
     final RangeContents contents_filter_resonance =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_filter_resonance.setBitSize(7);
     contents_filter_resonance.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Filter Resonance",
                                       contents_filter_resonance));
 
     final RangeContents contents_eg_attack_time =
-      new RangeContents(range_signed_7bit, "internal-time");
+      new RangeContents(sparseType_signed_7bit, "internal-time");
     contents_eg_attack_time.setBitSize(7);
     contents_eg_attack_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("EG Attack Time",
                                       contents_eg_attack_time));
 
     final RangeContents contents_eg_decay_time =
-      new RangeContents(range_signed_7bit, "internal-time");
+      new RangeContents(sparseType_signed_7bit, "internal-time");
     contents_eg_decay_time.setBitSize(7);
     contents_eg_decay_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("EG Decay Time",
                                       contents_eg_decay_time));
 
     final RangeContents contents_eg_release_time =
-      new RangeContents(range_signed_7bit, "internal-time");
+      new RangeContents(sparseType_signed_7bit, "internal-time");
     contents_eg_release_time.setBitSize(7);
     contents_eg_release_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("EG Release Time",
@@ -2016,49 +2028,49 @@ public class DB50XG extends AbstractDevice
     buildPartControl(node_multi_part_n, "MW", 0x0a);
 
     final RangeContents contents_bend_pitch_control =
-      new RangeContents(range_transpose);
+      new RangeContents(sparseType_transpose);
     contents_bend_pitch_control.setBitSize(7);
     contents_bend_pitch_control.setDefaultValue(0x42);
     node_multi_part_n.add(new MapNode("Bend Pitch Control",
                                       contents_bend_pitch_control));
 
     final RangeContents contents_bend_filter_control =
-      new RangeContents(range_filter_control);
+      new RangeContents(sparseType_filter_control);
     contents_bend_filter_control.setBitSize(7);
     contents_bend_filter_control.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Bend Filter Control",
                                       contents_bend_filter_control));
 
     final RangeContents contents_bend_amplitude_control =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_bend_amplitude_control.setBitSize(7);
     contents_bend_amplitude_control.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Bend Amplitude Control",
                                       contents_bend_amplitude_control));
 
     final RangeContents contents_bend_lfo_pmod_depth =
-      new RangeContents(range_bend_lfo_mod_depth);
+      new RangeContents(sparseType_bend_lfo_mod_depth);
     contents_bend_lfo_pmod_depth.setBitSize(7);
     contents_bend_lfo_pmod_depth.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Bend LFO PMod Depth",
                                       contents_bend_lfo_pmod_depth));
 
     final RangeContents contents_bend_lfo_fmod_depth =
-      new RangeContents(range_bend_lfo_mod_depth, "internal-mod-fm");
+      new RangeContents(sparseType_bend_lfo_mod_depth, "internal-mod-fm");
     contents_bend_lfo_fmod_depth.setBitSize(7);
     contents_bend_lfo_fmod_depth.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Bend LFO FMod Depth",
                                       contents_bend_lfo_fmod_depth));
 
     final RangeContents contents_bend_lfo_amod_depth =
-      new RangeContents(range_bend_lfo_mod_depth, "internal-mod-am");
+      new RangeContents(sparseType_bend_lfo_mod_depth, "internal-mod-am");
     contents_bend_lfo_amod_depth.setBitSize(7);
     contents_bend_lfo_amod_depth.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Bend LFO AMod Depth",
                                       contents_bend_lfo_amod_depth));
 
     final RangeContents contents_rcv_pitch_bend =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_pitch_bend.setBitSize(7);
     contents_rcv_pitch_bend.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Pitch Bend",
@@ -2066,194 +2078,194 @@ public class DB50XG extends AbstractDevice
                                       addr2index(0x08, n, 0x30)));
 
     final RangeContents contents_rcv_ch_after_touch =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_ch_after_touch.setBitSize(7);
     contents_rcv_ch_after_touch.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Ch After Touch (CAT)",
                                       contents_rcv_ch_after_touch));
 
     final RangeContents contents_rcv_program_change =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_program_change.setBitSize(7);
     contents_rcv_program_change.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Program Change",
                                       contents_rcv_program_change));
 
     final RangeContents contents_rcv_control_change =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_control_change.setBitSize(7);
     contents_rcv_control_change.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Control Change",
                                       contents_rcv_control_change));
 
     final RangeContents contents_rcv_poly_after_touch =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_poly_after_touch.setBitSize(7);
     contents_rcv_poly_after_touch.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Poly After Touch (PAT)",
                                       contents_rcv_ch_after_touch));
 
     final RangeContents contents_rcv_note_message =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_note_message.setBitSize(7);
     contents_rcv_note_message.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Note Message",
                                       contents_rcv_note_message));
 
     final RangeContents contents_rcv_rpn =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_rpn.setBitSize(7);
     contents_rcv_rpn.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv RPN", contents_rcv_rpn));
 
     final RangeContents contents_rcv_nrpn =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_nrpn.setBitSize(7);
     contents_rcv_nrpn.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv NRPN", contents_rcv_nrpn));
 
     final RangeContents contents_rcv_modulation =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_modulation.setBitSize(7);
     contents_rcv_modulation.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Modulation",
                                       contents_rcv_modulation));
 
     final RangeContents contents_rcv_volume =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_volume.setBitSize(7);
     contents_rcv_volume.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Volume",
                                       contents_rcv_volume));
 
     final RangeContents contents_rcv_pan =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_pan.setBitSize(7);
     contents_rcv_pan.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Pan",
                                       contents_rcv_pan));
 
     final RangeContents contents_rcv_expression =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_expression.setBitSize(7);
     contents_rcv_expression.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Expression",
                                       contents_rcv_expression));
 
     final RangeContents contents_rcv_hold1 =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_hold1.setBitSize(7);
     contents_rcv_hold1.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Hold1",
                                       contents_rcv_hold1));
 
     final RangeContents contents_rcv_portamento =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_portamento.setBitSize(7);
     contents_rcv_portamento.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Portamento",
                                       contents_rcv_portamento));
 
     final RangeContents contents_rcv_sostenuto =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_sostenuto.setBitSize(7);
     contents_rcv_sostenuto.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Sostenuto",
                                       contents_rcv_sostenuto));
 
     final RangeContents contents_rcv_soft_pedal =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_soft_pedal.setBitSize(7);
     contents_rcv_soft_pedal.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Soft Pedal",
                                       contents_rcv_soft_pedal));
 
     final RangeContents contents_rcv_bank_select =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_bank_select.setBitSize(7);
     contents_rcv_bank_select.setDefaultValue(0x1);
     node_multi_part_n.add(new MapNode("Rcv Bank Select",
                                       contents_rcv_bank_select));
 
     final RangeContents contents_scale_tuning_c =
-      new RangeContents(range_scale_tuning, "internal-tune-c");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-c");
     contents_scale_tuning_c.setBitSize(7);
     contents_scale_tuning_c.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning C",
                                       contents_scale_tuning_c));
 
     final RangeContents contents_scale_tuning_c_sharp =
-      new RangeContents(range_scale_tuning, "internal-tune-c-sharp");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-c-sharp");
     contents_scale_tuning_c_sharp.setBitSize(7);
     contents_scale_tuning_c_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning C#",
                                       contents_scale_tuning_c_sharp));
 
     final RangeContents contents_scale_tuning_d =
-      new RangeContents(range_scale_tuning, "internal-tune-d");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-d");
     contents_scale_tuning_d.setBitSize(7);
     contents_scale_tuning_d.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning D",
                                       contents_scale_tuning_d));
 
     final RangeContents contents_scale_tuning_d_sharp =
-      new RangeContents(range_scale_tuning, "internal-tune-d-sharp");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-d-sharp");
     contents_scale_tuning_d_sharp.setBitSize(7);
     contents_scale_tuning_d_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning D#",
                                       contents_scale_tuning_d_sharp));
 
     final RangeContents contents_scale_tuning_e =
-      new RangeContents(range_scale_tuning, "internal-tune-e");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-e");
     contents_scale_tuning_e.setBitSize(7);
     contents_scale_tuning_e.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning E",
                                       contents_scale_tuning_e));
 
     final RangeContents contents_scale_tuning_f =
-      new RangeContents(range_scale_tuning, "internal-tune-f");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-f");
     contents_scale_tuning_f.setBitSize(7);
     contents_scale_tuning_f.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning F",
                                       contents_scale_tuning_f));
 
     final RangeContents contents_scale_tuning_f_sharp =
-      new RangeContents(range_scale_tuning, "internal-tune-f-sharp");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-f-sharp");
     contents_scale_tuning_f_sharp.setBitSize(7);
     contents_scale_tuning_f_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning F#",
                                       contents_scale_tuning_f_sharp));
 
     final RangeContents contents_scale_tuning_g =
-      new RangeContents(range_scale_tuning, "internal-tune-g");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-g");
     contents_scale_tuning_g.setBitSize(7);
     contents_scale_tuning_g.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning G",
                                       contents_scale_tuning_g));
 
     final RangeContents contents_scale_tuning_g_sharp =
-      new RangeContents(range_scale_tuning, "internal-tune-g-sharp");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-g-sharp");
     contents_scale_tuning_g_sharp.setBitSize(7);
     contents_scale_tuning_g_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning G#",
                                       contents_scale_tuning_g_sharp));
 
     final RangeContents contents_scale_tuning_a =
-      new RangeContents(range_scale_tuning, "internal-tune-a");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-a");
     contents_scale_tuning_a.setBitSize(7);
     contents_scale_tuning_a.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning A",
                                       contents_scale_tuning_a));
 
     final RangeContents contents_scale_tuning_a_sharp =
-      new RangeContents(range_scale_tuning, "internal-tune-a-sharp");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-a-sharp");
     contents_scale_tuning_a_sharp.setBitSize(7);
     contents_scale_tuning_a_sharp.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning A#",
                                       contents_scale_tuning_a_sharp));
 
     final RangeContents contents_scale_tuning_b =
-      new RangeContents(range_scale_tuning, "internal-tune-b");
+      new RangeContents(sparseType_scale_tuning, "internal-tune-b");
     contents_scale_tuning_b.setBitSize(7);
     contents_scale_tuning_b.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Scale Tuning B",
@@ -2264,7 +2276,7 @@ public class DB50XG extends AbstractDevice
     buildPartControl(node_multi_part_n, "PAT", 0x00);
 
     final RangeContents contents_ac1_controller_number =
-      new RangeContents(range_controller_number);
+      new RangeContents(sparseType_controller_number);
     contents_ac1_controller_number.setBitSize(7);
     contents_ac1_controller_number.setDefaultValue(0x10);
     node_multi_part_n.add(new MapNode("AC1 Controller Number",
@@ -2272,7 +2284,7 @@ public class DB50XG extends AbstractDevice
     buildPartControl(node_multi_part_n, "AC1", 0x00);
 
     final RangeContents contents_ac2_controller_number =
-      new RangeContents(range_controller_number);
+      new RangeContents(sparseType_controller_number);
     contents_ac2_controller_number.setBitSize(7);
     contents_ac2_controller_number.setDefaultValue(0x11);
     node_multi_part_n.add(new MapNode("AC2 Controller Number",
@@ -2280,56 +2292,56 @@ public class DB50XG extends AbstractDevice
     buildPartControl(node_multi_part_n, "AC2", 0x00);
 
     final RangeContents contents_portamento_switch =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_portamento_switch.setBitSize(7);
     contents_portamento_switch.setDefaultValue(0x0);
     node_multi_part_n.add(new MapNode("Portamento Switch",
                                       contents_portamento_switch));
 
     final RangeContents contents_portamento_time =
-      new RangeContents(range_non_negative_7bit, "internal-time");
+      new RangeContents(sparseType_non_negative_7bit, "internal-time");
     contents_portamento_time.setBitSize(7);
     contents_portamento_time.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Portamento Time",
                                       contents_portamento_time));
 
     final RangeContents contents_pitch_eg_initial_level =
-      new RangeContents(range_signed_7bit, "internal-volume");
+      new RangeContents(sparseType_signed_7bit, "internal-volume");
     contents_pitch_eg_initial_level.setBitSize(7);
     contents_pitch_eg_initial_level.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pitch EG Initial Level",
                                       contents_pitch_eg_initial_level));
 
     final RangeContents contents_pitch_eg_attack_time =
-      new RangeContents(range_signed_7bit, "internal-time");
+      new RangeContents(sparseType_signed_7bit, "internal-time");
     contents_pitch_eg_attack_time.setBitSize(7);
     contents_pitch_eg_attack_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pitch EG Attack Time",
                                       contents_pitch_eg_attack_time));
 
     final RangeContents contents_pitch_eg_release_level =
-      new RangeContents(range_signed_7bit, "internal-volume");
+      new RangeContents(sparseType_signed_7bit, "internal-volume");
     contents_pitch_eg_release_level.setBitSize(7);
     contents_pitch_eg_release_level.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pitch EG Release Level",
                                       contents_pitch_eg_release_level));
 
     final RangeContents contents_pitch_eg_release_time =
-      new RangeContents(range_signed_7bit, "internal-time");
+      new RangeContents(sparseType_signed_7bit, "internal-time");
     contents_pitch_eg_release_time.setBitSize(7);
     contents_pitch_eg_release_time.setDefaultValue(0x40);
     node_multi_part_n.add(new MapNode("Pitch EG Release Time",
                                       contents_pitch_eg_release_time));
 
     final RangeContents contents_velocity_limit_low =
-      new RangeContents(range_positive_7bit, "internal-limit-bottom");
+      new RangeContents(sparseType_positive_7bit, "internal-limit-bottom");
     contents_velocity_limit_low.setBitSize(7);
     contents_velocity_limit_low.setDefaultValue(0x01);
     node_multi_part_n.add(new MapNode("Velocity Limit Low",
                                       contents_velocity_limit_low));
 
     final RangeContents contents_velocity_limit_high =
-      new RangeContents(range_positive_7bit, "internal-limit-top");
+      new RangeContents(sparseType_positive_7bit, "internal-limit-top");
     contents_velocity_limit_high.setBitSize(7);
     contents_velocity_limit_high.setDefaultValue(0x7f);
     node_multi_part_n.add(new MapNode("Velocity Limit High",
@@ -2354,116 +2366,117 @@ public class DB50XG extends AbstractDevice
       new MapNode("Drum Setup Note " + r, addr2index(0x30 + n, r, 0x00));
 
     final RangeContents contents_pitch_coarse =
-      new RangeContents(range_signed_7bit, "internal-transpose");
+      new RangeContents(sparseType_signed_7bit, "internal-transpose");
     contents_pitch_coarse.setBitSize(7);
     contents_pitch_coarse.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Pitch Coarse",
                                            contents_pitch_coarse));
 
     final RangeContents contents_pitch_fine =
-      new RangeContents(range_scale_tuning);
+      new RangeContents(sparseType_scale_tuning);
     contents_pitch_fine.setBitSize(7);
     contents_pitch_fine.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Pitch Fine",
                                            contents_pitch_fine));
 
     final RangeContents contents_level =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_level.setBitSize(7);
     contents_level.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Level", contents_level));
 
-    final Range range_alternative_group =
-      new Range("internal-control").
+    final SparseType sparseType_alternative_group =
+      new SparseTypeImpl("internal-control").
       addSingleValue(0x00, "Off").
       addSubrange(0x01, 0x7f, Int8Type.defaultInstance);
     final RangeContents contents_alternative_group =
-      new RangeContents(range_alternative_group);
+      new RangeContents(sparseType_alternative_group);
     contents_alternative_group.setBitSize(7);
     contents_alternative_group.setDefaultValue(n);
     node_drum_setup_note_r.add(new MapNode("Alternative Group",
                                            contents_alternative_group));
 
-    final RangeContents contents_pan = new RangeContents(range_pan_extended);
+    final RangeContents contents_pan =
+      new RangeContents(sparseType_pan_extended);
     contents_pan.setBitSize(7);
     contents_pan.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Pan", contents_pan));
 
     final RangeContents contents_reverb_send =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_reverb_send.setBitSize(7);
     contents_reverb_send.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Reverb Send",
                                            contents_reverb_send));
 
     final RangeContents contents_chorus_send =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_chorus_send.setBitSize(7);
     contents_chorus_send.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Chorus Send",
                                            contents_chorus_send));
 
     final RangeContents contents_variation_send =
-      new RangeContents(range_volume);
+      new RangeContents(sparseType_volume);
     contents_variation_send.setBitSize(7);
     contents_variation_send.setDefaultValue(0x7f);
     node_drum_setup_note_r.add(new MapNode("Variation Send",
                                            contents_variation_send));
 
-    final Range range_key_assign =
-      new Range("internal-control").
+    final SparseType sparseType_key_assign =
+      new SparseTypeImpl("internal-control").
       addSubrange(0x00, 0x01, enumType_key_assign);
     final RangeContents contents_key_assign =
-      new RangeContents(range_key_assign);
+      new RangeContents(sparseType_key_assign);
     contents_key_assign.setBitSize(7);
     contents_key_assign.setDefaultValue(0x0);
     node_drum_setup_note_r.add(new MapNode("Key Assign",
                                            contents_key_assign));
 
     final RangeContents contents_rcv_note_off =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_note_off.setBitSize(7);
     contents_rcv_note_off.setDefaultValue(0x0);
     node_drum_setup_note_r.add(new MapNode("Rcv Note Off",
                                            contents_rcv_note_off));
 
     final RangeContents contents_rcv_note_on =
-      new RangeContents(range_switch);
+      new RangeContents(sparseType_switch);
     contents_rcv_note_on.setBitSize(7);
     contents_rcv_note_on.setDefaultValue(0x0);
     node_drum_setup_note_r.add(new MapNode("Rcv Note On",
                                            contents_rcv_note_on));
 
     final RangeContents contents_filter_cutoff_frequency =
-      new RangeContents(range_signed_7bit, "internal-tune");
+      new RangeContents(sparseType_signed_7bit, "internal-tune");
     contents_filter_cutoff_frequency.setBitSize(7);
     contents_filter_cutoff_frequency.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Filter Cutoff Frequency",
                                            contents_filter_cutoff_frequency));
 
     final RangeContents contents_filter_resonance =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_filter_resonance.setBitSize(7);
     contents_filter_resonance.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("Filter Resonance",
                                            contents_filter_resonance));
 
     final RangeContents contents_eg_attack_rate =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_eg_attack_rate.setBitSize(7);
     contents_eg_attack_rate.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("EG Attack Rate",
                                            contents_eg_attack_rate));
 
     final RangeContents contents_eg_decay1_rate =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_eg_decay1_rate.setBitSize(7);
     contents_eg_decay1_rate.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("EG Decay1 Rate",
                                            contents_eg_decay1_rate));
 
     final RangeContents contents_eg_decay2_rate =
-      new RangeContents(range_signed_7bit);
+      new RangeContents(sparseType_signed_7bit);
     contents_eg_decay2_rate.setBitSize(7);
     contents_eg_decay2_rate.setDefaultValue(0x40);
     node_drum_setup_note_r.add(new MapNode("EG Decay2 Rate",

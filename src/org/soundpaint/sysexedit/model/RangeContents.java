@@ -28,10 +28,11 @@ import java.util.Vector;
 import javax.swing.SwingUtilities;
 
 /**
- * This class holds the structural information and the actual contents,
- * based on Range objects, of a single memory entry of the target device.
- * A memory entry may be part of a memory location or represent just one
- * memory location or cover a couple of memory locations (up to 32 bits).
+ * This class holds the structural information and the actual
+ * contents, based on a sparse type of a single entry in the target
+ * device's model.  An entry may be part of a memory location or
+ * represent just one memory location or cover a couple of memory
+ * locations (up to 32 bits).
  */
 public class RangeContents extends AbstractContents
 {
@@ -137,8 +138,8 @@ public class RangeContents extends AbstractContents
       throw new IllegalArgumentException("amount");
     final FlagsType unusedType = new FlagsType();
     final SparseType sparseType =
-      new Range(SparseType.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
-                unusedType);
+      new SparseTypeImpl(SparseType.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
+                         unusedType);
     return sparseType;
   }
 
@@ -228,11 +229,15 @@ public class RangeContents extends AbstractContents
     int index = -1;
     Integer value = sparseType.lowermost();
     while (value != null) {
-      final Contents contents =
-        new RangeContents(new Range(sparseType.getIconKey(),
-                                    value, value,
-                                    new EnumType(value, new String[] {
-                                        sparseType.getDisplayValue(value)})));
+      final EnumType enumType =
+        new EnumType(value, new String[]
+          {
+            sparseType.getDisplayValue(value)
+          });
+      final SparseTypeImpl editorSparseType =
+        new SparseTypeImpl(sparseType.getIconKey(),
+                           value, value, enumType);
+      final Contents contents = new RangeContents(editorSparseType);
       contents.setValue(value);
       editor.addContents(contents);
       index++;

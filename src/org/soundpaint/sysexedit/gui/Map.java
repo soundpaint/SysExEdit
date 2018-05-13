@@ -34,7 +34,7 @@ import javax.swing.tree.TreeSelectionModel;
 import org.soundpaint.sysexedit.model.AddressRepresentation;
 import org.soundpaint.sysexedit.model.Editor;
 import org.soundpaint.sysexedit.model.MapNode;
-import org.soundpaint.sysexedit.model.Range;
+import org.soundpaint.sysexedit.model.SparseType;
 import org.soundpaint.sysexedit.model.ValueType;
 
 /**
@@ -242,7 +242,7 @@ public class Map extends JTree
         text = tree.convertValueToText(value, selected, expanded,
                                        leaf, row, hasFocus);
       if (icon == null)
-        icon = UIManager.getDefaults().getIcon(Range.GENERIC_ICON_KEY);
+        icon = UIManager.getDefaults().getIcon(SparseType.GENERIC_ICON_KEY);
 
       setIcon(icon);
       setText(text);

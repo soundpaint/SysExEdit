@@ -1,5 +1,5 @@
 /*
- * @(#)Range.java 1.00 98/01/31
+ * @(#)SparseTypeImpl.java 1.00 98/01/31
  *
  * Copyright (C) 1998, 2018 Jürgen Reuter
  *
@@ -25,17 +25,17 @@ import java.util.TreeSet;
 import javax.swing.Icon;
 
 /**
- * A (possibly non-contigous) range represents a (possibly sparse) set
- * of integer values that map to objects with string representation.
- * It is composed of a finite list of disjunctive contigous subranges.
- * A contigous subrange is a (non-sparse) set of integer values in the
- * range 0x00000000 through 0xffffffff.
+ * A sparse type represents a (possibly sparse) set of integer values
+ * that map to objects with string representation.  It is composed of
+ * a finite list of disjunctive contiguous subranges.  A contiguous
+ * subrange is a (non-sparse) set of integer values in the range
+ * 0x00000000 through 0xffffffff.
  *
  * IMPORTANT NOTE: Values are handled as signed integer values,
  * i.e. note that 0x7fffffff &gt; 0x0, but 0xffffffff &lt; 0x0. This
  * is important when specifying upper/lower bounds beyond 0x7fffffff.
  *
- * A contigous range is specified by two integer values that define
+ * A contiguous range is specified by two integer values that define
  * the lower and upper bound of the range (the range includes the
  * bounds).  Here, the integer range is regarded to be cyclic; i.e. by
  * swapping the lower and upper bound, you get the complementary range
@@ -45,17 +45,17 @@ import javax.swing.Icon;
  * [0x8fff, 0xffffffff] and [0x0, 0x8000], that holds 32769 +
  * 4294930433 = 4294963202 values.
  */
-public class Range implements SparseType
+public class SparseTypeImpl implements SparseType
 {
   /**
    * A key that represents an icon that illustrates an instance of
-   * this Range.
+   * this sparse type.
    */
   private final String iconKey;
 
   /**
-   * The list of all contigous ranges, sorted by ascending
-   * representation values.
+   * The set of all contiguous ranges that make up this sparse type,
+   * sorted by ascending representation values.
    */
   private final TreeSet<Subrange> subranges;
 
@@ -67,25 +67,25 @@ public class Range implements SparseType
   private TreeSet<Subrange> subrangesByValue;
 
   /**
-   * The total number of valid values in this range.
+   * The total number of valid values in this sparse type.
    */
   private long size = 0;
 
   /**
-   * Creates a range that is initially empty.  Uses the generic
-   * fall-back icon for this range.
+   * Creates a sparse type that is initially empty.  Uses the generic
+   * fall-back icon for this sparse type.
    */
-  public Range()
+  public SparseTypeImpl()
   {
     this(GENERIC_ICON_KEY);
   }
 
   /**
-   * Creates a range that is initially empty.
+   * Creates a sparse type that is initially empty.
    * @param iconKey The key of the icon to be used when rendering this
-   * range in the GUI.
+   * sparse type in the GUI.
    */
-  public Range(final String iconKey)
+  public SparseTypeImpl(final String iconKey)
   {
     this.iconKey = iconKey;
     subranges = new TreeSet<Subrange>();
@@ -93,16 +93,14 @@ public class Range implements SparseType
   }
 
   /**
-   * Creates a range with initially a single contigous range.
-   * @param lb The lower bound of the contigous range.
-   * @param ub The upper bound of the contigous range.
-   * @param valueType The ValueType for the contigous range.
+   * Creates a sparse type with initially a single contiguous range.
+   * @param lb The lower bound of the contiguous range.
+   * @param ub The upper bound of the contiguous range.
+   * @param valueType The ValueType for the contiguous range.
    * @exception NullPointerException If valueType equals null.
-   * @exception IllegalArgumentException If the insertion range overlaps
-   *    some already exisiting range.
    */
-  public Range(final String iconKey,
-               final int lb, final int ub, final ValueType valueType)
+  public SparseTypeImpl(final String iconKey,
+                        final int lb, final int ub, final ValueType valueType)
   {
     this(iconKey);
     addSubrange(lb, ub, valueType);
@@ -143,7 +141,7 @@ public class Range implements SparseType
 
   /**
    * Returns the key for the icon, that is displayed together with each
-   * instance of this range.
+   * instance of this sparse type.
    * @return The key of the icon to be displayed.
    */
   public String getIconKey()
@@ -152,22 +150,22 @@ public class Range implements SparseType
   }
 
   /**
-   * Adds a single contigous range to the total range.
-   * @param lb The lower bound of the contigous range.
-   * @param ub The upper bound of the contigous range.
-   * @param valueType The ValueType for the contigous range.
+   * Adds a single contiguous range to this sparse type.
+   * @param lb The lower bound of the contiguous range.
+   * @param ub The upper bound of the contiguous range.
+   * @param valueType The ValueType for the contiguous range.
    * @return This object for convenience of chained expressions.
    * @exception NullPointerException If valueType equals null.
-   * @exception IllegalArgumentException If the insertion range overlaps
-   *    some already exisiting range.
+   * @exception IllegalArgumentException If the subrange overlaps some
+   *    already exisiting subrange.
    */
-  public Range addSubrange(final int lb, final int ub,
-                           final ValueType valueType)
+  public SparseTypeImpl addSubrange(final int lb, final int ub,
+                                    final ValueType valueType)
   {
     final long unsigned_lb = signed_int_to_long(lb);
     final long unsigned_ub = signed_int_to_long(ub);
     if ((lb < 0) && (ub >= 0)) {
-      // overlapping contigous; so split it up
+      // overlapping contiguous; so split it up
       subranges.add(new Subrange(unsigned_lb, max_unsigned, valueType));
       subranges.add(new Subrange(min_unsigned, unsigned_ub, valueType));
     } else {
@@ -178,28 +176,29 @@ public class Range implements SparseType
   }
 
   /**
-   * Adds a single enumeration value to the total range.
+   * Adds a single enumeration value to this sparse type.
    * @param value The enumeration value to be added.
    * @param valueType The ValueType for the value.
    * @return This object for convenience of chained expressions.
    * @exception NullPointerException If valueType equals null.
-   * @exception IllegalArgumentException If the insertion range overlaps
-   *    some already existing range.
+   * @exception IllegalArgumentException If the single value is
+   *    already contained in some existing subrange.
    */
-  public Range addSingleValue(final int value, final ValueType valueType)
+  public SparseTypeImpl addSingleValue(final int value,
+                                       final ValueType valueType)
   {
     return addSubrange(value, value, valueType);
   }
 
   /**
-   * Adds a single value to the total range.
+   * Adds a single value to the sparse type.
    * @param valueType The ValueType for the value.
    * @return This object for convenience of chained expressions.
    * @exception NullPointerException If valueType equals null.
-   * @exception IllegalArgumentException If the insertion range overlaps
-   *    some already existing range.
+   * @exception IllegalArgumentException If the single value is
+   *    already contained in some existing subrange.
    */
-  public Range addSingleValue(final ValueType valueType)
+  public SparseTypeImpl addSingleValue(final ValueType valueType)
   {
     if (valueType.getSize() != 1) {
       throw new IllegalArgumentException("valueType does not represent a single value");
@@ -208,15 +207,15 @@ public class Range implements SparseType
   }
 
   /**
-   * Adds a single enumeration value to the total range.
+   * Adds a single enumeration value to the sparse type.
    * @param value The enumeration value to be added.
    * @param enumValue The enumeration value as string.
    * @return This object for convenience of chained expressions.
    * @exception NullPointerException If enumValue equals null.
-   * @exception IllegalArgumentException If the insertion range overlaps
-   *    some already exisiting range.
+   * @exception IllegalArgumentException If the single value is
+   *    already contained in some exisiting subrange.
    */
-  public Range addSingleValue(final int value, final String enumValue)
+  public SparseTypeImpl addSingleValue(final int value, final String enumValue)
   {
     return addSingleValue(value, new EnumType(value, enumValue));
   }
@@ -273,7 +272,7 @@ public class Range implements SparseType
   }
 
   /**
-   * Returns the minimally required bit size to code the total range.
+   * Returns the minimally required bit size to code the sparse type.
    * @return The minimally required bit size in the range 0..32.
    */
   public byte getRequiredBitSize()
@@ -283,20 +282,20 @@ public class Range implements SparseType
 
   /**
    * Checks, if the specified value is a member of one of the
-   * contigous ranges of this Range object.
+   * contiguous subranges of this sparse type.
    * @param x The Integer value to be checked.
    * @return True, if the value is in range.
    */
-  public synchronized boolean isInRange(final int x)
+  private synchronized boolean containsValue(final int x)
   {
     final Subrange subrange = getSubrangeByValue(x);
     return subrange != null;
   }
 
   /**
-   * Returns the lowermost value that is in range.
-   * @return The lowermost value that is in range or null, if the range
-   *    is empty.
+   * Returns the lowermost value of this sparse type.
+   * @return The lowermost value of this sparse type or null, if this
+   *    sparse type is empty.
    */
   public Integer lowermost()
   {
@@ -307,9 +306,9 @@ public class Range implements SparseType
   }
 
   /**
-   * Returns the uppermost value that is in range.
-   * @return The uppermost value that is in range or null, if the range
-   *    is empty.
+   * Returns the uppermost value of this sparse type.
+   * @return The uppermost value of this sparse type or null, if this
+   *    sparse type is empty.
    */
   public Integer uppermost()
   {
@@ -328,12 +327,12 @@ public class Range implements SparseType
   }
 
   /**
-   * Given some Integer value x that may be or not in range, returns the
-   * next upper value that is in range.
-   * @param x Some arbitrary contents value (which may be even out of
-   *    range).
-   * @return The next upper value that is in range or null, if there is
-   *    no such value.
+   * Given some Integer value x that this sparse type may contain or
+   * not, returns the next upper value that this sparse type contains.
+   * @param x Some arbitrary contents value (which may be even from
+   *    the omitted subranges of this sparse type).
+   * @return The next upper value that this sparse type contains or
+   *    null, if there is no such value.
    */
   public Integer succ(final int x)
   {
@@ -349,12 +348,12 @@ public class Range implements SparseType
   }
 
   /**
-   * Given some Integer value x that may be or not in range, returns the
-   * next lower value that is in range.
-   * @param x Some arbitrary contents value (which may be even out of
-   *    range).
-   * @return The next lower value that is in range or null, if there is
-   *    no such value.
+   * Given some Integer value x that this sparse type may contain or
+   * not, returns the next lower value that this sparse type contains.
+   * @param x Some arbitrary contents value (which may be even from
+   *    the omitted subranges of this sparse type).
+   * @return The next lower value that this sparse type contains or
+   *    null, if there is no such value.
    */
   public Integer pred(final int x)
   {
@@ -371,8 +370,9 @@ public class Range implements SparseType
 
   /**
    * Returns a String that represents x according to the ValueType
-   * specifications of each contigous range.  If x is null or its
-   * value is beyond each contigous range, this method returns null.
+   * specifications of each contiguous range.  If x is null or the
+   * sparse type does not contains this value, this method returns
+   * null.
    * @param x The Integer value to be represented.
    * @return The String representation of x.
    */
@@ -397,7 +397,7 @@ public class Range implements SparseType
       }
       s.append(subrange.toString());
     }
-    return "Range[subRanges={" + s + "}]";
+    return "SparseTypeImpl[subRanges={" + s + "}]";
   }
 }
 

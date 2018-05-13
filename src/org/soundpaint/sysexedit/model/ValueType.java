@@ -22,7 +22,7 @@ package org.soundpaint.sysexedit.model;
 
 /**
  * A class that implements this interface represents the type of a
- * contigous, finite range of integer values.  For each integer value
+ * contiguous, finite range of integer values.  For each integer value
  * in this range, the implementing class must also define a string
  * representation for human display, called "display value".  The
  * display value should be unique among all values of the value range
@@ -33,8 +33,8 @@ public interface ValueType
   /**
    * Default display value for an integer value out of range.  This
    * string is a fallback display value for an integer value that is
-   * not in the contigous range of integer values for this value range
-   * type.
+   * not in the contiguous range of integer values for this value
+   * range type.
    */
   String DISPLAY_VALUE_UNKNOWN = "???";
 

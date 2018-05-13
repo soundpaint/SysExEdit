@@ -32,10 +32,10 @@ public class Subrange implements Comparable<Subrange>
   }
 
   /**
-   * Creates a new contigous subrange.
-   * @param lb The lower bound of the contigous subrange.
-   * @param ub The upper bound of the contigous subrange.
-   * @param valueType The ValueType for the contigous subrange.
+   * Creates a new contiguous subrange.
+   * @param lb The lower bound of the contiguous subrange.
+   * @param ub The upper bound of the contiguous subrange.
+   * @param valueType The ValueType for the contiguous subrange.
    * @exception NullPointerException If valueType equals null.
    */
   public Subrange(final long lb, final long ub, final ValueType valueType)

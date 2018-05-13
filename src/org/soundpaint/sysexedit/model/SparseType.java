@@ -45,14 +45,6 @@ public interface SparseType
   byte getRequiredBitSize();
 
   /**
-   * Checks, if the specified value is a valid member of this
-   * sparse type.
-   * @param x The value to be checked.
-   * @return True, if the value is in range.
-   */
-  boolean isInRange(final int x);
-
-  /**
    * Returns the lowermost value of this sparse type.
    * @return The lowermost value of this sparse type or null, if the
    *    sparse type is empty.

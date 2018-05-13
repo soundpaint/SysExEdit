@@ -24,10 +24,11 @@ import javax.swing.Icon;
 import javax.swing.UIManager;
 
 /**
- * This class holds the structural information and the actual contents,
- * based on Range objects, of a single memory entry of the target device.
- * A memory entry may be part of a memory location or represent just one
- * memory location or cover a couple of memory locations (up to 32 bits).
+ * This class holds the structural information and the actual
+ * contents, based on a sparse type of a single entry in the target
+ * device's model.  A memory entry may be part of a memory location or
+ * represent just one memory location or cover a couple of memory
+ * locations (up to 32 bits).
  */
 public abstract class AbstractContents implements Contents
 {
@@ -64,8 +65,8 @@ public abstract class AbstractContents implements Contents
 
   /**
    * Returns a String that represents this contents' current value
-   * according to the underlying SparseType, or null, if the value
-   * is not in range.
+   * according to the underlying SparseType, or null, if the
+   * associated sparse type does not contain this value.
    * @return The String representation of this contents' current
    * value.
    */
@@ -97,13 +98,14 @@ public abstract class AbstractContents implements Contents
       return icon;
     System.err.println("[WARNING: icon not found: " + iconKey + "]");
     System.err.flush();
-    return UIManager.getIcon(Range.GENERIC_ICON_KEY);
+    return UIManager.getIcon(SparseType.GENERIC_ICON_KEY);
   }
 
-  /*
-   * Sets the default value for this contents. This value is shared among
-   * all ranges; thus it even may be out of the currently selected or
-   * any other range.
+  /**
+   * Sets the default value for this contents.  This value is not
+   * bound to a specific subrange of the associated sparse type; thus
+   * it even may be out of the currently selected or any other
+   * subrange.
    * @param defaultValue The default value.
    * @see #reset
    */
@@ -113,9 +115,9 @@ public abstract class AbstractContents implements Contents
   }
 
   /**
-   * Returns the current default value. This value is shared among
-   * all ranges; thus it even may be out of the currently selected or
-   * any other range.
+   * Returns the current default value.  This value is not bound to a
+   * specific subrange of the associated sparse type; thus it even may
+   * be out of the currently selected or any other subrange.
    * @return The current default value.
    */
   public int getDefaultValue()
@@ -123,10 +125,10 @@ public abstract class AbstractContents implements Contents
     return defaultValue;
   }
 
-  /*
-   * Sets the value for this contents. This value is shared among
-   * all ranges; thus it even may be out of the currently selected or
-   * any other range.
+  /**
+   * Sets the value for this contents.  This value is not bound to a
+   * specific subrange of the associated sparse type; thus it even may
+   * be out of the currently selected or any other subrange.
    * @param value The value.
    */
   public void setValue(final int value)
@@ -135,9 +137,9 @@ public abstract class AbstractContents implements Contents
   }
 
   /**
-   * Returns the current value. This value is shared among
-   * all ranges; thus it even may be out of the currently selected or
-   * any other range.
+   * Returns the current value.  This value is not bound to a specific
+   * subrange of the associated sparse type; thus it even may be out
+   * of the currently selected or any other subrange.
    * @return The current value.
    */
   public int getValue()
@@ -183,7 +185,8 @@ public abstract class AbstractContents implements Contents
   }
 
   /**
-   * Sets the contents of this node to the uppermost value that is in range.
+   * Sets the contents of this node to the uppermost value that the
+   * associated sparse type contains.
    */
   public void uppermost()
   {
@@ -191,7 +194,8 @@ public abstract class AbstractContents implements Contents
   }
 
   /**
-   * Sets the contents of this node to the lowermost value that is in range.
+   * Sets the contents of this node to the lowermost value that the
+   * associated sparse type contains.
    */
   public void lowermost()
   {
@@ -199,11 +203,11 @@ public abstract class AbstractContents implements Contents
   }
 
   /**
-   * Sets the effective bit size of this contents. The effective bit size
-   * must be equal to or greater than the required bit size that is
-   * implicitly or explicitly defined through the structure of the
-   * underlying information. Those bits that remain unused are supposed to
-   * be constantly zero.
+   * Sets the effective bit size of this contents. The effective bit
+   * size must be equal to or greater than the required bit size that
+   * is implicitly or explicitly defined through the structure of the
+   * associated sparse type.  Those bits that remain unused are
+   * supposed to be constantly zero.
    * @param bit_size The effective bit size of this contents.
    * @exception IllegalArgumentException If bit_size is below zero or
    *    below the required bit size.
@@ -212,9 +216,9 @@ public abstract class AbstractContents implements Contents
 
   /**
    * Returns the current effective bit size of this Contents object.
-   * This can be set by method setBitSize.
+   * The value is set with method #setBitSize().
    * Initially, the effective bit size is set to the required bit size of
-   * the underlying structure.
+   * the associated sparse type.
    * @return The current effective bit size.
    */
   public abstract byte getBitSize();
