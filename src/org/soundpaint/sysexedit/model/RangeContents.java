@@ -47,8 +47,8 @@ public class RangeContents extends AbstractContents
   /** The effective size of this contents in bits (0..32). */
   private byte bit_size;
 
-  /** Range object for this contents. */
-  private final Range range;
+  /** Representation info for this contents. */
+  private final Representation representation;
 
   /** The editor for entering a value of this range contents. */
   private final Editor editor;
@@ -61,34 +61,34 @@ public class RangeContents extends AbstractContents
   }
 
   /**
-   * Creates a new RangeContents for the given Range object. The range is
-   * selected as currently valid range.
-   * @param range The Range object that holds range and representation
-   *    information for this RangeContents.
-   * @exception NullPointerException If range equals null.
+   * Creates a new RangeContents for the given Representation
+   * object.
+   * @param representation The Representation object that holds
+   *    representation information for this RangeContents.
+   * @exception NullPointerException If representation equals null.
    */
-  public RangeContents(final Range range)
+  public RangeContents(final Representation representation)
   {
-    this(range, null);
+    this(representation, null);
   }
 
   /**
-   * Creates a new RangeContents for the given Range object. The range is
-   * selected as currently valid range.
-   * @param range The Range object that holds range and representation
-   *    information for this RangeContents.
+   * Creates a new RangeContents for the given Representation.
+   * @param representation The Representation object that holds
+   *    representation information for this RangeContents.
    * @param iconKey If non-null, overrides the associated
    * Representation's iconKey.
-   * @exception NullPointerException If range equals null.
+   * @exception NullPointerException If representation equals null.
    */
-  public RangeContents(final Range range, final String iconKey)
+  public RangeContents(final Representation representation,
+                       final String iconKey)
   {
     super(iconKey);
-    if (range == null) {
-      throw new NullPointerException("range");
+    if (representation == null) {
+      throw new NullPointerException("representation");
     }
-    this.range = range;
-    min_bit_size = range.getRequiredBitSize();
+    this.representation = representation;
+    min_bit_size = representation.getRequiredBitSize();
     bit_size = (byte)Math.max(min_bit_size, bit_size);
     editor = new DropDownEditor();
     listeners = new Vector<ContentsChangeListener>();
@@ -129,17 +129,18 @@ public class RangeContents extends AbstractContents
   }
 
   /**
-   * Creates a Range object that represents a bit string.<BR>
+   * Creates a Representation that represents a bit string.<BR>
    * [PENDING: Should this be moved into class Range?]
    */
-  private static Range getBitStringRange(final int amount)
+  private static Representation getBitStringRepresentation(final int amount)
   {
     if ((amount < 0) || (amount > 15))
       throw new IllegalArgumentException("amount");
     final FlagsType unusedType = new FlagsType();
-    final Range range =
-      new Range(Range.GENERIC_ICON_KEY, 0, (1 << amount) - 1, unusedType);
-    return range;
+    final Representation representation =
+      new Range(Representation.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
+                unusedType);
+    return representation;
   }
 
   /**
@@ -163,7 +164,7 @@ public class RangeContents extends AbstractContents
    */
   public RangeContents(final int amount, final String iconKey)
   {
-    this(getBitStringRange(amount));
+    this(getBitStringRepresentation(amount));
     setBitSize(amount);
     setDefaultValue(new Integer(0));
   }
@@ -174,14 +175,15 @@ public class RangeContents extends AbstractContents
    */
   protected Representation getRepresentation()
   {
-    return range;
+    return representation;
   }
 
   /**
-   * Sets the effective bit size of this contents. The effective bit size
-   * is a value in the range 0..32 which must be equal to or greater than
-   * the required bit size of the Range of this RangeContents. The unused
-   * bits are supposed to be constantly zero.
+   * Sets the effective bit size of this contents. The effective bit
+   * size is a value in the range 0..32 which must be equal to or
+   * greater than the required bit size of the Representation of this
+   * RangeContents. The unused bits are supposed to be constantly
+   * zero.
    * @exception IllegalArgumentException If bit_size is out of range.
    */
   public void setBitSize(final int bit_size)
@@ -197,7 +199,7 @@ public class RangeContents extends AbstractContents
    * Returns the current effective bit size of this RangeContents object.
    * This can be set by method setBitSize.<BR>
    * Initially, the effective bit size is set to the required bit size of
-   * the underlying Range object.
+   * the underlying representation.
    * @return The current effective bit size.
    */
   public byte getBitSize()
@@ -207,7 +209,7 @@ public class RangeContents extends AbstractContents
 
   /**
    * Returns a representation of the contents value according to the
-   * underlying bit layout. 
+   * underlying bit layout.
    * @return The array of bits that represents the contents value. For
    *    performance reasons, the return value is actually not an array of
    *    bits, but rather an array of int values with each int value
@@ -226,20 +228,20 @@ public class RangeContents extends AbstractContents
     editor.clear();
     int selectedIndex = -1;
     int index = -1;
-    Integer value = range.lowermost();
+    Integer value = representation.lowermost();
     while (value != null) {
       final Contents contents =
-        new RangeContents(new Range(range.getIconKey(),
+        new RangeContents(new Range(representation.getIconKey(),
                                     value, value,
                                     new EnumType(value, new String[] {
-                                        range.getDisplayValue(value)})));
+                                        representation.getDisplayValue(value)})));
       contents.setValue(value);
       editor.addContents(contents);
       index++;
       if (value == getValue()) {
         selectedIndex = index;
       }
-      value = range.succ(value);
+      value = representation.succ(value);
     }
     if (selectedIndex > 0) {
       editor.setSelectedIndex(selectedIndex);

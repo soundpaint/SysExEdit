@@ -27,6 +27,12 @@ package org.soundpaint.sysexedit.model;
 public interface Representation
 {
   /**
+   * The key for an icon that is applicable as fallback for any kind
+   * of data when no more specific icon is available.
+   */
+  public static final String GENERIC_ICON_KEY = "internal-data";
+
+  /**
    * Returns the key for the icon, that is displayed together with each
    * instance that implements this representation.
    * @return The key of the icon to be displayed.

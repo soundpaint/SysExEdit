@@ -141,7 +141,7 @@ public interface Contents
 
   /**
    * Returns a representation of the contents value according to the
-   * underlying bit layout. 
+   * underlying bit layout.
    * @return The array of bits that represents the contents value. For
    *    performance reasons, the return value is actually not an array of
    *    bits, but rather an array of int values with each int value

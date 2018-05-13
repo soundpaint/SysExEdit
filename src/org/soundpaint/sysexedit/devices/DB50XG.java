@@ -863,7 +863,7 @@ public class DB50XG extends AbstractDevice
   };
 
   /**
-   * Modulatin Depth
+   * Modulation Depth
    */
   private static final String[] BEND_LFO_MOD_DEPTH =
   {
