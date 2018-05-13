@@ -47,8 +47,8 @@ public class RangeContents extends AbstractContents
   /** The effective size of this contents in bits (0..32). */
   private byte bit_size;
 
-  /** Representation info for this contents. */
-  private final Representation representation;
+  /** The sparse type of this contents. */
+  private final SparseType sparseType;
 
   /** The editor for entering a value of this range contents. */
   private final Editor editor;
@@ -61,34 +61,33 @@ public class RangeContents extends AbstractContents
   }
 
   /**
-   * Creates a new RangeContents for the given Representation
-   * object.
-   * @param representation The Representation object that holds
-   *    representation information for this RangeContents.
-   * @exception NullPointerException If representation equals null.
+   * Creates a new RangeContents of the specified sparse type.
+   * @param sparseType The SparseType object that specifies
+   *    the sparse type of this RangeContents.
+   * @exception NullPointerException If sparseType equals null.
    */
-  public RangeContents(final Representation representation)
+  public RangeContents(final SparseType sparseType)
   {
-    this(representation, null);
+    this(sparseType, null);
   }
 
   /**
-   * Creates a new RangeContents for the given Representation.
-   * @param representation The Representation object that holds
-   *    representation information for this RangeContents.
+   * Creates a new RangeContents of the specified sparse type.
+   * @param sparseType The SparseType object that specifies
+   *    the sparse type of this RangeContents.
    * @param iconKey If non-null, overrides the associated
-   * Representation's iconKey.
-   * @exception NullPointerException If representation equals null.
+   * sparse type's iconKey.
+   * @exception NullPointerException If sparseType equals null.
    */
-  public RangeContents(final Representation representation,
+  public RangeContents(final SparseType sparseType,
                        final String iconKey)
   {
     super(iconKey);
-    if (representation == null) {
-      throw new NullPointerException("representation");
+    if (sparseType == null) {
+      throw new NullPointerException("sparseType");
     }
-    this.representation = representation;
-    min_bit_size = representation.getRequiredBitSize();
+    this.sparseType = sparseType;
+    min_bit_size = sparseType.getRequiredBitSize();
     bit_size = (byte)Math.max(min_bit_size, bit_size);
     editor = new DropDownEditor();
     listeners = new Vector<ContentsChangeListener>();
@@ -129,18 +128,18 @@ public class RangeContents extends AbstractContents
   }
 
   /**
-   * Creates a Representation that represents a bit string.<BR>
-   * [PENDING: Should this be moved into class Range?]
+   * Creates a SparseType that represents a bit string.<BR>
+   * [PENDING: Should this be moved to SparseType?]
    */
-  private static Representation getBitStringRepresentation(final int amount)
+  private static SparseType getBitStringType(final int amount)
   {
     if ((amount < 0) || (amount > 15))
       throw new IllegalArgumentException("amount");
     final FlagsType unusedType = new FlagsType();
-    final Representation representation =
-      new Range(Representation.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
+    final SparseType sparseType =
+      new Range(SparseType.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
                 unusedType);
-    return representation;
+    return sparseType;
   }
 
   /**
@@ -158,32 +157,31 @@ public class RangeContents extends AbstractContents
    * Creates a new RangeContents that represents a couple of unused bits.
    * @param amount The amount of unused bits.
    * @param iconKey If non-null, overrides the associated
-   * Representation's iconKey.
+   * SparseType's iconKey.
    * @exception IllegalArgumentException If amount is below zero or above
    *    the upper limit of 15.
    */
   public RangeContents(final int amount, final String iconKey)
   {
-    this(getBitStringRepresentation(amount));
+    this(getBitStringType(amount));
     setBitSize(amount);
     setDefaultValue(new Integer(0));
   }
 
   /**
-   * Returns the Representation object for this Contents object.
-   * @return The Representation object for this Contents object.
+   * Returns the sparse type of this RangeContents object.
+   * @return The SparseType object of this RangeContents object.
    */
-  protected Representation getRepresentation()
+  protected SparseType getSparseType()
   {
-    return representation;
+    return sparseType;
   }
 
   /**
-   * Sets the effective bit size of this contents. The effective bit
+   * Sets the effective bit size of this RangeContents. The effective bit
    * size is a value in the range 0..32 which must be equal to or
-   * greater than the required bit size of the Representation of this
-   * RangeContents. The unused bits are supposed to be constantly
-   * zero.
+   * greater than the required bit size of this RangeContents. The
+   * unused bits are supposed to be constantly zero.
    * @exception IllegalArgumentException If bit_size is out of range.
    */
   public void setBitSize(final int bit_size)
@@ -199,7 +197,7 @@ public class RangeContents extends AbstractContents
    * Returns the current effective bit size of this RangeContents object.
    * This can be set by method setBitSize.<BR>
    * Initially, the effective bit size is set to the required bit size of
-   * the underlying representation.
+   * the underlying sparse type.
    * @return The current effective bit size.
    */
   public byte getBitSize()
@@ -208,7 +206,7 @@ public class RangeContents extends AbstractContents
   }
 
   /**
-   * Returns a representation of the contents value according to the
+   * Returns a representation of the RangeContents value according to the
    * underlying bit layout.
    * @return The array of bits that represents the contents value. For
    *    performance reasons, the return value is actually not an array of
@@ -228,20 +226,20 @@ public class RangeContents extends AbstractContents
     editor.clear();
     int selectedIndex = -1;
     int index = -1;
-    Integer value = representation.lowermost();
+    Integer value = sparseType.lowermost();
     while (value != null) {
       final Contents contents =
-        new RangeContents(new Range(representation.getIconKey(),
+        new RangeContents(new Range(sparseType.getIconKey(),
                                     value, value,
                                     new EnumType(value, new String[] {
-                                        representation.getDisplayValue(value)})));
+                                        sparseType.getDisplayValue(value)})));
       contents.setValue(value);
       editor.addContents(contents);
       index++;
       if (value == getValue()) {
         selectedIndex = index;
       }
-      value = representation.succ(value);
+      value = sparseType.succ(value);
     }
     if (selectedIndex > 0) {
       editor.setSelectedIndex(selectedIndex);

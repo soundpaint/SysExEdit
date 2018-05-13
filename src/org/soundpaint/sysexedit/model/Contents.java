@@ -49,7 +49,7 @@ public interface Contents
 
   /**
    * Returns a String that represents this contents' current value
-   * according to the underlying Representation, or null, if the value
+   * according to the underlying sparse type, or null, if the value
    * is not in range.
    * @return The String representation of this contents' current
    * value.

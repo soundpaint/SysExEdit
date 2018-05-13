@@ -31,7 +31,7 @@ import javax.swing.UIManager;
  */
 public abstract class AbstractContents implements Contents
 {
-  /** If non-null, overrides associated Representation's iconKey. */
+  /** If non-null, overrides associated sparse type's iconKey. */
   private final String iconKey;
 
   /** The current value. */
@@ -47,7 +47,7 @@ public abstract class AbstractContents implements Contents
 
   /**
    * @param iconKey If non-null, overrides the associated
-   * Representation's iconKey.
+   * sparse type's iconKey.
    */
   protected AbstractContents(final String iconKey)
   {
@@ -57,23 +57,23 @@ public abstract class AbstractContents implements Contents
   }
 
   /**
-   * Returns the Representation object for this Contents object.
-   * @return The Representation object for this Contents object.
+   * Returns the SparseType object for this Contents object.
+   * @return The SparseType object for this Contents object.
    */
-  protected abstract Representation getRepresentation();
+  protected abstract SparseType getSparseType();
 
   /**
    * Returns a String that represents this contents' current value
-   * according to the underlying Representation, or null, if the value
+   * according to the underlying SparseType, or null, if the value
    * is not in range.
    * @return The String representation of this contents' current
    * value.
    */
   public String getDisplayValue()
   {
-    final Representation representation = getRepresentation();
-    if (representation != null) {
-      return representation.getDisplayValue(getValue());
+    final SparseType sparseType = getSparseType();
+    if (sparseType != null) {
+      return sparseType.getDisplayValue(getValue());
     } else {
       return null;
     }
@@ -85,11 +85,11 @@ public abstract class AbstractContents implements Contents
    */
   public Icon getIcon()
   {
-    final Representation representation = getRepresentation();
-    if (representation == null)
+    final SparseType sparseType = getSparseType();
+    if (sparseType == null)
       return null;
     final String iconKey =
-      this.iconKey != null ? this.iconKey : representation.getIconKey();
+      this.iconKey != null ? this.iconKey : sparseType.getIconKey();
     if (iconKey == null)
       return null;
     final Icon icon = UIManager.getIcon(iconKey);
@@ -159,10 +159,10 @@ public abstract class AbstractContents implements Contents
    */
   public void increment()
   {
-    final Representation representation = getRepresentation();
-    if (representation.isEnumerable())
+    final SparseType sparseType = getSparseType();
+    if (sparseType.isEnumerable())
       {
-        final Integer succValue = representation.succ(getValue());
+        final Integer succValue = sparseType.succ(getValue());
         if (succValue != null)
           setValue(succValue);
       }
@@ -173,10 +173,10 @@ public abstract class AbstractContents implements Contents
    */
   public void decrement()
   {
-    final Representation representation = getRepresentation();
-    if (representation.isEnumerable())
+    final SparseType sparseType = getSparseType();
+    if (sparseType.isEnumerable())
       {
-        final Integer predValue = representation.pred(getValue());
+        final Integer predValue = sparseType.pred(getValue());
         if (predValue != null)
           setValue(predValue);
       }
@@ -187,7 +187,7 @@ public abstract class AbstractContents implements Contents
    */
   public void uppermost()
   {
-    setValue(getRepresentation().uppermost());
+    setValue(getSparseType().uppermost());
   }
 
   /**
@@ -195,7 +195,7 @@ public abstract class AbstractContents implements Contents
    */
   public void lowermost()
   {
-    setValue(getRepresentation().lowermost());
+    setValue(getSparseType().lowermost());
   }
 
   /**

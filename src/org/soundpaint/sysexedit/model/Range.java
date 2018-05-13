@@ -45,7 +45,7 @@ import javax.swing.Icon;
  * [0x8fff, 0xffffffff] and [0x0, 0x8000], that holds 32769 +
  * 4294930433 = 4294963202 values.
  */
-public class Range implements Representation
+public class Range implements SparseType
 {
   /**
    * A key that represents an icon that illustrates an instance of
@@ -320,7 +320,7 @@ public class Range implements Representation
   }
 
   /**
-   * Returns <code>true</code>, if this representation is enumerable.
+   * Returns <code>true</code>, if this sparse type is enumeratable.
    */
   public boolean isEnumerable()
   {

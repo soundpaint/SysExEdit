@@ -1,5 +1,5 @@
 /*
- * @(#)Representation.java 1.00 98/01/31
+ * @(#)SparseType.java 1.00 98/01/31
  *
  * Copyright (C) 1998, 2018 Jürgen Reuter
  *
@@ -21,10 +21,9 @@
 package org.soundpaint.sysexedit.model;
 
 /**
- * This interface defines the framework for representation classes
- * such as Range.
+ * All sparse type implementations must implement this interface.
  */
-public interface Representation
+public interface SparseType
 {
   /**
    * The key for an icon that is applicable as fallback for any kind
@@ -33,8 +32,8 @@ public interface Representation
   public static final String GENERIC_ICON_KEY = "internal-data";
 
   /**
-   * Returns the key for the icon, that is displayed together with each
-   * instance that implements this representation.
+   * Returns the key for the icon that is displayed together with each
+   * instance that implements this sparse type.
    * @return The key of the icon to be displayed.
    */
   String getIconKey();
@@ -47,55 +46,55 @@ public interface Representation
 
   /**
    * Checks, if the specified value is a valid member of this
-   * representation.
+   * sparse type.
    * @param x The value to be checked.
    * @return True, if the value is in range.
    */
   boolean isInRange(final int x);
 
   /**
-   * Returns the lowermost value of this representation.
-   * @return The lowermost value of this representation or null, if the
-   *    range is empty.
+   * Returns the lowermost value of this sparse type.
+   * @return The lowermost value of this sparse type or null, if the
+   *    sparse type is empty.
    */
   Integer lowermost();
 
   /**
-   * Returns the uppermost value of this representation.
-   * @return The uppermost value of this representation or null, if the
-   *    range is empty.
+   * Returns the uppermost value of this sparse type.
+   * @return The uppermost value of this sparse type or null, if the
+   *    sparse type is empty.
    */
   Integer uppermost();
 
   /**
-   * Returns true, if this representation is enumeratable.
-   * @return true, if this representation is enumeratable.
+   * Returns true, if this sparse type is enumeratable.
+   * @return true, if this sparse type is enumeratable.
    */
   boolean isEnumerable();
 
   /**
    * Given some value x that may be or may be not in range, returns the
-   * next upper value that is in range, provided that this representation
+   * next upper value that is in range, provided that this sparse type
    * is enumeratable.<BR>
    * @param x Some arbitrary value (which may be even out of range).
    * @return The next upper value that is in range or null, if there is
-   *    no such value or this representation is not enumeratable.
+   *    no such value or this sparse type is not enumeratable.
    */
   Integer succ(final int x);
 
   /**
    * Given some value x that may be or may be not in range, returns the
-   * next lower value that is in range, provided that this representation
+   * next lower value that is in range, provided that this sparse type
    * is enumeratable.<BR>
    * @param x Some arbitrary value (which may be even out of range).
    * @return The next lower value that is in range or null, if there is
-   *    no such value or this representation is not enumeratable.
+   *    no such value or this sparse type is not enumeratable.
    */
   Integer pred(final int x);
 
   /**
-   * Returns a String that represents x according to this Representation
-   * or null, if x is not in range.
+   * Returns a String that represents x according to this sparse type
+   * or null, if x is not a valid value for this sparse type.
    * @param x The value to be represented.
    * @return The String representation of x.
    */
