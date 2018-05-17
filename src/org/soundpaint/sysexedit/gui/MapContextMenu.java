@@ -23,8 +23,6 @@ package org.soundpaint.sysexedit.gui;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 
-import org.soundpaint.sysexedit.model.Contents;
-
 public class MapContextMenu extends JPopupMenu
   implements MapSelectionChangeListener
 {

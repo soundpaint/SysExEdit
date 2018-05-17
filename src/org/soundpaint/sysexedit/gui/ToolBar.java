@@ -25,7 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 
-import org.soundpaint.sysexedit.model.Contents;
+import org.soundpaint.sysexedit.model.Value;
 
 public class ToolBar extends JToolBar
   implements DocumentMetaDataChangeListener, MapSelectionChangeListener
@@ -103,7 +103,7 @@ public class ToolBar extends JToolBar
     // ignore
   }
 
-  public void midiDeviceIdChanged(final Contents midiDeviceId)
+  public void midiDeviceIdChanged(final Value midiDeviceId)
   {
     // ignore
   }

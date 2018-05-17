@@ -1,5 +1,5 @@
 /*
- * @(#)MapNode.java 1.00 98/03/02
+ * @(#)ValueChangeListener.java 1.00 98/03/02
  *
  * Copyright (C) 2018 Jürgen Reuter
  *
@@ -20,9 +20,9 @@
 
 package org.soundpaint.sysexedit.model;
 
-public interface ContentsChangeListener
+public interface ValueChangeListener
 {
-  void editingPathValueChanged(final Contents contents);
+  void editingPathValueChanged(final Value value);
 }
 
 /*

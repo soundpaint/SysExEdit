@@ -24,11 +24,11 @@ public interface Editor
 {
   public abstract void clear();
 
-  public abstract void addContents(final Contents contents);
+  public abstract void addSelectableValue(final Value value);
 
   public abstract void setSelectedIndex(final int selectedIndex);
 
-  public abstract Contents getSelectedContents();
+  public abstract Value getSelectedValue();
 }
 
 /*

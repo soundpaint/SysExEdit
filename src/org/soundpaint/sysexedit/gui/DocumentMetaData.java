@@ -29,7 +29,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.soundpaint.sysexedit.model.Contents;
+import org.soundpaint.sysexedit.model.Value;
 import org.soundpaint.sysexedit.model.Device;
 
 public class DocumentMetaData implements TreeSelectionListener
@@ -45,7 +45,7 @@ public class DocumentMetaData implements TreeSelectionListener
   private boolean hasUnsavedData;
   private int selectionCount;
   private Device device;
-  private Contents midiDeviceId;
+  private Value midiDeviceId;
   private MidiDevice.Info midiInput;
   private MidiDevice.Info midiOutput;
   private File dumpMidiFile;
@@ -69,7 +69,7 @@ public class DocumentMetaData implements TreeSelectionListener
     // should be changed such that model selection
     // occurs before instantiating the editor frame.
     if (device != null) {
-      setMidiDeviceId(device.createDeviceIdContents());
+      setMidiDeviceId(device.createDeviceId());
     }
   }
 
@@ -112,7 +112,7 @@ public class DocumentMetaData implements TreeSelectionListener
     return hasUnsavedData;
   }
 
-  public void setMidiDeviceId(final Contents midiDeviceId)
+  public void setMidiDeviceId(final Value midiDeviceId)
   {
     this.midiDeviceId = midiDeviceId;
     for (final DocumentMetaDataChangeListener listener :
@@ -121,7 +121,7 @@ public class DocumentMetaData implements TreeSelectionListener
     }
   }
 
-  public Contents getMidiDeviceId()
+  public Value getMidiDeviceId()
   {
     return midiDeviceId;
   }

@@ -26,7 +26,7 @@ import javax.swing.event.TreeSelectionListener;
 
 import org.soundpaint.sysexedit.gui.Map;
 import org.soundpaint.sysexedit.gui.MapContextMenu;
-import org.soundpaint.sysexedit.model.Contents;
+import org.soundpaint.sysexedit.model.Value;
 
 /**
  * By implementing this interface, you can customize SysExEdit to a
@@ -50,7 +50,7 @@ public interface Device
    * Returns the range of possible values and default value for this
    * device's device ID.
    */
-  Contents createDeviceIdContents();
+  Value createDeviceId();
 
   /**
    * Returns the name of the author; optionally, a copyright message.
@@ -91,7 +91,7 @@ public interface Device
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  InputStream bulkDump(final Contents deviceId,
+  InputStream bulkDump(final Value deviceId,
                        final long start, final long end);
 
   /**

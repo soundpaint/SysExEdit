@@ -27,7 +27,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.soundpaint.sysexedit.model.Contents;
+import org.soundpaint.sysexedit.model.Value;
 
 public class StatusLine extends JPanel implements DocumentMetaDataChangeListener
 {
@@ -103,7 +103,7 @@ public class StatusLine extends JPanel implements DocumentMetaDataChangeListener
     labelModelId.updateUI();
   }
 
-  public void midiDeviceIdChanged(final Contents deviceId)
+  public void midiDeviceIdChanged(final Value deviceId)
   {
     labelDeviceId.setText("Device ID: " + deviceId.getDisplayValue());
     labelDeviceId.updateUI();

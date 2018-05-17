@@ -23,15 +23,15 @@ package org.soundpaint.sysexedit.model;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-public class DropDownEditor extends JComboBox<Contents> implements Editor
+public class DropDownEditor extends JComboBox<Value> implements Editor
 {
   private static final long serialVersionUID = 1620075446582652477L;
 
-  private final DefaultComboBoxModel<Contents> model;
+  private final DefaultComboBoxModel<Value> model;
 
   public DropDownEditor()
   {
-    model = new DefaultComboBoxModel<Contents>();
+    model = new DefaultComboBoxModel<Value>();
     setModel(model);
   }
 
@@ -42,12 +42,12 @@ public class DropDownEditor extends JComboBox<Contents> implements Editor
     }
   }
 
-  public void addContents(final Contents contents)
+  public void addSelectableValue(final Value value)
   {
-    model.addElement(contents);
+    model.addElement(value);
   }
 
-  public Contents getSelectedContents()
+  public Value getSelectedValue()
   {
     return getItemAt(getSelectedIndex());
   }

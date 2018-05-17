@@ -28,14 +28,14 @@ import javax.swing.event.ChangeListener;
 
 public class SpinnerStringModel implements SpinnerModel
 {
-  private final List<Contents> contentsList;
+  private final List<Value> selectableValues;
   private final List<ChangeListener> listeners;
   private final ChangeEvent changeEvent;
   private int index;
 
   public SpinnerStringModel()
   {
-    contentsList = new ArrayList<Contents>();
+    selectableValues = new ArrayList<Value>();
     listeners = new ArrayList<ChangeListener>();
     changeEvent = new ChangeEvent(this);
     index = -1;
@@ -43,50 +43,50 @@ public class SpinnerStringModel implements SpinnerModel
 
   public void clear()
   {
-    while (contentsList.size() > 0) {
-      contentsList.remove(contentsList.size() - 1);
+    while (selectableValues.size() > 0) {
+      selectableValues.remove(selectableValues.size() - 1);
     }
     index = -1;
     fireStateChanged();
   }
 
-  public void addContents(final Contents contents)
+  public void addSelectableValue(final Value value)
   {
     index = 0;
-    contentsList.add(contents);
+    selectableValues.add(value);
     fireStateChanged();
   }
 
   public void setIndex(final int index)
   {
-    if ((index < 0) || (index >= contentsList.size())) {
+    if ((index < 0) || (index >= selectableValues.size())) {
       throw new IndexOutOfBoundsException("!(" + -1 + "<=" + index + "<" +
-                                          contentsList.size());
+                                          selectableValues.size());
     }
     this.index = index;
     fireStateChanged();
   }
 
-  public Contents getValue()
+  public Value getValue()
   {
     if (index < 0) {
       return null;
     }
-    return contentsList.get(index);
+    return selectableValues.get(index);
   }
 
   /**
    * Unfortunately, the Swing JSpinner component internally uses a
    * JFormattedTextField component for value display, and passes this
    * text field's string representation to the setValue() method of
-   * this model (rather than the original Contents object).  To
+   * this model (rather than the original Value object).  To
    * compensate, we have to look up the index by string representation
    * comparison rather than by object comparison.
    */
   private int indexOfString(final String value)
   {
-    for (int index = 0; index < contentsList.size(); index++) {
-      if (value.equals(contentsList.get(index).toString())) {
+    for (int index = 0; index < selectableValues.size(); index++) {
+      if (value.equals(selectableValues.get(index).toString())) {
         return index;
       }
     }
@@ -99,29 +99,29 @@ public class SpinnerStringModel implements SpinnerModel
       if (value instanceof String) {
         index = indexOfString((String)value);
       } else {
-        index = contentsList.indexOf(value);
+        index = selectableValues.indexOf(value);
       }
     }
     //fireStateChanged(); // already handled internally by JSpinner
   }
 
-  public Contents getNextValue()
+  public Value getNextValue()
   {
-    if (index < contentsList.size() - 1) {
+    if (index < selectableValues.size() - 1) {
       index++;
       fireStateChanged();
-      return contentsList.get(index);
+      return selectableValues.get(index);
       //return index;
     }
     return null;
   }
 
-  public Contents getPreviousValue()
+  public Value getPreviousValue()
   {
     if (index > 0) {
       index--;
       fireStateChanged();
-      return contentsList.get(index);
+      return selectableValues.get(index);
       //return index;
     }
     return null;

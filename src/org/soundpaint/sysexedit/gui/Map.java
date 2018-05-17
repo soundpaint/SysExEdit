@@ -269,7 +269,7 @@ public class Map extends JTree
     public Object getCellEditorValue()
     {
       final Editor editor = (Editor)lastRequestedEditor;
-      return editor.getSelectedContents();
+      return editor.getSelectedValue();
     }
 
     public Component getTreeCellEditorComponent(final JTree tree,

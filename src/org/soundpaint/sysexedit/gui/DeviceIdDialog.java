@@ -33,7 +33,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.soundpaint.sysexedit.model.Contents;
+import org.soundpaint.sysexedit.model.Value;
 import org.soundpaint.sysexedit.model.Editor;
 
 /**
@@ -139,19 +139,19 @@ public class DeviceIdDialog extends Dialog
 
   private void saveInputFields()
   {
-    final Contents midiDeviceIdContents = documentMetaData.getMidiDeviceId();
+    final Value midiDeviceId = documentMetaData.getMidiDeviceId();
     final Editor editor = (Editor)deviceIdValuePanel.getComponent(0);
-    final Contents contents = editor.getSelectedContents();
-    midiDeviceIdContents.setValue(contents.getValue());
+    final Value selectedValue = editor.getSelectedValue();
+    midiDeviceId.setNumericalValue(selectedValue.getNumericalValue());
   }
 
   private void loadInputFields()
   {
-    final Contents deviceIdContents = documentMetaData.getMidiDeviceId();
+    final Value deviceId = documentMetaData.getMidiDeviceId();
     deviceIdValuePanel.removeAll();
     iconPanel.removeAll();
-    iconPanel.add(new JLabel(deviceIdContents.getIcon()));
-    final Component deviceIdEditor = deviceIdContents.getEditor();
+    iconPanel.add(new JLabel(deviceId.getIcon()));
+    final Component deviceIdEditor = deviceId.getEditor();
     deviceIdValuePanel.add(deviceIdEditor);
     deviceIdValuePanel.updateUI();
     pack();

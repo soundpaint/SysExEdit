@@ -49,7 +49,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.soundpaint.sysexedit.model.Contents;
+import org.soundpaint.sysexedit.model.Value;
 import org.soundpaint.sysexedit.model.Device;
 import org.soundpaint.sysexedit.model.MapNode;
 
@@ -602,7 +602,7 @@ public class EditorFrame extends JFrame
     // ignore
   }
 
-  public void midiDeviceIdChanged(final Contents midiDeviceId)
+  public void midiDeviceIdChanged(final Value midiDeviceId)
   {
     // ignore
   }

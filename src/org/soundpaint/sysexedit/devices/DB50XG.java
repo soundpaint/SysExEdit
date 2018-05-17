@@ -27,7 +27,7 @@ import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.soundpaint.sysexedit.model.AbstractDevice;
-import org.soundpaint.sysexedit.model.Contents;
+import org.soundpaint.sysexedit.model.Value;
 import org.soundpaint.sysexedit.model.RangeContents;
 import org.soundpaint.sysexedit.model.MapNode;
 import org.soundpaint.sysexedit.model.SparseType;
@@ -950,13 +950,12 @@ public class DB50XG extends AbstractDevice
    * device model ID.  As the synthesizer specs do not explicitly
    * specify such a value, we assume default value 0.
    */
-  public Contents createDeviceIdContents()
+  public Value createDeviceId()
   {
-    final RangeContents contentsDeviceId =
-      new RangeContents(rangeDeviceId);
-    contentsDeviceId.setBitSize(7);
-    contentsDeviceId.setDefaultValue(0x00);
-    return contentsDeviceId;
+    final RangeContents deviceId = new RangeContents(rangeDeviceId);
+    deviceId.setBitSize(7);
+    deviceId.setDefaultValue(0x00);
+    return deviceId;
   }
 
   /**
@@ -2650,12 +2649,13 @@ public class DB50XG extends AbstractDevice
     }
   }
 
-  public InputStream bulkDump(final Contents deviceId,
+  public InputStream bulkDump(final Value deviceId,
                               final MapNode root,
                               final long start, final long end)
   {
     try {
-      return new BulkStream((byte)deviceId.getValue(), root, start, end);
+      return new BulkStream((byte)deviceId.getNumericalValue(),
+                            root, start, end);
     } catch (final IOException e) {
       throw new IllegalStateException("failed creating bulk stream: " +
                                       e.getMessage(), e);

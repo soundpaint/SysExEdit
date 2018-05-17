@@ -44,9 +44,9 @@ public class SpinnerEditor extends JSpinner implements Editor
     model.clear();
   }
 
-  public void addContents(final Contents contents)
+  public void addSelectableValue(final Value value)
   {
-    model.addContents(contents);
+    model.addSelectableValue(value);
   }
 
   public void setSelectedIndex(final int index)
@@ -54,7 +54,7 @@ public class SpinnerEditor extends JSpinner implements Editor
     model.setIndex(index);
   }
 
-  public Contents getSelectedContents()
+  public Value getSelectedValue()
   {
     return model.getValue();
   }

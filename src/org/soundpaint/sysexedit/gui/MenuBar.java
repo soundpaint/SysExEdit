@@ -27,7 +27,7 @@ import javax.swing.JMenuItem;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
-import org.soundpaint.sysexedit.model.Contents;
+import org.soundpaint.sysexedit.model.Value;
 
 /**
  * This class holds the menu bar of the application and related logic.
@@ -66,7 +66,7 @@ public class MenuBar extends JMenuBar
     // ignore
   }
 
-  public void midiDeviceIdChanged(final Contents midiDeviceId)
+  public void midiDeviceIdChanged(final Value midiDeviceId)
   {
     // ignore
   }

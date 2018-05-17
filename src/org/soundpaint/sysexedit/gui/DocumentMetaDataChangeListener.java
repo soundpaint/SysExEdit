@@ -20,7 +20,7 @@
 
 package org.soundpaint.sysexedit.gui;
 
-import org.soundpaint.sysexedit.model.Contents;
+import org.soundpaint.sysexedit.model.Value;
 
 /**
  * Interface for listening to changes in document meta data.
@@ -42,7 +42,7 @@ public interface DocumentMetaDataChangeListener
   /**
    * This method is called whenever the MIDI device ID changes.
    */
-  void midiDeviceIdChanged(final Contents midiDeviceId);
+  void midiDeviceIdChanged(final Value midiDeviceId);
 
 }
 

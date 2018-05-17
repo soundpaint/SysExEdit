@@ -74,7 +74,7 @@ public abstract class AbstractDevice implements Device
     return root.getMap();
   }
 
-  public InputStream bulkDump(final Contents deviceId,
+  public InputStream bulkDump(final Value deviceId,
                               final long start, final long end)
   {
     return bulkDump(deviceId, root, start, end);
@@ -92,7 +92,7 @@ public abstract class AbstractDevice implements Device
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  public abstract InputStream bulkDump(final Contents deviceId,
+  public abstract InputStream bulkDump(final Value deviceId,
                                        final MapNode root,
                                        final long start, final long end);
 }

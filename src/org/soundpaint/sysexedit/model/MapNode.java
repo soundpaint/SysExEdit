@@ -50,7 +50,7 @@ import org.soundpaint.sysexedit.gui.Map;
  * that the desired addresses do not fit, an exception will be thrown.
  */
 public class MapNode extends DefaultMutableTreeNode
-  implements MapChangeListener, ContentsChangeListener
+  implements MapChangeListener, ValueChangeListener
 {
   private static final long serialVersionUID = -1726377369359671649L;
 
@@ -92,25 +92,25 @@ public class MapNode extends DefaultMutableTreeNode
    * Creates a new node with initially no children.
    */
   private MapNode(final boolean allowsChildren, final String label,
-                  final Contents contents, final long desiredAddress)
+                  final Value value, final long desiredAddress)
   {
-    super(contents, allowsChildren);
+    super(value, allowsChildren);
     if (!allowsChildren) {
-      if (contents == null) {
-        throw new NullPointerException("contents");
+      if (value == null) {
+        throw new NullPointerException("value");
       }
     }
     this.label = label;
     this.desiredAddress = desiredAddress;
     address = -1; // resolve later
     listeners = new ArrayList<MapChangeListener>();
-    if (contents != null) {
-      contents.addContentsChangeListener(this);
+    if (value != null) {
+      value.addValueChangeListener(this);
     }
   }
 
   /**
-   * Creates a node that allows children but does not contain a Contents
+   * Creates a node that allows children but does not contain a Value
    * object.
    * @param label The label of this node.
    * @param desiredAddress If negative, automatically determine an
@@ -125,7 +125,6 @@ public class MapNode extends DefaultMutableTreeNode
    *    preceding the desired address.  Note that validity check for
    *    this restriction will be made only upon completion of the tree
    *    and thus may result in throwing an exception some time later.
-   * @exception NullPointerException If contents equals null.
    */
   public MapNode(final String label, final long desiredAddress)
   {
@@ -137,7 +136,6 @@ public class MapNode extends DefaultMutableTreeNode
    * any content.  Automatically determines the absolute address for
    * this node.
    * @param label The label of this node.
-   * @exception NullPointerException If contents equals null.
    */
   public MapNode(final String label)
   {
@@ -161,28 +159,28 @@ public class MapNode extends DefaultMutableTreeNode
    *    preceding the desired address.  Note that validity check for
    *    this restriction will be made only upon completion of the tree
    *    and thus may result in throwing an exception some time later.
-   * @exception NullPointerException If contents equals null.
+   * @exception NullPointerException If value equals null.
    */
-  public MapNode(final String label, final Contents contents,
+  public MapNode(final String label, final Value value,
                  final long desiredAddress)
   {
-    this(false, label, contents, desiredAddress);
+    this(false, label, value, desiredAddress);
   }
 
   /**
-   * Creates a node that contains a Contents object (and hence does
-   * not allow children) and automatically determines the absolute
-   * address for this node.
+   * Creates a node that contains a Value object (and hence does not
+   * allow children) and automatically determines the absolute address
+   * for this node.
    * @param label The label of this node.
-   * @param contents The underlying Contents object.
-   * @exception NullPointerException If contents equals null.
+   * @param value The underlying Value object.
+   * @exception NullPointerException If value equals null.
    */
-  public MapNode(final String label, final Contents contents)
+  public MapNode(final String label, final Value value)
   {
-    this(label, contents, -1);
+    this(label, value, -1);
   }
 
-  public void editingPathValueChanged(final Contents contents)
+  public void editingPathValueChanged(final Value value)
   {
     final TreeNode root = getRoot();
     final Map map = ((AbstractDevice.MapRoot)root).getMap();
@@ -212,7 +210,7 @@ public class MapNode extends DefaultMutableTreeNode
   }
 
   /**
-   * Adds a MapChangeListener to this Contents node.
+   * Adds a MapChangeListener to this tree node.
    * @param listener The MapChangeListener to add.
    */
   public void addMapChangeListener(final MapChangeListener listener)
@@ -221,7 +219,7 @@ public class MapNode extends DefaultMutableTreeNode
   }
 
   /**
-   * Removes a MapChangeListener from this Contents node.
+   * Removes a MapChangeListener from this tree node.
    * @param listener The MapChangeListener to remove.
    */
   public void removeMapChangeListener(final MapChangeListener listener)
@@ -241,7 +239,7 @@ public class MapNode extends DefaultMutableTreeNode
   }
 
   /**
-   * Returns a descriptive label for this contents.
+   * Returns a descriptive label for this tree node.
    * @return A descriptive label.
    */
   public String getLabel()
@@ -251,37 +249,37 @@ public class MapNode extends DefaultMutableTreeNode
 
   /**
    * If this node does not allow children, this method returns the
-   * appropriate Contents object associated with this node.
-   * @return The Contents object associated with this node.
+   * appropriate Value object associated with this node.
+   * @return The Value object associated with this node.
    */
-  public Contents getContents()
+  public Value getValue()
   {
     final Object obj = getUserObject();
     if (obj == null) {
       return null;
     }
-    if (!(obj instanceof Contents)) {
-      throw new IllegalStateException("user object is not contents [obj=" +
+    if (!(obj instanceof Value)) {
+      throw new IllegalStateException("user object is not a Value [obj=" +
                                       obj.getClass() + "]");
     }
-    return (Contents)getUserObject();
+    return (Value)getUserObject();
   }
 
   public Component getEditor()
   {
-    final Contents contents = getContents();
-    return contents != null ? contents.getEditor() : null;
+    final Value value = getValue();
+    return value != null ? value.getEditor() : null;
   }
 
   /**
    * Returns the numerical representation of this node's value.
    * @return The numerical representation of this node's value.
    */
-  public Integer getValue()
+  public Integer getNumericalValue()
   {
-    final Contents contents = getContents();
-    if (contents != null) {
-      return contents.getValue();
+    final Value value = getValue();
+    if (value != null) {
+      return value.getNumericalValue();
     } else {
       return null;
     }
@@ -293,9 +291,9 @@ public class MapNode extends DefaultMutableTreeNode
    */
   public String getDisplayValue()
   {
-    final Contents contents = getContents();
-    if (contents != null) {
-      return contents.getDisplayValue();
+    final Value value = getValue();
+    if (value != null) {
+      return value.getDisplayValue();
     } else {
       return null;
     }
@@ -307,9 +305,9 @@ public class MapNode extends DefaultMutableTreeNode
    */
   public Icon getIcon()
   {
-    final Contents contents = getContents();
-    if (contents != null) {
-      return contents.getIcon();
+    final Value value = getValue();
+    if (value != null) {
+      return value.getIcon();
     } else {
       return null;
     }
@@ -410,9 +408,9 @@ public class MapNode extends DefaultMutableTreeNode
       // use desired address
       address = desiredAddress;
     }
-    final Contents contents = getContents();
+    final Value value = getValue();
     long result =
-      address + (contents != null ? contents.getBitSize() : 0);
+      address + (value != null ? value.getBitSize() : 0);
     for (int i = 0; i < getChildCount(); i++) {
       final MapNode child = (MapNode)getChildAt(i);
       result = child.resolveAddresses(result);
@@ -421,79 +419,79 @@ public class MapNode extends DefaultMutableTreeNode
   }
 
   /**
-   * Increments the contents of this node, if possible.
+   * Increments the value of this node, if possible.
    * @param model The tree model of the tree that contains this node.
    */
   public void increment(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
-        final Contents contents = getContents();
-        contents.increment();
+        final Value value = getValue();
+        value.increment();
         fireMapChangeEvents(model);
       }
   }
 
   /**
-   * Decrements the contents of this node.
+   * Decrements the value of this node, if possible.
    * @param model The tree model of the tree that contains this node.
    */
   public void decrement(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
-        final Contents contents = getContents();
-        contents.decrement();
+        final Value value = getValue();
+        value.decrement();
         fireMapChangeEvents(model);
       }
   }
 
   /**
-   * Sets the contents of this node to the uppermost value that is in range.
+   * Sets the value of this node to the uppermost value that is in range.
    * @param model The tree model of the tree that contains this node.
    */
   public void uppermost(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
-        final Contents contents = getContents();
-        contents.uppermost();
+        final Value value = getValue();
+        value.uppermost();
         fireMapChangeEvents(model);
       }
   }
 
   /**
-   * Sets the contents of this node to the lowermost value that is in range.
+   * Sets the value of this node to the lowermost value that is in range.
    * @param model The tree model of the tree that contains this node.
    */
   public void lowermost(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
-        final Contents contents = getContents();
-        contents.lowermost();
+        final Value value = getValue();
+        value.lowermost();
         fireMapChangeEvents(model);
       }
   }
 
   /**
-   * Resets the contents of this node to its default value.
+   * Resets the value of this node to its default value.
    * @param model The tree model of the tree that contains this node.
    */
   public void reset(final DefaultTreeModel model)
   {
     if (!getAllowsChildren())
       {
-        final Contents contents = getContents();
-        contents.reset();
+        final Value value = getValue();
+        value.reset();
         fireMapChangeEvents(model);
       }
   }
 
   private int getBitSize()
   {
-    final Contents contents = getContents();
-    return contents != null ? contents.getBitSize() : 0;
+    final Value value = getValue();
+    return value != null ? value.getBitSize() : 0;
   }
 
   /**
@@ -628,13 +626,13 @@ public class MapNode extends DefaultMutableTreeNode
       throw new UnsupportedOperationException("only leaf nodes carry contents");
     }
     final int addrOffs = (int)(address - this.address);
-    final Contents contents = getContents();
-    final int contentsSize = contents.getBitSize();
-    final int shiftSize = contentsSize - size - addrOffs;
+    final Value value = getValue();
+    final int valueBitSize = value.getBitSize();
+    final int shiftSize = valueBitSize - size - addrOffs;
     if (shiftSize < 0) {
       throw new IllegalStateException("Partial addresses nodes not yet fully supported");
     }
-    final int[] localData = contents.toBits();
+    final int[] localData = value.toBits();
     final int localDataIndex = shiftSize / 32;
     final int localDataBitOffs = shiftSize % 32;
     final int dataValue = localDataBitOffs >= 0 ?

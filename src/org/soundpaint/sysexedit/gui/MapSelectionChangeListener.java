@@ -20,8 +20,6 @@
 
 package org.soundpaint.sysexedit.gui;
 
-import org.soundpaint.sysexedit.model.Contents;
-
 /**
  * Interface for listening to changes in map nodes selection.
  */

@@ -34,7 +34,7 @@ import javax.swing.SwingUtilities;
  * represent just one memory location or cover a couple of memory
  * locations (up to 32 bits).
  */
-public class RangeContents extends AbstractContents
+public class RangeContents extends AbstractValue
 {
   /**
    * The minimally required size of this contents.
@@ -54,7 +54,7 @@ public class RangeContents extends AbstractContents
   /** The editor for entering a value of this range contents. */
   private final Editor editor;
 
-  private Vector<ContentsChangeListener> listeners;
+  private Vector<ValueChangeListener> listeners;
 
   private RangeContents()
   {
@@ -91,7 +91,7 @@ public class RangeContents extends AbstractContents
     min_bit_size = sparseType.getRequiredBitSize();
     bit_size = (byte)Math.max(min_bit_size, bit_size);
     editor = new DropDownEditor();
-    listeners = new Vector<ContentsChangeListener>();
+    listeners = new Vector<ValueChangeListener>();
     final KeyListener kl = new KeyAdapter()
       {
         public void keyTyped(KeyEvent e)
@@ -99,8 +99,8 @@ public class RangeContents extends AbstractContents
           if (e.getKeyChar() == '\n') {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                  final Contents newContents = editor.getSelectedContents();
-                  editingPathValueChanged(newContents);
+                  final Value newValue = editor.getSelectedValue();
+                  editingPathValueChanged(newValue);
                 }
               });
           }
@@ -109,7 +109,7 @@ public class RangeContents extends AbstractContents
     ((Component)editor).addKeyListener(kl);
   }
 
-  public void addContentsChangeListener(final ContentsChangeListener listener)
+  public void addValueChangeListener(final ValueChangeListener listener)
   {
     if (listener == null) {
       throw new NullPointerException("listener");
@@ -117,13 +117,13 @@ public class RangeContents extends AbstractContents
     listeners.add(listener);
   }
 
-  private void editingPathValueChanged(final Contents newContents)
+  private void editingPathValueChanged(final Value newValue)
   {
     // Here, we actually update the map (rather than in
     // MapNode#setUserObject()).
-    setValue(newContents.getValue());
+    setNumericalValue(newValue.getNumericalValue());
 
-    for (final ContentsChangeListener listener : listeners) {
+    for (final ValueChangeListener listener : listeners) {
       listener.editingPathValueChanged(this);
     }
   }
@@ -218,7 +218,7 @@ public class RangeContents extends AbstractContents
   public int[] toBits()
   {
     final int[] bits = new int[1];
-    bits[0] = getValue();
+    bits[0] = getNumericalValue();
     return bits;
   }
 
@@ -227,24 +227,24 @@ public class RangeContents extends AbstractContents
     editor.clear();
     int selectedIndex = -1;
     int index = -1;
-    Integer value = sparseType.lowermost();
-    while (value != null) {
+    Integer numericalValue = sparseType.lowermost();
+    while (numericalValue != null) {
       final EnumType enumType =
-        new EnumType(value, new String[]
+        new EnumType(numericalValue, new String[]
           {
-            sparseType.getDisplayValue(value)
+            sparseType.getDisplayValue(numericalValue)
           });
       final SparseTypeImpl editorSparseType =
         new SparseTypeImpl(sparseType.getIconKey(),
-                           value, value, enumType);
-      final Contents contents = new RangeContents(editorSparseType);
-      contents.setValue(value);
-      editor.addContents(contents);
+                           numericalValue, numericalValue, enumType);
+      final Value value = new RangeContents(editorSparseType);
+      value.setNumericalValue(numericalValue);
+      editor.addSelectableValue(value);
       index++;
-      if (value == getValue()) {
+      if (numericalValue == getNumericalValue()) {
         selectedIndex = index;
       }
-      value = sparseType.succ(value);
+      numericalValue = sparseType.succ(numericalValue);
     }
     if (selectedIndex > 0) {
       editor.setSelectedIndex(selectedIndex);

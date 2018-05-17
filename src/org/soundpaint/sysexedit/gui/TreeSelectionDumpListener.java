@@ -154,7 +154,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
     }
     if (node.getAddress() == bulkAreaStopBeforeAddress) {
       // append to contiguous block & quit
-      bulkAreaStopBeforeAddress += node.getContents().getBitSize();
+      bulkAreaStopBeforeAddress += node.getValue().getBitSize();
       return;
     }
     if (bulkAreaStopBeforeAddress >= 0) {
@@ -164,7 +164,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
     // start a new contiguous block
     bulkAreaStartAddress = node.getAddress();
     bulkAreaStopBeforeAddress =
-      bulkAreaStartAddress + node.getContents().getBitSize();
+      bulkAreaStartAddress + node.getValue().getBitSize();
   }
 
   /**
