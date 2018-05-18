@@ -1,5 +1,5 @@
 /*
- * @(#)RangeContents.java 1.00 98/01/31
+ * @(#)ValueImpl.java 1.00 98/01/31
  *
  * Copyright (C) 1998, 2018 Jürgen Reuter
  *
@@ -28,71 +28,70 @@ import java.util.Vector;
 import javax.swing.SwingUtilities;
 
 /**
- * This class holds the structural information and the actual
- * contents, based on a sparse type of a single entry in the target
- * device's model.  An entry may be part of a memory location or
- * represent just one memory location or cover a couple of memory
- * locations (up to 32 bits).
+ * This class holds the structural information and actual value, based
+ * on a sparse type of a single entry in the target device's model.
+ * An entry may be part of a memory location or represent just one
+ * memory location or cover a couple of memory locations, up to 32
+ * bits of size.
  */
-public class RangeContents extends AbstractValue
+public class ValueImpl extends AbstractValue
 {
   /**
-   * The minimally required size of this contents.
-   *
-   * Memory locations are typically distributed sparse in the address space
-   * of the device; thus we associate each memory cell with its address
-   * rather than allocating a huge array with many empty memory cells.
+   * The minimally required size of this value.  Memory locations are
+   * typically distributed sparse in the address space of the device;
+   * thus we associate each memory cell with its address rather than
+   * allocating a huge array with many empty memory cells.
    */
-  private final byte min_bit_size;
+  private final byte minBitSize;
 
-  /** The effective size of this contents in bits (0..32). */
-  private byte bit_size;
+  /** The effective size of this value in bits (0..32). */
+  private byte bitSize;
 
-  /** The sparse type of this contents. */
+  /** The data type of this value. */
   private final SparseType sparseType;
 
-  /** The editor for entering a value of this range contents. */
+  /** The editor for entering a value. */
   private final Editor editor;
 
   private Vector<ValueChangeListener> listeners;
 
-  private RangeContents()
+  private ValueImpl()
   {
     throw new UnsupportedOperationException();
   }
 
   /**
-   * Creates a new RangeContents of the specified sparse type.
+   * Creates a new Value object of the specified sparse type.
    * @param sparseType The SparseType object that specifies
-   *    the sparse type of this RangeContents.
+   *    the sparse type of this Value object.
    * @exception NullPointerException If sparseType equals null.
    */
-  public RangeContents(final SparseType sparseType)
+  public ValueImpl(final SparseType sparseType)
   {
     this(sparseType, null);
   }
 
   /**
-   * Creates a new RangeContents of the specified sparse type.
+   * Creates a new Value object of the specified sparse type.
    * @param sparseType The SparseType object that specifies
-   *    the sparse type of this RangeContents.
+   *    the sparse type of this Value object.
    * @param iconKey If non-null, overrides the associated
    * sparse type's iconKey.
    * @exception NullPointerException If sparseType equals null.
    */
-  public RangeContents(final SparseType sparseType,
-                       final String iconKey)
+  public ValueImpl(final SparseType sparseType,
+                   final String iconKey)
   {
     super(iconKey);
     if (sparseType == null) {
       throw new NullPointerException("sparseType");
     }
     this.sparseType = sparseType;
-    min_bit_size = sparseType.getRequiredBitSize();
-    bit_size = (byte)Math.max(min_bit_size, bit_size);
+    minBitSize = sparseType.getRequiredBitSize();
+    bitSize = (byte)Math.max(minBitSize, bitSize);
     editor = new DropDownEditor();
     listeners = new Vector<ValueChangeListener>();
-    final KeyListener kl = new KeyAdapter()
+    final KeyListener keyListener = new KeyAdapter()
       {
         public void keyTyped(KeyEvent e)
         {
@@ -106,7 +105,7 @@ public class RangeContents extends AbstractValue
           }
         }
       };
-    ((Component)editor).addKeyListener(kl);
+    ((Component)editor).addKeyListener(keyListener);
   }
 
   public void addValueChangeListener(final ValueChangeListener listener)
@@ -144,25 +143,25 @@ public class RangeContents extends AbstractValue
   }
 
   /**
-   * Creates a new RangeContents that represents a couple of unused bits.
+   * Creates a new Value object that represents unused bits.
    * @param amount The amount of unused bits.
-   * @exception IllegalArgumentException If amount is below zero or above
-   *    the upper limit of 15.
+   * @exception IllegalArgumentException If amount of unused bits is
+   *    below zero or above the upper limit of 15.
    */
-  public RangeContents(final int amount)
+  public ValueImpl(final int amount)
   {
     this(amount, null);
   }
 
   /**
-   * Creates a new RangeContents that represents a couple of unused bits.
+   * Creates a new Value object that represents unused bits.
    * @param amount The amount of unused bits.
    * @param iconKey If non-null, overrides the associated
    * SparseType's iconKey.
-   * @exception IllegalArgumentException If amount is below zero or above
-   *    the upper limit of 15.
+   * @exception IllegalArgumentException If amount of unused bits is
+   *    below zero or above the upper limit of 15.
    */
-  public RangeContents(final int amount, final String iconKey)
+  public ValueImpl(final int amount, final String iconKey)
   {
     this(getBitStringType(amount));
     setBitSize(amount);
@@ -170,8 +169,8 @@ public class RangeContents extends AbstractValue
   }
 
   /**
-   * Returns the sparse type of this RangeContents object.
-   * @return The SparseType object of this RangeContents object.
+   * Returns the sparse type of this Value object.
+   * @return The SparseType object of this Value object.
    */
   protected SparseType getSparseType()
   {
@@ -179,41 +178,42 @@ public class RangeContents extends AbstractValue
   }
 
   /**
-   * Sets the effective bit size of this RangeContents. The effective bit
-   * size is a value in the range 0..32 which must be equal to or
-   * greater than the required bit size of this RangeContents. The
-   * unused bits are supposed to be constantly zero.
-   * @exception IllegalArgumentException If bit_size is out of range.
+   * Sets the effective bit size of this Value object.  The effective
+   * bit size is a value in the range 0..32 which must be equal to or
+   * greater than the required bit size of this Value object.  The
+   * unused bits are assumed to always be zero.
+   * @exception IllegalArgumentException If bitSize is out of range.
    */
-  public void setBitSize(final int bit_size)
+  public void setBitSize(final int bitSize)
   {
-    if ((bit_size < 0) || (bit_size > 32) ||
-        (min_bit_size > bit_size))
-      throw new IllegalArgumentException("bit_size out of range");
+    if ((bitSize < 0) || (bitSize > 32) ||
+        (minBitSize > bitSize))
+      throw new IllegalArgumentException("bitSize out of range");
     else
-      this.bit_size = (byte)bit_size;
+      this.bitSize = (byte)bitSize;
   }
 
   /**
-   * Returns the current effective bit size of this RangeContents object.
-   * This can be set by method setBitSize.<BR>
+   * Returns the current effective bit size of this Value object.
+   * This can be set by method #setBitSize().<BR>
    * Initially, the effective bit size is set to the required bit size of
    * the underlying sparse type.
    * @return The current effective bit size.
    */
   public byte getBitSize()
   {
-    return bit_size;
+    return bitSize;
   }
 
   /**
-   * Returns a representation of the RangeContents value according to the
-   * underlying bit layout.
-   * @return The array of bits that represents the contents value. For
-   *    performance reasons, the return value is actually not an array of
-   *    bits, but rather an array of int values with each int value
-   *    holding 32 bits. The least significant bit is stored in the least
-   *    significant bit of field 0 of the return value.
+   * Returns a numerical representation of this Value object according
+   * to the underlying bit layout.
+   * @return The array of bits that represents the numerical value.
+   *    For performance reasons, the return value is actually not an
+   *    array of bits, but rather an array of integer values with each
+   *    integer value holding 32 bits.  The least significant bit is
+   *    stored in the least significant bit of field 0 of the return
+   *    value.
    */
   public int[] toBits()
   {
@@ -237,7 +237,7 @@ public class RangeContents extends AbstractValue
       final SparseTypeImpl editorSparseType =
         new SparseTypeImpl(sparseType.getIconKey(),
                            numericalValue, numericalValue, enumType);
-      final Value value = new RangeContents(editorSparseType);
+      final Value value = new ValueImpl(editorSparseType);
       value.setNumericalValue(numericalValue);
       editor.addSelectableValue(value);
       index++;

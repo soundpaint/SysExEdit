@@ -329,7 +329,7 @@ public class SparseTypeImpl implements SparseType
   /**
    * Given some Integer value x that this sparse type may contain or
    * not, returns the next upper value that this sparse type contains.
-   * @param x Some arbitrary contents value (which may be even from
+   * @param x Some arbitrary numerical value (which may be even from
    *    the omitted subranges of this sparse type).
    * @return The next upper value that this sparse type contains or
    *    null, if there is no such value.
@@ -350,7 +350,7 @@ public class SparseTypeImpl implements SparseType
   /**
    * Given some Integer value x that this sparse type may contain or
    * not, returns the next lower value that this sparse type contains.
-   * @param x Some arbitrary contents value (which may be even from
+   * @param x Some arbitrary numerical value (which may be even from
    *    the omitted subranges of this sparse type).
    * @return The next lower value that this sparse type contains or
    *    null, if there is no such value.

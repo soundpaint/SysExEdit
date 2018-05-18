@@ -35,8 +35,8 @@ import org.soundpaint.sysexedit.gui.Map;
 /**
  * This class is used to represent a node in the hierarchical
  * structure of the whole memory of a device.  A node may or may not
- * carry data contents.  Address mapping is done in two steps: First
- * of all, the map is assumed to represent a linear addressed array of
+ * carry a data value.  Address mapping is done in two steps: First of
+ * all, the map is assumed to represent a linear addressed array of
  * bits of memory, starting with address 0x0.  By default, addresses
  * will be implicitly assigned to all nodes, such that the resulting
  * map has no address gap.  However, for devices that use a sparse
@@ -120,7 +120,7 @@ public class MapNode extends DefaultMutableTreeNode
    *    an area of inaccessible memory bits will precede this node's
    *    data in order to make this node appear at the desired address.
    *    If specifying an absolute address, it must be chosen such that
-   *    all previous nodes' memory mapped contents (with respect to
+   *    all previous nodes' memory mapped values (with respect to
    *    depth first search order) fit into the address space range
    *    preceding the desired address.  Note that validity check for
    *    this restriction will be made only upon completion of the tree
@@ -133,7 +133,7 @@ public class MapNode extends DefaultMutableTreeNode
 
   /**
    * Creates a node that allows adding children but does not contain
-   * any content.  Automatically determines the absolute address for
+   * any value.  Automatically determines the absolute address for
    * this node.
    * @param label The label of this node.
    */
@@ -143,10 +143,10 @@ public class MapNode extends DefaultMutableTreeNode
   }
 
   /**
-   * Creates a node that contains a Contents object (and hence does not
+   * Creates a node that contains a Value object (and hence does not
    * allow children).
    * @param label The label of this node.
-   * @param contents The underlying Contents object.
+   * @param value The underlying Value object.
    * @param desiredAddress If negative, automatically determine an
    *    absolute address for this node.  If non-negative, request that
    *    this node will appear at the specified absolute address in the
@@ -154,7 +154,7 @@ public class MapNode extends DefaultMutableTreeNode
    *    an area of inaccessible memory bits will precede this node's
    *    data in order to make this node appear at the desired address.
    *    If specifying an absolute address, it must be chosen such that
-   *    all previous nodes' memory mapped contents (with respect to
+   *    all previous nodes' memory mapped values (with respect to
    *    depth first search order) fit into the address space range
    *    preceding the desired address.  Note that validity check for
    *    this restriction will be made only upon completion of the tree
@@ -350,11 +350,13 @@ public class MapNode extends DefaultMutableTreeNode
   }
 
   @Override
-  public void setUserObject(Object userObject)
+  public void setUserObject(final Object userObject)
   {
-    // The user object is actually already updated in
-    // RangeContents#editingPathValueChanged().
-    // Hence, this method does not change anything in the map.
+    /*
+     * The user object is actually already updated in
+     * ValueImpl#editingPathValueChanged().  Hence, this method does
+     * not change anything in the map.
+     */
   }
 
   /**
@@ -577,14 +579,15 @@ public class MapNode extends DefaultMutableTreeNode
   private static final Integer[] EMPTY_INTEGER_ARRAY = new Integer[0];
 
   /**
-   * Returns data contents according to the given address and amount.
-   * The data, that is returned, may not go beyond the node that contains
-   * the addressed data.
+   * Returns the numerical value according to the given address and
+   * amount.  The data, that is returned, may not go beyond the node
+   * that contains the addressed data.
    * @param address The address of the data.
    * @param size The bit size of the data. The maximum size is limited
    *    through the effective bit size of the addressed node, as the
    *    requested data may not go beyond the node.
-   * @return Data contents according to the given address and amount.
+   * @return The numerical value according to the given address and
+   * amount, split into int values.
    * @exception IllegalArgumentException If size is below 0.
    * @exception IllegalArgumentException If the specified address is not
    *    accessible.
@@ -609,9 +612,9 @@ public class MapNode extends DefaultMutableTreeNode
   }
 
   /**
-   * Returns data contents according to the given address and amount.
-   * Assumes, that this node completely contains the requested data.<BR>
-   * [PENDING: This is not yet fully implemented]
+   * Returns the numerical value according to the given address and
+   * amount.  Assumes, that this node completely contains the
+   * requested data.<BR> [PENDING: This is not yet fully implemented]
    * @param address The address of the data.
    * @param size The bit size of the data. The maximum size is limited
    *    through the effective bit size of the addressed node, as the
@@ -623,7 +626,7 @@ public class MapNode extends DefaultMutableTreeNode
                                   final List<Integer> resultList)
   {
     if (getAllowsChildren()) {
-      throw new UnsupportedOperationException("only leaf nodes carry contents");
+      throw new UnsupportedOperationException("only leaf nodes carry data");
     }
     final int addrOffs = (int)(address - this.address);
     final Value value = getValue();

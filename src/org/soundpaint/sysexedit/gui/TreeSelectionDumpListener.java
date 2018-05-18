@@ -261,7 +261,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
   }
 
   /**
-   * Walks through the whole Map object and schedules the contents of
+   * Walks through the whole Map object and schedules the value of
    * each selected node for bulk dump.
    */
   public void dumpSelection()
