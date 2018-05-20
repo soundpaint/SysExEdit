@@ -59,6 +59,14 @@ public class DeviceIdDialog extends Dialog
   private final JPanel deviceIdValuePanel;
   private final JPanel iconPanel;
 
+  /**
+   * Creates a blocking dialog for editing the device ID.
+   * @param owner The frame that shall own this dialog.
+   * @param controller The controller to use for event generation and
+   * handling.
+   * @param documentMetaData The document meta data that holds the
+   * device ID.
+   */
   public DeviceIdDialog(final Frame owner, final Controller controller,
                         final DocumentMetaData documentMetaData)
   {
@@ -158,17 +166,6 @@ public class DeviceIdDialog extends Dialog
     setMinimumSize(getPreferredSize());
   }
 
-  /**
-   * Prompts the user for device ID input in a blocking dialog where the
-   * initial selection and other options can be specified.
-   * <code>initialValue</code> is the initial value to prompt the user with.
-   *
-   * @param parentComponent The parent Component for the dialog
-   * @param title The String to display in the dialog title bar
-   * @param messageType The type of message to be displayed.
-   * @param initialValue The value used to initialize the input field.
-   * @return device ID, or -1 meaning the user canceled the input
-   */
   public void showDialog()
   {
     loadInputFields();
