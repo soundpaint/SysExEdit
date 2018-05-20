@@ -23,7 +23,7 @@ package org.soundpaint.sysexedit.model;
 /**
  * This class renders an 8 bits mask of flags.
  */
-public class FlagsType implements ValueType
+public class FlagsType implements ValueRangeRenderer
 {
   private final int lowerBound;
   private final int bitStringSize;

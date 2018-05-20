@@ -107,9 +107,9 @@ public abstract class AbstractValue implements Value
 
   /**
    * Sets the underlying numerical value to apply when this Value
-   * instance is reset.  This value is not bound to a specific
-   * subrange of the associated sparse type; thus it even may be out
-   * of the currently selected or any other subrange.
+   * instance is reset.  This value is not bound to a specific value
+   * range of the associated sparse type; thus it even may be out of
+   * the currently selected or any other value range.
    * @param defaultValue The default value.
    * @see #reset
    */
@@ -120,9 +120,9 @@ public abstract class AbstractValue implements Value
 
   /**
    * Returns the underlying numerical value to apply when this Value
-   * instance is reset.  This value is not bound to a specific
-   * subrange of the associated sparse type; thus it even may be out
-   * of the currently selected or any other subrange.
+   * instance is reset.  This value is not bound to a specific value
+   * range of the associated sparse type; thus it even may be out of
+   * the currently selected or any other value range.
    * @return The current default value.
    */
   public int getDefaultValue()
@@ -132,8 +132,8 @@ public abstract class AbstractValue implements Value
 
   /**
    * Sets the underlying numerical value of this Value object.  The
-   * value is not bound to a specific subrange of the associated
-   * sparse type; thus it even may be out of any subrange.
+   * value is not bound to a specific value range of the associated
+   * sparse type; thus it even may be out of any value range.
    * @param value The underlying numerical value.
    */
   public void setNumericalValue(final int value)
@@ -143,8 +143,8 @@ public abstract class AbstractValue implements Value
 
   /**
    * Returns the underlying numerical value of this Value object.  The
-   * value is not bound to a specific subrange of the associated
-   * sparse type; thus it even may be out of any subrange.
+   * value is not bound to a specific value range of the associated
+   * sparse type; thus it even may be out of any value range.
    * @return The underlying numerical value.
    */
   public int getNumericalValue()
@@ -207,7 +207,8 @@ public abstract class AbstractValue implements Value
   {
     final String displayValue = getDisplayValue();
     return
-      displayValue != null ? displayValue : ValueType.DISPLAY_VALUE_UNKNOWN;
+      displayValue != null ?
+      displayValue : ValueRangeRenderer.DISPLAY_VALUE_UNKNOWN;
   }
 }
 

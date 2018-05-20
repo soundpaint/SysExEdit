@@ -1,5 +1,5 @@
 /*
- * @(#)ValueType.java 1.00 18/02/19
+ * @(#)ValueRangeRenderer.java 1.00 18/02/19
  *
  * Copyright (C) 1998, 2018 Jürgen Reuter
  *
@@ -28,7 +28,7 @@ package org.soundpaint.sysexedit.model;
  * display value should be unique among all values of the value range
  * type.
  */
-public interface ValueType
+public interface ValueRangeRenderer
 {
   /**
    * Default display value for an integer value out of range.  This

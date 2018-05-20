@@ -27,8 +27,8 @@ import javax.swing.Icon;
 /**
  * A sparse type represents a (possibly sparse) set of integer values
  * that map to objects with string representation.  It is composed of
- * a finite list of disjunctive contiguous subranges.  A contiguous
- * subrange is a (non-sparse) set of integer values in the range
+ * a finite list of disjunctive contiguous value ranges.  A contiguous
+ * value range is a (non-sparse) set of integer values in the range
  * 0x00000000 through 0xffffffff.
  *
  * IMPORTANT NOTE: Values are handled as signed integer values,
@@ -57,14 +57,14 @@ public class SparseTypeImpl implements SparseType
    * The set of all contiguous ranges that make up this sparse type,
    * sorted by ascending representation values.
    */
-  private final TreeSet<Subrange> subranges;
+  private final TreeSet<ValueRange> valueRanges;
 
   /**
-   * Same as subranges, but with a different comparator for looking up
-   * a subrange by a given value, rather than for comparing different
-   * subranges.
+   * Same as valueRanges, but with a different comparator for looking
+   * up a value range by a given numerical value, rather than for
+   * comparing different value ranges.
    */
-  private TreeSet<Subrange> subrangesByValue;
+  private TreeSet<ValueRange> valueRangesByNumericalValue;
 
   /**
    * The total number of valid values in this sparse type.
@@ -88,22 +88,23 @@ public class SparseTypeImpl implements SparseType
   public SparseTypeImpl(final String iconKey)
   {
     this.iconKey = iconKey;
-    subranges = new TreeSet<Subrange>();
-    subrangesByValue = null;
+    valueRanges = new TreeSet<ValueRange>();
+    valueRangesByNumericalValue = null;
   }
 
   /**
    * Creates a sparse type with initially a single contiguous range.
    * @param lb The lower bound of the contiguous range.
    * @param ub The upper bound of the contiguous range.
-   * @param valueType The ValueType for the contiguous range.
-   * @exception NullPointerException If valueType equals null.
+   * @param renderer The renderer for the contiguous range.
+   * @exception NullPointerException If renderer equals null.
    */
   public SparseTypeImpl(final String iconKey,
-                        final int lb, final int ub, final ValueType valueType)
+                        final int lb, final int ub,
+                        final ValueRangeRenderer renderer)
   {
     this(iconKey);
-    addSubrange(lb, ub, valueType);
+    addValueRange(lb, ub, renderer);
   }
 
   /**
@@ -153,57 +154,60 @@ public class SparseTypeImpl implements SparseType
    * Adds a single contiguous range to this sparse type.
    * @param lb The lower bound of the contiguous range.
    * @param ub The upper bound of the contiguous range.
-   * @param valueType The ValueType for the contiguous range.
+   * @param renderer The renderer for the contiguous range.
    * @return This object for convenience of chained expressions.
-   * @exception NullPointerException If valueType equals null.
-   * @exception IllegalArgumentException If the subrange overlaps some
-   *    already exisiting subrange.
+   * @exception NullPointerException If renderer equals null.
+   * @exception IllegalArgumentException If the value ange overlaps
+   *    some already exisiting value range.
    */
-  public SparseTypeImpl addSubrange(final int lb, final int ub,
-                                    final ValueType valueType)
+  public SparseTypeImpl addValueRange(final int lb, final int ub,
+                                      final ValueRangeRenderer renderer)
   {
     final long unsigned_lb = signed_int_to_long(lb);
     final long unsigned_ub = signed_int_to_long(ub);
     if ((lb < 0) && (ub >= 0)) {
       // overlapping contiguous; so split it up
-      subranges.add(new Subrange(unsigned_lb, max_unsigned, valueType));
-      subranges.add(new Subrange(min_unsigned, unsigned_ub, valueType));
+      valueRanges.add(new ValueRange(unsigned_lb, max_unsigned, renderer));
+      valueRanges.add(new ValueRange(min_unsigned, unsigned_ub, renderer));
     } else {
-      subranges.add(new Subrange(unsigned_lb, unsigned_ub, valueType));
+      valueRanges.add(new ValueRange(unsigned_lb, unsigned_ub, renderer));
     }
-    subrangesByValue = null;
+    valueRangesByNumericalValue = null;
     return this;
   }
 
   /**
    * Adds a single enumeration value to this sparse type.
    * @param value The enumeration value to be added.
-   * @param valueType The ValueType for the value.
+   * @param renderer The ValueRangeRenderer for the value.
    * @return This object for convenience of chained expressions.
-   * @exception NullPointerException If valueType equals null.
+   * @exception NullPointerException If renderer equals null.
    * @exception IllegalArgumentException If the single value is
-   *    already contained in some existing subrange.
+   *    already contained in some existing value range.
    */
   public SparseTypeImpl addSingleValue(final int value,
-                                       final ValueType valueType)
+                                       final ValueRangeRenderer renderer)
   {
-    return addSubrange(value, value, valueType);
+    return addValueRange(value, value, renderer);
   }
 
   /**
-   * Adds a single value to the sparse type.
-   * @param valueType The ValueType for the value.
+   * Adds a single value to the sparse type, assuming that the
+   * specified renderer's range consists of a single value.
+   * @param renderer The value range renderer for the value.
    * @return This object for convenience of chained expressions.
-   * @exception NullPointerException If valueType equals null.
+   * @exception NullPointerException If renderer equals null.
+   * @exception IllegalArgumentException If the renderer represents
+   *    more than a single value.
    * @exception IllegalArgumentException If the single value is
-   *    already contained in some existing subrange.
+   *    already contained in some existing value range.
    */
-  public SparseTypeImpl addSingleValue(final ValueType valueType)
+  public SparseTypeImpl addSingleValue(final ValueRangeRenderer renderer)
   {
-    if (valueType.getSize() != 1) {
-      throw new IllegalArgumentException("valueType does not represent a single value");
+    if (renderer.getSize() != 1) {
+      throw new IllegalArgumentException("renderer does not represent a single value");
     }
-    return addSingleValue(valueType.getLowerBound(), valueType);
+    return addSingleValue(renderer.getLowerBound(), renderer);
   }
 
   /**
@@ -213,16 +217,16 @@ public class SparseTypeImpl implements SparseType
    * @return This object for convenience of chained expressions.
    * @exception NullPointerException If enumValue equals null.
    * @exception IllegalArgumentException If the single value is
-   *    already contained in some exisiting subrange.
+   *    already contained in some exisiting value range.
    */
   public SparseTypeImpl addSingleValue(final int value, final String enumValue)
   {
     return addSingleValue(value, new EnumType(value, enumValue));
   }
 
-  private final static Comparator<Subrange>
-    subrangeContainmentComparator = new Comparator<Subrange>() {
-        public int compare(final Subrange r1, final Subrange r2)
+  private final static Comparator<ValueRange>
+    valueRangeContainmentComparator = new Comparator<ValueRange>() {
+        public int compare(final ValueRange r1, final ValueRange r2)
         {
           if ((r1.getLowerBound() <= r2.getLowerBound()) &&
               (r1.getUpperBound() >= r2.getUpperBound())) {
@@ -247,24 +251,24 @@ public class SparseTypeImpl implements SparseType
 
         public boolean equals(final Object obj)
         {
-          return obj == subrangeContainmentComparator;
+          return obj == valueRangeContainmentComparator;
         }
       };
 
-  private Subrange getSubrangeByValue(int value)
+  private ValueRange getValueRangeByNumericalValue(int numericalValue)
   {
-    if (subrangesByValue == null) {
-      subrangesByValue =
-        new TreeSet<Subrange>(subrangeContainmentComparator);
-      subrangesByValue.addAll(subranges);
+    if (valueRangesByNumericalValue == null) {
+      valueRangesByNumericalValue =
+        new TreeSet<ValueRange>(valueRangeContainmentComparator);
+      valueRangesByNumericalValue.addAll(valueRanges);
     }
-    final Subrange valueSubrange =
-      new Subrange(value, value, Int8Type.defaultInstance);
-    final Subrange floor = subrangesByValue.floor(valueSubrange);
+    final ValueRange valueRange =
+      new ValueRange(numericalValue, numericalValue, Int8Type.defaultInstance);
+    final ValueRange floor = valueRangesByNumericalValue.floor(valueRange);
     if (floor != null) {
       return floor;
     }
-    final Subrange ceiling = subrangesByValue.ceiling(valueSubrange);
+    final ValueRange ceiling = valueRangesByNumericalValue.ceiling(valueRange);
     if (ceiling != null) {
       return ceiling;
     }
@@ -282,14 +286,14 @@ public class SparseTypeImpl implements SparseType
 
   /**
    * Checks, if the specified value is a member of one of the
-   * contiguous subranges of this sparse type.
-   * @param x The Integer value to be checked.
+   * contiguous value ranges of this sparse type.
+   * @param numericalValue The numerical value to be checked.
    * @return True, if the value is in range.
    */
-  private synchronized boolean containsValue(final int x)
+  private synchronized boolean containsValue(final int numericalValue)
   {
-    final Subrange subrange = getSubrangeByValue(x);
-    return subrange != null;
+    final ValueRange valueRange = getValueRangeByNumericalValue(numericalValue);
+    return valueRange != null;
   }
 
   /**
@@ -299,10 +303,11 @@ public class SparseTypeImpl implements SparseType
    */
   public Integer lowermost()
   {
-    if (subranges.isEmpty())
+    if (valueRanges.isEmpty()) {
       return null;
-    final Subrange subrange = subranges.first();
-    return new Integer(long_to_signed_int(subrange.getLowerBound()));
+    }
+    final ValueRange valueRange = valueRanges.first();
+    return new Integer(long_to_signed_int(valueRange.getLowerBound()));
   }
 
   /**
@@ -312,10 +317,11 @@ public class SparseTypeImpl implements SparseType
    */
   public Integer uppermost()
   {
-    if (subranges.isEmpty())
+    if (valueRanges.isEmpty()) {
       return null;
-    final Subrange subrange = subranges.last();
-    return new Integer(long_to_signed_int(subrange.getUpperBound()));
+    }
+    final ValueRange valueRange = valueRanges.last();
+    return new Integer(long_to_signed_int(valueRange.getUpperBound()));
   }
 
   /**
@@ -327,61 +333,62 @@ public class SparseTypeImpl implements SparseType
   }
 
   /**
-   * Given some Integer value x that this sparse type may contain or
+   * Given some numerical value that this sparse type may contain or
    * not, returns the next upper value that this sparse type contains.
-   * @param x Some arbitrary numerical value (which may be even from
-   *    the omitted subranges of this sparse type).
+   * @param numericalValue Some arbitrary numerical value (which may
+   *    be even from the omitted value ranges of this sparse type).
    * @return The next upper value that this sparse type contains or
    *    null, if there is no such value.
    */
-  public Integer succ(final int x)
+  public Integer succ(final int numericalValue)
   {
-    final Subrange subrange = getSubrangeByValue(x);
-    if (subrange == null)
+    final ValueRange valueRange = getValueRangeByNumericalValue(numericalValue);
+    if (valueRange == null)
       return null;
-    if (x < subrange.getUpperBound())
-      return x + 1;
-    final Subrange nextSubrange = subranges.higher(subrange);
-    if (nextSubrange == null)
+    if (numericalValue < valueRange.getUpperBound())
+      return numericalValue + 1;
+    final ValueRange nextValueRange = valueRanges.higher(valueRange);
+    if (nextValueRange == null)
       return null;
-    return (int)nextSubrange.getLowerBound();
+    return (int)nextValueRange.getLowerBound();
   }
 
   /**
-   * Given some Integer value x that this sparse type may contain or
+   * Given some numerical value that this sparse type may contain or
    * not, returns the next lower value that this sparse type contains.
-   * @param x Some arbitrary numerical value (which may be even from
-   *    the omitted subranges of this sparse type).
+   * @param numericalValue Some arbitrary numerical value (which may
+   *    be even from the omitted value ranges of this sparse type).
    * @return The next lower value that this sparse type contains or
    *    null, if there is no such value.
    */
-  public Integer pred(final int x)
+  public Integer pred(final int numericalValue)
   {
-    final Subrange subrange = getSubrangeByValue(x);
-    if (subrange == null)
+    final ValueRange valueRange = getValueRangeByNumericalValue(numericalValue);
+    if (valueRange == null)
       return null;
-    if (x > subrange.getLowerBound())
-      return x - 1;
-    final Subrange previousSubrange = subranges.lower(subrange);
-    if (previousSubrange == null)
+    if (numericalValue > valueRange.getLowerBound())
+      return numericalValue - 1;
+    final ValueRange previousValueRange = valueRanges.lower(valueRange);
+    if (previousValueRange == null)
       return null;
-    return (int)previousSubrange.getUpperBound();
+    return (int)previousValueRange.getUpperBound();
   }
 
   /**
-   * Returns a String that represents x according to the ValueType
-   * specifications of each contiguous range.  If x is null or the
-   * sparse type does not contains this value, this method returns
-   * null.
-   * @param x The Integer value to be represented.
-   * @return The String representation of x.
+   * Returns a String that represents the specified numerical value
+   * according to the renderers' specifications of each contiguous
+   * range.  If the sparse type does not contain the specified value,
+   * this method returns null.
+   * @param numericalValue The numerical value to be represented.
+   * @return The String representation of the numerical value or
+   * <code>null</code>, if there is no representation.
    */
-  public String getDisplayValue(final int x)
+  public String getDisplayValue(final int numericalValue)
   {
-    final Subrange subrange = getSubrangeByValue(x);
-    if (subrange == null)
+    final ValueRange valueRange = getValueRangeByNumericalValue(numericalValue);
+    if (valueRange == null)
       return null;
-    return subrange.getDisplayValue(x);
+    return valueRange.getDisplayValue(numericalValue);
   }
 
   /**
@@ -391,13 +398,13 @@ public class SparseTypeImpl implements SparseType
   public String toString()
   {
     final StringBuffer s = new StringBuffer();
-    for (final Subrange subrange : subranges) {
+    for (final ValueRange valueRange : valueRanges) {
       if (s.length() > 0) {
         s.append(", ");
       }
-      s.append(subrange.toString());
+      s.append(valueRange.toString());
     }
-    return "SparseTypeImpl[subRanges={" + s + "}]";
+    return "SparseTypeImpl[valueRanges={" + s + "}]";
   }
 }
 

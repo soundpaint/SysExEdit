@@ -35,7 +35,7 @@ import org.soundpaint.sysexedit.model.AddressRepresentation;
 import org.soundpaint.sysexedit.model.Editor;
 import org.soundpaint.sysexedit.model.MapNode;
 import org.soundpaint.sysexedit.model.SparseType;
-import org.soundpaint.sysexedit.model.ValueType;
+import org.soundpaint.sysexedit.model.ValueRangeRenderer;
 
 /**
  * This class extends JTree with some more attributes that specify how the
@@ -171,7 +171,7 @@ public class Map extends JTree
     String displayValue = node.getDisplayValue();
     if (displayValue == null)
       if (!node.getAllowsChildren())
-        displayValue = ValueType.DISPLAY_VALUE_UNKNOWN;
+        displayValue = ValueRangeRenderer.DISPLAY_VALUE_UNKNOWN;
       else
         displayValue = "";
     if (label == null)

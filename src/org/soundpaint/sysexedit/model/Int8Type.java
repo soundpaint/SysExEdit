@@ -24,7 +24,7 @@ package org.soundpaint.sysexedit.model;
  * This class renders an 8 bits integer value as a plain integer
  * number.
  */
-public class Int8Type implements ValueType
+public class Int8Type implements ValueRangeRenderer
 {
   private final int lowerBound;
   private final int radix;

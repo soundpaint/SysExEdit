@@ -24,7 +24,7 @@ package org.soundpaint.sysexedit.model;
  * This class renders an integer value based on a given enumeration of
  * display values.
  */
-public class EnumType implements ValueType
+public class EnumType implements ValueRangeRenderer
 {
   private int lowerBound;
   private String[] displayValues;
