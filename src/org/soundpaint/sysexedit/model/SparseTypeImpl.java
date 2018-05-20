@@ -221,7 +221,7 @@ public class SparseTypeImpl implements SparseType
    */
   public SparseTypeImpl addSingleValue(final int value, final String enumValue)
   {
-    return addSingleValue(value, new EnumType(value, enumValue));
+    return addSingleValue(value, new EnumRenderer(value, enumValue));
   }
 
   private final static Comparator<ValueRange>
@@ -263,7 +263,8 @@ public class SparseTypeImpl implements SparseType
       valueRangesByNumericalValue.addAll(valueRanges);
     }
     final ValueRange valueRange =
-      new ValueRange(numericalValue, numericalValue, Int8Type.defaultInstance);
+      new ValueRange(numericalValue, numericalValue,
+                     IntegerRenderer.BYTE_RENDERER);
     final ValueRange floor = valueRangesByNumericalValue.floor(valueRange);
     if (floor != null) {
       return floor;

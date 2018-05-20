@@ -1,5 +1,5 @@
 /*
- * @(#)EnumType.java 1.00 18/02/19
+ * @(#)EnumRenderer.java 1.00 18/02/19
  *
  * Copyright (C) 1998, 2018 Jürgen Reuter
  *
@@ -21,10 +21,10 @@
 package org.soundpaint.sysexedit.model;
 
 /**
- * This class renders an integer value based on a given enumeration of
- * display values.
+ * This class renders a numerical value based on a given enumeration
+ * of display values.
  */
-public class EnumType implements ValueRangeRenderer
+public class EnumRenderer implements ValueRangeRenderer
 {
   private int lowerBound;
   private String[] displayValues;
@@ -40,36 +40,37 @@ public class EnumType implements ValueRangeRenderer
   }
 
   /**
-   * Defines a new EnumerationType with the specified display values.
+   * Defines a new EnumRenderer with the specified display values.
    * Each display value is associated with a specific numerical value.
    * The first of the specified display values is associated with the
    * numerical value <code>0</code>; the next display value is
    * associated with <code>1</code>, and so on.
    * @param displayValues An array of strings representing the display
    * values.
-   * @exception NullPointerException If enum equals null.
+   * @exception NullPointerException If <code>displayValues</code>
+   * equals null.
    */
-  public EnumType(final String[] displayValues)
+  public EnumRenderer(final String[] displayValues)
   {
     this(0, displayValues);
   }
 
   /**
-   * Defines a new EnumType for a single display value.  The
-   * EnumType's display value equals the specified display value if
-   * and only if the internal value equals the specified internal
+   * Defines a new EnumRenderer for a single display value.  The
+   * EnumRenderer's display value equals the specified display value
+   * if and only if the internal value equals the specified internal
    * value, and DISPLAY_VALUE_UNKNOWN in all other cases.
    * @param value The numerical representation of the specified
    * display value.
-   * @param displayValue The display value for the internal value.
+   * @param displayValue The display value.
    */
-  public EnumType(final int value, final String displayValue)
+  public EnumRenderer(final int value, final String displayValue)
   {
     this(value, new String[] {displayValue});
   }
 
   /**
-   * Defines a new EnumerationType with the specified display values.
+   * Defines a new EnumRenderer with the specified display values.
    * Each display value is associated with a specific numerical value.
    * The first of the specified display values is associated with the
    * numerical value <code>lowerBound</code>; the next display value
@@ -78,25 +79,29 @@ public class EnumType implements ValueRangeRenderer
    * specified display values.
    * @param displayValues An array of strings representing the display
    * values.
-   * @exception NullPointerException If displayValues equals null.
+   * @exception NullPointerException If <code>displayValues</code>
+   * equals null.
    */
-  public EnumType(final int lowerBound, final String[] displayValues)
+  public EnumRenderer(final int lowerBound, final String[] displayValues)
   {
     this.lowerBound = lowerBound;
-    if (displayValues == null)
-      throw new NullPointerException("displayValues equals null");
+    if (displayValues == null) {
+      throw new NullPointerException("displayValues");
+    }
     this.displayValues = displayValues;
   }
 
   /**
    * Returns the display value that this enumeration associated with
-   * the specified numerical representation value.
-   * @param value The numerical value.
-   * @return The associated display value.
+   * the specified numerical value.
+   * @param numericalValue The numerical value.
+   * @return The associated display value or
+   * <code>ValueRangeRenderer.DISPLAY_VALUE_UNKNOWN</code>, if there
+   * is no associated display value for the specified numerical value.
    */
-  public String getDisplayValue(final int value)
+  public String getDisplayValue(final int numericalValue)
   {
-    final int index = value - lowerBound;
+    final int index = numericalValue - lowerBound;
     if ((index >= 0) && (index < displayValues.length))
       return displayValues[index];
     else
@@ -104,9 +109,9 @@ public class EnumType implements ValueRangeRenderer
   }
 
   /**
-   * Returns a string representation of the displayValues array
+   * Returns a string representation of the display values array
    * (e.g. for debugging).
-   * @return A string representation of the displayValues array.
+   * @return A string representation of the display values array.
    */
   private String displayValuesToString()
   {
@@ -127,7 +132,7 @@ public class EnumType implements ValueRangeRenderer
    */
   public String toString()
   {
-    return "EnumType{lowerBound=" + lowerBound + ", displayValues=" +
+    return "EnumRenderer{lowerBound=" + lowerBound + ", displayValues=" +
       displayValuesToString() + "}";
   }
 }

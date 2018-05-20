@@ -89,7 +89,11 @@ public class ValueImpl extends AbstractValue
     this.sparseType = sparseType;
     minBitSize = sparseType.getRequiredBitSize();
     bitSize = (byte)Math.max(minBitSize, bitSize);
+
+    // TODO: Editor can also be a SpinnerEditor or anything else,
+    // depending on the underlying SparseType.
     editor = new DropDownEditor();
+
     listeners = new Vector<ValueChangeListener>();
     final KeyListener keyListener = new KeyAdapter()
       {
@@ -135,10 +139,10 @@ public class ValueImpl extends AbstractValue
   {
     if ((amount < 0) || (amount > 15))
       throw new IllegalArgumentException("amount");
-    final FlagsType unusedType = new FlagsType();
+    final BitMaskRenderer bitMaskRenderer = new BitMaskRenderer();
     final SparseType sparseType =
       new SparseTypeImpl(SparseType.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
-                         unusedType);
+                         bitMaskRenderer);
     return sparseType;
   }
 
@@ -229,14 +233,14 @@ public class ValueImpl extends AbstractValue
     int index = -1;
     Integer numericalValue = sparseType.lowermost();
     while (numericalValue != null) {
-      final EnumType enumType =
-        new EnumType(numericalValue, new String[]
+      final EnumRenderer enumRenderer =
+        new EnumRenderer(numericalValue, new String[]
           {
             sparseType.getDisplayValue(numericalValue)
           });
       final SparseTypeImpl editorSparseType =
         new SparseTypeImpl(sparseType.getIconKey(),
-                           numericalValue, numericalValue, enumType);
+                           numericalValue, numericalValue, enumRenderer);
       final Value value = new ValueImpl(editorSparseType);
       value.setNumericalValue(numericalValue);
       editor.addSelectableValue(value);

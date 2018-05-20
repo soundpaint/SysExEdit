@@ -33,8 +33,8 @@ import org.soundpaint.sysexedit.model.MapNode;
 import org.soundpaint.sysexedit.model.SparseType;
 import org.soundpaint.sysexedit.model.SparseTypeImpl;
 import org.soundpaint.sysexedit.model.ValueRangeRenderer;
-import org.soundpaint.sysexedit.model.EnumType;
-import org.soundpaint.sysexedit.model.Int8Type;
+import org.soundpaint.sysexedit.model.EnumRenderer;
+import org.soundpaint.sysexedit.model.IntegerRenderer;
 import org.soundpaint.sysexedit.model.AddressRepresentation;
 
 /**
@@ -944,7 +944,8 @@ public class DB50XG extends AbstractDevice
 
   private static final SparseType rangeDeviceId =
     new SparseTypeImpl("internal-control").
-    addValueRange(0x0, 0xf, new Int8Type(0, 16, true, "0x", "", (byte)4));
+    addValueRange(0x0, 0xf,
+                  new IntegerRenderer(0, 16, true, "0x", "", (byte)4));
 
   /**
    * Returns a Value object that represents the MIDI device model ID
@@ -1013,220 +1014,220 @@ public class DB50XG extends AbstractDevice
       7 * ((((long)(hi & 0x7f)) << 14) | ((mid & 0x7f) << 7) | (lo & 0x7f));
   }
 
-  private static final ValueRangeRenderer
-    enumType_pan = new EnumType(1, PAN);
+  private static final ValueRangeRenderer enumRenderer_pan =
+    new EnumRenderer(1, PAN);
 
-  private static final ValueRangeRenderer
-    enumType_level = new EnumType(LEVEL);
+  private static final ValueRangeRenderer enumRenderer_level =
+    new EnumRenderer(LEVEL);
 
-  private static final ValueRangeRenderer
-    enumType_modulation_delay_offset = new EnumType(MODULATION_DELAY_OFFSET);
+  private static final ValueRangeRenderer enumRenderer_modulation_delay_offset =
+    new EnumRenderer(MODULATION_DELAY_OFFSET);
   private static final SparseType sparseType_modulation_delay_offset =
     new SparseTypeImpl("internal-time").
-    addValueRange(0x00, 0x7f, enumType_modulation_delay_offset);
+    addValueRange(0x00, 0x7f, enumRenderer_modulation_delay_offset);
 
-  private static final ValueRangeRenderer
-    enumType_eq_frequency = new EnumType(EQ_FREQUENCY);
+  private static final ValueRangeRenderer enumRenderer_eq_frequency =
+    new EnumRenderer(EQ_FREQUENCY);
   private static final SparseType sparseType_eq_frequency =
     new SparseTypeImpl("internal-tune").
-    addValueRange(0x00, 0x3c, enumType_eq_frequency);
+    addValueRange(0x00, 0x3c, enumRenderer_eq_frequency);
 
-  private static final ValueRangeRenderer
-    enumType_reverb_time = new EnumType(REVERB_TIME);
+  private static final ValueRangeRenderer enumRenderer_reverb_time =
+    new EnumRenderer(REVERB_TIME);
   private static final SparseType sparseType_reverb_time =
     new SparseTypeImpl("internal-time").
-    addValueRange(0x00, 0x45, enumType_reverb_time);
+    addValueRange(0x00, 0x45, enumRenderer_reverb_time);
 
-  private static final ValueRangeRenderer
-    enumType_delay_time_1 = new EnumType(DELAY_TIME_1);
+  private static final ValueRangeRenderer enumRenderer_delay_time_1 =
+    new EnumRenderer(DELAY_TIME_1);
   private static final SparseType sparseType_delay_time_1 =
     new SparseTypeImpl("internal-time").
-    addValueRange(0x00, 0x7f, enumType_delay_time_1);
+    addValueRange(0x00, 0x7f, enumRenderer_delay_time_1);
 
-  private static final ValueRangeRenderer
-    enumType_room_size = new EnumType(ROOM_SIZE);
+  private static final ValueRangeRenderer enumRenderer_room_size =
+    new EnumRenderer(ROOM_SIZE);
 
-  private static final ValueRangeRenderer
-    enumType_delay_time_2 = new EnumType(DELAY_TIME_2);
+  private static final ValueRangeRenderer enumRenderer_delay_time_2 =
+    new EnumRenderer(DELAY_TIME_2);
   private static final SparseType sparseType_delay_time_2 =
     new SparseTypeImpl("internal-time").
-    addValueRange(0x00, 0x7f, enumType_delay_time_2);
+    addValueRange(0x00, 0x7f, enumRenderer_delay_time_2);
 
-  private static final ValueRangeRenderer
-    enumType_reverb_dim_length = new EnumType(REVERB_DIM_LENGTH);
+  private static final ValueRangeRenderer enumRenderer_reverb_dim_length =
+    new EnumRenderer(REVERB_DIM_LENGTH);
   private static final SparseType sparseType_reverb_width =
     new SparseTypeImpl("internal-length").
-    addValueRange(0x00, 0x25, enumType_reverb_dim_length);
+    addValueRange(0x00, 0x25, enumRenderer_reverb_dim_length);
   private static final SparseType sparseType_reverb_height =
     new SparseTypeImpl("internal-length").
-    addValueRange(0x00, 0x49, enumType_reverb_dim_length);
+    addValueRange(0x00, 0x49, enumRenderer_reverb_dim_length);
   private static final SparseType sparseType_reverb_depth =
     new SparseTypeImpl("internal-length").
-    addValueRange(0x00, 0x68, enumType_reverb_dim_length);
+    addValueRange(0x00, 0x68, enumRenderer_reverb_dim_length);
 
-  private static final ValueRangeRenderer
-    enumType_dry_wet = new EnumType(0x01, DRY_WET);
+  private static final ValueRangeRenderer enumRenderer_dry_wet =
+    new EnumRenderer(0x01, DRY_WET);
   private static final SparseType sparseType_dry_wet =
     new SparseTypeImpl("internal-pan").
-    addValueRange(0x01, 0x7f, enumType_dry_wet);
+    addValueRange(0x01, 0x7f, enumRenderer_dry_wet);
 
-  private static final ValueRangeRenderer
-    enumType_er_rev_balance = new EnumType(0x01, ER_REV_BALANCE);
+  private static final ValueRangeRenderer enumRenderer_er_rev_balance =
+    new EnumRenderer(0x01, ER_REV_BALANCE);
   private static final SparseType sparseType_er_rev_balance =
     new SparseTypeImpl("internal-pan").
-    addValueRange(0x01, 0x7f, enumType_er_rev_balance);
+    addValueRange(0x01, 0x7f, enumRenderer_er_rev_balance);
 
-  private static final ValueRangeRenderer
-    enumType_eq_gain = new EnumType(0x34, EQ_GAIN);
+  private static final ValueRangeRenderer enumRenderer_eq_gain =
+    new EnumRenderer(0x34, EQ_GAIN);
   private static final SparseType sparseType_eq_gain =
     new SparseTypeImpl("internal-volume").
-    addValueRange(0x34, 0x4c, enumType_eq_gain);
+    addValueRange(0x34, 0x4c, enumRenderer_eq_gain);
 
-  private static final ValueRangeRenderer
-    enumType_phase_difference = new EnumType(0x04, PHASE_DIFFERENCE);
+  private static final ValueRangeRenderer enumRenderer_phase_difference =
+    new EnumRenderer(0x04, PHASE_DIFFERENCE);
   private static final SparseType sparseType_phase_difference =
     new SparseTypeImpl("internal-control").
-    addValueRange(0x4, 0x7c, enumType_phase_difference);
+    addValueRange(0x4, 0x7c, enumRenderer_phase_difference);
 
-  private static final ValueRangeRenderer
-    enumType_hall = new EnumType(0x0080, HALL);
+  private static final ValueRangeRenderer enumRenderer_hall =
+    new EnumRenderer(0x0080, HALL);
 
-  private static final ValueRangeRenderer
-    enumType_room = new EnumType(0x0100, ROOM);
+  private static final ValueRangeRenderer enumRenderer_room =
+    new EnumRenderer(0x0100, ROOM);
 
-  private static final ValueRangeRenderer
-    enumType_stage = new EnumType(0x0180, STAGE);
+  private static final ValueRangeRenderer enumRenderer_stage =
+    new EnumRenderer(0x0180, STAGE);
 
-  private static final ValueRangeRenderer
-    enumType_chorus = new EnumType(0x2080, CHORUS);
+  private static final ValueRangeRenderer enumRenderer_chorus =
+    new EnumRenderer(0x2080, CHORUS);
 
-  private static final ValueRangeRenderer
-    enumType_celeste = new EnumType(0x2100, CELESTE);
+  private static final ValueRangeRenderer enumRenderer_celeste =
+    new EnumRenderer(0x2100, CELESTE);
 
-  private static final ValueRangeRenderer
-    enumType_flanger = new EnumType(0x2180, FLANGER);
+  private static final ValueRangeRenderer enumRenderer_flanger =
+    new EnumRenderer(0x2180, FLANGER);
 
-  private static final ValueRangeRenderer
-    enumType_early_ref = new EnumType(0x0480, EARLY_REF);
+  private static final ValueRangeRenderer enumRenderer_early_ref =
+    new EnumRenderer(0x0480, EARLY_REF);
 
-  private static final ValueRangeRenderer
-    enumType_karaoke = new EnumType(0x0a00, KARAOKE);
+  private static final ValueRangeRenderer enumRenderer_karaoke =
+    new EnumRenderer(0x0a00, KARAOKE);
 
-  private static final ValueRangeRenderer
-    enumType_connection = new EnumType(CONNECTION);
+  private static final ValueRangeRenderer enumRenderer_connection =
+    new EnumRenderer(CONNECTION);
 
-  private static final ValueRangeRenderer
-    enumType_mono_poly_mode = new EnumType(MONO_POLY_MODE);
+  private static final ValueRangeRenderer enumRenderer_mono_poly_mode =
+    new EnumRenderer(MONO_POLY_MODE);
   private static final SparseType sparseType_mono_poly_mode =
     new SparseTypeImpl("internal-switch").
-    addValueRange(0x0, 0x1, enumType_mono_poly_mode);
+    addValueRange(0x0, 0x1, enumRenderer_mono_poly_mode);
 
-  private static final ValueRangeRenderer
-    enumType_key_assign = new EnumType(KEY_ASSIGN);
+  private static final ValueRangeRenderer enumRenderer_key_assign =
+    new EnumRenderer(KEY_ASSIGN);
 
-  private static final ValueRangeRenderer
-    enumType_key_on_assign = new EnumType(KEY_ON_ASSIGN);
+  private static final ValueRangeRenderer enumRenderer_key_on_assign =
+    new EnumRenderer(KEY_ON_ASSIGN);
 
-  private static final ValueRangeRenderer
-    enumType_part_mode = new EnumType(PART_MODE);
+  private static final ValueRangeRenderer enumRenderer_part_mode =
+    new EnumRenderer(PART_MODE);
 
-  private static final ValueRangeRenderer
-    enumType_detune_0x0 = new EnumType(0x0000, DETUNE_0x0);
-  private static final ValueRangeRenderer
-    enumType_detune_0x1 = new EnumType(0x0080, DETUNE_0x1);
-  private static final ValueRangeRenderer
-    enumType_detune_0x2 = new EnumType(0x0100, DETUNE_0x2);
-  private static final ValueRangeRenderer
-    enumType_detune_0x3 = new EnumType(0x0180, DETUNE_0x3);
-  private static final ValueRangeRenderer
-    enumType_detune_0x4 = new EnumType(0x0200, DETUNE_0x4);
-  private static final ValueRangeRenderer
-    enumType_detune_0x5 = new EnumType(0x0280, DETUNE_0x5);
-  private static final ValueRangeRenderer
-    enumType_detune_0x6 = new EnumType(0x0300, DETUNE_0x6);
-  private static final ValueRangeRenderer
-    enumType_detune_0x7 = new EnumType(0x0380, DETUNE_0x7);
-  private static final ValueRangeRenderer
-    enumType_detune_0x8 = new EnumType(0x0400, DETUNE_0x8);
-  private static final ValueRangeRenderer
-    enumType_detune_0x9 = new EnumType(0x0480, DETUNE_0x9);
-  private static final ValueRangeRenderer
-    enumType_detune_0xa = new EnumType(0x0500, DETUNE_0xa);
-  private static final ValueRangeRenderer
-    enumType_detune_0xb = new EnumType(0x0580, DETUNE_0xb);
-  private static final ValueRangeRenderer
-    enumType_detune_0xc = new EnumType(0x0600, DETUNE_0xc);
-  private static final ValueRangeRenderer
-    enumType_detune_0xd = new EnumType(0x0680, DETUNE_0xd);
-  private static final ValueRangeRenderer
-    enumType_detune_0xe = new EnumType(0x0700, DETUNE_0xe);
-  private static final ValueRangeRenderer
-    enumType_detune_0xf = new EnumType(0x0780, DETUNE_0xf);
+  private static final ValueRangeRenderer enumRenderer_detune_0x0 =
+    new EnumRenderer(0x0000, DETUNE_0x0);
+  private static final ValueRangeRenderer enumRenderer_detune_0x1 =
+    new EnumRenderer(0x0080, DETUNE_0x1);
+  private static final ValueRangeRenderer enumRenderer_detune_0x2 =
+    new EnumRenderer(0x0100, DETUNE_0x2);
+  private static final ValueRangeRenderer enumRenderer_detune_0x3 =
+    new EnumRenderer(0x0180, DETUNE_0x3);
+  private static final ValueRangeRenderer enumRenderer_detune_0x4 =
+    new EnumRenderer(0x0200, DETUNE_0x4);
+  private static final ValueRangeRenderer enumRenderer_detune_0x5 =
+    new EnumRenderer(0x0280, DETUNE_0x5);
+  private static final ValueRangeRenderer enumRenderer_detune_0x6 =
+    new EnumRenderer(0x0300, DETUNE_0x6);
+  private static final ValueRangeRenderer enumRenderer_detune_0x7 =
+    new EnumRenderer(0x0380, DETUNE_0x7);
+  private static final ValueRangeRenderer enumRenderer_detune_0x8 =
+    new EnumRenderer(0x0400, DETUNE_0x8);
+  private static final ValueRangeRenderer enumRenderer_detune_0x9 =
+    new EnumRenderer(0x0480, DETUNE_0x9);
+  private static final ValueRangeRenderer enumRenderer_detune_0xa =
+    new EnumRenderer(0x0500, DETUNE_0xa);
+  private static final ValueRangeRenderer enumRenderer_detune_0xb =
+    new EnumRenderer(0x0580, DETUNE_0xb);
+  private static final ValueRangeRenderer enumRenderer_detune_0xc =
+    new EnumRenderer(0x0600, DETUNE_0xc);
+  private static final ValueRangeRenderer enumRenderer_detune_0xd =
+    new EnumRenderer(0x0680, DETUNE_0xd);
+  private static final ValueRangeRenderer enumRenderer_detune_0xe =
+    new EnumRenderer(0x0700, DETUNE_0xe);
+  private static final ValueRangeRenderer enumRenderer_detune_0xf =
+    new EnumRenderer(0x0780, DETUNE_0xf);
   private static final SparseType sparseType_detune =
     new SparseTypeImpl("internal-transpose").
-    addValueRange(0x0000, 0x000f, enumType_detune_0x0).
-    addValueRange(0x0080, 0x008f, enumType_detune_0x1).
-    addValueRange(0x0100, 0x010f, enumType_detune_0x2).
-    addValueRange(0x0180, 0x018f, enumType_detune_0x3).
-    addValueRange(0x0200, 0x020f, enumType_detune_0x4).
-    addValueRange(0x0280, 0x028f, enumType_detune_0x5).
-    addValueRange(0x0300, 0x030f, enumType_detune_0x6).
-    addValueRange(0x0380, 0x038f, enumType_detune_0x7).
-    addValueRange(0x0400, 0x040f, enumType_detune_0x8).
-    addValueRange(0x0480, 0x048f, enumType_detune_0x9).
-    addValueRange(0x0500, 0x050f, enumType_detune_0xa).
-    addValueRange(0x0580, 0x058f, enumType_detune_0xb).
-    addValueRange(0x0600, 0x060f, enumType_detune_0xc).
-    addValueRange(0x0680, 0x068f, enumType_detune_0xd).
-    addValueRange(0x0700, 0x070f, enumType_detune_0xe).
-    addValueRange(0x0780, 0x078f, enumType_detune_0xf);
+    addValueRange(0x0000, 0x000f, enumRenderer_detune_0x0).
+    addValueRange(0x0080, 0x008f, enumRenderer_detune_0x1).
+    addValueRange(0x0100, 0x010f, enumRenderer_detune_0x2).
+    addValueRange(0x0180, 0x018f, enumRenderer_detune_0x3).
+    addValueRange(0x0200, 0x020f, enumRenderer_detune_0x4).
+    addValueRange(0x0280, 0x028f, enumRenderer_detune_0x5).
+    addValueRange(0x0300, 0x030f, enumRenderer_detune_0x6).
+    addValueRange(0x0380, 0x038f, enumRenderer_detune_0x7).
+    addValueRange(0x0400, 0x040f, enumRenderer_detune_0x8).
+    addValueRange(0x0480, 0x048f, enumRenderer_detune_0x9).
+    addValueRange(0x0500, 0x050f, enumRenderer_detune_0xa).
+    addValueRange(0x0580, 0x058f, enumRenderer_detune_0xb).
+    addValueRange(0x0600, 0x060f, enumRenderer_detune_0xc).
+    addValueRange(0x0680, 0x068f, enumRenderer_detune_0xd).
+    addValueRange(0x0700, 0x070f, enumRenderer_detune_0xe).
+    addValueRange(0x0780, 0x078f, enumRenderer_detune_0xf);
 
-  private static final ValueRangeRenderer
-    enumType_note = new EnumType(NOTE);
+  private static final ValueRangeRenderer enumRenderer_note =
+    new EnumRenderer(NOTE);
   private static final SparseType sparseType_note =
     new SparseTypeImpl("internal-transpose").
-    addValueRange(0x00, 0x7f, enumType_note);
+    addValueRange(0x00, 0x7f, enumRenderer_note);
 
-  private static final ValueRangeRenderer
-    enumType_filter_control = new EnumType(FILTER_CONTROL);
+  private static final ValueRangeRenderer enumRenderer_filter_control =
+    new EnumRenderer(FILTER_CONTROL);
   private static final SparseType sparseType_filter_control =
     new SparseTypeImpl("internal-tune").
-    addValueRange(0x00, 0x7f, enumType_filter_control);
+    addValueRange(0x00, 0x7f, enumRenderer_filter_control);
 
-  private static final ValueRangeRenderer
-    enumType_bend_lfo_mod_depth = new EnumType(BEND_LFO_MOD_DEPTH);
+  private static final ValueRangeRenderer enumRenderer_bend_lfo_mod_depth =
+    new EnumRenderer(BEND_LFO_MOD_DEPTH);
   private static final SparseType sparseType_bend_lfo_mod_depth =
     new SparseTypeImpl("internal-control").
-    addValueRange(0x00, 0x7f, enumType_bend_lfo_mod_depth);
+    addValueRange(0x00, 0x7f, enumRenderer_bend_lfo_mod_depth);
 
-  private static final ValueRangeRenderer
-    enumType_switch = new EnumType(SWITCH);
+  private static final ValueRangeRenderer enumRenderer_switch =
+    new EnumRenderer(SWITCH);
   private static final SparseType sparseType_switch =
     new SparseTypeImpl("internal-switch").
-    addValueRange(0x0, 0x1, enumType_switch);
+    addValueRange(0x0, 0x1, enumRenderer_switch);
 
-  private static final ValueRangeRenderer
-    enumType_mono_stereo = new EnumType(MONO_STEREO);
+  private static final ValueRangeRenderer enumRenderer_mono_stereo =
+    new EnumRenderer(MONO_STEREO);
   private static final SparseType sparseType_mono_stereo =
     new SparseTypeImpl("internal-switch").
-    addValueRange(0x0, 0x1, enumType_mono_stereo);
+    addValueRange(0x0, 0x1, enumRenderer_mono_stereo);
 
-  private static final ValueRangeRenderer
-    enumType_scale_tuning = new EnumType(SCALE_TUNING);
+  private static final ValueRangeRenderer enumRenderer_scale_tuning =
+    new EnumRenderer(SCALE_TUNING);
   private static final SparseType sparseType_scale_tuning =
     new SparseTypeImpl("internal-tune").
-    addValueRange(0x00, 0x7f, enumType_scale_tuning);
+    addValueRange(0x00, 0x7f, enumRenderer_scale_tuning);
 
   private static final SparseType sparseType_transpose =
     new SparseTypeImpl("internal-transpose").
-    addValueRange(0x28, 0x58, new Int8Type(0x40));
+    addValueRange(0x28, 0x58, new IntegerRenderer(0x40));
 
   private static final SparseType sparseType_reverb_type =
     new SparseTypeImpl("internal-fx-reverb").
     addSingleValue(0x0000, "No Effect").
-    addValueRange(0x0080, 0x0081, enumType_hall).
-    addValueRange(0x0100, 0x0102, enumType_room).
-    addValueRange(0x0180, 0x0181, enumType_stage).
+    addValueRange(0x0080, 0x0081, enumRenderer_hall).
+    addValueRange(0x0100, 0x0102, enumRenderer_room).
+    addValueRange(0x0180, 0x0181, enumRenderer_stage).
     addSingleValue(0x0200, "Plate").
     addSingleValue(0x0800, "White Room").
     addSingleValue(0x0880, "Tunnel").
@@ -1235,33 +1236,33 @@ public class DB50XG extends AbstractDevice
   private static final SparseType sparseType_chorus_type =
     new SparseTypeImpl("internal-fx-chorus").
     addSingleValue(0x0000, "No Effect").
-    addValueRange(0x2080, 0x2082, enumType_chorus).
+    addValueRange(0x2080, 0x2082, enumRenderer_chorus).
     addSingleValue(0x2088, "Chorus 4").
-    addValueRange(0x2100, 0x2102, enumType_celeste).
+    addValueRange(0x2100, 0x2102, enumRenderer_celeste).
     addSingleValue(0x2108, "Celeste 4").
-    addValueRange(0x2180, 0x2181, enumType_flanger).
+    addValueRange(0x2180, 0x2181, enumRenderer_flanger).
     addSingleValue(0x2188, "Flanger 3");
 
   private static final SparseType sparseType_variation_type =
     new SparseTypeImpl("internal-control").
     addSingleValue(0x0000, "No Effect").
-    addValueRange(0x0080, 0x0081, enumType_hall).
-    addValueRange(0x0100, 0x0102, enumType_room).
-    addValueRange(0x0180, 0x0181, enumType_stage).
+    addValueRange(0x0080, 0x0081, enumRenderer_hall).
+    addValueRange(0x0100, 0x0102, enumRenderer_room).
+    addValueRange(0x0180, 0x0181, enumRenderer_stage).
     addSingleValue(0x0200, "Plate").
     addSingleValue(0x0280, "Delay L, C, R").
     addSingleValue(0x0300, "Delay L, R").
     addSingleValue(0x0380, "Echo").
     addSingleValue(0x0400, "Cross Delay").
-    addValueRange(0x0480, 0x0481, enumType_early_ref).
+    addValueRange(0x0480, 0x0481, enumRenderer_early_ref).
     addSingleValue(0x0500, "Gate Reverb").
     addSingleValue(0x0580, "Reverse Gate").
-    addValueRange(0x0a00, 0x0a02, enumType_karaoke).
-    addValueRange(0x2080, 0x2082, enumType_chorus).
+    addValueRange(0x0a00, 0x0a02, enumRenderer_karaoke).
+    addValueRange(0x2080, 0x2082, enumRenderer_chorus).
     addSingleValue(0x2088, "Chorus 4").
-    addValueRange(0x2100, 0x2102, enumType_celeste).
+    addValueRange(0x2100, 0x2102, enumRenderer_celeste).
     addSingleValue(0x2108, "Celeste 4").
-    addValueRange(0x2180, 0x2181, enumType_flanger).
+    addValueRange(0x2180, 0x2181, enumRenderer_flanger).
     addSingleValue(0x2188, "Flanger 3").
     addSingleValue(0x2200, "Symphonic").
     addSingleValue(0x2280, "Rotary Speaker").
@@ -1279,49 +1280,49 @@ public class DB50XG extends AbstractDevice
 
   private static final SparseType sparseType_pan =
     new SparseTypeImpl("internal-pan").
-    addValueRange(0x01, 0x7f, enumType_pan);
+    addValueRange(0x01, 0x7f, enumRenderer_pan);
 
   private static final SparseType sparseType_pan_extended =
     new SparseTypeImpl("internal-pan").
     addSingleValue(0x00, "Random").
-    addValueRange(0x01, 0x7f, enumType_pan);
+    addValueRange(0x01, 0x7f, enumRenderer_pan);
 
   private static final SparseType sparseType_level =
     new SparseTypeImpl("internal-volume").
-    addValueRange(0x00, 0x7f, enumType_level);
+    addValueRange(0x00, 0x7f, enumRenderer_level);
 
   private static final SparseType sparseType_volume =
     new SparseTypeImpl("internal-volume").
-    addValueRange(0x00, 0x7f, Int8Type.defaultInstance);
+    addValueRange(0x00, 0x7f, IntegerRenderer.BYTE_RENDERER);
 
   private static final SparseType sparseType_connection =
     new SparseTypeImpl("internal-control").
-    addValueRange(0x0, 0x1, enumType_connection);
+    addValueRange(0x0, 0x1, enumRenderer_connection);
 
-  private static final EnumType enumType_part = new EnumType(PART);
+  private static final EnumRenderer enumRenderer_part = new EnumRenderer(PART);
   private static final SparseType sparseType_part =
     new SparseTypeImpl("internal-control").
-    addValueRange(0x00, 0x0f, enumType_part).
+    addValueRange(0x00, 0x0f, enumRenderer_part).
     addSingleValue(0x7f, "Off");
 
   private static final SparseType sparseType_non_negative_7bit =
     new SparseTypeImpl("internal-control").
-    addValueRange(0x00, 0x7f, Int8Type.defaultInstance);
+    addValueRange(0x00, 0x7f, IntegerRenderer.BYTE_RENDERER);
 
   private static final SparseType sparseType_positive_7bit =
     new SparseTypeImpl("internal-control").
-    addValueRange(0x01, 0x7f, Int8Type.defaultInstance);
+    addValueRange(0x01, 0x7f, IntegerRenderer.BYTE_RENDERER);
 
   private static final SparseType sparseType_signed_7bit =
     new SparseTypeImpl("internal-control").
-    addValueRange(0x00, 0x7f, new Int8Type(0x40));
+    addValueRange(0x00, 0x7f, new IntegerRenderer(0x40));
 
   private static final SparseType sparseType_controller_number =
     new SparseTypeImpl("internal-control").
-    addValueRange(0x00, 0x5f, Int8Type.defaultInstance);
+    addValueRange(0x00, 0x5f, IntegerRenderer.BYTE_RENDERER);
 
   private static final ValueRangeRenderer lfo_frequency =
-    new EnumType(LFO_FREQUENCY);
+    new EnumRenderer(LFO_FREQUENCY);
   private static final SparseType sparseType_lfo_frequency =
     new SparseTypeImpl("internal-tune").
     addValueRange(0x00, 0x7f, lfo_frequency);
@@ -1332,7 +1333,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_tune_3 =
       new SparseTypeImpl("internal-tune").
-      addValueRange(0x0, 0x0, Int8Type.defaultInstance);
+      addValueRange(0x0, 0x0, IntegerRenderer.BYTE_RENDERER);
     final Value tune_3 = new ValueImpl(sparseType_tune_3);
     tune_3.setBitSize(7);
     tune_3.setDefaultValue(0x0);
@@ -1340,7 +1341,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_tune_2 =
       new SparseTypeImpl("internal-tune").
-      addValueRange(0x0, 0x7, Int8Type.defaultInstance);
+      addValueRange(0x0, 0x7, IntegerRenderer.BYTE_RENDERER);
     final Value tune_2 = new ValueImpl(sparseType_tune_2);
     tune_2.setBitSize(7);
     tune_2.setDefaultValue(0x4);
@@ -1348,7 +1349,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_tune_1 =
       new SparseTypeImpl("internal-tune").
-      addValueRange(0x0, 0xf, Int8Type.defaultInstance);
+      addValueRange(0x0, 0xf, IntegerRenderer.BYTE_RENDERER);
     final Value tune_1 = new ValueImpl(sparseType_tune_1);
     tune_1.setBitSize(7);
     tune_1.setDefaultValue(0x0);
@@ -1356,7 +1357,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_tune_0 =
       new SparseTypeImpl("internal-tune").
-      addValueRange(0x0, 0xf, Int8Type.defaultInstance);
+      addValueRange(0x0, 0xf, IntegerRenderer.BYTE_RENDERER);
     final Value tune_0 = new ValueImpl(sparseType_tune_0);
     tune_0.setBitSize(7);
     tune_0.setDefaultValue(0x0);
@@ -1376,7 +1377,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_drums_setup_reset =
       new SparseTypeImpl("internal-error").
-      addValueRange(0x0, 0x1, Int8Type.defaultInstance);
+      addValueRange(0x0, 0x1, IntegerRenderer.BYTE_RENDERER);
     final Value drums_setup_reset = new ValueImpl(sparseType_drums_setup_reset);
     drums_setup_reset.setBitSize(7);
     drums_setup_reset.setDefaultValue(0x0);
@@ -1385,7 +1386,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_xg_on =
       new SparseTypeImpl("internal-error").
-      addSingleValue(0x0, Int8Type.defaultInstance);
+      addSingleValue(0x0, IntegerRenderer.BYTE_RENDERER);
     final Value xg_on = new ValueImpl(sparseType_xg_on);
     xg_on.setBitSize(7);
     xg_on.setDefaultValue(0x0);
@@ -1393,7 +1394,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_all_reset =
       new SparseTypeImpl("internal-error").
-      addSingleValue(0x0, Int8Type.defaultInstance);
+      addSingleValue(0x0, IntegerRenderer.BYTE_RENDERER);
     final Value all_reset = new ValueImpl(sparseType_all_reset);
     all_reset.setBitSize(7);
     all_reset.setDefaultValue(0x0);
@@ -1418,7 +1419,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_diffusion =
       new SparseTypeImpl("internal-control").
-      addValueRange(0x00, 0x0a, Int8Type.defaultInstance);
+      addValueRange(0x00, 0x0a, IntegerRenderer.BYTE_RENDERER);
     final Value diffusion = new ValueImpl(sparseType_diffusion);
     diffusion.setBitSize(7);
     diffusion.setDefaultValue(0x00);
@@ -1456,7 +1457,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_wall_vary =
       new SparseTypeImpl("internal-control").
-      addValueRange(0x00, 0x1e, Int8Type.defaultInstance);
+      addValueRange(0x00, 0x1e, IntegerRenderer.BYTE_RENDERER);
     final Value wall_vary = new ValueImpl(sparseType_wall_vary);
     wall_vary.setBitSize(7);
     wall_vary.setDefaultValue(0x00);
@@ -1485,7 +1486,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_density =
       new SparseTypeImpl("internal-control").
-      addValueRange(0x0, 0x3, Int8Type.defaultInstance);
+      addValueRange(0x0, 0x3, IntegerRenderer.BYTE_RENDERER);
     final Value density = new ValueImpl(sparseType_density);
     density.setBitSize(7);
     density.setDefaultValue(0x0);
@@ -1500,7 +1501,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_feedback_level =
       new SparseTypeImpl("internal-volume").
-      addValueRange(0x01, 0x7f, new Int8Type(0x40));
+      addValueRange(0x01, 0x7f, new IntegerRenderer(0x40));
     final Value feedback_level = new ValueImpl(sparseType_feedback_level);
     feedback_level.setBitSize(7);
     feedback_level.setDefaultValue(0x40);
@@ -1533,7 +1534,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_feedback_level =
       new SparseTypeImpl("internal-volume").
-      addValueRange(0x01, 0x7f, new Int8Type(0x40));
+      addValueRange(0x01, 0x7f, new IntegerRenderer(0x40));
     final Value feedback_level = new ValueImpl(sparseType_feedback_level);
     feedback_level.setBitSize(7);
     feedback_level.setDefaultValue(0x40);
@@ -1754,7 +1755,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_element_reserve =
       new SparseTypeImpl("internal-control").
-      addValueRange(0x00, 0x1f, Int8Type.defaultInstance);
+      addValueRange(0x00, 0x1f, IntegerRenderer.BYTE_RENDERER);
     final Value element_reserve = new ValueImpl(sparseType_element_reserve);
     element_reserve.setBitSize(7);
     element_reserve.setDefaultValue(n == 9 ? 0x00 : 0x02);
@@ -1770,7 +1771,7 @@ public class DB50XG extends AbstractDevice
     bank_select_lsb.setDefaultValue(0x00);
     node_multi_part_n.add(new MapNode("Bank Select LSB", bank_select_lsb));
 
-    final ValueRangeRenderer VALUE_TYPE_1_TO_N = new Int8Type(-1);
+    final ValueRangeRenderer VALUE_TYPE_1_TO_N = new IntegerRenderer(-1);
 
     final SparseType sparseType_program_number =
       new SparseTypeImpl("internal-control").
@@ -1796,7 +1797,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_key_on_assign =
       new SparseTypeImpl("internal-control").
-      addValueRange(0x0, 0x2, enumType_key_on_assign);
+      addValueRange(0x0, 0x2, enumRenderer_key_on_assign);
     final Value key_on_assign = new ValueImpl(sparseType_key_on_assign);
     key_on_assign.setBitSize(7);
     key_on_assign.setDefaultValue(n == 9 ? 0x2 : 0x0);
@@ -1805,7 +1806,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_part_mode =
       new SparseTypeImpl("internal-control").
-      addValueRange(0x0, 0x3, enumType_part_mode);
+      addValueRange(0x0, 0x3, enumRenderer_part_mode);
     final Value part_mode = new ValueImpl(sparseType_part_mode);
     part_mode.setBitSize(7);
     part_mode.setDefaultValue(n == 9 ? 0x2 : 0x0);
@@ -2237,7 +2238,7 @@ public class DB50XG extends AbstractDevice
     final SparseType sparseType_alternative_group =
       new SparseTypeImpl("internal-control").
       addSingleValue(0x00, "Off").
-      addValueRange(0x01, 0x7f, Int8Type.defaultInstance);
+      addValueRange(0x01, 0x7f, IntegerRenderer.BYTE_RENDERER);
     final Value alternative_group = new ValueImpl(sparseType_alternative_group);
     alternative_group.setBitSize(7);
     alternative_group.setDefaultValue(n);
@@ -2266,7 +2267,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType sparseType_key_assign =
       new SparseTypeImpl("internal-control").
-      addValueRange(0x00, 0x01, enumType_key_assign);
+      addValueRange(0x00, 0x01, enumRenderer_key_assign);
     final Value key_assign = new ValueImpl(sparseType_key_assign);
     key_assign.setBitSize(7);
     key_assign.setDefaultValue(0x0);

@@ -1,5 +1,5 @@
 /*
- * @(#)FlagsType.java 1.00 18/02/19
+ * @(#)BitMaskRenderer.java 1.00 18/02/19
  *
  * Copyright (C) 2018 Jürgen Reuter
  *
@@ -21,9 +21,9 @@
 package org.soundpaint.sysexedit.model;
 
 /**
- * This class renders an 8 bits mask of flags.
+ * This class renders an bits mask of flags with up to 8 bits.
  */
-public class FlagsType implements ValueRangeRenderer
+public class BitMaskRenderer implements ValueRangeRenderer
 {
   private final int lowerBound;
   private final int bitStringSize;
@@ -31,10 +31,10 @@ public class FlagsType implements ValueRangeRenderer
   /**
    * Defines a new bits mask for arbitrary values n in the range 0x00
    * through 0xff.  The display value is just the value's ordinary
-   * numeric representation as a set of binary digits.  This
+   * numerical representation as a set of binary digits.  This
    * convenience constructor assumes a bit string size of 8.
    */
-  public FlagsType()
+  public BitMaskRenderer()
   {
     this(0);
   }
@@ -42,13 +42,13 @@ public class FlagsType implements ValueRangeRenderer
   /**
    * Defines a new bits mask for arbitrary values n in the range 0x00
    * through 0xff.  The display value is just the value's ordinary
-   * numeric representation relative to the specified lower bound,
+   * numerical representation relative to the specified lower bound,
    * displayed as a set of binary digits.  This convenience
    * constructor assumes a bit string size of 8.
    * @param lowerBound The integer value that the bit mask consisting
    * of '0's only maps to.
    */
-  public FlagsType(final int lowerBound)
+  public BitMaskRenderer(final int lowerBound)
   {
     this(lowerBound, 8);
   }
@@ -56,14 +56,14 @@ public class FlagsType implements ValueRangeRenderer
   /**
    * Defines a new bits mask for arbitrary values n in the range 0x00
    * through 0xff.  The display value is just the value's ordinary
-   * numeric representation relative to the specified lower bound,
+   * numerical representation relative to the specified lower bound,
    * displayed as a set of binary digits.
    * @param lowerBound The integer value that the bit mask consisting
    * of '0's only maps to.
    * @param bitStringSize The number of flags to be shown in the
    * display value.
    */
-  public FlagsType(final int lowerBound, final int bitStringSize)
+  public BitMaskRenderer(final int lowerBound, final int bitStringSize)
   {
     this.lowerBound = lowerBound;
     this.bitStringSize = bitStringSize;
@@ -109,7 +109,7 @@ public class FlagsType implements ValueRangeRenderer
    */
   public String toString()
   {
-    return "FlagsType{lowerBound=" + lowerBound +
+    return "BitMaskRenderer{lowerBound=" + lowerBound +
       ", bitStringSize=" + bitStringSize + "}";
   }
 }

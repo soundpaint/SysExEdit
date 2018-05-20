@@ -1,5 +1,5 @@
 /*
- * @(#)IntType.java 1.00 18/02/19
+ * @(#)IntegerRenderer.java 1.00 18/02/19
  *
  * Copyright (C) 2018 Jürgen Reuter
  *
@@ -24,7 +24,7 @@ package org.soundpaint.sysexedit.model;
  * This class renders an 8 bits integer value as a plain integer
  * number.
  */
-public class Int8Type implements ValueRangeRenderer
+public class IntegerRenderer implements ValueRangeRenderer
 {
   private final int lowerBound;
   private final int radix;
@@ -34,38 +34,38 @@ public class Int8Type implements ValueRangeRenderer
   private final byte minWidth;
 
   /**
-   * A predefined Int8Type for arbitrary values n in the range 0x00
-   * through 0xff.  The display value is just the value's ordinary
-   * numeric representation.
+   * A predefined IntegerRenderer for arbitrary values n in the range
+   * 0x00 through 0xff.  The display value is just the value's
+   * ordinary numeric representation.
    */
-  public final static Int8Type defaultInstance = new Int8Type();
+  public final static IntegerRenderer BYTE_RENDERER = new IntegerRenderer();
 
   /**
-   * Defines a new Int8Type for arbitrary values n in the range 0x00
-   * through 0xff.  The display value is just the value's ordinary
-   * numeric representation.
+   * Defines a new IntegerRenderer for arbitrary values n in the range
+   * 0x00 through 0xff.  The display value is just the value's
+   * ordinary numeric representation.
    */
-  private Int8Type()
+  private IntegerRenderer()
   {
     this(0);
   }
 
   /**
-   * Defines a new Int8Type for arbitrary integer values n in the
-   * range [0, 255], that are displayed as values [lowerBound,
+   * Defines a new IntegerRenderer for arbitrary integer values n in
+   * the range [0, 255], that are displayed as values [lowerBound,
    * lowerBound + 255].  This convenience constructor assumes a radix
    * of 10 for displaying the value.
    * @param lowerBound The integer value that the display value '0'
    * maps to.
    */
-  public Int8Type(final int lowerBound)
+  public IntegerRenderer(final int lowerBound)
   {
     this(lowerBound, 10, false, "", "", (byte)0);
   }
 
   /**
-   * Defines a new Int8Type for arbitrary integer values n in the
-   * range [0, 255], that are displayed as values [lowerBound,
+   * Defines a new IntegerRenderer for arbitrary integer values n in
+   * the range [0, 255], that are displayed as values [lowerBound,
    * lowerBound + 255].
    * @param lowerBound The integer value that the display value '0'
    * maps to.
@@ -82,11 +82,11 @@ public class Int8Type implements ValueRangeRenderer
    * generated String will cover (including display prefix and display
    * suffix).
    */
-  public Int8Type(final int lowerBound, final int radix,
-                  final boolean fillWithLeadingZeroes,
-                  final String displayPrefix,
-                  final String displaySuffix,
-                  final byte minWidth)
+  public IntegerRenderer(final int lowerBound, final int radix,
+                         final boolean fillWithLeadingZeroes,
+                         final String displayPrefix,
+                         final String displaySuffix,
+                         final byte minWidth)
   {
     this.lowerBound = lowerBound;
     this.radix = radix;
@@ -144,7 +144,7 @@ public class Int8Type implements ValueRangeRenderer
 
   /**
    * Returns a String that represents the specified value according to
-   * the specification of this Int8Type.
+   * the specification of this IntegerRenderer.
    */
   public String getDisplayValue(final int value)
   {
@@ -169,7 +169,8 @@ public class Int8Type implements ValueRangeRenderer
    */
   public String toString()
   {
-    return "Int8Type{lowerBound=" + lowerBound + ", radix=" + radix + "}";
+    return
+      "IntegerRenderer{lowerBound=" + lowerBound + ", radix=" + radix + "}";
   }
 }
 
