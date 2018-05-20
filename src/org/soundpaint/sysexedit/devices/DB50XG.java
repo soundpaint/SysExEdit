@@ -1182,8 +1182,7 @@ public class DB50XG extends AbstractDevice
     addValueRange(0x0700, 0x070f, rendererDetune0xe).
     addValueRange(0x0780, 0x078f, rendererDetune0xf);
 
-  private static final ValueRangeRenderer rendererNote =
-    new EnumRenderer(NOTE);
+  private static final ValueRangeRenderer rendererNote = new EnumRenderer(NOTE);
   private static final SparseType typeNote =
     new SparseTypeImpl("internal-transpose").
     addValueRange(0x00, 0x7f, rendererNote);
@@ -1594,8 +1593,7 @@ public class DB50XG extends AbstractDevice
     nodeChorus.add(new MapNode("Unused", new ValueImpl(7)));
     nodeChorus.add(new MapNode("Unused", new ValueImpl(7)));
 
-    final Value lfoPhaseDifference =
-      new ValueImpl(typePhaseDifference);
+    final Value lfoPhaseDifference = new ValueImpl(typePhaseDifference);
     lfoPhaseDifference.setBitSize(7);
     lfoPhaseDifference.setDefaultValue(0x40);
     nodeChorus.add(new MapNode("LFO Phase Difference", lfoPhaseDifference));
@@ -1827,15 +1825,13 @@ public class DB50XG extends AbstractDevice
     volume.setDefaultValue(0x64);
     nodeMultiPartN.add(new MapNode("Volume", volume));
 
-    final Value velocitySenseDepth =
-      new ValueImpl(typeNonNegative7Bit);
+    final Value velocitySenseDepth = new ValueImpl(typeNonNegative7Bit);
     velocitySenseDepth.setBitSize(7);
     velocitySenseDepth.setDefaultValue(0x40);
     nodeMultiPartN.add(new MapNode("Velocity Sense Depth",
                                    velocitySenseDepth));
 
-    final Value velocitySenseOffset =
-      new ValueImpl(typeNonNegative7Bit);
+    final Value velocitySenseOffset = new ValueImpl(typeNonNegative7Bit);
     velocitySenseOffset.setBitSize(7);
     velocitySenseOffset.setDefaultValue(0x40);
     nodeMultiPartN.add(new MapNode("Velocity Sense Offset",
@@ -1846,14 +1842,12 @@ public class DB50XG extends AbstractDevice
     pan.setDefaultValue(0x40);
     nodeMultiPartN.add(new MapNode("Pan", pan));
 
-    final Value noteLimitLow =
-      new ValueImpl(typeNote, "internal-limit-bottom");
+    final Value noteLimitLow = new ValueImpl(typeNote, "internal-limit-bottom");
     noteLimitLow.setBitSize(7);
     noteLimitLow.setDefaultValue(0x00);
     nodeMultiPartN.add(new MapNode("Note Limit Low", noteLimitLow));
 
-    final Value noteLimitHigh =
-      new ValueImpl(typeNote, "internal-limit-top");
+    final Value noteLimitHigh = new ValueImpl(typeNote, "internal-limit-top");
     noteLimitHigh.setBitSize(7);
     noteLimitHigh.setDefaultValue(0x7f);
     nodeMultiPartN.add(new MapNode("Note Limit High", noteLimitHigh));
@@ -1905,20 +1899,17 @@ public class DB50XG extends AbstractDevice
     filterResonance.setDefaultValue(0x40);
     nodeMultiPartN.add(new MapNode("Filter Resonance", filterResonance));
 
-    final Value egAttackTime =
-      new ValueImpl(typeSigned7Bit, "internal-time");
+    final Value egAttackTime = new ValueImpl(typeSigned7Bit, "internal-time");
     egAttackTime.setBitSize(7);
     egAttackTime.setDefaultValue(0x40);
     nodeMultiPartN.add(new MapNode("EG Attack Time", egAttackTime));
 
-    final Value egDecayTime =
-      new ValueImpl(typeSigned7Bit, "internal-time");
+    final Value egDecayTime = new ValueImpl(typeSigned7Bit, "internal-time");
     egDecayTime.setBitSize(7);
     egDecayTime.setDefaultValue(0x40);
     nodeMultiPartN.add(new MapNode("EG Decay Time", egDecayTime));
 
-    final Value egReleaseTime =
-      new ValueImpl(typeSigned7Bit, "internal-time");
+    final Value egReleaseTime = new ValueImpl(typeSigned7Bit, "internal-time");
     egReleaseTime.setBitSize(7);
     egReleaseTime.setDefaultValue(0x40);
     nodeMultiPartN.add(new MapNode("EG Release Time", egReleaseTime));
@@ -1943,8 +1934,7 @@ public class DB50XG extends AbstractDevice
     nodeMultiPartN.add(new MapNode("Bend Amplitude Control",
                                    bendAmplitudeControl));
 
-    final Value bendLfoPModDepth =
-      new ValueImpl(typeBendLfoModDepth);
+    final Value bendLfoPModDepth = new ValueImpl(typeBendLfoModDepth);
     bendLfoPModDepth.setBitSize(7);
     bendLfoPModDepth.setDefaultValue(0x40);
     nodeMultiPartN.add(new MapNode("Bend LFO PMod Depth",
@@ -1989,8 +1979,7 @@ public class DB50XG extends AbstractDevice
     nodeMultiPartN.add(new MapNode("Rcv Control Change",
                                    rcvControlChange));
 
-    final Value rcvPolyAfterTouch =
-      new ValueImpl(typeSwitch);
+    final Value rcvPolyAfterTouch = new ValueImpl(typeSwitch);
     rcvPolyAfterTouch.setBitSize(7);
     rcvPolyAfterTouch.setDefaultValue(0x1);
     nodeMultiPartN.add(new MapNode("Rcv Poly After Touch (PAT)",
@@ -2132,16 +2121,14 @@ public class DB50XG extends AbstractDevice
 
     buildPartControl(nodeMultiPartN, "PAT", 0x00);
 
-    final Value ac1ControllerNumber =
-      new ValueImpl(typeControllerNumber);
+    final Value ac1ControllerNumber = new ValueImpl(typeControllerNumber);
     ac1ControllerNumber.setBitSize(7);
     ac1ControllerNumber.setDefaultValue(0x10);
     nodeMultiPartN.add(new MapNode("AC1 Controller Number",
                                    ac1ControllerNumber));
     buildPartControl(nodeMultiPartN, "AC1", 0x00);
 
-    final Value ac2ControllerNumber =
-      new ValueImpl(typeControllerNumber);
+    final Value ac2ControllerNumber = new ValueImpl(typeControllerNumber);
     ac2ControllerNumber.setBitSize(7);
     ac2ControllerNumber.setDefaultValue(0x11);
     nodeMultiPartN.add(new MapNode("AC2 Controller Number",
@@ -2375,8 +2362,8 @@ public class DB50XG extends AbstractDevice
       throw new UnsupportedOperationException();
     }
 
-    BulkStream(final byte deviceId,
-               final MapNode root, final long start, final long end)
+    BulkStream(final byte deviceId, final MapNode root,
+               final long start, final long end)
       throws IOException
     {
       if (root == null)
@@ -2479,8 +2466,7 @@ public class DB50XG extends AbstractDevice
     }
   }
 
-  public InputStream bulkDump(final Value deviceId,
-                              final MapNode root,
+  public InputStream bulkDump(final Value deviceId, final MapNode root,
                               final long start, final long end)
   {
     try {
