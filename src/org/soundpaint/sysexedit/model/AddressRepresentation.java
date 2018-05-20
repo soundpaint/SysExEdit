@@ -26,7 +26,14 @@ package org.soundpaint.sysexedit.model;
  */
 public interface AddressRepresentation
 {
-  String addressToString(final long index);
+  /**
+   * Returns a string representation of the device's memory address
+   * specified by the address of a memory bit in the map.
+   * @param bitAddress The index in the bit array of the memory map.
+   * @return A string representation for the device's memory address
+   * of the bit.
+   */
+  String memoryBitAddress2DeviceAddress(final long bitAddress);
 }
 
 /*

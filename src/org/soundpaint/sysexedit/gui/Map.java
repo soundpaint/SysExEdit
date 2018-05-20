@@ -149,11 +149,6 @@ public class Map extends JTree
     return addressInfoEnabled;
   }
 
-  public String addressToString(final long address)
-  {
-    return addressRepresentation.addressToString(address);
-  }
-
   /**
    * Creates the text for a given tree cell node.
    * @param node The node.
@@ -163,22 +158,28 @@ public class Map extends JTree
   {
     final long address = node.getAddress();
     final String addressStr;
-    if ((address >= 0) && addressInfoEnabled)
-      addressStr = addressToString(address) + ": ";
-    else // address not evaluated yet or not enabled
+    if ((address >= 0) && addressInfoEnabled) {
+      addressStr =
+        addressRepresentation.memoryBitAddress2DeviceAddress(address) + ": ";
+    } else {
+      // address not yet evaluated or not enabled
       addressStr = "";
+    }
     String label = node.getLabel();
     String displayValue = node.getDisplayValue();
-    if (displayValue == null)
-      if (!node.getAllowsChildren())
+    if (displayValue == null) {
+      if (!node.getAllowsChildren()) {
         displayValue = ValueRangeRenderer.DISPLAY_VALUE_UNKNOWN;
-      else
+      } else {
         displayValue = "";
-    if (label == null)
+      }
+    }
+    if (label == null) {
       label = "";
-    final String sep = ((label.length() > 0) && (displayValue.length() > 0)) ?
-      " : " : "";
-    final String text = addressStr + label + sep + displayValue;
+    }
+    final String separator =
+      ((label.length() > 0) && (displayValue.length() > 0)) ? " : " : "";
+    final String text = addressStr + label + separator + displayValue;
     return text;
   }
 

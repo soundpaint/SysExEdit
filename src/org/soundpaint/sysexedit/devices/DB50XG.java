@@ -968,36 +968,28 @@ public class DB50XG extends AbstractDevice
     return ENTERED_BY;
   }
 
-  private class DB50XGAddressRepresentation implements AddressRepresentation
-  {
-    /**
-     * Returns a string representation for the given address.
-     * @param address The index in the bit array of the memory map.
-     * @return A string representation for the given address.
-     */
-    public String addressToString(long address)
-    {
-      final byte bitPos = (byte)(address % 7);
-      address /= 7;
-      final byte hi = (byte)((address >> 14) & 0x7f);
-      final byte mid = (byte)((address >> 7) & 0x7f);
-      final byte lo = (byte)(address & 0x7f);
-      final String bitPosStr = bitPos == 0 ? "" : " [" + bitPos + "]";
-      return
-        twoDigits(Integer.toString(hi, 16)) + " " +
-        twoDigits(Integer.toString(mid,16)) + " " +
-        twoDigits(Integer.toString(lo,16)) +
-        bitPosStr;
-    }
-  }
-
   /**
    * Returns an AddressRepresentation object that defines how addresses
    * are to be displayed to the user.
    */
   public AddressRepresentation getAddressRepresentation()
   {
-    return new DB50XGAddressRepresentation();
+    return new AddressRepresentation() {
+      public String memoryBitAddress2DeviceAddress(final long bitAddress)
+      {
+        final long address = bitAddress / 7;
+        final byte addrHigh = (byte)((address >> 14) & 0x7f);
+        final byte addrMiddle = (byte)((address >> 7) & 0x7f);
+        final byte addrLow = (byte)(address & 0x7f);
+        final byte offset = (byte)(bitAddress % 7);
+        final String offsetStr = offset == 0 ? "" : " [" + offset + "]";
+        return
+          String.format("%02x", addrHigh) + " " +
+          String.format("%02x", addrMiddle) + " " +
+          String.format("%02x", addrLow) +
+          offsetStr;
+      }
+    };
   }
 
   /**
@@ -2327,20 +2319,6 @@ public class DB50XG extends AbstractDevice
     root.add(buildMapNodeEffect1());
     root.add(buildMapNodeMultiPart());
     root.add(buildMapNodeDrumSetup());
-  }
-
-  private String twoDigits(final String s)
-  {
-    switch (s.length()) {
-    case 0:
-      return "00";
-    case 1:
-      return "0" + s;
-    case 2:
-      return s;
-    default:
-      return s.substring(s.length() - 2);
-    }
   }
 
   private class BulkStream extends InputStream
