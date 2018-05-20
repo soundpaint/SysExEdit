@@ -977,17 +977,17 @@ public class DB50XG extends AbstractDevice
      */
     public String addressToString(long address)
     {
-      final byte bitpos = (byte)(address % 7);
+      final byte bitPos = (byte)(address % 7);
       address /= 7;
       final byte hi = (byte)((address >> 14) & 0x7f);
       final byte mid = (byte)((address >> 7) & 0x7f);
       final byte lo = (byte)(address & 0x7f);
-      final String bitpos_str = bitpos == 0 ? "" : " [" + bitpos + "]";
+      final String bitPosStr = bitPos == 0 ? "" : " [" + bitPos + "]";
       return
-        two_digits(Integer.toString(hi, 16)) + " " +
-        two_digits(Integer.toString(mid,16)) + " " +
-        two_digits(Integer.toString(lo,16)) +
-        bitpos_str;
+        twoDigits(Integer.toString(hi, 16)) + " " +
+        twoDigits(Integer.toString(mid,16)) + " " +
+        twoDigits(Integer.toString(lo,16)) +
+        bitPosStr;
     }
   }
 
@@ -1329,7 +1329,7 @@ public class DB50XG extends AbstractDevice
 
   private MapNode buildMapNodeSystem()
   {
-    MapNode node_system = new MapNode("System");
+    MapNode nodeSystem = new MapNode("System");
 
     final SparseType typeTune3 =
       new SparseTypeImpl("internal-tune").
@@ -1337,7 +1337,7 @@ public class DB50XG extends AbstractDevice
     final Value tune3 = new ValueImpl(typeTune3);
     tune3.setBitSize(7);
     tune3.setDefaultValue(0x0);
-    node_system.add(new MapNode("Master Tune[3]", tune3));
+    nodeSystem.add(new MapNode("Master Tune[3]", tune3));
 
     final SparseType typeTune2 =
       new SparseTypeImpl("internal-tune").
@@ -1345,7 +1345,7 @@ public class DB50XG extends AbstractDevice
     final Value tune2 = new ValueImpl(typeTune2);
     tune2.setBitSize(7);
     tune2.setDefaultValue(0x4);
-    node_system.add(new MapNode("Master Tune[2]", tune2));
+    nodeSystem.add(new MapNode("Master Tune[2]", tune2));
 
     final SparseType typeTune1 =
       new SparseTypeImpl("internal-tune").
@@ -1353,7 +1353,7 @@ public class DB50XG extends AbstractDevice
     final Value tune1 = new ValueImpl(typeTune1);
     tune1.setBitSize(7);
     tune1.setDefaultValue(0x0);
-    node_system.add(new MapNode("Master Tune[1]", tune1));
+    nodeSystem.add(new MapNode("Master Tune[1]", tune1));
 
     final SparseType typeTune0 =
       new SparseTypeImpl("internal-tune").
@@ -1361,19 +1361,19 @@ public class DB50XG extends AbstractDevice
     final Value tune0 = new ValueImpl(typeTune0);
     tune0.setBitSize(7);
     tune0.setDefaultValue(0x0);
-    node_system.add(new MapNode("Master Tune[0]", tune0));
+    nodeSystem.add(new MapNode("Master Tune[0]", tune0));
 
     final Value volume = new ValueImpl(typeVolume);
     volume.setBitSize(7);
     volume.setDefaultValue(0x7f);
-    node_system.add(new MapNode("Master Volume", volume));
+    nodeSystem.add(new MapNode("Master Volume", volume));
 
-    node_system.add(new MapNode("Unused", new ValueImpl(7)));
+    nodeSystem.add(new MapNode("Unused", new ValueImpl(7)));
 
     final Value transpose = new ValueImpl(typeTranspose);
     transpose.setBitSize(7);
     transpose.setDefaultValue(0x40);
-    node_system.add(new MapNode("Transpose", transpose));
+    nodeSystem.add(new MapNode("Transpose", transpose));
 
     final SparseType typeDrumsSetupReset =
       new SparseTypeImpl("internal-error").
@@ -1381,8 +1381,8 @@ public class DB50XG extends AbstractDevice
     final Value drumsSetupReset = new ValueImpl(typeDrumsSetupReset);
     drumsSetupReset.setBitSize(7);
     drumsSetupReset.setDefaultValue(0x0);
-    node_system.add(new MapNode("Drum Setup Reset", drumsSetupReset,
-                                addr2index(0x00, 0x00, 0x7d)));
+    nodeSystem.add(new MapNode("Drum Setup Reset", drumsSetupReset,
+                               addr2index(0x00, 0x00, 0x7d)));
 
     final SparseType typeXgOn =
       new SparseTypeImpl("internal-error").
@@ -1390,7 +1390,7 @@ public class DB50XG extends AbstractDevice
     final Value xgOn = new ValueImpl(typeXgOn);
     xgOn.setBitSize(7);
     xgOn.setDefaultValue(0x0);
-    node_system.add(new MapNode("XG System On", xgOn));
+    nodeSystem.add(new MapNode("XG System On", xgOn));
 
     final SparseType typeAllReset =
       new SparseTypeImpl("internal-error").
@@ -1398,24 +1398,24 @@ public class DB50XG extends AbstractDevice
     final Value allReset = new ValueImpl(typeAllReset);
     allReset.setBitSize(7);
     allReset.setDefaultValue(0x0);
-    node_system.add(new MapNode("All Parameter Reset", allReset));
+    nodeSystem.add(new MapNode("All Parameter Reset", allReset));
 
-    return node_system;
+    return nodeSystem;
   }
 
   private MapNode buildMapNodeReverb()
   {
-    final MapNode node_reverb = new MapNode("Reverb");
+    final MapNode nodeReverb = new MapNode("Reverb");
 
     final Value reverbType = new ValueImpl(typeReverbType);
     reverbType.setBitSize(14);
     reverbType.setDefaultValue(0x0080);
-    node_reverb.add(new MapNode("Reverb Type", reverbType));
+    nodeReverb.add(new MapNode("Reverb Type", reverbType));
 
     final Value reverbTime = new ValueImpl(typeReverbTime);
     reverbTime.setBitSize(7);
     reverbTime.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("Reverb Time", reverbTime));
+    nodeReverb.add(new MapNode("Reverb Time", reverbTime));
 
     final SparseType typeDiffusion =
       new SparseTypeImpl("internal-control").
@@ -1423,37 +1423,37 @@ public class DB50XG extends AbstractDevice
     final Value diffusion = new ValueImpl(typeDiffusion);
     diffusion.setBitSize(7);
     diffusion.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("Diffusion", diffusion));
+    nodeReverb.add(new MapNode("Diffusion", diffusion));
 
     final Value initialDelay = new ValueImpl(typeDelayTime1);
     initialDelay.setBitSize(7);
     initialDelay.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("Initial Delay", initialDelay));
+    nodeReverb.add(new MapNode("Initial Delay", initialDelay));
 
     final Value hpfCutoff = new ValueImpl(typeEqFrequency);
     hpfCutoff.setBitSize(7);
     hpfCutoff.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("HPF Cutoff", hpfCutoff));
+    nodeReverb.add(new MapNode("HPF Cutoff", hpfCutoff));
 
     final Value lpfCutoff = new ValueImpl(typeEqFrequency);
     lpfCutoff.setBitSize(7);
     lpfCutoff.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("LPF Cutoff", lpfCutoff));
+    nodeReverb.add(new MapNode("LPF Cutoff", lpfCutoff));
 
     final Value width = new ValueImpl(typeReverbWidth);
     width.setBitSize(7);
     width.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("Width", width));
+    nodeReverb.add(new MapNode("Width", width));
 
     final Value height = new ValueImpl(typeReverbHeight);
     height.setBitSize(7);
     height.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("Height", height));
+    nodeReverb.add(new MapNode("Height", height));
 
     final Value depth = new ValueImpl(typeReverbDepth);
     depth.setBitSize(7);
     depth.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("Depth", depth));
+    nodeReverb.add(new MapNode("Depth", depth));
 
     final SparseType typeWallVary =
       new SparseTypeImpl("internal-control").
@@ -1461,28 +1461,28 @@ public class DB50XG extends AbstractDevice
     final Value wallVary = new ValueImpl(typeWallVary);
     wallVary.setBitSize(7);
     wallVary.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("Wall Vary", wallVary));
+    nodeReverb.add(new MapNode("Wall Vary", wallVary));
 
     final Value dryWet = new ValueImpl(typeDryWet);
     dryWet.setBitSize(7);
     dryWet.setDefaultValue(0x40);
-    node_reverb.add(new MapNode("Dry / Wet", dryWet));
+    nodeReverb.add(new MapNode("Dry / Wet", dryWet));
 
     final Value level = new ValueImpl(typeLevel);
     level.setBitSize(7);
     level.setDefaultValue(0x40);
-    node_reverb.add(new MapNode("Reverb Return", level));
+    nodeReverb.add(new MapNode("Reverb Return", level));
 
     final Value pan = new ValueImpl(typePan);
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    node_reverb.add(new MapNode("Reverb Pan", pan));
+    nodeReverb.add(new MapNode("Reverb Pan", pan));
 
     final Value revDelay = new ValueImpl(typeDelayTime1);
     revDelay.setBitSize(7);
     revDelay.setDefaultValue(0x00);
-    node_reverb.add(new MapNode("Rev Delay", revDelay,
-                                addr2index(0x02, 0x01, 0x10)));
+    nodeReverb.add(new MapNode("Rev Delay", revDelay,
+                               addr2index(0x02, 0x01, 0x10)));
 
     final SparseType typeDensity =
       new SparseTypeImpl("internal-control").
@@ -1490,14 +1490,14 @@ public class DB50XG extends AbstractDevice
     final Value density = new ValueImpl(typeDensity);
     density.setBitSize(7);
     density.setDefaultValue(0x0);
-    node_reverb.add(new MapNode("Density", density));
+    nodeReverb.add(new MapNode("Density", density));
 
     final Value erRevBalance = new ValueImpl(typeErRevBalance);
     erRevBalance.setBitSize(7);
     erRevBalance.setDefaultValue(0x40);
-    node_reverb.add(new MapNode("Er / Rev Balance", erRevBalance));
+    nodeReverb.add(new MapNode("Er / Rev Balance", erRevBalance));
 
-    node_reverb.add(new MapNode("Unused", new ValueImpl(7)));
+    nodeReverb.add(new MapNode("Unused", new ValueImpl(7)));
 
     final SparseType typeFeedbackLevel =
       new SparseTypeImpl("internal-volume").
@@ -1505,32 +1505,32 @@ public class DB50XG extends AbstractDevice
     final Value feedbackLevel = new ValueImpl(typeFeedbackLevel);
     feedbackLevel.setBitSize(7);
     feedbackLevel.setDefaultValue(0x40);
-    node_reverb.add(new MapNode("Feedback Level", feedbackLevel));
+    nodeReverb.add(new MapNode("Feedback Level", feedbackLevel));
 
-    node_reverb.add(new MapNode("Unused", new ValueImpl(7)));
+    nodeReverb.add(new MapNode("Unused", new ValueImpl(7)));
 
-    return node_reverb;
+    return nodeReverb;
   }
 
   private MapNode buildMapNodeChorus()
   {
-    final MapNode node_chorus =
+    final MapNode nodeChorus =
       new MapNode("Chorus", addr2index(0x02, 0x01, 0x20));
 
     final Value chorusType = new ValueImpl(typeChorusType);
     chorusType.setBitSize(14);
     chorusType.setDefaultValue(0x2080);
-    node_chorus.add(new MapNode("Chorus Type", chorusType));
+    nodeChorus.add(new MapNode("Chorus Type", chorusType));
 
     final Value lfoFrequency = new ValueImpl(typeLfoFrequency);
     lfoFrequency.setBitSize(7);
     lfoFrequency.setDefaultValue(0x00);
-    node_chorus.add(new MapNode("LFO Frequency", lfoFrequency));
+    nodeChorus.add(new MapNode("LFO Frequency", lfoFrequency));
 
     final Value lfoPmDepth = new ValueImpl(typeNonNegative7Bit);
     lfoPmDepth.setBitSize(7);
     lfoPmDepth.setDefaultValue(0x40);
-    node_chorus.add(new MapNode("LFO PM Depth", lfoPmDepth));
+    nodeChorus.add(new MapNode("LFO PM Depth", lfoPmDepth));
 
     final SparseType typeFeedbackLevel =
       new SparseTypeImpl("internal-volume").
@@ -1538,176 +1538,176 @@ public class DB50XG extends AbstractDevice
     final Value feedbackLevel = new ValueImpl(typeFeedbackLevel);
     feedbackLevel.setBitSize(7);
     feedbackLevel.setDefaultValue(0x40);
-    node_chorus.add(new MapNode("Feedback Level", feedbackLevel));
+    nodeChorus.add(new MapNode("Feedback Level", feedbackLevel));
 
     final Value modulationDelayOffset =
       new ValueImpl(typeModulationDelayOffset);
     modulationDelayOffset.setBitSize(7);
     modulationDelayOffset.setDefaultValue(0x00);
-    node_chorus.add(new MapNode("Modulation Delay Offset",
+    nodeChorus.add(new MapNode("Modulation Delay Offset",
                                 modulationDelayOffset));
 
-    node_chorus.add(new MapNode("Unused", new ValueImpl(7)));
+    nodeChorus.add(new MapNode("Unused", new ValueImpl(7)));
 
     final Value eqLowFrequency = new ValueImpl(typeEqFrequency);
     eqLowFrequency.setBitSize(7);
     eqLowFrequency.setDefaultValue(0x08);
-    node_chorus.add(new MapNode("EQ Low Frequency", eqLowFrequency));
+    nodeChorus.add(new MapNode("EQ Low Frequency", eqLowFrequency));
 
     final Value eqLowGain = new ValueImpl(typeEqGain);
     eqLowGain.setBitSize(7);
     eqLowGain.setDefaultValue(0x40);
-    node_chorus.add(new MapNode("EQ Low Gain", eqLowGain));
+    nodeChorus.add(new MapNode("EQ Low Gain", eqLowGain));
 
     final Value eqHighFrequency = new ValueImpl(typeEqFrequency);
     eqHighFrequency.setBitSize(7);
     eqHighFrequency.setDefaultValue(0x3a);
-    node_chorus.add(new MapNode("EQ High Frequency", eqHighFrequency));
+    nodeChorus.add(new MapNode("EQ High Frequency", eqHighFrequency));
 
     final Value eqHighGain = new ValueImpl(typeEqGain);
     eqHighGain.setBitSize(7);
     eqHighGain.setDefaultValue(0x40);
-    node_chorus.add(new MapNode("EQ High Gain", eqHighGain));
+    nodeChorus.add(new MapNode("EQ High Gain", eqHighGain));
 
     final Value dryWet = new ValueImpl(typeDryWet);
     dryWet.setBitSize(7);
     dryWet.setDefaultValue(0x40);
-    node_chorus.add(new MapNode("Dry / Wet", dryWet));
+    nodeChorus.add(new MapNode("Dry / Wet", dryWet));
 
     final Value level = new ValueImpl(typeLevel);
     level.setBitSize(7);
     level.setDefaultValue(0x40);
-    node_chorus.add(new MapNode("Chorus Return", level));
+    nodeChorus.add(new MapNode("Chorus Return", level));
 
     final Value pan = new ValueImpl(typePan);
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    node_chorus.add(new MapNode("Chorus Pan", pan));
+    nodeChorus.add(new MapNode("Chorus Pan", pan));
 
     final Value levelReverb = new ValueImpl(typeLevel);
     levelReverb.setBitSize(7);
     levelReverb.setDefaultValue(0x00);
-    node_chorus.add(new MapNode("Send Chorus To Reverb", levelReverb));
+    nodeChorus.add(new MapNode("Send Chorus To Reverb", levelReverb));
 
-    node_chorus.add(new MapNode("Unused", new ValueImpl(7),
-                                addr2index(0x02, 0x01, 0x30)));
-    node_chorus.add(new MapNode("Unused", new ValueImpl(7)));
-    node_chorus.add(new MapNode("Unused", new ValueImpl(7)));
+    nodeChorus.add(new MapNode("Unused", new ValueImpl(7),
+                               addr2index(0x02, 0x01, 0x30)));
+    nodeChorus.add(new MapNode("Unused", new ValueImpl(7)));
+    nodeChorus.add(new MapNode("Unused", new ValueImpl(7)));
 
     final Value lfoPhaseDifference =
       new ValueImpl(typePhaseDifference);
     lfoPhaseDifference.setBitSize(7);
     lfoPhaseDifference.setDefaultValue(0x40);
-    node_chorus.add(new MapNode("LFO Phase Difference", lfoPhaseDifference));
+    nodeChorus.add(new MapNode("LFO Phase Difference", lfoPhaseDifference));
 
     final Value monoStereo = new ValueImpl(typeMonoStereo);
     monoStereo.setBitSize(7);
     monoStereo.setDefaultValue(0x1);
-    node_chorus.add(new MapNode("Mono / Stereo", monoStereo));
+    nodeChorus.add(new MapNode("Mono / Stereo", monoStereo));
 
-    node_chorus.add(new MapNode("Unused", new ValueImpl(7)));
+    nodeChorus.add(new MapNode("Unused", new ValueImpl(7)));
 
-    return node_chorus;
+    return nodeChorus;
   }
 
   private MapNode buildMapNodeVariation()
   {
-    final MapNode node_variation =
+    final MapNode nodeVariation =
       new MapNode("Variation", addr2index(0x02, 0x01, 0x40));
 
     final Value variationType = new ValueImpl(typeVariationType);
     variationType.setBitSize(14);
     variationType.setDefaultValue(0x0280);
-    node_variation.add(new MapNode("Variation Type", variationType));
+    nodeVariation.add(new MapNode("Variation Type", variationType));
 
     for (int i = 0; i < 10; i++) {
       final Value value7BitMsb = new ValueImpl(typeNonNegative7Bit);
       value7BitMsb.setBitSize(7);
       value7BitMsb.setDefaultValue(0x00);
-      node_variation.add(new MapNode("Variation Parameter " + (i + 1) + " MSB",
-                                     value7BitMsb));
+      nodeVariation.add(new MapNode("Variation Parameter " + (i + 1) + " MSB",
+                                    value7BitMsb));
       final Value value7BitLsb = new ValueImpl(typeNonNegative7Bit);
       value7BitLsb.setBitSize(7);
       value7BitLsb.setDefaultValue(0x00);
-      node_variation.add(new MapNode("Variation Parameter " + (i + 1) + " LSB",
-                                     value7BitLsb));
+      nodeVariation.add(new MapNode("Variation Parameter " + (i + 1) + " LSB",
+                                    value7BitLsb));
     }
 
     final Value level = new ValueImpl(typeLevel);
     level.setBitSize(7);
     level.setDefaultValue(0x40);
-    node_variation.add(new MapNode("Variation Return", level));
+    nodeVariation.add(new MapNode("Variation Return", level));
 
     final Value pan = new ValueImpl(typePan);
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    node_variation.add(new MapNode("Variation Pan", pan));
+    nodeVariation.add(new MapNode("Variation Pan", pan));
 
     final Value levelReverb = new ValueImpl(typeLevel);
     levelReverb.setBitSize(7);
     levelReverb.setDefaultValue(0x00);
-    node_variation.add(new MapNode("Send Variation To Reverb", levelReverb));
+    nodeVariation.add(new MapNode("Send Variation To Reverb", levelReverb));
 
     final Value levelChorus = new ValueImpl(typeLevel);
     levelChorus.setBitSize(7);
     levelChorus.setDefaultValue(0x00);
-    node_variation.add(new MapNode("Send Variation To Chorus", levelChorus));
+    nodeVariation.add(new MapNode("Send Variation To Chorus", levelChorus));
 
     final Value connection = new ValueImpl(typeConnection);
     connection.setBitSize(7);
     connection.setDefaultValue(0x0);
-    node_variation.add(new MapNode("Variation Connection", connection));
+    nodeVariation.add(new MapNode("Variation Connection", connection));
 
     final Value part = new ValueImpl(typePart);
     part.setBitSize(7);
     part.setDefaultValue(0x7f);
-    node_variation.add(new MapNode("Variation Part", part));
+    nodeVariation.add(new MapNode("Variation Part", part));
 
     final Value mw = new ValueImpl(typeSigned7Bit);
     mw.setBitSize(7);
     mw.setDefaultValue(0x40);
-    node_variation.add(new MapNode("MW Variation Control Depth", mw));
+    nodeVariation.add(new MapNode("MW Variation Control Depth", mw));
 
     final Value bend = new ValueImpl(typeSigned7Bit);
     bend.setBitSize(7);
     bend.setDefaultValue(0x40);
-    node_variation.add(new MapNode("Bend Variation Control Depth", bend));
+    nodeVariation.add(new MapNode("Bend Variation Control Depth", bend));
 
     final Value cat = new ValueImpl(typeSigned7Bit);
     cat.setBitSize(7);
     cat.setDefaultValue(0x40);
-    node_variation.add(new MapNode("CAT Variation Control Depth", cat));
+    nodeVariation.add(new MapNode("CAT Variation Control Depth", cat));
 
     final Value ac1 = new ValueImpl(typeSigned7Bit);
     ac1.setBitSize(7);
     ac1.setDefaultValue(0x40);
-    node_variation.add(new MapNode("AC1 Variation Control Depth", ac1));
+    nodeVariation.add(new MapNode("AC1 Variation Control Depth", ac1));
 
     final Value ac2 = new ValueImpl(typeSigned7Bit);
     ac2.setBitSize(7);
     ac2.setDefaultValue(0x40);
-    node_variation.add(new MapNode("AC2 Variation Control Depth", ac2));
+    nodeVariation.add(new MapNode("AC2 Variation Control Depth", ac2));
 
     for (int i = 10; i < 16; i++) {
       final Value value7Bit = new ValueImpl(typeNonNegative7Bit);
       final long desiredAddress = i == 10 ? addr2index(0x02, 0x01, 0x70) : -1;
       value7Bit.setBitSize(7);
       value7Bit.setDefaultValue(0x00);
-      node_variation.add(new MapNode("Variation Parameter " + (i + 1),
-                                     value7Bit, desiredAddress));
+      nodeVariation.add(new MapNode("Variation Parameter " + (i + 1),
+                                    value7Bit, desiredAddress));
     }
 
-    return node_variation;
+    return nodeVariation;
   }
 
   private MapNode buildMapNodeEffect1()
   {
-    final MapNode node_effect =
+    final MapNode nodeEffect =
       new MapNode("Effect1", addr2index(0x02, 0x01, 0x00));
-    node_effect.add(buildMapNodeReverb());
-    node_effect.add(buildMapNodeChorus());
-    node_effect.add(buildMapNodeVariation());
-    return node_effect;
+    nodeEffect.add(buildMapNodeReverb());
+    nodeEffect.add(buildMapNodeChorus());
+    nodeEffect.add(buildMapNodeVariation());
+    return nodeEffect;
   }
 
   private void buildPartControl(final MapNode node,
@@ -1750,7 +1750,7 @@ public class DB50XG extends AbstractDevice
 
   private MapNode buildMapNodeMultiPartN(final int n)
   {
-    final MapNode node_multi_part_n =
+    final MapNode nodeMultiPartN =
       new MapNode("Multi Part " + (n + 1), addr2index(0x08, n, 0x00));
 
     final SparseType typeElementReserve =
@@ -1759,41 +1759,41 @@ public class DB50XG extends AbstractDevice
     final Value elementReserve = new ValueImpl(typeElementReserve);
     elementReserve.setBitSize(7);
     elementReserve.setDefaultValue(n == 9 ? 0x00 : 0x02);
-    node_multi_part_n.add(new MapNode("Element Reserve", elementReserve));
+    nodeMultiPartN.add(new MapNode("Element Reserve", elementReserve));
 
     final Value bankSelectMsb = new ValueImpl(typeNonNegative7Bit);
     bankSelectMsb.setBitSize(7);
     bankSelectMsb.setDefaultValue(n == 9 ? 0x7f : 0x00);
-    node_multi_part_n.add(new MapNode("Bank Select MSB", bankSelectMsb));
+    nodeMultiPartN.add(new MapNode("Bank Select MSB", bankSelectMsb));
 
     final Value bankSelectLsb = new ValueImpl(typeNonNegative7Bit);
     bankSelectLsb.setBitSize(7);
     bankSelectLsb.setDefaultValue(0x00);
-    node_multi_part_n.add(new MapNode("Bank Select LSB", bankSelectLsb));
+    nodeMultiPartN.add(new MapNode("Bank Select LSB", bankSelectLsb));
 
-    final ValueRangeRenderer VALUE_TYPE_1_TO_N = new IntegerRenderer(-1);
+    final ValueRangeRenderer valueType1ToN = new IntegerRenderer(-1);
 
     final SparseType typeProgramNumber =
       new SparseTypeImpl("internal-control").
-      addValueRange(0x00, 0x7f, VALUE_TYPE_1_TO_N);
+      addValueRange(0x00, 0x7f, valueType1ToN);
     final Value programNumber = new ValueImpl(typeProgramNumber);
     programNumber.setBitSize(7);
     programNumber.setDefaultValue(0x00);
-    node_multi_part_n.add(new MapNode("Program Number", programNumber));
+    nodeMultiPartN.add(new MapNode("Program Number", programNumber));
 
     final SparseType typeRcvChannel =
       new SparseTypeImpl("internal-control").
-      addValueRange(0x00, 0x0f, VALUE_TYPE_1_TO_N).
+      addValueRange(0x00, 0x0f, valueType1ToN).
       addSingleValue(0x10, "Off");
     final Value rcvChannel = new ValueImpl(typeRcvChannel);
     rcvChannel.setBitSize(7);
     rcvChannel.setDefaultValue(n);
-    node_multi_part_n.add(new MapNode("Rcv Channel", rcvChannel));
+    nodeMultiPartN.add(new MapNode("Rcv Channel", rcvChannel));
 
     final Value monoPolyMode = new ValueImpl(typeMonoPolyMode);
     monoPolyMode.setBitSize(7);
     monoPolyMode.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Mono / Poly Mode", monoPolyMode));
+    nodeMultiPartN.add(new MapNode("Mono / Poly Mode", monoPolyMode));
 
     final SparseType typeKeyOnAssign =
       new SparseTypeImpl("internal-control").
@@ -1801,8 +1801,8 @@ public class DB50XG extends AbstractDevice
     final Value keyOnAssign = new ValueImpl(typeKeyOnAssign);
     keyOnAssign.setBitSize(7);
     keyOnAssign.setDefaultValue(n == 9 ? 0x2 : 0x0);
-    node_multi_part_n.add(new MapNode("Same Not Number Key on Assign",
-                                      keyOnAssign));
+    nodeMultiPartN.add(new MapNode("Same Not Number Key on Assign",
+                                   keyOnAssign));
 
     final SparseType typePartMode =
       new SparseTypeImpl("internal-control").
@@ -1810,430 +1810,430 @@ public class DB50XG extends AbstractDevice
     final Value partMode = new ValueImpl(typePartMode);
     partMode.setBitSize(7);
     partMode.setDefaultValue(n == 9 ? 0x2 : 0x0);
-    node_multi_part_n.add(new MapNode("Part Mode", partMode));
+    nodeMultiPartN.add(new MapNode("Part Mode", partMode));
 
     final Value noteShift = new ValueImpl(typeTranspose);
     noteShift.setBitSize(7);
     noteShift.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Note Shift", noteShift));
+    nodeMultiPartN.add(new MapNode("Note Shift", noteShift));
 
     final Value detune = new ValueImpl(typeDetune);
     detune.setBitSize(14);
     detune.setDefaultValue(0x0400);
-    node_multi_part_n.add(new MapNode("Detune", detune));
+    nodeMultiPartN.add(new MapNode("Detune", detune));
 
     final Value volume = new ValueImpl(typeVolume);
     volume.setBitSize(7);
     volume.setDefaultValue(0x64);
-    node_multi_part_n.add(new MapNode("Volume", volume));
+    nodeMultiPartN.add(new MapNode("Volume", volume));
 
     final Value velocitySenseDepth =
       new ValueImpl(typeNonNegative7Bit);
     velocitySenseDepth.setBitSize(7);
     velocitySenseDepth.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Velocity Sense Depth",
-                                      velocitySenseDepth));
+    nodeMultiPartN.add(new MapNode("Velocity Sense Depth",
+                                   velocitySenseDepth));
 
     final Value velocitySenseOffset =
       new ValueImpl(typeNonNegative7Bit);
     velocitySenseOffset.setBitSize(7);
     velocitySenseOffset.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Velocity Sense Offset",
-                                      velocitySenseOffset));
+    nodeMultiPartN.add(new MapNode("Velocity Sense Offset",
+                                   velocitySenseOffset));
 
     final Value pan = new ValueImpl(typePanExtended);
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Pan", pan));
+    nodeMultiPartN.add(new MapNode("Pan", pan));
 
     final Value noteLimitLow =
       new ValueImpl(typeNote, "internal-limit-bottom");
     noteLimitLow.setBitSize(7);
     noteLimitLow.setDefaultValue(0x00);
-    node_multi_part_n.add(new MapNode("Note Limit Low", noteLimitLow));
+    nodeMultiPartN.add(new MapNode("Note Limit Low", noteLimitLow));
 
     final Value noteLimitHigh =
       new ValueImpl(typeNote, "internal-limit-top");
     noteLimitHigh.setBitSize(7);
     noteLimitHigh.setDefaultValue(0x7f);
-    node_multi_part_n.add(new MapNode("Note Limit High", noteLimitHigh));
+    nodeMultiPartN.add(new MapNode("Note Limit High", noteLimitHigh));
 
     final Value dryLevel = new ValueImpl(typeVolume);
     dryLevel.setBitSize(7);
     dryLevel.setDefaultValue(0x7f);
-    node_multi_part_n.add(new MapNode("Dry Level", dryLevel));
+    nodeMultiPartN.add(new MapNode("Dry Level", dryLevel));
 
     final Value chorusSend = new ValueImpl(typeVolume);
     chorusSend.setBitSize(7);
     chorusSend.setDefaultValue(0x00);
-    node_multi_part_n.add(new MapNode("Chorus Send", chorusSend));
+    nodeMultiPartN.add(new MapNode("Chorus Send", chorusSend));
 
     final Value reverbSend = new ValueImpl(typeVolume);
     reverbSend.setBitSize(7);
     reverbSend.setDefaultValue(0x28);
-    node_multi_part_n.add(new MapNode("Reverb Send", reverbSend));
+    nodeMultiPartN.add(new MapNode("Reverb Send", reverbSend));
 
     final Value variationSend = new ValueImpl(typeVolume);
     variationSend.setBitSize(7);
     variationSend.setDefaultValue(0x00);
-    node_multi_part_n.add(new MapNode("Variation Send", variationSend));
+    nodeMultiPartN.add(new MapNode("Variation Send", variationSend));
 
     final Value vibratoRate = new ValueImpl(typeSigned7Bit);
     vibratoRate.setBitSize(7);
     vibratoRate.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Vibrato Rate", vibratoRate));
+    nodeMultiPartN.add(new MapNode("Vibrato Rate", vibratoRate));
 
     final Value vibratoDepth = new ValueImpl(typeSigned7Bit);
     vibratoDepth.setBitSize(7);
     vibratoDepth.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Vibrato Depth", vibratoDepth));
+    nodeMultiPartN.add(new MapNode("Vibrato Depth", vibratoDepth));
 
     final Value vibratoDelay = new ValueImpl(typeSigned7Bit);
     vibratoDelay.setBitSize(7);
     vibratoDelay.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Vibrato Delay", vibratoDelay));
+    nodeMultiPartN.add(new MapNode("Vibrato Delay", vibratoDelay));
 
     final Value filterCutoffFrequency =
       new ValueImpl(typeSigned7Bit, "internal-tune");
     filterCutoffFrequency.setBitSize(7);
     filterCutoffFrequency.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Filter Cutoff Frequency",
-                                      filterCutoffFrequency));
+    nodeMultiPartN.add(new MapNode("Filter Cutoff Frequency",
+                                   filterCutoffFrequency));
 
     final Value filterResonance = new ValueImpl(typeSigned7Bit);
     filterResonance.setBitSize(7);
     filterResonance.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Filter Resonance", filterResonance));
+    nodeMultiPartN.add(new MapNode("Filter Resonance", filterResonance));
 
     final Value egAttackTime =
       new ValueImpl(typeSigned7Bit, "internal-time");
     egAttackTime.setBitSize(7);
     egAttackTime.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("EG Attack Time", egAttackTime));
+    nodeMultiPartN.add(new MapNode("EG Attack Time", egAttackTime));
 
     final Value egDecayTime =
       new ValueImpl(typeSigned7Bit, "internal-time");
     egDecayTime.setBitSize(7);
     egDecayTime.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("EG Decay Time", egDecayTime));
+    nodeMultiPartN.add(new MapNode("EG Decay Time", egDecayTime));
 
     final Value egReleaseTime =
       new ValueImpl(typeSigned7Bit, "internal-time");
     egReleaseTime.setBitSize(7);
     egReleaseTime.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("EG Release Time", egReleaseTime));
+    nodeMultiPartN.add(new MapNode("EG Release Time", egReleaseTime));
 
-    buildPartControl(node_multi_part_n, "MW", 0x0a);
+    buildPartControl(nodeMultiPartN, "MW", 0x0a);
 
     final Value bendPitchControl = new ValueImpl(typeTranspose);
     bendPitchControl.setBitSize(7);
     bendPitchControl.setDefaultValue(0x42);
-    node_multi_part_n.add(new MapNode("Bend Pitch Control",
-                                      bendPitchControl));
+    nodeMultiPartN.add(new MapNode("Bend Pitch Control",
+                                   bendPitchControl));
 
     final Value bendFilterControl = new ValueImpl(typeFilterControl);
     bendFilterControl.setBitSize(7);
     bendFilterControl.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Bend Filter Control",
-                                      bendFilterControl));
+    nodeMultiPartN.add(new MapNode("Bend Filter Control",
+                                   bendFilterControl));
 
     final Value bendAmplitudeControl = new ValueImpl(typeSigned7Bit);
     bendAmplitudeControl.setBitSize(7);
     bendAmplitudeControl.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Bend Amplitude Control",
-                                      bendAmplitudeControl));
+    nodeMultiPartN.add(new MapNode("Bend Amplitude Control",
+                                   bendAmplitudeControl));
 
     final Value bendLfoPModDepth =
       new ValueImpl(typeBendLfoModDepth);
     bendLfoPModDepth.setBitSize(7);
     bendLfoPModDepth.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Bend LFO PMod Depth",
-                                      bendLfoPModDepth));
+    nodeMultiPartN.add(new MapNode("Bend LFO PMod Depth",
+                                   bendLfoPModDepth));
 
     final Value bendLfoFModDepth =
       new ValueImpl(typeBendLfoModDepth, "internal-mod-fm");
     bendLfoFModDepth.setBitSize(7);
     bendLfoFModDepth.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Bend LFO FMod Depth",
-                                      bendLfoFModDepth));
+    nodeMultiPartN.add(new MapNode("Bend LFO FMod Depth",
+                                   bendLfoFModDepth));
 
     final Value bendLfoAModDepth =
       new ValueImpl(typeBendLfoModDepth, "internal-mod-am");
     bendLfoAModDepth.setBitSize(7);
     bendLfoAModDepth.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Bend LFO AMod Depth",
-                                      bendLfoAModDepth));
+    nodeMultiPartN.add(new MapNode("Bend LFO AMod Depth",
+                                   bendLfoAModDepth));
 
     final Value rcvPitchBend = new ValueImpl(typeSwitch);
     rcvPitchBend.setBitSize(7);
     rcvPitchBend.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Pitch Bend",
-                                      rcvPitchBend,
-                                      addr2index(0x08, n, 0x30)));
+    nodeMultiPartN.add(new MapNode("Rcv Pitch Bend",
+                                   rcvPitchBend,
+                                   addr2index(0x08, n, 0x30)));
 
     final Value rcvChAfterTouch = new ValueImpl(typeSwitch);
     rcvChAfterTouch.setBitSize(7);
     rcvChAfterTouch.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Ch After Touch (CAT)",
-                                      rcvChAfterTouch));
+    nodeMultiPartN.add(new MapNode("Rcv Ch After Touch (CAT)",
+                                   rcvChAfterTouch));
 
     final Value rcvProgramChange = new ValueImpl(typeSwitch);
     rcvProgramChange.setBitSize(7);
     rcvProgramChange.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Program Change",
-                                      rcvProgramChange));
+    nodeMultiPartN.add(new MapNode("Rcv Program Change",
+                                   rcvProgramChange));
 
     final Value rcvControlChange = new ValueImpl(typeSwitch);
     rcvControlChange.setBitSize(7);
     rcvControlChange.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Control Change",
-                                      rcvControlChange));
+    nodeMultiPartN.add(new MapNode("Rcv Control Change",
+                                   rcvControlChange));
 
     final Value rcvPolyAfterTouch =
       new ValueImpl(typeSwitch);
     rcvPolyAfterTouch.setBitSize(7);
     rcvPolyAfterTouch.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Poly After Touch (PAT)",
-                                      rcvChAfterTouch));
+    nodeMultiPartN.add(new MapNode("Rcv Poly After Touch (PAT)",
+                                   rcvChAfterTouch));
 
     final Value rcvNoteMessage = new ValueImpl(typeSwitch);
     rcvNoteMessage.setBitSize(7);
     rcvNoteMessage.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Note Message", rcvNoteMessage));
+    nodeMultiPartN.add(new MapNode("Rcv Note Message", rcvNoteMessage));
 
     final Value rcvRpn = new ValueImpl(typeSwitch);
     rcvRpn.setBitSize(7);
     rcvRpn.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv RPN", rcvRpn));
+    nodeMultiPartN.add(new MapNode("Rcv RPN", rcvRpn));
 
     final Value rcvNrpn = new ValueImpl(typeSwitch);
     rcvNrpn.setBitSize(7);
     rcvNrpn.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv NRPN", rcvNrpn));
+    nodeMultiPartN.add(new MapNode("Rcv NRPN", rcvNrpn));
 
     final Value rcvModulation = new ValueImpl(typeSwitch);
     rcvModulation.setBitSize(7);
     rcvModulation.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Modulation", rcvModulation));
+    nodeMultiPartN.add(new MapNode("Rcv Modulation", rcvModulation));
 
     final Value rcvVolume = new ValueImpl(typeSwitch);
     rcvVolume.setBitSize(7);
     rcvVolume.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Volume", rcvVolume));
+    nodeMultiPartN.add(new MapNode("Rcv Volume", rcvVolume));
 
     final Value rcvPan = new ValueImpl(typeSwitch);
     rcvPan.setBitSize(7);
     rcvPan.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Pan", rcvPan));
+    nodeMultiPartN.add(new MapNode("Rcv Pan", rcvPan));
 
     final Value rcvExpression = new ValueImpl(typeSwitch);
     rcvExpression.setBitSize(7);
     rcvExpression.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Expression", rcvExpression));
+    nodeMultiPartN.add(new MapNode("Rcv Expression", rcvExpression));
 
     final Value rcvHold1 = new ValueImpl(typeSwitch);
     rcvHold1.setBitSize(7);
     rcvHold1.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Hold1", rcvHold1));
+    nodeMultiPartN.add(new MapNode("Rcv Hold1", rcvHold1));
 
     final Value rcvPortamento = new ValueImpl(typeSwitch);
     rcvPortamento.setBitSize(7);
     rcvPortamento.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Portamento", rcvPortamento));
+    nodeMultiPartN.add(new MapNode("Rcv Portamento", rcvPortamento));
 
     final Value rcvSostenuto = new ValueImpl(typeSwitch);
     rcvSostenuto.setBitSize(7);
     rcvSostenuto.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Sostenuto", rcvSostenuto));
+    nodeMultiPartN.add(new MapNode("Rcv Sostenuto", rcvSostenuto));
 
     final Value rcvSoftPedal = new ValueImpl(typeSwitch);
     rcvSoftPedal.setBitSize(7);
     rcvSoftPedal.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Soft Pedal", rcvSoftPedal));
+    nodeMultiPartN.add(new MapNode("Rcv Soft Pedal", rcvSoftPedal));
 
     final Value rcvBankSelect = new ValueImpl(typeSwitch);
     rcvBankSelect.setBitSize(7);
     rcvBankSelect.setDefaultValue(0x1);
-    node_multi_part_n.add(new MapNode("Rcv Bank Select", rcvBankSelect));
+    nodeMultiPartN.add(new MapNode("Rcv Bank Select", rcvBankSelect));
 
     final Value scaleTuningC =
       new ValueImpl(typeScaleTuning, "internal-tune-c");
     scaleTuningC.setBitSize(7);
     scaleTuningC.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning C", scaleTuningC));
+    nodeMultiPartN.add(new MapNode("Scale Tuning C", scaleTuningC));
 
     final Value scaleTuningCSharp =
       new ValueImpl(typeScaleTuning, "internal-tune-c-sharp");
     scaleTuningCSharp.setBitSize(7);
     scaleTuningCSharp.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning C#", scaleTuningCSharp));
+    nodeMultiPartN.add(new MapNode("Scale Tuning C#", scaleTuningCSharp));
 
     final Value scaleTuningD =
       new ValueImpl(typeScaleTuning, "internal-tune-d");
     scaleTuningD.setBitSize(7);
     scaleTuningD.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning D", scaleTuningD));
+    nodeMultiPartN.add(new MapNode("Scale Tuning D", scaleTuningD));
 
     final Value scaleTuningDSharp =
       new ValueImpl(typeScaleTuning, "internal-tune-d-sharp");
     scaleTuningDSharp.setBitSize(7);
     scaleTuningDSharp.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning D#", scaleTuningDSharp));
+    nodeMultiPartN.add(new MapNode("Scale Tuning D#", scaleTuningDSharp));
 
     final Value scaleTuningE =
       new ValueImpl(typeScaleTuning, "internal-tune-e");
     scaleTuningE.setBitSize(7);
     scaleTuningE.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning E", scaleTuningE));
+    nodeMultiPartN.add(new MapNode("Scale Tuning E", scaleTuningE));
 
     final Value scaleTuningF =
       new ValueImpl(typeScaleTuning, "internal-tune-f");
     scaleTuningF.setBitSize(7);
     scaleTuningF.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning F", scaleTuningF));
+    nodeMultiPartN.add(new MapNode("Scale Tuning F", scaleTuningF));
 
     final Value scaleTuningFSharp =
       new ValueImpl(typeScaleTuning, "internal-tune-f-sharp");
     scaleTuningFSharp.setBitSize(7);
     scaleTuningFSharp.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning F#", scaleTuningFSharp));
+    nodeMultiPartN.add(new MapNode("Scale Tuning F#", scaleTuningFSharp));
 
     final Value scaleTuningG =
       new ValueImpl(typeScaleTuning, "internal-tune-g");
     scaleTuningG.setBitSize(7);
     scaleTuningG.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning G", scaleTuningG));
+    nodeMultiPartN.add(new MapNode("Scale Tuning G", scaleTuningG));
 
     final Value scaleTuningGSharp =
       new ValueImpl(typeScaleTuning, "internal-tune-g-sharp");
     scaleTuningGSharp.setBitSize(7);
     scaleTuningGSharp.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning G#", scaleTuningGSharp));
+    nodeMultiPartN.add(new MapNode("Scale Tuning G#", scaleTuningGSharp));
 
     final Value scaleTuningA =
       new ValueImpl(typeScaleTuning, "internal-tune-a");
     scaleTuningA.setBitSize(7);
     scaleTuningA.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning A", scaleTuningA));
+    nodeMultiPartN.add(new MapNode("Scale Tuning A", scaleTuningA));
 
     final Value scaleTuningASharp =
       new ValueImpl(typeScaleTuning, "internal-tune-a-sharp");
     scaleTuningASharp.setBitSize(7);
     scaleTuningASharp.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning A#", scaleTuningASharp));
+    nodeMultiPartN.add(new MapNode("Scale Tuning A#", scaleTuningASharp));
 
     final Value scaleTuningB =
       new ValueImpl(typeScaleTuning, "internal-tune-b");
     scaleTuningB.setBitSize(7);
     scaleTuningB.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Scale Tuning B", scaleTuningB));
+    nodeMultiPartN.add(new MapNode("Scale Tuning B", scaleTuningB));
 
-    buildPartControl(node_multi_part_n, "CAT", 0x00);
+    buildPartControl(nodeMultiPartN, "CAT", 0x00);
 
-    buildPartControl(node_multi_part_n, "PAT", 0x00);
+    buildPartControl(nodeMultiPartN, "PAT", 0x00);
 
     final Value ac1ControllerNumber =
       new ValueImpl(typeControllerNumber);
     ac1ControllerNumber.setBitSize(7);
     ac1ControllerNumber.setDefaultValue(0x10);
-    node_multi_part_n.add(new MapNode("AC1 Controller Number",
-                                      ac1ControllerNumber));
-    buildPartControl(node_multi_part_n, "AC1", 0x00);
+    nodeMultiPartN.add(new MapNode("AC1 Controller Number",
+                                   ac1ControllerNumber));
+    buildPartControl(nodeMultiPartN, "AC1", 0x00);
 
     final Value ac2ControllerNumber =
       new ValueImpl(typeControllerNumber);
     ac2ControllerNumber.setBitSize(7);
     ac2ControllerNumber.setDefaultValue(0x11);
-    node_multi_part_n.add(new MapNode("AC2 Controller Number",
-                                      ac2ControllerNumber));
-    buildPartControl(node_multi_part_n, "AC2", 0x00);
+    nodeMultiPartN.add(new MapNode("AC2 Controller Number",
+                                   ac2ControllerNumber));
+    buildPartControl(nodeMultiPartN, "AC2", 0x00);
 
     final Value portamentoSwitch = new ValueImpl(typeSwitch);
     portamentoSwitch.setBitSize(7);
     portamentoSwitch.setDefaultValue(0x0);
-    node_multi_part_n.add(new MapNode("Portamento Switch", portamentoSwitch));
+    nodeMultiPartN.add(new MapNode("Portamento Switch", portamentoSwitch));
 
     final Value portamentoTime =
       new ValueImpl(typeNonNegative7Bit, "internal-time");
     portamentoTime.setBitSize(7);
     portamentoTime.setDefaultValue(0x00);
-    node_multi_part_n.add(new MapNode("Portamento Time", portamentoTime));
+    nodeMultiPartN.add(new MapNode("Portamento Time", portamentoTime));
 
     final Value pitchEgInitialLevel =
       new ValueImpl(typeSigned7Bit, "internal-volume");
     pitchEgInitialLevel.setBitSize(7);
     pitchEgInitialLevel.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Pitch EG Initial Level",
-                                      pitchEgInitialLevel));
+    nodeMultiPartN.add(new MapNode("Pitch EG Initial Level",
+                                   pitchEgInitialLevel));
 
     final Value pitchEgAttackTime =
       new ValueImpl(typeSigned7Bit, "internal-time");
     pitchEgAttackTime.setBitSize(7);
     pitchEgAttackTime.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Pitch EG Attack Time",
-                                      pitchEgAttackTime));
+    nodeMultiPartN.add(new MapNode("Pitch EG Attack Time",
+                                   pitchEgAttackTime));
 
     final Value pitchEgReleaseLevel =
       new ValueImpl(typeSigned7Bit, "internal-volume");
     pitchEgReleaseLevel.setBitSize(7);
     pitchEgReleaseLevel.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Pitch EG Release Level",
-                                      pitchEgReleaseLevel));
+    nodeMultiPartN.add(new MapNode("Pitch EG Release Level",
+                                   pitchEgReleaseLevel));
 
     final Value pitchEgReleaseTime =
       new ValueImpl(typeSigned7Bit, "internal-time");
     pitchEgReleaseTime.setBitSize(7);
     pitchEgReleaseTime.setDefaultValue(0x40);
-    node_multi_part_n.add(new MapNode("Pitch EG Release Time",
-                                      pitchEgReleaseTime));
+    nodeMultiPartN.add(new MapNode("Pitch EG Release Time",
+                                   pitchEgReleaseTime));
 
     final Value velocityLimitLow =
       new ValueImpl(typePositive7Bit, "internal-limit-bottom");
     velocityLimitLow.setBitSize(7);
     velocityLimitLow.setDefaultValue(0x01);
-    node_multi_part_n.add(new MapNode("Velocity Limit Low",
-                                      velocityLimitLow));
+    nodeMultiPartN.add(new MapNode("Velocity Limit Low",
+                                   velocityLimitLow));
 
     final Value velocityLimitHigh =
       new ValueImpl(typePositive7Bit, "internal-limit-top");
     velocityLimitHigh.setBitSize(7);
     velocityLimitHigh.setDefaultValue(0x7f);
-    node_multi_part_n.add(new MapNode("Velocity Limit High",
-                                      velocityLimitHigh));
+    nodeMultiPartN.add(new MapNode("Velocity Limit High",
+                                   velocityLimitHigh));
 
-    return node_multi_part_n;
+    return nodeMultiPartN;
   }
 
   private MapNode buildMapNodeMultiPart()
   {
-    final MapNode node_multi_part =
+    final MapNode nodeMultiPart =
       new MapNode("Multi Part", addr2index(0x08, 0x00, 0x00));
     for (int n = 0; n < 16; n++) {
-      node_multi_part.add(buildMapNodeMultiPartN(n));
+      nodeMultiPart.add(buildMapNodeMultiPartN(n));
     }
-    return node_multi_part;
+    return nodeMultiPart;
   }
 
   private MapNode buildMapNodeDrumSetupNoteNR(final int n, final int r)
   {
-    final MapNode node_drum_setup_note_r =
+    final MapNode nodeDrumSetupNoteR =
       new MapNode("Drum Setup Note " + r, addr2index(0x30 + n, r, 0x00));
 
     final Value pitchCoarse =
       new ValueImpl(typeSigned7Bit, "internal-transpose");
     pitchCoarse.setBitSize(7);
     pitchCoarse.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("Pitch Coarse", pitchCoarse));
+    nodeDrumSetupNoteR.add(new MapNode("Pitch Coarse", pitchCoarse));
 
     final Value pitchFine = new ValueImpl(typeScaleTuning);
     pitchFine.setBitSize(7);
     pitchFine.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("Pitch Fine", pitchFine));
+    nodeDrumSetupNoteR.add(new MapNode("Pitch Fine", pitchFine));
 
     final Value level = new ValueImpl(typeVolume);
     level.setBitSize(7);
     level.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("Level", level));
+    nodeDrumSetupNoteR.add(new MapNode("Level", level));
 
     final SparseType typeAlternativeGroup =
       new SparseTypeImpl("internal-control").
@@ -2242,28 +2242,28 @@ public class DB50XG extends AbstractDevice
     final Value alternativeGroup = new ValueImpl(typeAlternativeGroup);
     alternativeGroup.setBitSize(7);
     alternativeGroup.setDefaultValue(n);
-    node_drum_setup_note_r.add(new MapNode("Alternative Group",
-                                           alternativeGroup));
+    nodeDrumSetupNoteR.add(new MapNode("Alternative Group",
+                                       alternativeGroup));
 
     final Value pan = new ValueImpl(typePanExtended);
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("Pan", pan));
+    nodeDrumSetupNoteR.add(new MapNode("Pan", pan));
 
     final Value reverbSend = new ValueImpl(typeVolume);
     reverbSend.setBitSize(7);
     reverbSend.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("Reverb Send", reverbSend));
+    nodeDrumSetupNoteR.add(new MapNode("Reverb Send", reverbSend));
 
     final Value chorusSend = new ValueImpl(typeVolume);
     chorusSend.setBitSize(7);
     chorusSend.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("Chorus Send", chorusSend));
+    nodeDrumSetupNoteR.add(new MapNode("Chorus Send", chorusSend));
 
     final Value variationSend = new ValueImpl(typeVolume);
     variationSend.setBitSize(7);
     variationSend.setDefaultValue(0x7f);
-    node_drum_setup_note_r.add(new MapNode("Variation Send", variationSend));
+    nodeDrumSetupNoteR.add(new MapNode("Variation Send", variationSend));
 
     final SparseType typeKeyAssign =
       new SparseTypeImpl("internal-control").
@@ -2271,67 +2271,67 @@ public class DB50XG extends AbstractDevice
     final Value keyAssign = new ValueImpl(typeKeyAssign);
     keyAssign.setBitSize(7);
     keyAssign.setDefaultValue(0x0);
-    node_drum_setup_note_r.add(new MapNode("Key Assign", keyAssign));
+    nodeDrumSetupNoteR.add(new MapNode("Key Assign", keyAssign));
 
     final Value rcvNoteOff = new ValueImpl(typeSwitch);
     rcvNoteOff.setBitSize(7);
     rcvNoteOff.setDefaultValue(0x0);
-    node_drum_setup_note_r.add(new MapNode("Rcv Note Off", rcvNoteOff));
+    nodeDrumSetupNoteR.add(new MapNode("Rcv Note Off", rcvNoteOff));
 
     final Value rcvNoteOn = new ValueImpl(typeSwitch);
     rcvNoteOn.setBitSize(7);
     rcvNoteOn.setDefaultValue(0x0);
-    node_drum_setup_note_r.add(new MapNode("Rcv Note On", rcvNoteOn));
+    nodeDrumSetupNoteR.add(new MapNode("Rcv Note On", rcvNoteOn));
 
     final Value filterCutoffFrequency =
       new ValueImpl(typeSigned7Bit, "internal-tune");
     filterCutoffFrequency.setBitSize(7);
     filterCutoffFrequency.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("Filter Cutoff Frequency",
-                                           filterCutoffFrequency));
+    nodeDrumSetupNoteR.add(new MapNode("Filter Cutoff Frequency",
+                                       filterCutoffFrequency));
 
     final Value filterResonance = new ValueImpl(typeSigned7Bit);
     filterResonance.setBitSize(7);
     filterResonance.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("Filter Resonance",
-                                           filterResonance));
+    nodeDrumSetupNoteR.add(new MapNode("Filter Resonance",
+                                       filterResonance));
 
     final Value egAttackRate = new ValueImpl(typeSigned7Bit);
     egAttackRate.setBitSize(7);
     egAttackRate.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("EG Attack Rate", egAttackRate));
+    nodeDrumSetupNoteR.add(new MapNode("EG Attack Rate", egAttackRate));
 
     final Value egDecay1Rate = new ValueImpl(typeSigned7Bit);
     egDecay1Rate.setBitSize(7);
     egDecay1Rate.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("EG Decay1 Rate", egDecay1Rate));
+    nodeDrumSetupNoteR.add(new MapNode("EG Decay1 Rate", egDecay1Rate));
 
     final Value egDecay2Rate = new ValueImpl(typeSigned7Bit);
     egDecay2Rate.setBitSize(7);
     egDecay2Rate.setDefaultValue(0x40);
-    node_drum_setup_note_r.add(new MapNode("EG Decay2 Rate", egDecay2Rate));
+    nodeDrumSetupNoteR.add(new MapNode("EG Decay2 Rate", egDecay2Rate));
 
-    return node_drum_setup_note_r;
+    return nodeDrumSetupNoteR;
   }
 
   private MapNode buildMapNodeDrumSetupN(final int n)
   {
-    final MapNode node_drum_setup_n =
+    final MapNode nodeDrumSetupN =
       new MapNode("Drum Setup " + n, addr2index(0x30 + n, 0x00, 0x00));
     for (int r = 0x0d; r < 0x5c; r++) {
-      node_drum_setup_n.add(buildMapNodeDrumSetupNoteNR(n, r));
+      nodeDrumSetupN.add(buildMapNodeDrumSetupNoteNR(n, r));
     }
-    return node_drum_setup_n;
+    return nodeDrumSetupN;
   }
 
   private MapNode buildMapNodeDrumSetup()
   {
-    final MapNode node_drum_setup =
+    final MapNode nodeDrumSetup =
       new MapNode("Drum Setup", addr2index(0x30, 0x00, 0x00));
     for (int n = 0x0; n < 0x2; n++) {
-      node_drum_setup.add(buildMapNodeDrumSetupN(n));
+      nodeDrumSetup.add(buildMapNodeDrumSetupN(n));
     }
-    return node_drum_setup;
+    return nodeDrumSetup;
   }
 
   public void buildMap(final MapRoot root)
@@ -2342,7 +2342,7 @@ public class DB50XG extends AbstractDevice
     root.add(buildMapNodeDrumSetup());
   }
 
-  private String two_digits(final String s)
+  private String twoDigits(final String s)
   {
     switch (s.length()) {
     case 0:
@@ -2359,15 +2359,15 @@ public class DB50XG extends AbstractDevice
   private class BulkStream extends InputStream
   {
     private final byte deviceId;
-    private final int byte_start;
-    private final int byte_count;
+    private final int byteStart;
+    private final int byteCount;
     private final byte hi;
     private final byte mid;
     private final byte lo;
     private final long end;
     private long pos;
     private int extrapos;
-    private int check_sum;
+    private int checkSum;
     private MapNode node;
 
     private BulkStream()
@@ -2388,19 +2388,19 @@ public class DB50XG extends AbstractDevice
       if (end > 7 * 0x3fffff)
         throw new IOException("end > 7 * 0x3fffff");
       this.deviceId = deviceId;
-      byte_start = (int)(start / 7);
-      byte_count = (int)((end - start + 6) / 7);
-      hi = (byte)((byte_start >> 14) & 0x7f);
-      mid = (byte)((byte_start >> 7) & 0x7f);
-      lo = (byte)(byte_start & 0x7f);
+      byteStart = (int)(start / 7);
+      byteCount = (int)((end - start + 6) / 7);
+      hi = (byte)((byteStart >> 14) & 0x7f);
+      mid = (byte)((byteStart >> 7) & 0x7f);
+      lo = (byte)(byteStart & 0x7f);
       pos = start;
       this.end = end;
       extrapos = -8;
-      check_sum = 0x00;
+      checkSum = 0x00;
       node = root;
     }
 
-    private int next_header_byte()
+    private int nextHeaderByte()
     {
       final int data;
       switch (extrapos) {
@@ -2414,10 +2414,10 @@ public class DB50XG extends AbstractDevice
         data = MODEL_ID;
         break;
       case -5:
-        data = byte_count >> 7;
+        data = byteCount >> 7;
         break;
       case -4:
-        data = byte_count & 0x7f;
+        data = byteCount & 0x7f;
         break;
       case -3:
         data = hi;
@@ -2432,19 +2432,19 @@ public class DB50XG extends AbstractDevice
         throw new IllegalStateException("invalid extrapos");
       }
       if (extrapos >= -5) {
-        check_sum = (check_sum + data) & 0x7f;
+        checkSum = (checkSum + data) & 0x7f;
       }
       extrapos++;
       return data;
     }
 
-    private int next_tail_byte()
+    private int nextTailByte()
     {
       final int data;
       switch (extrapos) {
       case 0:
-        check_sum = (0x100 - check_sum) & 0x7f;
-        data = check_sum;
+        checkSum = (0x100 - checkSum) & 0x7f;
+        data = checkSum;
         break;
       default:
         throw new IllegalStateException("invalid extrapos");
@@ -2453,13 +2453,13 @@ public class DB50XG extends AbstractDevice
       return data;
     }
 
-    private int next_bulk_dump_byte()
+    private int nextBulkDumpByte()
     {
       node = node.locate(pos);
       // TODO: Fix performance: node.getData() will call node.locate()
       // once again, although we already know the node.
       final Integer data[] = node.getData(pos, 7);
-      check_sum = (check_sum + data[0]) & 0x7f;
+      checkSum = (checkSum + data[0]) & 0x7f;
       pos += 7;
       return data[0];
     }
@@ -2468,12 +2468,12 @@ public class DB50XG extends AbstractDevice
     {
       if (pos < end)
         if (extrapos >= 0)
-          return next_bulk_dump_byte();
+          return nextBulkDumpByte();
         else
-          return next_header_byte();
+          return nextHeaderByte();
       else
         if (extrapos < 1) // tail data
-          return next_tail_byte();
+          return nextTailByte();
         else
           return -1; // EOF
     }
