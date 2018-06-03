@@ -22,19 +22,18 @@ include defs.mak
 # Packages
 #
 
-PACKAGES=\
-	org.soundpaint.sysexedit org.soundpaint.sysexedit.model \
-	org.soundpaint.sysexedit.gui org.soundpaint.sysexedit.devices
+SRC_SYSEXEDIT=$(SRC_ROOT)/org/soundpaint/sysexedit
+PACKAGE_ROOT=org.soundpaint.sysexedit
+SUB_PACKAGES = model gui devices midi
+PACKAGES = $(PACKAGE_ROOT) $(patsubst %,$(PACKAGE_ROOT).%,$(SUB_PACKAGES))
 
 #
 # Source Files
 #
 
-JAVA=$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/*.java) \
-	$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/model/*.java) \
-	$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/gui/*.java) \
-	$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/devices/*.java) \
-	$(wildcard $(SRC_ROOT)/org/soundpaint/sysexedit/midi/*.java)
+JAVA=\
+	$(wildcard $(SRC_SYSEXEDIT)/*.java) \
+	$(wildcard $(patsubst %,$(SRC_SYSEXEDIT)/%/*.java,$(SUB_PACKAGES)))
 
 CLASS=$(patsubst $(SRC_ROOT)/%.java,$(CLS_ROOT)/%.class,$(JAVA))
 
@@ -89,7 +88,9 @@ $(CLS_ROOT)/doc/api/images: $(CLS_ROOT)/doc/api
 $(CLS_ROOT)/doc/api/images/%: $(SRC_ROOT)/doc/api/images/%
 	cp -fp $< $@
 
-$(CLS_ROOT)/doc/api/packages.html: $(SRC_ROOT)/org/soundpaint/sysexedit $(SRC_ROOT)/org/soundpaint/sysexedit/midi $(SRC_ROOT)/org/soundpaint/sysexedit/model $(SRC_ROOT)/org/soundpaint/sysexedit/gui $(SRC_ROOT)/org/soundpaint/sysexedit/devices | classes
+$(CLS_ROOT)/doc/api/packages.html: \
+	$(SRC_SYSEXEDIT) $(patsubst %,$(SRC_SYSEXEDIT)/%,$(SUB_PACKAGES)) \
+	| classes
 	javadoc -d $(CLS_ROOT)/doc/api -classpath $(CLASSPATH) \
 		$(DOC_OTHER) $(PACKAGES)
 
@@ -109,35 +110,22 @@ depend:
 tags:
 	etags *.java
 
-clean:
-	- rm -rf $(CLS_ROOT)
-	- rm -rf $(JAR_DIR)
-	- cd icons ; make clean
-
-modelclean:
-	- rm -f $(CLS_ROOT)/org/soundpaint/sysexedit/model/*.class
-
-guiclean:
-	- rm -f $(CLS_ROOT)/org/soundpaint/sysexedit/gui/*.class
-
-devicesclean:
-	- rm -f $(CLS_ROOT)/org/soundpaint/sysexedit/devices/*.class
-
-midiclean:
-	- rm -f $(CLS_ROOT)/org/soundpaint/sysexedit/midi/*.class
-
-objclean: modelclean guiclean devicesclean midiclean
-
-bkpclean:
-	- find $(SRC_ROOT) -name \*~ -exec /bin/rm -f {} \; -print
-
 docclean:
 	- rm -rf $(CLS_ROOT)/doc
+
+objclean:
+	- rm -rf $(CLS_ROOT)
+	- cd icons ; make clean
 
 jarclean:
 	- rm -rf $(JAR_DIR)
 
-distclean: clean bkpclean docclean jarclean
+bkpclean:
+	- find $(SRC_ROOT) -name \*~ -exec /bin/rm -f {} \; -print
+
+clean: objclean jarclean
+
+distclean: clean bkpclean
 
 tarball: distclean
 	@cd .. ; \
