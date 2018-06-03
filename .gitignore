@@ -1,0 +1,8 @@
+# classes directory
+classes
+
+# jar directory
+jar
+
+# emacs backup files
+*~
