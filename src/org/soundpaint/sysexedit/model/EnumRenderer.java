@@ -28,6 +28,7 @@ public class EnumRenderer implements ValueRangeRenderer
 {
   private int lowerBound;
   private String[] displayValues;
+  private String description;
 
   public int getLowerBound()
   {
@@ -84,11 +85,33 @@ public class EnumRenderer implements ValueRangeRenderer
    */
   public EnumRenderer(final int lowerBound, final String[] displayValues)
   {
+    this(lowerBound, displayValues, null);
+  }
+
+  /**
+   * Defines a new EnumRenderer with the specified display values.
+   * Each display value is associated with a specific numerical value.
+   * The first of the specified display values is associated with the
+   * numerical value <code>lowerBound</code>; the next display value
+   * is associated with <code>lowerBound + 1</code>, and so on.
+   * @param lowerBound The numerical representation of the first of the
+   * specified display values.
+   * @param displayValues An array of strings representing the display
+   * values.
+   * @param description An optional informal description of this
+   * EnumRenderer.  Useful e.g. as tooltip in the GUI.
+   * @exception NullPointerException If <code>displayValues</code>
+   * equals null.
+   */
+  public EnumRenderer(final int lowerBound, final String[] displayValues,
+                      final String description)
+  {
     this.lowerBound = lowerBound;
     if (displayValues == null) {
       throw new NullPointerException("displayValues");
     }
     this.displayValues = displayValues;
+    this.description = description;
   }
 
   /**

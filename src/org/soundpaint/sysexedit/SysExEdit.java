@@ -317,7 +317,7 @@ public class SysExEdit extends Applet implements FramesManager
   /**
    * Called by the browser or applet viewer to inform
    * this applet that it should start its execution. It is called after
-   * the init method and each time the applet is revisited 
+   * the init method and each time the applet is revisited
    * in a Web page.
    */
   public void start()
@@ -341,8 +341,8 @@ public class SysExEdit extends Applet implements FramesManager
   /**
    * Returns information about this applet.
    *
-   * Specifically, it returns a String containing information 
-   * about the author, version, and copyright of the applet. 
+   * Specifically, it returns a String containing information
+   * about the author, version, and copyright of the applet.
    *
    * @return A String containing information about the author, version,
    *    and copyright of the applet.

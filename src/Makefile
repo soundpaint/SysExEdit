@@ -24,7 +24,7 @@ include defs.mak
 
 SRC_SYSEXEDIT=$(SRC_ROOT)/org/soundpaint/sysexedit
 PACKAGE_ROOT=org.soundpaint.sysexedit
-SUB_PACKAGES = model gui devices midi
+SUB_PACKAGES = model gui devices midi parser
 PACKAGES = $(PACKAGE_ROOT) $(patsubst %,$(PACKAGE_ROOT).%,$(SUB_PACKAGES))
 
 #
@@ -45,9 +45,10 @@ LICENSE=$(CLS_ROOT)/LICENSE.html
 DEMO=$(CLS_ROOT)/Demo.html
 ICONS=$(patsubst $(SRC_ROOT)/%,$(CLS_ROOT)/%,$(wildcard $(SRC_ROOT)/icons/*.gif)) \
 	$(CLS_ROOT)/icons.properties
+DEVICES=$(patsubst $(SRC_SYSEXEDIT)/devices/%,$(CLS_ROOT)/devices/%,$(wildcard $(SRC_SYSEXEDIT)/devices/*.xml))
 JAR_FILE=$(JAR_DIR)/SysExEdit.jar
 
-classes: $(CLS_ROOT) $(CLASS) $(ICONS) $(LICENSE) $(DEMO)
+classes: $(CLS_ROOT) $(CLASS) $(ICONS) $(DEVICES) $(LICENSE) $(DEMO)
 
 $(CLS_ROOT):
 	mkdir -p $@
@@ -69,6 +70,12 @@ $(CLS_ROOT)/icons.properties: $(SRC_ROOT)/icons.properties
 
 icons:
 	cd icons; make all
+
+$(CLS_ROOT)/devices:
+	mkdir -p $@
+
+$(CLS_ROOT)/devices/%: $(SRC_SYSEXEDIT)/devices/% | $(CLS_ROOT)/devices
+	cp -fp $< $@
 
 $(CLS_ROOT)/doc:
 	mkdir -p $@
