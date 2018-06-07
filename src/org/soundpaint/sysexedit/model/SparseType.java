@@ -32,6 +32,13 @@ public interface SparseType
   public static final String GENERIC_ICON_KEY = "internal-data";
 
   /**
+   * Returns optional informal description of this EnumRenderer.
+   * Useful e.g. as tooltip in the GUI.  If no description is
+   * available, returns <code>null</code>
+   */
+  String getDescription();
+
+  /**
    * Returns the key for the icon that is displayed together with each
    * instance that implements this sparse type.
    * @return The key of the icon to be displayed.

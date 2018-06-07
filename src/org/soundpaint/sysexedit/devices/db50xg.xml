@@ -2528,52 +2528,51 @@
     <range>
       <lower-bound>0</lower-bound>
       <upper-bound>15</upper-bound>
-      <renderer>
-        <integer-renderer>
-          <base>int8</base>
-          <lower-bound>0</lower-bound>
-          <radix>16</radix>
-          <fill-with-leading-zeros>true</fill-with-leading-zeros>
-          <display-prefix>0x</display-prefix>
-          <display-suffix></display-suffix>
-          <display-min-width>4</display-min-width>
-        </integer-renderer>
-      </renderer>
+      <integer>
+        <lower-bound>0</lower-bound>
+        <radix>16</radix>
+        <fill-with-leading-zeros>true</fill-with-leading-zeros>
+        <display-prefix>0x</display-prefix>
+        <display-suffix></display-suffix>
+        <display-min-width>4</display-min-width>
+      </integer>
     </range>
   </type>
+  <!--
   <type id="pitch-coarse">
     <range>
     </range>
-  </type>
-  <folder name="" id="drum-setup-node">
+    </type>
+    -->
+  <folder label="" id="drum-setup-node">
     <entry type="pitch-coarse" name="Pitch Coarse" />
   </folder>
-  <tree name="MU50 / DB50XG">
-    <folder name="System">
+  <folder label="MU50 / DB50XG" id="root">
+    <folder label="System">
     </folder>
-    <folder name="Effect1">
-      <folder name="Reverb">
+    <folder label="Effect1">
+      <folder label="Reverb">
       </folder>
-      <folder name="Chorus">
+      <folder label="Chorus">
       </folder>
-      <folder name="Variation">
+      <folder label="Variation">
       </folder>
     </folder>
-    <folder name="Multi Part">
+    <folder label="Multi Part">
       <loop first="1" last="16" id="part">
-        <folder name="Multi Part {part}">
+        <folder label="Multi Part {part}">
         </folder>
       </loop>
     </folder>
-    <folder name="Drum Setup">
+    <folder label="Drum Setup">
       <loop first="0" last="1" id="setup">
-        <folder name="Drum Setup {hex:setup}">
+        <folder label="Drum Setup {hex:setup}">
           <loop first="13" last="91" id="note">
-            <folder name="Drum Setup {hex:setup} Note {note}">
+            <folder label="Drum Setup {hex:setup} Note {note}">
             </folder>
           </loop>
         </folder>
       </loop>
     </folder>
-  </tree>
+  </folder>
 </sysexedit>

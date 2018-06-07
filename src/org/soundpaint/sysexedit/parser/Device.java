@@ -37,18 +37,16 @@ public class Device extends AbstractDevice
   private final byte modelId;
   private final String enteredBy;
   private final AddressRepresentation addressRepresentation;
+  private final MapNode root;
 
-  public Device(final String name,
-                final byte manufacturerId,
-                final byte modelId,
-                final String enteredBy,
-                final AddressRepresentation addressRepresentation)
+  public Device(final DeviceModelParser parser)
   {
-    this.name = name;
-    this.manufacturerId = manufacturerId;
-    this.modelId = modelId;
-    this.enteredBy = enteredBy;
-    this.addressRepresentation = addressRepresentation;
+    name = parser.getDeviceName();
+    manufacturerId = parser.getManufacturerId();
+    modelId = parser.getModelId();
+    enteredBy = parser.getEnteredBy();
+    addressRepresentation = null; // TODO
+    root = parser.getRoot();
   }
 
   public String getName()

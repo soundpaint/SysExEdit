@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 
 public class Identifier
 {
+  public static Identifier ROOT_ID = new Identifier("#root");
+
   private final String id;
 
   private static final Pattern idSyntax;
@@ -44,7 +46,9 @@ public class Identifier
 
   public static Identifier fromString(final String id) throws ParseException
   {
-    return new Identifier(id);
+    final Identifier identifier = new Identifier(id);
+    checkSyntax(id);
+    return identifier;
   }
 
   private static long count;
@@ -59,9 +63,8 @@ public class Identifier
     throw new RuntimeException("unsupported constructor");
   }
 
-  private Identifier(final String id) throws ParseException
+  private Identifier(final String id)
   {
-    checkSyntax(id);
     this.id = id;
   }
 

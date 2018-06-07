@@ -91,8 +91,9 @@ public class MapNode extends DefaultMutableTreeNode
   /**
    * Creates a new node with initially no children.
    */
-  private MapNode(final boolean allowsChildren, final String label,
-                  final Value value, final long desiredAddress)
+  public MapNode(final String description, final String label,
+                 final boolean allowsChildren,
+                 final Value value, final long desiredAddress)
   {
     super(value, allowsChildren);
     if (!allowsChildren) {
@@ -107,6 +108,37 @@ public class MapNode extends DefaultMutableTreeNode
     if (value != null) {
       value.addValueChangeListener(this);
     }
+  }
+
+  private MapNode(final String label, final boolean allowsChildren,
+                  final Value value, final long desiredAddress)
+  {
+    this(null, label, allowsChildren, value, desiredAddress);
+  }
+
+  /**
+   * Creates a node that allows children but does not contain a Value
+   * object.
+   * @param description An optional informal description of this
+   * MapNode.  Useful e.g. as tooltip in the GUI.
+   * @param label The label of this node.
+   * @param desiredAddress If negative, automatically determine an
+   *    absolute address for this node.  If non-negative, request that
+   *    this node will appear at the specified absolute address in the
+   *    address space.  Effectively, by setting an absolute address,
+   *    an area of inaccessible memory bits will precede this node's
+   *    data in order to make this node appear at the desired address.
+   *    If specifying an absolute address, it must be chosen such that
+   *    all previous nodes' memory mapped values (with respect to
+   *    depth first search order) fit into the address space range
+   *    preceding the desired address.  Note that validity check for
+   *    this restriction will be made only upon completion of the tree
+   *    and thus may result in throwing an exception some time later.
+   */
+  public MapNode(final String description, final String label,
+                 final long desiredAddress)
+  {
+    this(description, label, true, null, desiredAddress);
   }
 
   /**
@@ -128,7 +160,18 @@ public class MapNode extends DefaultMutableTreeNode
    */
   public MapNode(final String label, final long desiredAddress)
   {
-    this(true, label, null, desiredAddress);
+    this(label, true, null, desiredAddress);
+  }
+
+  /**
+   * Creates a node that allows adding children but does not contain
+   * any value.  Automatically determines the absolute address for
+   * this node.
+   * @param label The label of this node.
+   */
+  public MapNode(final String description, final String label)
+  {
+    this(description, label, -1);
   }
 
   /**
@@ -140,6 +183,33 @@ public class MapNode extends DefaultMutableTreeNode
   public MapNode(final String label)
   {
     this(label, -1);
+  }
+
+  /**
+   * Creates a node that contains a Value object (and hence does not
+   * allow children).
+   * @param description An optional informal description of this
+   * MapNode.  Useful e.g. as tooltip in the GUI.
+   * @param label The label of this node.
+   * @param value The underlying Value object.
+   * @param desiredAddress If negative, automatically determine an
+   *    absolute address for this node.  If non-negative, request that
+   *    this node will appear at the specified absolute address in the
+   *    address space.  Effectively, by setting an absolute address,
+   *    an area of inaccessible memory bits will precede this node's
+   *    data in order to make this node appear at the desired address.
+   *    If specifying an absolute address, it must be chosen such that
+   *    all previous nodes' memory mapped values (with respect to
+   *    depth first search order) fit into the address space range
+   *    preceding the desired address.  Note that validity check for
+   *    this restriction will be made only upon completion of the tree
+   *    and thus may result in throwing an exception some time later.
+   * @exception NullPointerException If value equals null.
+   */
+  public MapNode(final String description, final String label,
+                 final Value value, final long desiredAddress)
+  {
+    this(description, label, false, value, desiredAddress);
   }
 
   /**
@@ -164,7 +234,23 @@ public class MapNode extends DefaultMutableTreeNode
   public MapNode(final String label, final Value value,
                  final long desiredAddress)
   {
-    this(false, label, value, desiredAddress);
+    this(null, label, false, value, desiredAddress);
+  }
+
+  /**
+   * Creates a node that contains a Value object (and hence does not
+   * allow children) and automatically determines the absolute address
+   * for this node.
+   * @param description An optional informal description of this
+   * MapNode.  Useful e.g. as tooltip in the GUI.
+   * @param label The label of this node.
+   * @param value The underlying Value object.
+   * @exception NullPointerException If value equals null.
+   */
+  public MapNode(final String description, final String label,
+                 final Value value)
+  {
+    this(description, label, value, -1);
   }
 
   /**
@@ -177,7 +263,7 @@ public class MapNode extends DefaultMutableTreeNode
    */
   public MapNode(final String label, final Value value)
   {
-    this(label, value, -1);
+    this(null, label, value);
   }
 
   public void editingPathValueChanged(final Value value)

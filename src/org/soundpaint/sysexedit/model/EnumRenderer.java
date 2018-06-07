@@ -26,15 +26,45 @@ package org.soundpaint.sysexedit.model;
  */
 public class EnumRenderer implements ValueRangeRenderer
 {
-  private int lowerBound;
-  private String[] displayValues;
+  /**
+   * An optional informal description of this EnumRenderer.  Useful
+   * e.g. as tooltip in the GUI.
+   */
   private String description;
 
+  /**
+   * The numerical representation of the first of the specified
+   * display values.
+   */
+  private int lowerBound;
+
+  /**
+   * An array of strings representing the display values.
+   */
+  private String[] displayValues;
+
+  /**
+   * Returns optional informal description of this EnumRenderer.
+   * Useful e.g. as tooltip in the GUI.  If no description is
+   * available, returns <code>null</code>
+   */
+  public String getDescription()
+  {
+    return description;
+  }
+
+  /**
+   * Returns the numerical representation of the first of the
+   * specified display values.
+   */
   public int getLowerBound()
   {
     return lowerBound;
   }
 
+  /**
+   * Returns the number of different values in this enumeration.
+   */
   public int getSize()
   {
     return displayValues.length;
@@ -85,7 +115,7 @@ public class EnumRenderer implements ValueRangeRenderer
    */
   public EnumRenderer(final int lowerBound, final String[] displayValues)
   {
-    this(lowerBound, displayValues, null);
+    this(null, lowerBound, displayValues);
   }
 
   /**
@@ -103,8 +133,8 @@ public class EnumRenderer implements ValueRangeRenderer
    * @exception NullPointerException If <code>displayValues</code>
    * equals null.
    */
-  public EnumRenderer(final int lowerBound, final String[] displayValues,
-                      final String description)
+  public EnumRenderer(final String description, final int lowerBound,
+                      final String[] displayValues)
   {
     this.lowerBound = lowerBound;
     if (displayValues == null) {
@@ -155,7 +185,8 @@ public class EnumRenderer implements ValueRangeRenderer
    */
   public String toString()
   {
-    return "EnumRenderer{lowerBound=" + lowerBound + ", displayValues=" +
+    return "EnumRenderer{description=" + description +
+      ", lowerBound=" + lowerBound + ", displayValues=" +
       displayValuesToString() + "}";
   }
 }

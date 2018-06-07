@@ -22,6 +22,7 @@ package org.soundpaint.sysexedit.model;
 
 public class ValueRange implements Comparable<ValueRange>
 {
+  private final String description;
   private final long lb; // lower bound
   private final long ub; // upper bound
   private final ValueRangeRenderer renderer;
@@ -41,6 +42,22 @@ public class ValueRange implements Comparable<ValueRange>
   public ValueRange(final long lb, final long ub,
                     final ValueRangeRenderer renderer)
   {
+    this(null, lb, ub, renderer);
+  }
+
+  /**
+   * Creates a new contiguous value range.
+   * @param description An optional informal description of this
+   * ValueRange.  Useful e.g. as tooltip in the GUI.
+   * @param lb The lower bound of the contiguous value range.
+   * @param ub The upper bound of the contiguous value range.
+   * @param renderer The renderer for this contiguous value range.
+   * @exception NullPointerException If renderer equals null.
+   */
+  public ValueRange(final String description,
+                    final long lb, final long ub,
+                    final ValueRangeRenderer renderer)
+  {
     if (lb < 0) {
       throw new IllegalArgumentException("lower bound must be positive");
     }
@@ -50,9 +67,20 @@ public class ValueRange implements Comparable<ValueRange>
     if (renderer == null) {
       throw new NullPointerException("renderer");
     }
+    this.description = description;
     this.lb = lb;
     this.ub = ub;
     this.renderer = renderer;
+  }
+
+  /**
+   * Returns optional informal description of this ValueRange.  Useful
+   * e.g. as tooltip in the GUI.  If no description is available,
+   * returns <code>null</code>
+   */
+  public String getDescription()
+  {
+    return description;
   }
 
   /**

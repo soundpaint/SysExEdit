@@ -20,7 +20,9 @@
 
 package org.soundpaint.sysexedit.model;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.TreeSet;
 import javax.swing.Icon;
 
@@ -47,6 +49,12 @@ import javax.swing.Icon;
  */
 public class SparseTypeImpl implements SparseType
 {
+  /**
+   * An optional informal description of this SparseType.  Useful
+   * e.g. as tooltip in the GUI.
+   */
+  private String description;
+
   /**
    * A key that represents an icon that illustrates an instance of
    * this sparse type.
@@ -87,6 +95,17 @@ public class SparseTypeImpl implements SparseType
    */
   public SparseTypeImpl(final String iconKey)
   {
+    this(null, iconKey);
+  }
+
+  /**
+   * Creates a sparse type that is initially empty.
+   * @param iconKey The key of the icon to be used when rendering this
+   * sparse type in the GUI.
+   */
+  public SparseTypeImpl(final String description, final String iconKey)
+  {
+    this.description = description;
     this.iconKey = iconKey;
     valueRanges = new TreeSet<ValueRange>();
     valueRangesByNumericalValue = null;
@@ -94,6 +113,7 @@ public class SparseTypeImpl implements SparseType
 
   /**
    * Creates a sparse type with initially a single contiguous range.
+   * @param iconKey The key of the icon to be used when rendering this
    * @param lb The lower bound of the contiguous range.
    * @param ub The upper bound of the contiguous range.
    * @param renderer The renderer for the contiguous range.
@@ -105,6 +125,24 @@ public class SparseTypeImpl implements SparseType
   {
     this(iconKey);
     addValueRange(lb, ub, renderer);
+  }
+
+  /**
+   * Creates a sparse type with initially a single contiguous range.
+   * @param description An optional informal description of this
+   * @param iconKey The key of the icon to be used when rendering this
+   * @param ranges A list of contiguous ranges.
+   * SparseType.  Useful e.g. as tooltip in the GUI.
+   * @exception NullPointerException If renderer equals null.
+   */
+  public SparseTypeImpl(final String description,
+                        final String iconKey,
+                        final List<ValueRange> ranges)
+  {
+    this(description, iconKey);
+    for (final ValueRange range : ranges) {
+      valueRanges.add(range);
+    }
   }
 
   /**
@@ -137,8 +175,15 @@ public class SparseTypeImpl implements SparseType
     return (int)n;
   }
 
-  private static final long min_unsigned = 0x0000000000000000L;
-  private static final long max_unsigned = 0x00000000ffffffffL;
+  /**
+   * Returns optional informal description of this EnumRenderer.
+   * Useful e.g. as tooltip in the GUI.  If no description is
+   * available, returns <code>null</code>
+   */
+  public String getDescription()
+  {
+    return description;
+  }
 
   /**
    * Returns the key for the icon, that is displayed together with each
@@ -150,6 +195,9 @@ public class SparseTypeImpl implements SparseType
     return iconKey;
   }
 
+  private static final long min_unsigned = 0x0000000000000000L;
+  private static final long max_unsigned = 0x00000000ffffffffL;
+
   /**
    * Adds a single contiguous range to this sparse type.
    * @param lb The lower bound of the contiguous range.
@@ -157,7 +205,7 @@ public class SparseTypeImpl implements SparseType
    * @param renderer The renderer for the contiguous range.
    * @return This object for convenience of chained expressions.
    * @exception NullPointerException If renderer equals null.
-   * @exception IllegalArgumentException If the value ange overlaps
+   * @exception IllegalArgumentException If the value range overlaps
    *    some already exisiting value range.
    */
   public SparseTypeImpl addValueRange(final int lb, final int ub,
@@ -166,7 +214,7 @@ public class SparseTypeImpl implements SparseType
     final long unsigned_lb = signed_int_to_long(lb);
     final long unsigned_ub = signed_int_to_long(ub);
     if ((lb < 0) && (ub >= 0)) {
-      // overlapping contiguous; so split it up
+      // contiguous wrap-over ; split it up
       valueRanges.add(new ValueRange(unsigned_lb, max_unsigned, renderer));
       valueRanges.add(new ValueRange(min_unsigned, unsigned_ub, renderer));
     } else {

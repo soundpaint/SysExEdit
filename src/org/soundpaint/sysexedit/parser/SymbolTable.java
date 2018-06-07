@@ -24,18 +24,19 @@ import java.util.HashMap;
 
 public class SymbolTable<Type>
 {
-  private HashMap<Identifier, Symbol<Type>> table;
+  private HashMap<Identifier, Symbol<? extends Type>> table;
 
   public SymbolTable()
   {
-    table = new HashMap<Identifier, Symbol<Type>>();
+    table = new HashMap<Identifier, Symbol<? extends Type>>();
   }
 
-  public void enterSymbol(final Identifier id, final Symbol<Type> symbol)
+  public void enterSymbol(final Identifier id,
+                          final Symbol<? extends Type> symbol)
     throws ParseException
   {
     if (table.containsKey(id)) {
-      final Symbol<Type> other = table.get(id);
+      final Symbol<? extends Type> other = table.get(id);
       final Throwable cause =
         new ParseException(other.getLocation(), "first definition here");
       cause.fillInStackTrace();
@@ -45,7 +46,7 @@ public class SymbolTable<Type>
     table.put(id, symbol);
   }
 
-  public Symbol<Type> lookupSymbol(final Identifier id)
+  public Symbol<? extends Type> lookupSymbol(final Identifier id)
   {
     return table.get(id);
   }
