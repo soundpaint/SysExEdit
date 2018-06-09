@@ -32,7 +32,7 @@ import org.soundpaint.sysexedit.gui.MapContextMenu;
  */
 public abstract class AbstractDevice implements Device
 {
-  public class MapRoot extends MapNode
+  public class MapRoot extends FolderNode
   {
     private static final long serialVersionUID = 3044259528722489945L;
 

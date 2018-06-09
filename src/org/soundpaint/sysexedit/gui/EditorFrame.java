@@ -50,8 +50,8 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.soundpaint.sysexedit.model.Value;
+import org.soundpaint.sysexedit.model.DataNode;
 import org.soundpaint.sysexedit.model.Device;
-import org.soundpaint.sysexedit.model.MapNode;
 
 /**
  * This class implements the main window of the application.
@@ -328,7 +328,7 @@ public class EditorFrame extends JFrame
       return;
     }
     final TreePath path = map.getSelectionPath();
-    final MapNode node = (MapNode)path.getLastPathComponent();
+    final DataNode node = (DataNode)path.getLastPathComponent();
     final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
     try {
       node.increment(mapModel);
@@ -346,7 +346,7 @@ public class EditorFrame extends JFrame
       return;
     }
     final TreePath path = map.getSelectionPath();
-    final MapNode node = (MapNode)path.getLastPathComponent();
+    final DataNode node = (DataNode)path.getLastPathComponent();
     final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
     try {
       node.decrement(mapModel);
@@ -364,7 +364,7 @@ public class EditorFrame extends JFrame
       return;
     }
     final TreePath path = map.getSelectionPath();
-    final MapNode node = (MapNode)path.getLastPathComponent();
+    final DataNode node = (DataNode)path.getLastPathComponent();
     final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
     try {
       node.lowermost(mapModel);
@@ -382,7 +382,7 @@ public class EditorFrame extends JFrame
       return;
     }
     final TreePath path = map.getSelectionPath();
-    final MapNode node = (MapNode)path.getLastPathComponent();
+    final DataNode node = (DataNode)path.getLastPathComponent();
     final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
     try {
       node.uppermost(mapModel);
@@ -400,7 +400,7 @@ public class EditorFrame extends JFrame
       return;
     }
     final TreePath path = map.getSelectionPath();
-    final MapNode node = (MapNode)path.getLastPathComponent();
+    final DataNode node = (DataNode)path.getLastPathComponent();
     final DefaultTreeModel mapModel = (DefaultTreeModel)map.getModel();
     try {
       node.reset(mapModel);

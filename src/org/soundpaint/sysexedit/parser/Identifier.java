@@ -25,7 +25,8 @@ import java.util.regex.Pattern;
 
 public class Identifier
 {
-  public static Identifier ROOT_ID = new Identifier("#root");
+  private static final String ROOT_ID_STR = "#root";
+  public static final Identifier ROOT_ID = new Identifier(ROOT_ID_STR);
 
   private final String id;
 
@@ -46,6 +47,8 @@ public class Identifier
 
   public static Identifier fromString(final String id) throws ParseException
   {
+    if (ROOT_ID_STR.equals(id))
+      return ROOT_ID;
     final Identifier identifier = new Identifier(id);
     checkSyntax(id);
     return identifier;

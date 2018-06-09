@@ -32,6 +32,7 @@ import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.soundpaint.sysexedit.model.AddressRepresentation;
+import org.soundpaint.sysexedit.model.DataNode;
 import org.soundpaint.sysexedit.model.Editor;
 import org.soundpaint.sysexedit.model.MapNode;
 import org.soundpaint.sysexedit.model.SparseType;
@@ -192,8 +193,8 @@ public class Map extends JTree
   private Icon getTreeCellIcon(final MapNode node, final boolean expanded)
   {
     final Icon icon;
-    if (!node.getAllowsChildren())
-      icon = node.getIcon();
+    if (node instanceof DataNode)
+      icon = ((DataNode)node).getIcon();
     else if (expanded)
       icon = UIManager.getIcon("Tree.openIcon");
     else
@@ -283,7 +284,7 @@ public class Map extends JTree
       if (!(value instanceof MapNode)) {
         throw new RuntimeException("tree value is not a map node");
       }
-      final MapNode node = (MapNode)value;
+      final DataNode node = (DataNode)value;
       final Component editor = node.getEditor();
       lastRequestedEditor = editor;
       return editor;

@@ -41,6 +41,7 @@ import org.soundpaint.sysexedit.model.AbstractDevice;
 import org.soundpaint.sysexedit.model.AddressRepresentation;
 import org.soundpaint.sysexedit.model.BitMaskRenderer;
 import org.soundpaint.sysexedit.model.EnumRenderer;
+import org.soundpaint.sysexedit.model.FolderNode;
 import org.soundpaint.sysexedit.model.IntegerRenderer;
 import org.soundpaint.sysexedit.model.MapNode;
 import org.soundpaint.sysexedit.model.SparseType;
@@ -77,7 +78,7 @@ public class DeviceModelParser
   private static final String TAG_NAME_DISPLAY_MIN_WIDTH = "display-min-width";
   private static final String TAG_NAME_BIT_MASK = "bit-mask";
   private static final String TAG_NAME_BIT_STRING_SIZE = "bit-string-size";
-  private static final String TAG_NAME_ENTRY = "entry";
+  private static final String TAG_NAME_DATA = "data";
   private static final String TAG_NAME_LOOP = "loop";
 
   private static Document loadXml(final URL deviceUrl)
@@ -113,14 +114,14 @@ public class DeviceModelParser
   private SymbolTable<ValueRange> rangeSymbols;
   private SymbolTable<SparseType> typeSymbols;
   private SymbolTable<ValueRangeRenderer> rendererSymbols;
-  private SymbolTable<MapNode> folderSymbols;
+  private SymbolTable<FolderNode> folderSymbols;
 
   public DeviceModelParser()
   {
     rangeSymbols = new SymbolTable<ValueRange>();
     typeSymbols = new SymbolTable<SparseType>();
     rendererSymbols = new SymbolTable<ValueRangeRenderer>();
-    folderSymbols = new SymbolTable<MapNode>();
+    folderSymbols = new SymbolTable<FolderNode>();
   }
 
   public String getDeviceClass()
@@ -148,7 +149,7 @@ public class DeviceModelParser
     return enteredBy.getValue();
   }
 
-  public MapNode getRoot()
+  public FolderNode getRoot()
   {
     return folderSymbols.lookupSymbol(Identifier.ROOT_ID).getValue();
   }
@@ -664,7 +665,6 @@ public class DeviceModelParser
     } else {
       label = null;
     }
-    final Value value = null; // TODO
     final Long desiredAddress = null; // TODO
     final List<MapNode> folderContents = new ArrayList<MapNode>();
     final NodeList childNodes = element.getChildNodes();
@@ -680,10 +680,10 @@ public class DeviceModelParser
           description = childElement.getTextContent();
         } else if (childElementName.equals(TAG_NAME_FOLDER)) {
           final Identifier folderId = parseFolder(childElement, false);
-          final Symbol<? extends MapNode> folderSymbol =
+          final Symbol<? extends FolderNode> folderSymbol =
             folderSymbols.lookupSymbol(folderId);
           folderContents.add(folderSymbol.getValue());
-        } else if (childElementName.equals(TAG_NAME_ENTRY)) {
+        } else if (childElementName.equals(TAG_NAME_DATA)) {
           // TODO
         } else if (childElementName.equals(TAG_NAME_LOOP)) {
           // TODO
@@ -702,13 +702,12 @@ public class DeviceModelParser
 
     final List<MapNode> entries =
       new ArrayList<MapNode>(); /* or List<Identifier>? */
-    final MapNode mapNode =
-      new MapNode(description != null ? description : null,
-                  label != null ? label : null,
-                  true, // folder => allowsChildren
-                  value != null ? value : null,
-                  desiredAddress != null ? desiredAddress : -1);
-    final Symbol<MapNode> symbol = new Symbol<MapNode>(element, mapNode);
+    final FolderNode folderNode =
+      new FolderNode(description != null ? description : null,
+                     label != null ? label : null,
+                     desiredAddress != null ? desiredAddress : -1);
+    final Symbol<FolderNode> symbol =
+      new Symbol<FolderNode>(element, folderNode);
     folderSymbols.enterSymbol(identifier, symbol);
     return identifier;
   }
