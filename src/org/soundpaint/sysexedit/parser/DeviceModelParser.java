@@ -67,6 +67,7 @@ public class DeviceModelParser
   private static final String TAG_NAME_FOLDER = "folder";
   private static final String TAG_NAME_DESCRIPTION = "description";
   private static final String TAG_NAME_VALUES = "values";
+  private static final String TAG_NAME_VALUE = "value";
   private static final String TAG_NAME_ICON = "icon";
   private static final String TAG_NAME_LOWER_BOUND = "lower-bound";
   private static final String TAG_NAME_UPPER_BOUND = "upper-bound";
@@ -713,8 +714,29 @@ public class DeviceModelParser
   }
 
   private void parseValues(final Element element, final List<String> values)
+    throws ParseException
   {
-    // TODO
+    final NodeList childNodes = element.getChildNodes();
+    for (int index = 0; index < childNodes.getLength(); index++) {
+      final Node childNode = childNodes.item(index);
+      if (childNode instanceof Element) {
+        final Element childElement = (Element)childNode;
+        final String childElementName = childElement.getTagName();
+        if (childElementName.equals(TAG_NAME_VALUE)) {
+          final String value = element.getTextContent();
+          values.add(value);
+        } else {
+          throw new ParseException(childElement, "unexpected element: " +
+                                   childElementName);
+        }
+      } else if (isWhiteSpace(childNode)) {
+        // ignore white space
+      } else if (isIgnorableNodeType(childNode)) {
+        // ignore comments, entities, etc.
+      } else {
+        throw new ParseException(childNode, "unsupported node");
+      }
+    }
   }
 
   /**
