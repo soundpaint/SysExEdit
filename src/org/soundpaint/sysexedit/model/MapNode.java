@@ -54,13 +54,11 @@ public abstract class MapNode extends DefaultMutableTreeNode
 {
   private static final long serialVersionUID = -1726377369359671649L;
 
-  private final String label;
+  private final Value value;
+  private final NodeMetaData folderMetaData;
 
   // map change listeners
   private final List<MapChangeListener> listeners;
-
-  // the desired absolute bit address of this node
-  private final long desiredAddress;
 
   // the confirmed absolute bit address of this node
   protected long address;
@@ -85,48 +83,33 @@ public abstract class MapNode extends DefaultMutableTreeNode
   }
 
   /**
-   * Creates a new node with initially no children.
+   * Creates a folder node with the specified meta data.
+   * @param folderMetaData the meta data for this node.
    */
-  public MapNode(final String description, final String label,
-                 final Value value, final long desiredAddress,
-                 final boolean allowsChildren)
+  public MapNode(final NodeMetaData folderMetaData)
   {
-    super(value, allowsChildren);
-    this.label = label;
-    this.desiredAddress = desiredAddress;
+    super(null, true);
+    this.folderMetaData = folderMetaData;
+    value = null;
     address = -1; // resolve later
     listeners = new ArrayList<MapChangeListener>();
   }
 
-  private MapNode(final String label, final boolean allowsChildren,
-                  final Value value, final long desiredAddress)
-  {
-    this(null, label, value, desiredAddress, allowsChildren);
-  }
-
   /**
-   * Creates a node that allows children but does not contain a Value
-   * object.
-   * @param description An optional informal description of this
-   * MapNode.  Useful e.g. as tooltip in the GUI.
-   * @param label The label of this node.
-   * @param desiredAddress If negative, automatically determine an
-   *    absolute address for this node.  If non-negative, request that
-   *    this node will appear at the specified absolute address in the
-   *    address space.  Effectively, by setting an absolute address,
-   *    an area of inaccessible memory bits will precede this node's
-   *    data in order to make this node appear at the desired address.
-   *    If specifying an absolute address, it must be chosen such that
-   *    all previous nodes' memory mapped values (with respect to
-   *    depth first search order) fit into the address space range
-   *    preceding the desired address.  Note that validity check for
-   *    this restriction will be made only upon completion of the tree
-   *    and thus may result in throwing an exception some time later.
+   * Creates a data node with no children.
+   * @param value The underlying Value object.
+   * @exception NullPointerException If value equals null.
    */
-  public MapNode(final String description, final String label,
-                 final long desiredAddress)
+  public MapNode(final Value value)
   {
-    this(description, label, null, desiredAddress, true);
+    super(value, false);
+    if (value == null) {
+      throw new NullPointerException("value");
+    }
+    this.value = value;
+    folderMetaData = null;
+    address = -1; // resolve later
+    listeners = new ArrayList<MapChangeListener>();
   }
 
   /**
@@ -186,7 +169,7 @@ public abstract class MapNode extends DefaultMutableTreeNode
    */
   public String getLabel()
   {
-    return label;
+    return value != null ? value.getLabel() : folderMetaData.getLabel();
   }
 
   /**
@@ -220,6 +203,15 @@ public abstract class MapNode extends DefaultMutableTreeNode
     return resolveDfsLastDescendant();
   }
 
+  public long getDesiredAddress()
+  {
+    if (value != null) {
+      return value.getDesiredAddress();
+    } else {
+      return folderMetaData.getDesiredAddress();
+    }
+  }
+
   /**
    * Resolves the address information for this and all of its
    * descendant nodes.  WARNING: For proper handling of address
@@ -232,11 +224,13 @@ public abstract class MapNode extends DefaultMutableTreeNode
    */
   protected long resolveAddresses(final long nextAvailableAddress)
   {
+    final long desiredAddress = getDesiredAddress();
     if (desiredAddress == -1) {
       // no desired address specified => use default
       address = nextAvailableAddress;
     } else if (nextAvailableAddress > desiredAddress) {
-      throw new RuntimeException("invalid desired address " + desiredAddress +
+      throw new RuntimeException("invalid desired address " +
+                                 desiredAddress +
                                  " for node " + this + ": " +
                                  "desired address must be " +
                                  nextAvailableAddress + " or higher");
@@ -342,7 +336,7 @@ public abstract class MapNode extends DefaultMutableTreeNode
         s.append(" => ");
       }
       final MapNode mapNode = (MapNode)node;
-      s.append(mapNode.label);
+      s.append(mapNode.getLabel());
     }
     return s.toString();
   }

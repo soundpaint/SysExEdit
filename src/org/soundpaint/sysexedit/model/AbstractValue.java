@@ -35,30 +35,57 @@ public abstract class AbstractValue implements Value
   /** If non-null, overrides associated sparse type's iconKey. */
   private final String iconKey;
 
+  /**
+   * An optional informal description of this Value.  Useful e.g. as
+   * tooltip in a GUI.
+   */
+  private final String description;
+
+  /** An optional label for this value. */
+  private final String label;
+
+  /** Desired absolute address for the associated node. */
+  private final long desiredAddress;
+
   /** The current value. */
   private int value;
 
   /** The initial (default) value. */
   private int defaultValue;
 
-  /**
-   * Creates a new Value object, using the associated sparse type's
-   * icon for type display.
-   */
-  protected AbstractValue()
+  private AbstractValue()
   {
-    this(null);
+    throw new UnsupportedOperationException();
   }
 
   /**
    * Creates a new Value object with the specified icon to use for
    * type display.
    * @param iconKey If non-null, overrides the associated
-   * sparse type's iconKey.
+   * underlying value type's iconKey.
+   * @param description An optional informal description of this
+   * Value.  Useful e.g. as tooltip in the GUI.
+   * @param label The label of this node.
+   * @param desiredAddress If negative, automatically determine an
+   *    absolute address for this node.  If non-negative, request that
+   *    this node will appear at the specified absolute address in the
+   *    address space.  Effectively, by setting an absolute address,
+   *    an area of inaccessible memory bits will precede this node's
+   *    data in order to make this node appear at the desired address.
+   *    If specifying an absolute address, it must be chosen such that
+   *    all previous nodes' memory mapped values (with respect to
+   *    depth first search order) fit into the address space range
+   *    preceding the desired address.  Note that validity check for
+   *    this restriction will be made only upon completion of the tree
+   *    and thus may result in throwing an exception some time later.
    */
-  protected AbstractValue(final String iconKey)
+  protected AbstractValue(final String iconKey, final String description,
+                          final String label, final long desiredAddress)
   {
     this.iconKey = iconKey;
+    this.description = description;
+    this.label = label;
+    this.desiredAddress = desiredAddress;
     value = 0;
     defaultValue = 0;
   }
@@ -103,6 +130,21 @@ public abstract class AbstractValue implements Value
     System.err.println("[WARNING: icon not found: " + iconKey + "]");
     System.err.flush();
     return UIManager.getIcon(SparseType.GENERIC_ICON_KEY);
+  }
+
+  public String getDescription()
+  {
+    return description;
+  }
+
+  public String getLabel()
+  {
+    return label;
+  }
+
+  public long getDesiredAddress()
+  {
+    return desiredAddress;
   }
 
   /**

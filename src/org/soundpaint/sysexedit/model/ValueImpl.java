@@ -55,34 +55,80 @@ public class ValueImpl extends AbstractValue
 
   private Vector<ValueChangeListener> listeners;
 
-  private ValueImpl()
-  {
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * Creates a new Value object of the specified sparse type.
-   * @param sparseType The SparseType object that specifies
-   *    the sparse type of this Value object.
-   * @exception NullPointerException If sparseType equals null.
-   */
   public ValueImpl(final SparseType sparseType)
   {
-    this(sparseType, null);
+    this(null, sparseType);
+  }
+
+  public ValueImpl(final String iconKey, final SparseType sparseType)
+  {
+    this(iconKey, sparseType, null);
+  }
+
+  public ValueImpl(final SparseType sparseType, final String label)
+  {
+    this(null, sparseType, label);
+  }
+
+  public ValueImpl(final String iconKey, final SparseType sparseType,
+                   final String label)
+  {
+    this(iconKey, sparseType, null, label);
+  }
+
+  public ValueImpl(final SparseType sparseType,
+                   final String description, final String label)
+  {
+    this(null, sparseType, description, label);
+  }
+
+  public ValueImpl(final String iconKey, final SparseType sparseType,
+                   final String description, final String label)
+  {
+    this(iconKey, sparseType, description, label, -1);
+  }
+
+  public ValueImpl(final SparseType sparseType,
+                   final String label, final long desiredAddress)
+  {
+    this(null, sparseType, label, desiredAddress);
+  }
+
+  public ValueImpl(final String iconKey, final SparseType sparseType,
+                   final String label, final long desiredAddress)
+  {
+    this(iconKey, sparseType, null, label, desiredAddress);
   }
 
   /**
-   * Creates a new Value object of the specified sparse type.
+   * Creates a new Value object of the specified sparse type and
+   * description, label, icon key, and desired address.
+   * @param description An optional informal description of this
+   * Value.  Useful e.g. as tooltip in the GUI.
+   * @param label The label of this node.
    * @param sparseType The SparseType object that specifies
    *    the sparse type of this Value object.
    * @param iconKey If non-null, overrides the associated
    * sparse type's iconKey.
+   * @param desiredAddress If negative, automatically determine an
+   *    absolute address for this node.  If non-negative, request that
+   *    this node will appear at the specified absolute address in the
+   *    address space.  Effectively, by setting an absolute address,
+   *    an area of inaccessible memory bits will precede this node's
+   *    data in order to make this node appear at the desired address.
+   *    If specifying an absolute address, it must be chosen such that
+   *    all previous nodes' memory mapped values (with respect to
+   *    depth first search order) fit into the address space range
+   *    preceding the desired address.  Note that validity check for
+   *    this restriction will be made only upon completion of the tree
+   *    and thus may result in throwing an exception some time later.
    * @exception NullPointerException If sparseType equals null.
    */
-  public ValueImpl(final SparseType sparseType,
-                   final String iconKey)
+  public ValueImpl(final String iconKey, final SparseType sparseType,
+                   final String description, final String label,
+                   final long desiredAddress)
   {
-    super(iconKey);
+    super(iconKey, description, label, desiredAddress);
     if (sparseType == null) {
       throw new NullPointerException("sparseType");
     }
@@ -110,6 +156,57 @@ public class ValueImpl extends AbstractValue
         }
       };
     ((Component)editor).addKeyListener(keyListener);
+  }
+
+  /**
+   * Creates a new Value object that represents unused bits.
+   * @param amount The amount of unused bits.
+   * @exception IllegalArgumentException If amount of unused bits is
+   *    below zero or above the upper limit of 15.
+   */
+  public ValueImpl(final int amount, final String label)
+  {
+    this(amount, null, label);
+  }
+
+  public ValueImpl(final int amount, final String iconKey, final String label)
+  {
+    this(amount, iconKey, label, -1);
+  }
+
+  public ValueImpl(final int amount, final String label,
+                   final long desiredAddress)
+  {
+    this(amount, null, label, desiredAddress);
+  }
+
+  /**
+   * Creates a new Value object that represents unused bits.
+   * @param amount The amount of unused bits.
+   * @param iconKey If non-null, overrides the associated
+   * SparseType's iconKey.
+   * @param label The label of this node.
+   * @param desiredAddress If negative, automatically determine an
+   *    absolute address for this node.  If non-negative, request that
+   *    this node will appear at the specified absolute address in the
+   *    address space.  Effectively, by setting an absolute address,
+   *    an area of inaccessible memory bits will precede this node's
+   *    data in order to make this node appear at the desired address.
+   *    If specifying an absolute address, it must be chosen such that
+   *    all previous nodes' memory mapped values (with respect to
+   *    depth first search order) fit into the address space range
+   *    preceding the desired address.  Note that validity check for
+   *    this restriction will be made only upon completion of the tree
+   *    and thus may result in throwing an exception some time later.
+   * @exception IllegalArgumentException If amount of unused bits is
+   *    below zero or above the upper limit of 15.
+   */
+  public ValueImpl(final int amount, final String iconKey, final String label,
+                   final long desiredAddress)
+  {
+    this(iconKey, getBitStringType(amount), label, desiredAddress);
+    setBitSize(amount);
+    setDefaultValue(new Integer(0));
   }
 
   public void addValueChangeListener(final ValueChangeListener listener)
@@ -144,32 +241,6 @@ public class ValueImpl extends AbstractValue
       new SparseTypeImpl(SparseType.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
                          bitMaskRenderer);
     return sparseType;
-  }
-
-  /**
-   * Creates a new Value object that represents unused bits.
-   * @param amount The amount of unused bits.
-   * @exception IllegalArgumentException If amount of unused bits is
-   *    below zero or above the upper limit of 15.
-   */
-  public ValueImpl(final int amount)
-  {
-    this(amount, null);
-  }
-
-  /**
-   * Creates a new Value object that represents unused bits.
-   * @param amount The amount of unused bits.
-   * @param iconKey If non-null, overrides the associated
-   * SparseType's iconKey.
-   * @exception IllegalArgumentException If amount of unused bits is
-   *    below zero or above the upper limit of 15.
-   */
-  public ValueImpl(final int amount, final String iconKey)
-  {
-    this(getBitStringType(amount));
-    setBitSize(amount);
-    setDefaultValue(new Integer(0));
   }
 
   /**

@@ -37,82 +37,13 @@ public class DataNode extends MapNode implements ValueChangeListener
   private static final long serialVersionUID = -2825523179205933317L;
 
   /**
-   * Creates a data node with the specified label, value, and no
-   * children.
-   * @param label The label of this node.
+   * Creates a data node with the specified value and no children.
    * @param value The underlying Value object.
    * @exception NullPointerException If value equals null.
    */
-  public DataNode(final String label, final Value value)
+  public DataNode(final Value value)
   {
-    this(null, label, value);
-  }
-
-  /**
-   * Creates a data node with the specified description, label, value,
-   * and no children.
-   * @param description An optional informal description of this
-   * MapNode.  Useful e.g. as tooltip in the GUI.
-   * @param label The label of this node.
-   * @param value The underlying Value object.
-   * @exception NullPointerException If value equals null.
-   */
-  public DataNode(final String description, final String label,
-                  final Value value)
-  {
-    this(description, label, value, -1);
-  }
-
-  /**
-   * Creates a data node with the specified label, value, desired
-   * address and no children.
-   * @param label The label of this node.
-   * @param value The underlying Value object.
-   * @param desiredAddress If negative, automatically determine an
-   *    absolute address for this node.  If non-negative, request that
-   *    this node will appear at the specified absolute address in the
-   *    address space.  Effectively, by setting an absolute address,
-   *    an area of inaccessible memory bits will precede this node's
-   *    data in order to make this node appear at the desired address.
-   *    If specifying an absolute address, it must be chosen such that
-   *    all previous nodes' memory mapped values (with respect to
-   *    depth first search order) fit into the address space range
-   *    preceding the desired address.  Note that validity check for
-   *    this restriction will be made only upon completion of the tree
-   *    and thus may result in throwing an exception some time later.
-   * @exception NullPointerException If value equals null.
-   */
-  public DataNode(final String label, final Value value,
-                  final long desiredAddress)
-  {
-    this(null, label, value, desiredAddress);
-  }
-
-  /**
-   * Creates a data node with the specified description, label, value,
-   * desired address and no children.
-   * @param description An optional informal description of this
-   * MapNode.  Useful e.g. as tooltip in the GUI.
-   * @param label The label of this node.
-   * @param value The underlying Value object.
-   * @param desiredAddress If negative, automatically determine an
-   *    absolute address for this node.  If non-negative, request that
-   *    this node will appear at the specified absolute address in the
-   *    address space.  Effectively, by setting an absolute address,
-   *    an area of inaccessible memory bits will precede this node's
-   *    data in order to make this node appear at the desired address.
-   *    If specifying an absolute address, it must be chosen such that
-   *    all previous nodes' memory mapped values (with respect to
-   *    depth first search order) fit into the address space range
-   *    preceding the desired address.  Note that validity check for
-   *    this restriction will be made only upon completion of the tree
-   *    and thus may result in throwing an exception some time later.
-   * @exception NullPointerException If value equals null.
-   */
-  public DataNode(final String description, final String label,
-                  final Value value, final long desiredAddress)
-  {
-    super(description, label, value, desiredAddress, false);
+    super(value);
     if (value == null) {
       throw new NullPointerException("value");
     }

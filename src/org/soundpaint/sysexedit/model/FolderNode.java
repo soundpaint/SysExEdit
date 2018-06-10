@@ -117,7 +117,7 @@ public class FolderNode extends MapNode
   public FolderNode(final String description, final String label,
                     final long desiredAddress)
   {
-    super(description, label, null, desiredAddress, true);
+    super(new NodeMetaData(description, label, desiredAddress));
   }
 
   /**

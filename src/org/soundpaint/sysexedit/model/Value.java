@@ -63,6 +63,33 @@ public interface Value
   Icon getIcon();
 
   /**
+   * An optional informal description of this Value.  Useful e.g. as
+   * tooltip in the GUI.
+   */
+  String getDescription();
+
+  /**
+   * @param label A label for this value.
+   */
+  String getLabel();
+
+  /**
+   * @return If negative, automatically determine an absolute address
+   * for this node.  If non-negative, request that this node will
+   * appear at the specified absolute address in the address space.
+   * Effectively, by setting an absolute address, an area of
+   * inaccessible memory bits will precede this node's data in order
+   * to make this node appear at the desired address.  If specifying
+   * an absolute address, it must be chosen such that all previous
+   * nodes' memory mapped values (with respect to depth first search
+   * order) fit into the address space range preceding the desired
+   * address.  Note that validity check for this restriction will be
+   * made only upon completion of the tree and thus may result in
+   * throwing an exception some time later.
+   */
+  long getDesiredAddress();
+
+  /**
    * Sets the underlying numerical value to apply when this Value
    * instance is reset.
    * @param defaultValue The underlying numerical default value.

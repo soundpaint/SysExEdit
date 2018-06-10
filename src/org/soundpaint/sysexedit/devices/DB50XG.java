@@ -1327,71 +1327,72 @@ public class DB50XG extends AbstractDevice
     final SparseType typeTune3 =
       new SparseTypeImpl("internal-tune").
       addValueRange(0x0, 0x0, IntegerRenderer.BYTE_RENDERER);
-    final Value tune3 = new ValueImpl(typeTune3);
+    final Value tune3 = new ValueImpl(typeTune3, "Master Tune[3]");
     tune3.setBitSize(7);
     tune3.setDefaultValue(0x0);
-    nodeSystem.add(new DataNode("Master Tune[3]", tune3));
+    nodeSystem.add(new DataNode(tune3));
 
     final SparseType typeTune2 =
       new SparseTypeImpl("internal-tune").
       addValueRange(0x0, 0x7, IntegerRenderer.BYTE_RENDERER);
-    final Value tune2 = new ValueImpl(typeTune2);
+    final Value tune2 = new ValueImpl(typeTune2, "Master Tune[2]");
     tune2.setBitSize(7);
     tune2.setDefaultValue(0x4);
-    nodeSystem.add(new DataNode("Master Tune[2]", tune2));
+    nodeSystem.add(new DataNode(tune2));
 
     final SparseType typeTune1 =
       new SparseTypeImpl("internal-tune").
       addValueRange(0x0, 0xf, IntegerRenderer.BYTE_RENDERER);
-    final Value tune1 = new ValueImpl(typeTune1);
+    final Value tune1 = new ValueImpl(typeTune1, "Master Tune[1]");
     tune1.setBitSize(7);
     tune1.setDefaultValue(0x0);
-    nodeSystem.add(new DataNode("Master Tune[1]", tune1));
+    nodeSystem.add(new DataNode(tune1));
 
     final SparseType typeTune0 =
       new SparseTypeImpl("internal-tune").
       addValueRange(0x0, 0xf, IntegerRenderer.BYTE_RENDERER);
-    final Value tune0 = new ValueImpl(typeTune0);
+    final Value tune0 = new ValueImpl(typeTune0, "Master Tune[0]");
     tune0.setBitSize(7);
     tune0.setDefaultValue(0x0);
-    nodeSystem.add(new DataNode("Master Tune[0]", tune0));
+    nodeSystem.add(new DataNode(tune0));
 
-    final Value volume = new ValueImpl(typeVolume);
+    final Value volume = new ValueImpl(typeVolume, "Master Volume");
     volume.setBitSize(7);
     volume.setDefaultValue(0x7f);
-    nodeSystem.add(new DataNode("Master Volume", volume));
+    nodeSystem.add(new DataNode(volume));
 
-    nodeSystem.add(new DataNode("Unused", new ValueImpl(7)));
+    nodeSystem.add(new DataNode(new ValueImpl(7, "Unused")));
 
-    final Value transpose = new ValueImpl(typeTranspose);
+    final Value transpose = new ValueImpl(typeTranspose, "Transpose");
     transpose.setBitSize(7);
     transpose.setDefaultValue(0x40);
-    nodeSystem.add(new DataNode("Transpose", transpose));
+    nodeSystem.add(new DataNode(transpose));
 
     final SparseType typeDrumsSetupReset =
       new SparseTypeImpl("internal-error").
       addValueRange(0x0, 0x1, IntegerRenderer.BYTE_RENDERER);
-    final Value drumsSetupReset = new ValueImpl(typeDrumsSetupReset);
+    final Value drumsSetupReset =
+      new ValueImpl(typeDrumsSetupReset, "Drum Setup Reset",
+                    addr2index(0x00, 0x00, 0x7d));
     drumsSetupReset.setBitSize(7);
     drumsSetupReset.setDefaultValue(0x0);
-    nodeSystem.add(new DataNode("Drum Setup Reset", drumsSetupReset,
-                                addr2index(0x00, 0x00, 0x7d)));
+    nodeSystem.add(new DataNode(drumsSetupReset));
 
     final SparseType typeXgOn =
       new SparseTypeImpl("internal-error").
       addSingleValue(0x0, IntegerRenderer.BYTE_RENDERER);
-    final Value xgOn = new ValueImpl(typeXgOn);
+    final Value xgOn = new ValueImpl(typeXgOn, "XG System On");
     xgOn.setBitSize(7);
     xgOn.setDefaultValue(0x0);
-    nodeSystem.add(new DataNode("XG System On", xgOn));
+    nodeSystem.add(new DataNode(xgOn));
 
     final SparseType typeAllReset =
       new SparseTypeImpl("internal-error").
       addSingleValue(0x0, IntegerRenderer.BYTE_RENDERER);
-    final Value allReset = new ValueImpl(typeAllReset);
+    final Value allReset = new ValueImpl(typeAllReset, "All Parameter Reset");
     allReset.setBitSize(7);
     allReset.setDefaultValue(0x0);
-    nodeSystem.add(new DataNode("All Parameter Reset", allReset));
+    nodeSystem.add(new DataNode(allReset));
 
     return nodeSystem;
   }
@@ -1400,107 +1401,109 @@ public class DB50XG extends AbstractDevice
   {
     final FolderNode nodeReverb = new FolderNode("Reverb");
 
-    final Value reverbType = new ValueImpl(typeReverbType);
+    final Value reverbType = new ValueImpl(typeReverbType, "Reverb Type");
     reverbType.setBitSize(14);
     reverbType.setDefaultValue(0x0080);
-    nodeReverb.add(new DataNode("Reverb Type", reverbType));
+    nodeReverb.add(new DataNode(reverbType));
 
-    final Value reverbTime = new ValueImpl(typeReverbTime);
+    final Value reverbTime = new ValueImpl(typeReverbTime, "Reverb Time");
     reverbTime.setBitSize(7);
     reverbTime.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("Reverb Time", reverbTime));
+    nodeReverb.add(new DataNode(reverbTime));
 
     final SparseType typeDiffusion =
       new SparseTypeImpl("internal-control").
       addValueRange(0x00, 0x0a, IntegerRenderer.BYTE_RENDERER);
-    final Value diffusion = new ValueImpl(typeDiffusion);
+    final Value diffusion = new ValueImpl(typeDiffusion, "Diffusion");
     diffusion.setBitSize(7);
     diffusion.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("Diffusion", diffusion));
+    nodeReverb.add(new DataNode(diffusion));
 
-    final Value initialDelay = new ValueImpl(typeDelayTime1);
+    final Value initialDelay = new ValueImpl(typeDelayTime1, "Initial Delay");
     initialDelay.setBitSize(7);
     initialDelay.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("Initial Delay", initialDelay));
+    nodeReverb.add(new DataNode(initialDelay));
 
-    final Value hpfCutoff = new ValueImpl(typeEqFrequency);
+    final Value hpfCutoff = new ValueImpl(typeEqFrequency, "HPF Cutoff");
     hpfCutoff.setBitSize(7);
     hpfCutoff.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("HPF Cutoff", hpfCutoff));
+    nodeReverb.add(new DataNode(hpfCutoff));
 
-    final Value lpfCutoff = new ValueImpl(typeEqFrequency);
+    final Value lpfCutoff = new ValueImpl(typeEqFrequency, "LPF Cutoff");
     lpfCutoff.setBitSize(7);
     lpfCutoff.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("LPF Cutoff", lpfCutoff));
+    nodeReverb.add(new DataNode(lpfCutoff));
 
-    final Value width = new ValueImpl(typeReverbWidth);
+    final Value width = new ValueImpl(typeReverbWidth, "Width");
     width.setBitSize(7);
     width.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("Width", width));
+    nodeReverb.add(new DataNode(width));
 
-    final Value height = new ValueImpl(typeReverbHeight);
+    final Value height = new ValueImpl(typeReverbHeight, "Height");
     height.setBitSize(7);
     height.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("Height", height));
+    nodeReverb.add(new DataNode(height));
 
-    final Value depth = new ValueImpl(typeReverbDepth);
+    final Value depth = new ValueImpl(typeReverbDepth, "Depth");
     depth.setBitSize(7);
     depth.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("Depth", depth));
+    nodeReverb.add(new DataNode(depth));
 
     final SparseType typeWallVary =
       new SparseTypeImpl("internal-control").
       addValueRange(0x00, 0x1e, IntegerRenderer.BYTE_RENDERER);
-    final Value wallVary = new ValueImpl(typeWallVary);
+    final Value wallVary = new ValueImpl(typeWallVary, "Wall Vary");
     wallVary.setBitSize(7);
     wallVary.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("Wall Vary", wallVary));
+    nodeReverb.add(new DataNode(wallVary));
 
-    final Value dryWet = new ValueImpl(typeDryWet);
+    final Value dryWet = new ValueImpl(typeDryWet, "Dry / Wet");
     dryWet.setBitSize(7);
     dryWet.setDefaultValue(0x40);
-    nodeReverb.add(new DataNode("Dry / Wet", dryWet));
+    nodeReverb.add(new DataNode(dryWet));
 
-    final Value level = new ValueImpl(typeLevel);
+    final Value level = new ValueImpl(typeLevel, "Reverb Return");
     level.setBitSize(7);
     level.setDefaultValue(0x40);
-    nodeReverb.add(new DataNode("Reverb Return", level));
+    nodeReverb.add(new DataNode(level));
 
-    final Value pan = new ValueImpl(typePan);
+    final Value pan = new ValueImpl(typePan, "Reverb Pan",
+                                    addr2index(0x02, 0x01, 0x10));
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    nodeReverb.add(new DataNode("Reverb Pan", pan));
+    nodeReverb.add(new DataNode(pan));
 
-    final Value revDelay = new ValueImpl(typeDelayTime1);
+    final Value revDelay = new ValueImpl(typeDelayTime1, "Rev Delay");
     revDelay.setBitSize(7);
     revDelay.setDefaultValue(0x00);
-    nodeReverb.add(new DataNode("Rev Delay", revDelay,
-                                addr2index(0x02, 0x01, 0x10)));
+    nodeReverb.add(new DataNode(revDelay));
 
     final SparseType typeDensity =
       new SparseTypeImpl("internal-control").
       addValueRange(0x0, 0x3, IntegerRenderer.BYTE_RENDERER);
-    final Value density = new ValueImpl(typeDensity);
+    final Value density = new ValueImpl(typeDensity, "Density");
     density.setBitSize(7);
     density.setDefaultValue(0x0);
-    nodeReverb.add(new DataNode("Density", density));
+    nodeReverb.add(new DataNode(density));
 
-    final Value erRevBalance = new ValueImpl(typeErRevBalance);
+    final Value erRevBalance =
+      new ValueImpl(typeErRevBalance, "Er / Rev Balance");
     erRevBalance.setBitSize(7);
     erRevBalance.setDefaultValue(0x40);
-    nodeReverb.add(new DataNode("Er / Rev Balance", erRevBalance));
+    nodeReverb.add(new DataNode(erRevBalance));
 
-    nodeReverb.add(new DataNode("Unused", new ValueImpl(7)));
+    nodeReverb.add(new DataNode(new ValueImpl(7, "Unused")));
 
     final SparseType typeFeedbackLevel =
       new SparseTypeImpl("internal-volume").
       addValueRange(0x01, 0x7f, new IntegerRenderer(0x40));
-    final Value feedbackLevel = new ValueImpl(typeFeedbackLevel);
+    final Value feedbackLevel =
+      new ValueImpl(typeFeedbackLevel, "Feedback Level");
     feedbackLevel.setBitSize(7);
     feedbackLevel.setDefaultValue(0x40);
-    nodeReverb.add(new DataNode("Feedback Level", feedbackLevel));
+    nodeReverb.add(new DataNode(feedbackLevel));
 
-    nodeReverb.add(new DataNode("Unused", new ValueImpl(7)));
+    nodeReverb.add(new DataNode(new ValueImpl(7, "Unused")));
 
     return nodeReverb;
   }
@@ -1510,94 +1513,97 @@ public class DB50XG extends AbstractDevice
     final FolderNode nodeChorus =
       new FolderNode("Chorus", addr2index(0x02, 0x01, 0x20));
 
-    final Value chorusType = new ValueImpl(typeChorusType);
+    final Value chorusType = new ValueImpl(typeChorusType, "Chorus Type");
     chorusType.setBitSize(14);
     chorusType.setDefaultValue(0x2080);
-    nodeChorus.add(new DataNode("Chorus Type", chorusType));
+    nodeChorus.add(new DataNode(chorusType));
 
-    final Value lfoFrequency = new ValueImpl(typeLfoFrequency);
+    final Value lfoFrequency = new ValueImpl(typeLfoFrequency, "LFO Frequency");
     lfoFrequency.setBitSize(7);
     lfoFrequency.setDefaultValue(0x00);
-    nodeChorus.add(new DataNode("LFO Frequency", lfoFrequency));
+    nodeChorus.add(new DataNode(lfoFrequency));
 
-    final Value lfoPmDepth = new ValueImpl(typeNonNegative7Bit);
+    final Value lfoPmDepth = new ValueImpl(typeNonNegative7Bit, "LFO PM Depth");
     lfoPmDepth.setBitSize(7);
     lfoPmDepth.setDefaultValue(0x40);
-    nodeChorus.add(new DataNode("LFO PM Depth", lfoPmDepth));
+    nodeChorus.add(new DataNode(lfoPmDepth));
 
     final SparseType typeFeedbackLevel =
       new SparseTypeImpl("internal-volume").
       addValueRange(0x01, 0x7f, new IntegerRenderer(0x40));
-    final Value feedbackLevel = new ValueImpl(typeFeedbackLevel);
+    final Value feedbackLevel =
+      new ValueImpl(typeFeedbackLevel, "Feedback Level");
     feedbackLevel.setBitSize(7);
     feedbackLevel.setDefaultValue(0x40);
-    nodeChorus.add(new DataNode("Feedback Level", feedbackLevel));
+    nodeChorus.add(new DataNode(feedbackLevel));
 
     final Value modulationDelayOffset =
-      new ValueImpl(typeModulationDelayOffset);
+      new ValueImpl(typeModulationDelayOffset, "Modulation Delay Offset");
     modulationDelayOffset.setBitSize(7);
     modulationDelayOffset.setDefaultValue(0x00);
-    nodeChorus.add(new DataNode("Modulation Delay Offset",
-                                modulationDelayOffset));
+    nodeChorus.add(new DataNode(modulationDelayOffset));
 
-    nodeChorus.add(new DataNode("Unused", new ValueImpl(7)));
+    nodeChorus.add(new DataNode(new ValueImpl(7, "Unused")));
 
-    final Value eqLowFrequency = new ValueImpl(typeEqFrequency);
+    final Value eqLowFrequency =
+      new ValueImpl(typeEqFrequency, "EQ Low Frequency");
     eqLowFrequency.setBitSize(7);
     eqLowFrequency.setDefaultValue(0x08);
-    nodeChorus.add(new DataNode("EQ Low Frequency", eqLowFrequency));
+    nodeChorus.add(new DataNode(eqLowFrequency));
 
-    final Value eqLowGain = new ValueImpl(typeEqGain);
+    final Value eqLowGain = new ValueImpl(typeEqGain, "EQ Low Gain");
     eqLowGain.setBitSize(7);
     eqLowGain.setDefaultValue(0x40);
-    nodeChorus.add(new DataNode("EQ Low Gain", eqLowGain));
+    nodeChorus.add(new DataNode(eqLowGain));
 
-    final Value eqHighFrequency = new ValueImpl(typeEqFrequency);
+    final Value eqHighFrequency =
+      new ValueImpl(typeEqFrequency, "EQ High Frequency");
     eqHighFrequency.setBitSize(7);
     eqHighFrequency.setDefaultValue(0x3a);
-    nodeChorus.add(new DataNode("EQ High Frequency", eqHighFrequency));
+    nodeChorus.add(new DataNode(eqHighFrequency));
 
-    final Value eqHighGain = new ValueImpl(typeEqGain);
+    final Value eqHighGain = new ValueImpl(typeEqGain, "EQ High Gain");
     eqHighGain.setBitSize(7);
     eqHighGain.setDefaultValue(0x40);
-    nodeChorus.add(new DataNode("EQ High Gain", eqHighGain));
+    nodeChorus.add(new DataNode(eqHighGain));
 
-    final Value dryWet = new ValueImpl(typeDryWet);
+    final Value dryWet = new ValueImpl(typeDryWet, "Dry / Wet");
     dryWet.setBitSize(7);
     dryWet.setDefaultValue(0x40);
-    nodeChorus.add(new DataNode("Dry / Wet", dryWet));
+    nodeChorus.add(new DataNode(dryWet));
 
-    final Value level = new ValueImpl(typeLevel);
+    final Value level = new ValueImpl(typeLevel, "Chorus Return");
     level.setBitSize(7);
     level.setDefaultValue(0x40);
-    nodeChorus.add(new DataNode("Chorus Return", level));
+    nodeChorus.add(new DataNode(level));
 
-    final Value pan = new ValueImpl(typePan);
+    final Value pan = new ValueImpl(typePan, "Chorus Pan");
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    nodeChorus.add(new DataNode("Chorus Pan", pan));
+    nodeChorus.add(new DataNode(pan));
 
-    final Value levelReverb = new ValueImpl(typeLevel);
+    final Value levelReverb = new ValueImpl(typeLevel, "Send Chorus To Reverb");
     levelReverb.setBitSize(7);
     levelReverb.setDefaultValue(0x00);
-    nodeChorus.add(new DataNode("Send Chorus To Reverb", levelReverb));
+    nodeChorus.add(new DataNode(levelReverb));
 
-    nodeChorus.add(new DataNode("Unused", new ValueImpl(7),
-                                addr2index(0x02, 0x01, 0x30)));
-    nodeChorus.add(new DataNode("Unused", new ValueImpl(7)));
-    nodeChorus.add(new DataNode("Unused", new ValueImpl(7)));
+    nodeChorus.add(new DataNode(new ValueImpl(7, "Unused",
+                                              addr2index(0x02, 0x01, 0x30))));
+    nodeChorus.add(new DataNode(new ValueImpl(7, "Unused")));
+    nodeChorus.add(new DataNode(new ValueImpl(7, "Unused")));
 
-    final Value lfoPhaseDifference = new ValueImpl(typePhaseDifference);
+    final Value lfoPhaseDifference =
+      new ValueImpl(typePhaseDifference, "LFO Phase Difference");
     lfoPhaseDifference.setBitSize(7);
     lfoPhaseDifference.setDefaultValue(0x40);
-    nodeChorus.add(new DataNode("LFO Phase Difference", lfoPhaseDifference));
+    nodeChorus.add(new DataNode(lfoPhaseDifference));
 
-    final Value monoStereo = new ValueImpl(typeMonoStereo);
+    final Value monoStereo = new ValueImpl(typeMonoStereo, "Mono / Stereo");
     monoStereo.setBitSize(7);
     monoStereo.setDefaultValue(0x1);
-    nodeChorus.add(new DataNode("Mono / Stereo", monoStereo));
+    nodeChorus.add(new DataNode(monoStereo));
 
-    nodeChorus.add(new DataNode("Unused", new ValueImpl(7)));
+    nodeChorus.add(new DataNode(new ValueImpl(7, "Unused")));
 
     return nodeChorus;
   }
@@ -1607,86 +1613,98 @@ public class DB50XG extends AbstractDevice
     final FolderNode nodeVariation =
       new FolderNode("Variation", addr2index(0x02, 0x01, 0x40));
 
-    final Value variationType = new ValueImpl(typeVariationType);
+    final Value variationType =
+      new ValueImpl(typeVariationType, "Variation Type");
     variationType.setBitSize(14);
     variationType.setDefaultValue(0x0280);
-    nodeVariation.add(new DataNode("Variation Type", variationType));
+    nodeVariation.add(new DataNode(variationType));
 
     for (int i = 0; i < 10; i++) {
-      final Value value7BitMsb = new ValueImpl(typeNonNegative7Bit);
+      final Value value7BitMsb =
+        new ValueImpl(typeNonNegative7Bit,
+                      "Variation Parameter " + (i + 1) + " MSB");
       value7BitMsb.setBitSize(7);
       value7BitMsb.setDefaultValue(0x00);
-      nodeVariation.add(new DataNode("Variation Parameter " + (i + 1) + " MSB",
-                                     value7BitMsb));
-      final Value value7BitLsb = new ValueImpl(typeNonNegative7Bit);
+      nodeVariation.add(new DataNode(value7BitMsb));
+      final Value value7BitLsb =
+        new ValueImpl(typeNonNegative7Bit,
+                      "Variation Parameter " + (i + 1) + " LSB");
       value7BitLsb.setBitSize(7);
       value7BitLsb.setDefaultValue(0x00);
-      nodeVariation.add(new DataNode("Variation Parameter " + (i + 1) + " LSB",
-                                     value7BitLsb));
+      nodeVariation.add(new DataNode(value7BitLsb));
     }
 
-    final Value level = new ValueImpl(typeLevel);
+    final Value level = new ValueImpl(typeLevel, "Variation Return");
     level.setBitSize(7);
     level.setDefaultValue(0x40);
-    nodeVariation.add(new DataNode("Variation Return", level));
+    nodeVariation.add(new DataNode(level));
 
-    final Value pan = new ValueImpl(typePan);
+    final Value pan = new ValueImpl(typePan, "Variation Pan");
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    nodeVariation.add(new DataNode("Variation Pan", pan));
+    nodeVariation.add(new DataNode(pan));
 
-    final Value levelReverb = new ValueImpl(typeLevel);
+    final Value levelReverb =
+      new ValueImpl(typeLevel, "Send Variation To Reverb");
     levelReverb.setBitSize(7);
     levelReverb.setDefaultValue(0x00);
-    nodeVariation.add(new DataNode("Send Variation To Reverb", levelReverb));
+    nodeVariation.add(new DataNode(levelReverb));
 
-    final Value levelChorus = new ValueImpl(typeLevel);
+    final Value levelChorus =
+      new ValueImpl(typeLevel, "Send Variation To Chorus");
     levelChorus.setBitSize(7);
     levelChorus.setDefaultValue(0x00);
-    nodeVariation.add(new DataNode("Send Variation To Chorus", levelChorus));
+    nodeVariation.add(new DataNode(levelChorus));
 
-    final Value connection = new ValueImpl(typeConnection);
+    final Value connection =
+      new ValueImpl(typeConnection, "Variation Connection");
     connection.setBitSize(7);
     connection.setDefaultValue(0x0);
-    nodeVariation.add(new DataNode("Variation Connection", connection));
+    nodeVariation.add(new DataNode(connection));
 
-    final Value part = new ValueImpl(typePart);
+    final Value part = new ValueImpl(typePart, "Variation Part");
     part.setBitSize(7);
     part.setDefaultValue(0x7f);
-    nodeVariation.add(new DataNode("Variation Part", part));
+    nodeVariation.add(new DataNode(part));
 
-    final Value mw = new ValueImpl(typeSigned7Bit);
+    final Value mw =
+      new ValueImpl(typeSigned7Bit, "MW Variation Control Depth");
     mw.setBitSize(7);
     mw.setDefaultValue(0x40);
-    nodeVariation.add(new DataNode("MW Variation Control Depth", mw));
+    nodeVariation.add(new DataNode(mw));
 
-    final Value bend = new ValueImpl(typeSigned7Bit);
+    final Value bend =
+      new ValueImpl(typeSigned7Bit, "Bend Variation Control Depth");
     bend.setBitSize(7);
     bend.setDefaultValue(0x40);
-    nodeVariation.add(new DataNode("Bend Variation Control Depth", bend));
+    nodeVariation.add(new DataNode(bend));
 
-    final Value cat = new ValueImpl(typeSigned7Bit);
+    final Value cat =
+      new ValueImpl(typeSigned7Bit, "CAT Variation Control Depth");
     cat.setBitSize(7);
     cat.setDefaultValue(0x40);
-    nodeVariation.add(new DataNode("CAT Variation Control Depth", cat));
+    nodeVariation.add(new DataNode(cat));
 
-    final Value ac1 = new ValueImpl(typeSigned7Bit);
+    final Value ac1 =
+      new ValueImpl(typeSigned7Bit, "AC1 Variation Control Depth");
     ac1.setBitSize(7);
     ac1.setDefaultValue(0x40);
-    nodeVariation.add(new DataNode("AC1 Variation Control Depth", ac1));
+    nodeVariation.add(new DataNode(ac1));
 
-    final Value ac2 = new ValueImpl(typeSigned7Bit);
+    final Value ac2 =
+      new ValueImpl(typeSigned7Bit, "AC2 Variation Control Depth");
     ac2.setBitSize(7);
     ac2.setDefaultValue(0x40);
-    nodeVariation.add(new DataNode("AC2 Variation Control Depth", ac2));
+    nodeVariation.add(new DataNode(ac2));
 
     for (int i = 10; i < 16; i++) {
-      final Value value7Bit = new ValueImpl(typeNonNegative7Bit);
       final long desiredAddress = i == 10 ? addr2index(0x02, 0x01, 0x70) : -1;
+      final Value value7Bit =
+        new ValueImpl(typeNonNegative7Bit, "Variation Parameter " + (i + 1),
+                      desiredAddress);
       value7Bit.setBitSize(7);
       value7Bit.setDefaultValue(0x00);
-      nodeVariation.add(new DataNode("Variation Parameter " + (i + 1),
-                                     value7Bit, desiredAddress));
+      nodeVariation.add(new DataNode(value7Bit));
     }
 
     return nodeVariation;
@@ -1706,38 +1724,43 @@ public class DB50XG extends AbstractDevice
                                 final String displayPrefix,
                                 final int defaultPModDepth)
   {
-    final Value pitchControl = new ValueImpl(typeTranspose);
+    final Value pitchControl =
+      new ValueImpl(typeTranspose, displayPrefix + " Pitch Control");
     pitchControl.setBitSize(7);
     pitchControl.setDefaultValue(0x40);
-    node.add(new DataNode(displayPrefix + " Pitch Control", pitchControl));
+    node.add(new DataNode(pitchControl));
 
-    final Value filterControl = new ValueImpl(typeFilterControl);
+    final Value filterControl =
+      new ValueImpl(typeFilterControl, displayPrefix + " Filter Control");
     filterControl.setBitSize(7);
     filterControl.setDefaultValue(0x40);
-    node.add(new DataNode(displayPrefix + " Filter Control", filterControl));
+    node.add(new DataNode(filterControl));
 
-    final Value amplitudeControl = new ValueImpl(typeSigned7Bit);
+    final Value amplitudeControl =
+      new ValueImpl(typeSigned7Bit, displayPrefix + " Amplitude Control");
     amplitudeControl.setBitSize(7);
     amplitudeControl.setDefaultValue(0x40);
-    node.add(new DataNode(displayPrefix + " Amplitude Control",
-                          amplitudeControl));
+    node.add(new DataNode(amplitudeControl));
 
-    final Value lfoPModDepth = new ValueImpl(typeNonNegative7Bit);
+    final Value lfoPModDepth =
+      new ValueImpl(typeNonNegative7Bit, displayPrefix + " LFO PMod Depth");
     lfoPModDepth.setBitSize(7);
     lfoPModDepth.setDefaultValue(defaultPModDepth);
-    node.add(new DataNode(displayPrefix + " LFO PMod Depth", lfoPModDepth));
+    node.add(new DataNode(lfoPModDepth));
 
     final Value lfoFModDepth =
-      new ValueImpl(typeNonNegative7Bit, "internal-mod-fm");
+      new ValueImpl("internal-mod-fm", typeNonNegative7Bit,
+                    displayPrefix + " LFO FMod Depth");
     lfoFModDepth.setBitSize(7);
     lfoFModDepth.setDefaultValue(0x00);
-    node.add(new DataNode(displayPrefix + " LFO FMod Depth", lfoFModDepth));
+    node.add(new DataNode(lfoFModDepth));
 
     final Value lfoAModDepth =
-      new ValueImpl(typeNonNegative7Bit, "internal-mod-am");
+      new ValueImpl("internal-mod-am", typeNonNegative7Bit,
+                    displayPrefix + " LFO AMod Depth");
     lfoAModDepth.setBitSize(7);
     lfoAModDepth.setDefaultValue(0x00);
-    node.add(new DataNode(displayPrefix + " LFO AMod Depth", lfoAModDepth));
+    node.add(new DataNode(lfoAModDepth));
   }
 
   private FolderNode buildFolderNodeMultiPartN(final int n)
@@ -1748,439 +1771,452 @@ public class DB50XG extends AbstractDevice
     final SparseType typeElementReserve =
       new SparseTypeImpl("internal-control").
       addValueRange(0x00, 0x1f, IntegerRenderer.BYTE_RENDERER);
-    final Value elementReserve = new ValueImpl(typeElementReserve);
+    final Value elementReserve =
+      new ValueImpl(typeElementReserve, "Element Reserve");
     elementReserve.setBitSize(7);
     elementReserve.setDefaultValue(n == 9 ? 0x00 : 0x02);
-    nodeMultiPartN.add(new DataNode("Element Reserve", elementReserve));
+    nodeMultiPartN.add(new DataNode(elementReserve));
 
-    final Value bankSelectMsb = new ValueImpl(typeNonNegative7Bit);
+    final Value bankSelectMsb =
+      new ValueImpl(typeNonNegative7Bit, "Bank Select MSB");
     bankSelectMsb.setBitSize(7);
     bankSelectMsb.setDefaultValue(n == 9 ? 0x7f : 0x00);
-    nodeMultiPartN.add(new DataNode("Bank Select MSB", bankSelectMsb));
+    nodeMultiPartN.add(new DataNode(bankSelectMsb));
 
-    final Value bankSelectLsb = new ValueImpl(typeNonNegative7Bit);
+    final Value bankSelectLsb =
+      new ValueImpl(typeNonNegative7Bit, "Bank Select LSB");
     bankSelectLsb.setBitSize(7);
     bankSelectLsb.setDefaultValue(0x00);
-    nodeMultiPartN.add(new DataNode("Bank Select LSB", bankSelectLsb));
+    nodeMultiPartN.add(new DataNode(bankSelectLsb));
 
     final ValueRangeRenderer valueType1ToN = new IntegerRenderer(-1);
 
     final SparseType typeProgramNumber =
       new SparseTypeImpl("internal-control").
       addValueRange(0x00, 0x7f, valueType1ToN);
-    final Value programNumber = new ValueImpl(typeProgramNumber);
+    final Value programNumber =
+      new ValueImpl(typeProgramNumber, "Program Number");
     programNumber.setBitSize(7);
     programNumber.setDefaultValue(0x00);
-    nodeMultiPartN.add(new DataNode("Program Number", programNumber));
+    nodeMultiPartN.add(new DataNode(programNumber));
 
     final SparseType typeRcvChannel =
       new SparseTypeImpl("internal-control").
       addValueRange(0x00, 0x0f, valueType1ToN).
       addSingleValue(0x10, "Off");
-    final Value rcvChannel = new ValueImpl(typeRcvChannel);
+    final Value rcvChannel =
+      new ValueImpl(typeRcvChannel, "Rcv Channel");
     rcvChannel.setBitSize(7);
     rcvChannel.setDefaultValue(n);
-    nodeMultiPartN.add(new DataNode("Rcv Channel", rcvChannel));
+    nodeMultiPartN.add(new DataNode(rcvChannel));
 
-    final Value monoPolyMode = new ValueImpl(typeMonoPolyMode);
+    final Value monoPolyMode =
+      new ValueImpl(typeMonoPolyMode, "Mono / Poly Mode");
     monoPolyMode.setBitSize(7);
     monoPolyMode.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Mono / Poly Mode", monoPolyMode));
+    nodeMultiPartN.add(new DataNode(monoPolyMode));
 
     final SparseType typeKeyOnAssign =
       new SparseTypeImpl("internal-control").
       addValueRange(0x0, 0x2, rendererKeyOnAssign);
-    final Value keyOnAssign = new ValueImpl(typeKeyOnAssign);
+    final Value keyOnAssign =
+      new ValueImpl(typeKeyOnAssign, "Same Not Number Key on Assign");
     keyOnAssign.setBitSize(7);
     keyOnAssign.setDefaultValue(n == 9 ? 0x2 : 0x0);
-    nodeMultiPartN.add(new DataNode("Same Not Number Key on Assign",
-                                    keyOnAssign));
+    nodeMultiPartN.add(new DataNode(keyOnAssign));
 
     final SparseType typePartMode =
       new SparseTypeImpl("internal-control").
       addValueRange(0x0, 0x3, rendererPartMode);
-    final Value partMode = new ValueImpl(typePartMode);
+    final Value partMode = new ValueImpl(typePartMode, "Part Mode");
     partMode.setBitSize(7);
     partMode.setDefaultValue(n == 9 ? 0x2 : 0x0);
-    nodeMultiPartN.add(new DataNode("Part Mode", partMode));
+    nodeMultiPartN.add(new DataNode(partMode));
 
-    final Value noteShift = new ValueImpl(typeTranspose);
+    final Value noteShift = new ValueImpl(typeTranspose, "Note Shift");
     noteShift.setBitSize(7);
     noteShift.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Note Shift", noteShift));
+    nodeMultiPartN.add(new DataNode(noteShift));
 
-    final Value detune = new ValueImpl(typeDetune);
+    final Value detune = new ValueImpl(typeDetune, "Detune");
     detune.setBitSize(14);
     detune.setDefaultValue(0x0400);
-    nodeMultiPartN.add(new DataNode("Detune", detune));
+    nodeMultiPartN.add(new DataNode(detune));
 
-    final Value volume = new ValueImpl(typeVolume);
+    final Value volume = new ValueImpl(typeVolume, "Volume");
     volume.setBitSize(7);
     volume.setDefaultValue(0x64);
-    nodeMultiPartN.add(new DataNode("Volume", volume));
+    nodeMultiPartN.add(new DataNode(volume));
 
-    final Value velocitySenseDepth = new ValueImpl(typeNonNegative7Bit);
+    final Value velocitySenseDepth =
+      new ValueImpl(typeNonNegative7Bit, "Velocity Sense Depth");
     velocitySenseDepth.setBitSize(7);
     velocitySenseDepth.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Velocity Sense Depth",
-                                    velocitySenseDepth));
+    nodeMultiPartN.add(new DataNode(velocitySenseDepth));
 
-    final Value velocitySenseOffset = new ValueImpl(typeNonNegative7Bit);
+    final Value velocitySenseOffset =
+      new ValueImpl(typeNonNegative7Bit, "Velocity Sense Offset");
     velocitySenseOffset.setBitSize(7);
     velocitySenseOffset.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Velocity Sense Offset",
-                                    velocitySenseOffset));
+    nodeMultiPartN.add(new DataNode(velocitySenseOffset));
 
-    final Value pan = new ValueImpl(typePanExtended);
+    final Value pan = new ValueImpl(typePanExtended, "Pan");
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Pan", pan));
+    nodeMultiPartN.add(new DataNode(pan));
 
-    final Value noteLimitLow = new ValueImpl(typeNote, "internal-limit-bottom");
+    final Value noteLimitLow =
+      new ValueImpl("internal-limit-bottom", typeNote, "Note Limit Low");
     noteLimitLow.setBitSize(7);
     noteLimitLow.setDefaultValue(0x00);
-    nodeMultiPartN.add(new DataNode("Note Limit Low", noteLimitLow));
+    nodeMultiPartN.add(new DataNode(noteLimitLow));
 
-    final Value noteLimitHigh = new ValueImpl(typeNote, "internal-limit-top");
+    final Value noteLimitHigh =
+      new ValueImpl("internal-limit-top", typeNote, "Note Limit High");
     noteLimitHigh.setBitSize(7);
     noteLimitHigh.setDefaultValue(0x7f);
-    nodeMultiPartN.add(new DataNode("Note Limit High", noteLimitHigh));
+    nodeMultiPartN.add(new DataNode(noteLimitHigh));
 
-    final Value dryLevel = new ValueImpl(typeVolume);
+    final Value dryLevel = new ValueImpl(typeVolume, "Dry Level");
     dryLevel.setBitSize(7);
     dryLevel.setDefaultValue(0x7f);
-    nodeMultiPartN.add(new DataNode("Dry Level", dryLevel));
+    nodeMultiPartN.add(new DataNode(dryLevel));
 
-    final Value chorusSend = new ValueImpl(typeVolume);
+    final Value chorusSend = new ValueImpl(typeVolume, "Chorus Send");
     chorusSend.setBitSize(7);
     chorusSend.setDefaultValue(0x00);
-    nodeMultiPartN.add(new DataNode("Chorus Send", chorusSend));
+    nodeMultiPartN.add(new DataNode(chorusSend));
 
-    final Value reverbSend = new ValueImpl(typeVolume);
+    final Value reverbSend = new ValueImpl(typeVolume, "Reverb Send");
     reverbSend.setBitSize(7);
     reverbSend.setDefaultValue(0x28);
-    nodeMultiPartN.add(new DataNode("Reverb Send", reverbSend));
+    nodeMultiPartN.add(new DataNode(reverbSend));
 
-    final Value variationSend = new ValueImpl(typeVolume);
+    final Value variationSend = new ValueImpl(typeVolume, "Variation Send");
     variationSend.setBitSize(7);
     variationSend.setDefaultValue(0x00);
-    nodeMultiPartN.add(new DataNode("Variation Send", variationSend));
+    nodeMultiPartN.add(new DataNode(variationSend));
 
-    final Value vibratoRate = new ValueImpl(typeSigned7Bit);
+    final Value vibratoRate = new ValueImpl(typeSigned7Bit, "Vibrato Rate");
     vibratoRate.setBitSize(7);
     vibratoRate.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Vibrato Rate", vibratoRate));
+    nodeMultiPartN.add(new DataNode(vibratoRate));
 
-    final Value vibratoDepth = new ValueImpl(typeSigned7Bit);
+    final Value vibratoDepth = new ValueImpl(typeSigned7Bit, "Vibrato Depth");
     vibratoDepth.setBitSize(7);
     vibratoDepth.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Vibrato Depth", vibratoDepth));
+    nodeMultiPartN.add(new DataNode(vibratoDepth));
 
-    final Value vibratoDelay = new ValueImpl(typeSigned7Bit);
+    final Value vibratoDelay = new ValueImpl(typeSigned7Bit, "Vibrato Delay");
     vibratoDelay.setBitSize(7);
     vibratoDelay.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Vibrato Delay", vibratoDelay));
+    nodeMultiPartN.add(new DataNode(vibratoDelay));
 
     final Value filterCutoffFrequency =
-      new ValueImpl(typeSigned7Bit, "internal-tune");
+      new ValueImpl("internal-tune", typeSigned7Bit, "Filter Cutoff Frequency");
     filterCutoffFrequency.setBitSize(7);
     filterCutoffFrequency.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Filter Cutoff Frequency",
-                                    filterCutoffFrequency));
+    nodeMultiPartN.add(new DataNode(filterCutoffFrequency));
 
-    final Value filterResonance = new ValueImpl(typeSigned7Bit);
+    final Value filterResonance =
+      new ValueImpl(typeSigned7Bit, "Filter Resonance");
     filterResonance.setBitSize(7);
     filterResonance.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Filter Resonance", filterResonance));
+    nodeMultiPartN.add(new DataNode(filterResonance));
 
-    final Value egAttackTime = new ValueImpl(typeSigned7Bit, "internal-time");
+    final Value egAttackTime =
+      new ValueImpl("internal-time", typeSigned7Bit, "EG Attack Time");
     egAttackTime.setBitSize(7);
     egAttackTime.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("EG Attack Time", egAttackTime));
+    nodeMultiPartN.add(new DataNode(egAttackTime));
 
-    final Value egDecayTime = new ValueImpl(typeSigned7Bit, "internal-time");
+    final Value egDecayTime =
+      new ValueImpl("internal-time", typeSigned7Bit, "EG Decay Time");
     egDecayTime.setBitSize(7);
     egDecayTime.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("EG Decay Time", egDecayTime));
+    nodeMultiPartN.add(new DataNode(egDecayTime));
 
-    final Value egReleaseTime = new ValueImpl(typeSigned7Bit, "internal-time");
+    final Value egReleaseTime =
+      new ValueImpl("internal-time", typeSigned7Bit, "EG Release Time");
     egReleaseTime.setBitSize(7);
     egReleaseTime.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("EG Release Time", egReleaseTime));
+    nodeMultiPartN.add(new DataNode(egReleaseTime));
 
     buildPartControl(nodeMultiPartN, "MW", 0x0a);
 
-    final Value bendPitchControl = new ValueImpl(typeTranspose);
+    final Value bendPitchControl =
+      new ValueImpl(typeTranspose, "Bend Pitch Control");
     bendPitchControl.setBitSize(7);
     bendPitchControl.setDefaultValue(0x42);
-    nodeMultiPartN.add(new DataNode("Bend Pitch Control",
-                                    bendPitchControl));
+    nodeMultiPartN.add(new DataNode(bendPitchControl));
 
-    final Value bendFilterControl = new ValueImpl(typeFilterControl);
+    final Value bendFilterControl =
+      new ValueImpl(typeFilterControl, "Bend Filter Control");
     bendFilterControl.setBitSize(7);
     bendFilterControl.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Bend Filter Control",
-                                    bendFilterControl));
+    nodeMultiPartN.add(new DataNode(bendFilterControl));
 
-    final Value bendAmplitudeControl = new ValueImpl(typeSigned7Bit);
+    final Value bendAmplitudeControl =
+      new ValueImpl(typeSigned7Bit, "Bend Amplitude Control");
     bendAmplitudeControl.setBitSize(7);
     bendAmplitudeControl.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Bend Amplitude Control",
-                                    bendAmplitudeControl));
+    nodeMultiPartN.add(new DataNode(bendAmplitudeControl));
 
-    final Value bendLfoPModDepth = new ValueImpl(typeBendLfoModDepth);
+    final Value bendLfoPModDepth =
+      new ValueImpl(typeBendLfoModDepth, "Bend LFO PMod Depth");
     bendLfoPModDepth.setBitSize(7);
     bendLfoPModDepth.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Bend LFO PMod Depth",
-                                    bendLfoPModDepth));
+    nodeMultiPartN.add(new DataNode(bendLfoPModDepth));
 
     final Value bendLfoFModDepth =
-      new ValueImpl(typeBendLfoModDepth, "internal-mod-fm");
+      new ValueImpl("internal-mod-fm", typeBendLfoModDepth,
+                    "Bend LFO FMod Depth");
     bendLfoFModDepth.setBitSize(7);
     bendLfoFModDepth.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Bend LFO FMod Depth",
-                                    bendLfoFModDepth));
+    nodeMultiPartN.add(new DataNode(bendLfoFModDepth));
 
     final Value bendLfoAModDepth =
-      new ValueImpl(typeBendLfoModDepth, "internal-mod-am");
+      new ValueImpl("internal-mod-am", typeBendLfoModDepth,
+                    "Bend LFO AMod Depth");
     bendLfoAModDepth.setBitSize(7);
     bendLfoAModDepth.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Bend LFO AMod Depth",
-                                    bendLfoAModDepth));
+    nodeMultiPartN.add(new DataNode(bendLfoAModDepth));
 
-    final Value rcvPitchBend = new ValueImpl(typeSwitch);
+    final Value rcvPitchBend =
+      new ValueImpl(typeSwitch, "Rcv Pitch Bend", addr2index(0x08, n, 0x30));
     rcvPitchBend.setBitSize(7);
     rcvPitchBend.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Pitch Bend",
-                                    rcvPitchBend,
-                                    addr2index(0x08, n, 0x30)));
+    nodeMultiPartN.add(new DataNode(rcvPitchBend));
 
-    final Value rcvChAfterTouch = new ValueImpl(typeSwitch);
+    final Value rcvChAfterTouch =
+      new ValueImpl(typeSwitch, "Rcv Ch After Touch (CAT)");
     rcvChAfterTouch.setBitSize(7);
     rcvChAfterTouch.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Ch After Touch (CAT)",
-                                    rcvChAfterTouch));
+    nodeMultiPartN.add(new DataNode(rcvChAfterTouch));
 
-    final Value rcvProgramChange = new ValueImpl(typeSwitch);
+    final Value rcvProgramChange =
+      new ValueImpl(typeSwitch, "Rcv Program Change");
     rcvProgramChange.setBitSize(7);
     rcvProgramChange.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Program Change",
-                                    rcvProgramChange));
+    nodeMultiPartN.add(new DataNode(rcvProgramChange));
 
-    final Value rcvControlChange = new ValueImpl(typeSwitch);
+    final Value rcvControlChange =
+      new ValueImpl(typeSwitch, "Rcv Control Change");
     rcvControlChange.setBitSize(7);
     rcvControlChange.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Control Change",
-                                    rcvControlChange));
+    nodeMultiPartN.add(new DataNode(rcvControlChange));
 
-    final Value rcvPolyAfterTouch = new ValueImpl(typeSwitch);
+    final Value rcvPolyAfterTouch =
+      new ValueImpl(typeSwitch, "Rcv Poly After Touch (PAT)");
     rcvPolyAfterTouch.setBitSize(7);
     rcvPolyAfterTouch.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Poly After Touch (PAT)",
-                                    rcvChAfterTouch));
+    nodeMultiPartN.add(new DataNode(rcvChAfterTouch));
 
-    final Value rcvNoteMessage = new ValueImpl(typeSwitch);
+    final Value rcvNoteMessage = new ValueImpl(typeSwitch, "Rcv Note Message");
     rcvNoteMessage.setBitSize(7);
     rcvNoteMessage.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Note Message", rcvNoteMessage));
+    nodeMultiPartN.add(new DataNode(rcvNoteMessage));
 
-    final Value rcvRpn = new ValueImpl(typeSwitch);
+    final Value rcvRpn = new ValueImpl(typeSwitch, "Rcv RPN");
     rcvRpn.setBitSize(7);
     rcvRpn.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv RPN", rcvRpn));
+    nodeMultiPartN.add(new DataNode(rcvRpn));
 
-    final Value rcvNrpn = new ValueImpl(typeSwitch);
+    final Value rcvNrpn = new ValueImpl(typeSwitch, "Rcv NRPN");
     rcvNrpn.setBitSize(7);
     rcvNrpn.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv NRPN", rcvNrpn));
+    nodeMultiPartN.add(new DataNode(rcvNrpn));
 
-    final Value rcvModulation = new ValueImpl(typeSwitch);
+    final Value rcvModulation = new ValueImpl(typeSwitch, "Rcv Modulation");
     rcvModulation.setBitSize(7);
     rcvModulation.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Modulation", rcvModulation));
+    nodeMultiPartN.add(new DataNode(rcvModulation));
 
-    final Value rcvVolume = new ValueImpl(typeSwitch);
+    final Value rcvVolume = new ValueImpl(typeSwitch, "Rcv Volume");
     rcvVolume.setBitSize(7);
     rcvVolume.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Volume", rcvVolume));
+    nodeMultiPartN.add(new DataNode(rcvVolume));
 
-    final Value rcvPan = new ValueImpl(typeSwitch);
+    final Value rcvPan = new ValueImpl(typeSwitch, "Rcv Pan");
     rcvPan.setBitSize(7);
     rcvPan.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Pan", rcvPan));
+    nodeMultiPartN.add(new DataNode(rcvPan));
 
-    final Value rcvExpression = new ValueImpl(typeSwitch);
+    final Value rcvExpression = new ValueImpl(typeSwitch, "Rcv Expression");
     rcvExpression.setBitSize(7);
     rcvExpression.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Expression", rcvExpression));
+    nodeMultiPartN.add(new DataNode(rcvExpression));
 
-    final Value rcvHold1 = new ValueImpl(typeSwitch);
+    final Value rcvHold1 = new ValueImpl(typeSwitch, "Rcv Hold1");
     rcvHold1.setBitSize(7);
     rcvHold1.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Hold1", rcvHold1));
+    nodeMultiPartN.add(new DataNode(rcvHold1));
 
-    final Value rcvPortamento = new ValueImpl(typeSwitch);
+    final Value rcvPortamento = new ValueImpl(typeSwitch, "Rcv Portamento");
     rcvPortamento.setBitSize(7);
     rcvPortamento.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Portamento", rcvPortamento));
+    nodeMultiPartN.add(new DataNode(rcvPortamento));
 
-    final Value rcvSostenuto = new ValueImpl(typeSwitch);
+    final Value rcvSostenuto = new ValueImpl(typeSwitch, "Rcv Sostenuto");
     rcvSostenuto.setBitSize(7);
     rcvSostenuto.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Sostenuto", rcvSostenuto));
+    nodeMultiPartN.add(new DataNode(rcvSostenuto));
 
-    final Value rcvSoftPedal = new ValueImpl(typeSwitch);
+    final Value rcvSoftPedal = new ValueImpl(typeSwitch, "Rcv Soft Pedal");
     rcvSoftPedal.setBitSize(7);
     rcvSoftPedal.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Soft Pedal", rcvSoftPedal));
+    nodeMultiPartN.add(new DataNode(rcvSoftPedal));
 
-    final Value rcvBankSelect = new ValueImpl(typeSwitch);
+    final Value rcvBankSelect = new ValueImpl(typeSwitch, "Rcv Bank Select");
     rcvBankSelect.setBitSize(7);
     rcvBankSelect.setDefaultValue(0x1);
-    nodeMultiPartN.add(new DataNode("Rcv Bank Select", rcvBankSelect));
+    nodeMultiPartN.add(new DataNode(rcvBankSelect));
 
     final Value scaleTuningC =
-      new ValueImpl(typeScaleTuning, "internal-tune-c");
+      new ValueImpl("internal-tune-c", typeScaleTuning, "Scale Tuning C");
     scaleTuningC.setBitSize(7);
     scaleTuningC.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning C", scaleTuningC));
+    nodeMultiPartN.add(new DataNode(scaleTuningC));
 
     final Value scaleTuningCSharp =
-      new ValueImpl(typeScaleTuning, "internal-tune-c-sharp");
+      new ValueImpl("internal-tune-c-sharp", typeScaleTuning,
+                    "Scale Tuning C#");
     scaleTuningCSharp.setBitSize(7);
     scaleTuningCSharp.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning C#", scaleTuningCSharp));
+    nodeMultiPartN.add(new DataNode(scaleTuningCSharp));
 
     final Value scaleTuningD =
-      new ValueImpl(typeScaleTuning, "internal-tune-d");
+      new ValueImpl("internal-tune-d", typeScaleTuning, "Scale Tuning D");
     scaleTuningD.setBitSize(7);
     scaleTuningD.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning D", scaleTuningD));
+    nodeMultiPartN.add(new DataNode(scaleTuningD));
 
     final Value scaleTuningDSharp =
-      new ValueImpl(typeScaleTuning, "internal-tune-d-sharp");
+      new ValueImpl("internal-tune-d-sharp", typeScaleTuning,
+                    "Scale Tuning D#");
     scaleTuningDSharp.setBitSize(7);
     scaleTuningDSharp.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning D#", scaleTuningDSharp));
+    nodeMultiPartN.add(new DataNode(scaleTuningDSharp));
 
     final Value scaleTuningE =
-      new ValueImpl(typeScaleTuning, "internal-tune-e");
+      new ValueImpl("internal-tune-e", typeScaleTuning, "Scale Tuning E");
     scaleTuningE.setBitSize(7);
     scaleTuningE.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning E", scaleTuningE));
+    nodeMultiPartN.add(new DataNode(scaleTuningE));
 
     final Value scaleTuningF =
-      new ValueImpl(typeScaleTuning, "internal-tune-f");
+      new ValueImpl("internal-tune-f", typeScaleTuning, "Scale Tuning F");
     scaleTuningF.setBitSize(7);
     scaleTuningF.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning F", scaleTuningF));
+    nodeMultiPartN.add(new DataNode(scaleTuningF));
 
     final Value scaleTuningFSharp =
-      new ValueImpl(typeScaleTuning, "internal-tune-f-sharp");
+      new ValueImpl("internal-tune-f-sharp", typeScaleTuning,
+                    "Scale Tuning F#");
     scaleTuningFSharp.setBitSize(7);
     scaleTuningFSharp.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning F#", scaleTuningFSharp));
+    nodeMultiPartN.add(new DataNode(scaleTuningFSharp));
 
     final Value scaleTuningG =
-      new ValueImpl(typeScaleTuning, "internal-tune-g");
+      new ValueImpl("internal-tune-g", typeScaleTuning, "Scale Tuning G");
     scaleTuningG.setBitSize(7);
     scaleTuningG.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning G", scaleTuningG));
+    nodeMultiPartN.add(new DataNode(scaleTuningG));
 
     final Value scaleTuningGSharp =
-      new ValueImpl(typeScaleTuning, "internal-tune-g-sharp");
+      new ValueImpl("internal-tune-g-sharp", typeScaleTuning,
+                    "Scale Tuning G#");
     scaleTuningGSharp.setBitSize(7);
     scaleTuningGSharp.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning G#", scaleTuningGSharp));
+    nodeMultiPartN.add(new DataNode(scaleTuningGSharp));
 
     final Value scaleTuningA =
-      new ValueImpl(typeScaleTuning, "internal-tune-a");
+      new ValueImpl("internal-tune-a", typeScaleTuning, "Scale Tuning A");
     scaleTuningA.setBitSize(7);
     scaleTuningA.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning A", scaleTuningA));
+    nodeMultiPartN.add(new DataNode(scaleTuningA));
 
     final Value scaleTuningASharp =
-      new ValueImpl(typeScaleTuning, "internal-tune-a-sharp");
+      new ValueImpl("internal-tune-a-sharp",typeScaleTuning, "Scale Tuning A#");
     scaleTuningASharp.setBitSize(7);
     scaleTuningASharp.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning A#", scaleTuningASharp));
+    nodeMultiPartN.add(new DataNode(scaleTuningASharp));
 
     final Value scaleTuningB =
-      new ValueImpl(typeScaleTuning, "internal-tune-b");
+      new ValueImpl("internal-tune-b", typeScaleTuning, "Scale Tuning B");
     scaleTuningB.setBitSize(7);
     scaleTuningB.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Scale Tuning B", scaleTuningB));
+    nodeMultiPartN.add(new DataNode(scaleTuningB));
 
     buildPartControl(nodeMultiPartN, "CAT", 0x00);
 
     buildPartControl(nodeMultiPartN, "PAT", 0x00);
 
-    final Value ac1ControllerNumber = new ValueImpl(typeControllerNumber);
+    final Value ac1ControllerNumber =
+      new ValueImpl(typeControllerNumber, "AC1 Controller Number");
     ac1ControllerNumber.setBitSize(7);
     ac1ControllerNumber.setDefaultValue(0x10);
-    nodeMultiPartN.add(new DataNode("AC1 Controller Number",
-                                    ac1ControllerNumber));
+    nodeMultiPartN.add(new DataNode(ac1ControllerNumber));
     buildPartControl(nodeMultiPartN, "AC1", 0x00);
 
-    final Value ac2ControllerNumber = new ValueImpl(typeControllerNumber);
+    final Value ac2ControllerNumber =
+      new ValueImpl(typeControllerNumber, "AC2 Controller Number");
     ac2ControllerNumber.setBitSize(7);
     ac2ControllerNumber.setDefaultValue(0x11);
-    nodeMultiPartN.add(new DataNode("AC2 Controller Number",
-                                    ac2ControllerNumber));
+    nodeMultiPartN.add(new DataNode(ac2ControllerNumber));
     buildPartControl(nodeMultiPartN, "AC2", 0x00);
 
-    final Value portamentoSwitch = new ValueImpl(typeSwitch);
+    final Value portamentoSwitch =
+      new ValueImpl(typeSwitch, "Portamento Switch");
     portamentoSwitch.setBitSize(7);
     portamentoSwitch.setDefaultValue(0x0);
-    nodeMultiPartN.add(new DataNode("Portamento Switch", portamentoSwitch));
+    nodeMultiPartN.add(new DataNode(portamentoSwitch));
 
     final Value portamentoTime =
-      new ValueImpl(typeNonNegative7Bit, "internal-time");
+      new ValueImpl("internal-time", typeNonNegative7Bit, "Portamento Time");
     portamentoTime.setBitSize(7);
     portamentoTime.setDefaultValue(0x00);
-    nodeMultiPartN.add(new DataNode("Portamento Time", portamentoTime));
+    nodeMultiPartN.add(new DataNode(portamentoTime));
 
     final Value pitchEgInitialLevel =
-      new ValueImpl(typeSigned7Bit, "internal-volume");
+      new ValueImpl("internal-volume", typeSigned7Bit,
+                    "Pitch EG Initial Level");
     pitchEgInitialLevel.setBitSize(7);
     pitchEgInitialLevel.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Pitch EG Initial Level",
-                                    pitchEgInitialLevel));
+    nodeMultiPartN.add(new DataNode(pitchEgInitialLevel));
 
     final Value pitchEgAttackTime =
-      new ValueImpl(typeSigned7Bit, "internal-time");
+      new ValueImpl("internal-time", typeSigned7Bit, "Pitch EG Attack Time");
     pitchEgAttackTime.setBitSize(7);
     pitchEgAttackTime.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Pitch EG Attack Time",
-                                    pitchEgAttackTime));
+    nodeMultiPartN.add(new DataNode(pitchEgAttackTime));
 
     final Value pitchEgReleaseLevel =
-      new ValueImpl(typeSigned7Bit, "internal-volume");
+      new ValueImpl("internal-volume", typeSigned7Bit,
+                    "Pitch EG Release Level");
     pitchEgReleaseLevel.setBitSize(7);
     pitchEgReleaseLevel.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Pitch EG Release Level",
-                                    pitchEgReleaseLevel));
+    nodeMultiPartN.add(new DataNode(pitchEgReleaseLevel));
 
     final Value pitchEgReleaseTime =
-      new ValueImpl(typeSigned7Bit, "internal-time");
+      new ValueImpl("internal-time",typeSigned7Bit, "Pitch EG Release Time");
     pitchEgReleaseTime.setBitSize(7);
     pitchEgReleaseTime.setDefaultValue(0x40);
-    nodeMultiPartN.add(new DataNode("Pitch EG Release Time",
-                                    pitchEgReleaseTime));
+    nodeMultiPartN.add(new DataNode(pitchEgReleaseTime));
 
     final Value velocityLimitLow =
-      new ValueImpl(typePositive7Bit, "internal-limit-bottom");
+      new ValueImpl("internal-limit-bottom", typePositive7Bit,
+                    "Velocity Limit Low");
     velocityLimitLow.setBitSize(7);
     velocityLimitLow.setDefaultValue(0x01);
-    nodeMultiPartN.add(new DataNode("Velocity Limit Low",
-                                    velocityLimitLow));
+    nodeMultiPartN.add(new DataNode(velocityLimitLow));
 
     final Value velocityLimitHigh =
-      new ValueImpl(typePositive7Bit, "internal-limit-top");
+      new ValueImpl("internal-limit-top", typePositive7Bit,
+                    "Velocity Limit High");
     velocityLimitHigh.setBitSize(7);
     velocityLimitHigh.setDefaultValue(0x7f);
-    nodeMultiPartN.add(new DataNode("Velocity Limit High",
-                                    velocityLimitHigh));
+    nodeMultiPartN.add(new DataNode(velocityLimitHigh));
 
     return nodeMultiPartN;
   }
@@ -2201,96 +2237,95 @@ public class DB50XG extends AbstractDevice
       new FolderNode("Drum Setup Note " + r, addr2index(0x30 + n, r, 0x00));
 
     final Value pitchCoarse =
-      new ValueImpl(typeSigned7Bit, "internal-transpose");
+      new ValueImpl("internal-transpose", typeSigned7Bit, "Pitch Coarse");
     pitchCoarse.setBitSize(7);
     pitchCoarse.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("Pitch Coarse", pitchCoarse));
+    nodeDrumSetupNoteR.add(new DataNode(pitchCoarse));
 
-    final Value pitchFine = new ValueImpl(typeScaleTuning);
+    final Value pitchFine = new ValueImpl(typeScaleTuning, "Pitch Fine");
     pitchFine.setBitSize(7);
     pitchFine.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("Pitch Fine", pitchFine));
+    nodeDrumSetupNoteR.add(new DataNode(pitchFine));
 
-    final Value level = new ValueImpl(typeVolume);
+    final Value level = new ValueImpl(typeVolume, "Level");
     level.setBitSize(7);
     level.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("Level", level));
+    nodeDrumSetupNoteR.add(new DataNode(level));
 
     final SparseType typeAlternativeGroup =
       new SparseTypeImpl("internal-control").
       addSingleValue(0x00, "Off").
       addValueRange(0x01, 0x7f, IntegerRenderer.BYTE_RENDERER);
-    final Value alternativeGroup = new ValueImpl(typeAlternativeGroup);
+    final Value alternativeGroup =
+      new ValueImpl(typeAlternativeGroup, "Alternative Group");
     alternativeGroup.setBitSize(7);
     alternativeGroup.setDefaultValue(n);
-    nodeDrumSetupNoteR.add(new DataNode("Alternative Group",
-                                        alternativeGroup));
+    nodeDrumSetupNoteR.add(new DataNode(alternativeGroup));
 
-    final Value pan = new ValueImpl(typePanExtended);
+    final Value pan = new ValueImpl(typePanExtended, "Pan");
     pan.setBitSize(7);
     pan.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("Pan", pan));
+    nodeDrumSetupNoteR.add(new DataNode(pan));
 
-    final Value reverbSend = new ValueImpl(typeVolume);
+    final Value reverbSend = new ValueImpl(typeVolume, "Reverb Send");
     reverbSend.setBitSize(7);
     reverbSend.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("Reverb Send", reverbSend));
+    nodeDrumSetupNoteR.add(new DataNode(reverbSend));
 
-    final Value chorusSend = new ValueImpl(typeVolume);
+    final Value chorusSend = new ValueImpl(typeVolume, "Chorus Send");
     chorusSend.setBitSize(7);
     chorusSend.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("Chorus Send", chorusSend));
+    nodeDrumSetupNoteR.add(new DataNode(chorusSend));
 
-    final Value variationSend = new ValueImpl(typeVolume);
+    final Value variationSend = new ValueImpl(typeVolume, "Variation Send");
     variationSend.setBitSize(7);
     variationSend.setDefaultValue(0x7f);
-    nodeDrumSetupNoteR.add(new DataNode("Variation Send", variationSend));
+    nodeDrumSetupNoteR.add(new DataNode(variationSend));
 
     final SparseType typeKeyAssign =
       new SparseTypeImpl("internal-control").
       addValueRange(0x00, 0x01, rendererKeyAssign);
-    final Value keyAssign = new ValueImpl(typeKeyAssign);
+    final Value keyAssign = new ValueImpl(typeKeyAssign, "Key Assign");
     keyAssign.setBitSize(7);
     keyAssign.setDefaultValue(0x0);
-    nodeDrumSetupNoteR.add(new DataNode("Key Assign", keyAssign));
+    nodeDrumSetupNoteR.add(new DataNode(keyAssign));
 
-    final Value rcvNoteOff = new ValueImpl(typeSwitch);
+    final Value rcvNoteOff = new ValueImpl(typeSwitch, "Rcv Note Off");
     rcvNoteOff.setBitSize(7);
     rcvNoteOff.setDefaultValue(0x0);
-    nodeDrumSetupNoteR.add(new DataNode("Rcv Note Off", rcvNoteOff));
+    nodeDrumSetupNoteR.add(new DataNode(rcvNoteOff));
 
-    final Value rcvNoteOn = new ValueImpl(typeSwitch);
+    final Value rcvNoteOn = new ValueImpl(typeSwitch, "Rcv Note On");
     rcvNoteOn.setBitSize(7);
     rcvNoteOn.setDefaultValue(0x0);
-    nodeDrumSetupNoteR.add(new DataNode("Rcv Note On", rcvNoteOn));
+    nodeDrumSetupNoteR.add(new DataNode(rcvNoteOn));
 
     final Value filterCutoffFrequency =
-      new ValueImpl(typeSigned7Bit, "internal-tune");
+      new ValueImpl("internal-tune", typeSigned7Bit, "Filter Cutoff Frequency");
     filterCutoffFrequency.setBitSize(7);
     filterCutoffFrequency.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("Filter Cutoff Frequency",
-                                        filterCutoffFrequency));
+    nodeDrumSetupNoteR.add(new DataNode(filterCutoffFrequency));
 
-    final Value filterResonance = new ValueImpl(typeSigned7Bit);
+    final Value filterResonance =
+      new ValueImpl(typeSigned7Bit, "Filter Resonance");
     filterResonance.setBitSize(7);
     filterResonance.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("Filter Resonance",
-                                        filterResonance));
+    nodeDrumSetupNoteR.add(new DataNode(filterResonance));
 
-    final Value egAttackRate = new ValueImpl(typeSigned7Bit);
+    final Value egAttackRate = new ValueImpl(typeSigned7Bit, "EG Attack Rate");
     egAttackRate.setBitSize(7);
     egAttackRate.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("EG Attack Rate", egAttackRate));
+    nodeDrumSetupNoteR.add(new DataNode(egAttackRate));
 
-    final Value egDecay1Rate = new ValueImpl(typeSigned7Bit);
+    final Value egDecay1Rate = new ValueImpl(typeSigned7Bit, "EG Decay1 Rate");
     egDecay1Rate.setBitSize(7);
     egDecay1Rate.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("EG Decay1 Rate", egDecay1Rate));
+    nodeDrumSetupNoteR.add(new DataNode(egDecay1Rate));
 
-    final Value egDecay2Rate = new ValueImpl(typeSigned7Bit);
+    final Value egDecay2Rate = new ValueImpl(typeSigned7Bit, "EG Decay2 Rate");
     egDecay2Rate.setBitSize(7);
     egDecay2Rate.setDefaultValue(0x40);
-    nodeDrumSetupNoteR.add(new DataNode("EG Decay2 Rate", egDecay2Rate));
+    nodeDrumSetupNoteR.add(new DataNode(egDecay2Rate));
 
     return nodeDrumSetupNoteR;
   }
