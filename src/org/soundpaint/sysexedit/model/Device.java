@@ -50,7 +50,7 @@ public interface Device
    * Returns the range of possible values and default value for this
    * device's device ID.
    */
-  Value createDeviceId();
+  Value getDeviceId();
 
   /**
    * Returns the name of the author; optionally, a copyright message.

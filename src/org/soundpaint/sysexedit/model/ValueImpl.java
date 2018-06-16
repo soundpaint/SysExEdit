@@ -53,7 +53,7 @@ public class ValueImpl extends AbstractValue
   /** The editor for entering a value. */
   private final Editor editor;
 
-  private Vector<ValueChangeListener> listeners;
+  private final Vector<ValueChangeListener> listeners;
 
   public ValueImpl(final SparseType sparseType)
   {
@@ -135,27 +135,11 @@ public class ValueImpl extends AbstractValue
     this.sparseType = sparseType;
     minBitSize = sparseType.getRequiredBitSize();
     bitSize = (byte)Math.max(minBitSize, bitSize);
-
     // TODO: Editor can also be a SpinnerEditor or anything else,
     // depending on the underlying SparseType.
     editor = new DropDownEditor();
-
     listeners = new Vector<ValueChangeListener>();
-    final KeyListener keyListener = new KeyAdapter()
-      {
-        public void keyTyped(KeyEvent e)
-        {
-          if (e.getKeyChar() == '\n') {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                  final Value newValue = editor.getSelectedValue();
-                  editingPathValueChanged(newValue);
-                }
-              });
-          }
-        }
-      };
-    ((Component)editor).addKeyListener(keyListener);
+    setupKeyListener();
   }
 
   /**
@@ -207,6 +191,25 @@ public class ValueImpl extends AbstractValue
     this(iconKey, getBitStringType(amount), label, desiredAddress);
     setBitSize(amount);
     setDefaultValue(new Integer(0));
+  }
+
+  private void setupKeyListener()
+  {
+    final KeyListener keyListener = new KeyAdapter()
+      {
+        public void keyTyped(final KeyEvent e)
+        {
+          if (e.getKeyChar() == '\n') {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                  final Value newValue = editor.getSelectedValue();
+                  editingPathValueChanged(newValue);
+                }
+              });
+          }
+        }
+      };
+    ((Component)editor).addKeyListener(keyListener);
   }
 
   public void addValueChangeListener(final ValueChangeListener listener)

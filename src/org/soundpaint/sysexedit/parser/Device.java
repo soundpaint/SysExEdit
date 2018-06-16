@@ -21,7 +21,12 @@
 package org.soundpaint.sysexedit.parser;
 
 import java.io.InputStream;
+import java.net.URL;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeNode;
 
+import org.soundpaint.sysexedit.gui.Map;
+import org.soundpaint.sysexedit.gui.MapContextMenu;
 import org.soundpaint.sysexedit.model.AbstractDevice;
 import org.soundpaint.sysexedit.model.AddressRepresentation;
 import org.soundpaint.sysexedit.model.MapNode;
@@ -35,24 +40,63 @@ public class Device extends AbstractDevice
   private final String name;
   private final byte manufacturerId;
   private final byte modelId;
+  private final Value deviceId;
   private final String enteredBy;
   private final AddressRepresentation addressRepresentation;
-  private final MapNode root;
 
-  public Device(final DeviceModelParser parser)
+  private Device()
   {
-    name = parser.getDeviceName();
-    manufacturerId = parser.getManufacturerId();
-    modelId = parser.getModelId();
-    enteredBy = parser.getEnteredBy();
-    addressRepresentation = null; // TODO
-    root = parser.getRoot();
+    throw new UnsupportedOperationException();
+  }
+
+  private Device(final String name, final byte manufacturerId,
+                 final byte modelId, final Value deviceId,
+                 final String enteredBy,
+                 final AddressRepresentation addressRepresentation,
+                 final MapRoot root)
+  {
+    this.name = name;
+    this.manufacturerId = manufacturerId;
+    this.modelId = modelId;
+    this.deviceId = deviceId;
+    this.enteredBy = enteredBy;
+    this.addressRepresentation = addressRepresentation;
+    this.root = root;
+  }
+
+  public static Device create(final URL deviceDescriptionUrl)
+    throws ParseException
+  {
+    final DeviceModelParser parser =
+      new DeviceModelParser(deviceDescriptionUrl);
+    return create(parser);
+  }
+
+  public static Device create(final String deviceName)
+    throws ParseException
+  {
+    final DeviceModelParser parser =
+      new DeviceModelParser(deviceName);
+    return create(parser);
+  }
+
+  private static Device create(final DeviceModelParser parser)
+    throws ParseException
+  {
+    return new Device(parser.getDeviceName(),
+                      parser.getManufacturerId(),
+                      parser.getModelId(),
+                      parser.getDeviceId(),
+                      parser.getEnteredBy(),
+                      null, // TODO
+                      parser.getRoot());
   }
 
   public String getName()
   {
     return name;
   }
+
   public byte getManufacturerId()
   {
     return manufacturerId;
@@ -63,10 +107,9 @@ public class Device extends AbstractDevice
     return modelId;
   }
 
-  public Value createDeviceId()
+  public Value getDeviceId()
   {
-    // TODO
-    return null;
+    return deviceId;
   }
 
   public String getEnteredBy()
@@ -79,9 +122,18 @@ public class Device extends AbstractDevice
     return addressRepresentation;
   }
 
+  @Override
+  public TreeNode buildMap(final TreeSelectionListener selectionListener,
+                           final MapContextMenu mapContextMenu)
+  {
+    final Map map = new Map(selectionListener, mapContextMenu);
+    root.setMap(map);
+    return root;
+  }
+
   public void buildMap(final MapRoot root)
   {
-    // TODO
+    // map already built => nothing to do
   }
 
   public InputStream bulkDump(final Value deviceId,
@@ -95,6 +147,11 @@ public class Device extends AbstractDevice
   public void bulkRead(final InputStream in)
   {
     // TODO
+  }
+
+  public String toString()
+  {
+    return root.toString();
   }
 }
 

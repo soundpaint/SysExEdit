@@ -34,6 +34,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.BorderFactory;
@@ -49,9 +50,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import org.soundpaint.sysexedit.SysExEdit;
 import org.soundpaint.sysexedit.model.Value;
 import org.soundpaint.sysexedit.model.DataNode;
 import org.soundpaint.sysexedit.model.Device;
+import org.soundpaint.sysexedit.parser.ParseException;
 
 /**
  * This class implements the main window of the application.
@@ -438,16 +441,34 @@ public class EditorFrame extends JFrame
    */
   private static class ComboBoxDeviceEntry
   {
-    private final Device device;
+    private final Class<Device> deviceClass;
+    private final URL deviceDescriptionUrl;
 
-    private ComboBoxDeviceEntry(final Device device)
+    private ComboBoxDeviceEntry(final Class<Device> deviceClass)
     {
-      this.device = device;
+      if (deviceClass == null) {
+        throw new NullPointerException("deviceClass");
+      }
+      this.deviceClass = deviceClass;
+      this.deviceDescriptionUrl = null;
     }
 
-    public Device getDevice()
+    private ComboBoxDeviceEntry(final URL deviceDescriptionUrl)
     {
-      return device;
+      if (deviceDescriptionUrl == null) {
+        throw new NullPointerException("deviceDescriptionUrl");
+      }
+      this.deviceClass = null;
+      this.deviceDescriptionUrl = deviceDescriptionUrl;
+    }
+
+    public Device instantiateDevice()
+      throws InstantiationException, IllegalAccessException, ParseException
+    {
+      return
+        deviceClass != null ?
+        deviceClass.newInstance() :
+        org.soundpaint.sysexedit.parser.Device.create(deviceDescriptionUrl);
     }
 
     /**
@@ -456,27 +477,28 @@ public class EditorFrame extends JFrame
      */
     public String toString()
     {
-      return device.getName();
+      return
+        deviceClass != null ?
+        deviceClass.getSimpleName() :
+        deviceDescriptionUrl.getPath(); // TODO: get name from inside file
     }
   }
 
   private static ComboBoxDeviceEntry[] createDeviceSelectionEntries(final Frame parent)
   {
+    // add entries from device classes
     final Class<Device>[] deviceClasses = getDeviceClasses();
     final ArrayList<ComboBoxDeviceEntry> deviceEntries =
       new ArrayList<ComboBoxDeviceEntry>();
     for (final Class<Device> deviceClass : deviceClasses) {
-      try {
-        deviceEntries.add(new ComboBoxDeviceEntry(deviceClass.newInstance()));
-      } catch (final Exception e) {
-        final StringWriter stringWriter = new StringWriter();
-        final PrintWriter printWriter = new PrintWriter(stringWriter);
-        e.printStackTrace(printWriter);
-        printWriter.close();
-        JOptionPane.showMessageDialog(parent, stringWriter, ERROR,
-                                      JOptionPane.INFORMATION_MESSAGE);
-      }
+      deviceEntries.add(new ComboBoxDeviceEntry(deviceClass));
     }
+
+    // add entries from device description files
+    // [TODO: Retrieve available device description files.]
+    final URL resource = SysExEdit.class.getResource("/devices/db50xg.xml");
+    deviceEntries.add(new ComboBoxDeviceEntry(resource));
+
     return deviceEntries.toArray(new ComboBoxDeviceEntry[0]);
   }
 
@@ -503,11 +525,20 @@ public class EditorFrame extends JFrame
     if (selection == null) {
       return;
     }
-    final Device device = selection.getDevice();
-    if (device == null) {
+    final Device device;
+    try {
+      device = selection.instantiateDevice();
+    } catch (final Exception e) {
+      final StringWriter stringWriter = new StringWriter();
+      final PrintWriter printWriter = new PrintWriter(stringWriter);
+      e.printStackTrace(printWriter);
+      printWriter.close();
+      JOptionPane.showMessageDialog(parent, stringWriter, ERROR,
+                                    JOptionPane.INFORMATION_MESSAGE);
       return;
     }
     final TreeNode root = device.buildMap(documentMetaData, mapContextMenu);
+
     if (mapModel != null) // no need to re-create mapModel, if already
                           // existing
       mapModel.setRoot(root);

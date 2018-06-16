@@ -21,8 +21,8 @@
 package org.soundpaint.sysexedit.model;
 
 import java.io.InputStream;
-import javax.swing.tree.TreeNode;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeNode;
 
 import org.soundpaint.sysexedit.gui.Map;
 import org.soundpaint.sysexedit.gui.MapContextMenu;
@@ -32,11 +32,11 @@ import org.soundpaint.sysexedit.gui.MapContextMenu;
  */
 public abstract class AbstractDevice implements Device
 {
-  public class MapRoot extends FolderNode
+  public static class MapRoot extends FolderNode
   {
     private static final long serialVersionUID = 3044259528722489945L;
 
-    private final Map map;
+    private Map map;
 
     private MapRoot(final String deviceName,
                     final TreeSelectionListener selectionListener,
@@ -46,13 +46,26 @@ public abstract class AbstractDevice implements Device
       map = new Map(selectionListener, mapContextMenu);
     }
 
+    public MapRoot(final String description,
+                   final String label,
+                   final long desiredAddress)
+    {
+      super(description, label, desiredAddress);
+      map = null; // initialize map later on
+    }
+
+    public void setMap(final Map map)
+    {
+      this.map = map;
+    }
+
     public Map getMap()
     {
       return map;
     }
   }
 
-  private MapRoot root;
+  protected MapRoot root;
 
   /**
    * Creates a map that represents the device's internal memory.

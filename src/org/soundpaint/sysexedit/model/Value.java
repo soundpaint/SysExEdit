@@ -69,7 +69,7 @@ public interface Value
   String getDescription();
 
   /**
-   * @param label A label for this value.
+   * @return A label for this value.
    */
   String getLabel();
 

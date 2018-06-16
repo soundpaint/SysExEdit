@@ -303,7 +303,7 @@ public class SparseTypeImpl implements SparseType
         }
       };
 
-  private ValueRange getValueRangeByNumericalValue(int numericalValue)
+  private ValueRange getValueRangeByNumericalValue(final int numericalValue)
   {
     if (valueRangesByNumericalValue == null) {
       valueRangesByNumericalValue =

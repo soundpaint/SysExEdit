@@ -4,6 +4,26 @@
   <device-name>MU50 / DB50XG</device-name>
   <manufacturer-id>0x43</manufacturer-id>
   <model-id>0x4c</model-id>
+  <data id="device-id">
+    <type>
+      <icon>internal-control</icon>
+      <range>
+        <lower-bound>0</lower-bound>
+        <upper-bound>15</upper-bound>
+        <integer>
+          <lower-bound>0</lower-bound>
+          <radix>16</radix>
+          <fill-with-leading-zeros>true</fill-with-leading-zeros>
+          <display-prefix>0x</display-prefix>
+          <display-suffix></display-suffix>
+          <display-min-width>4</display-min-width>
+        </integer>
+      </range>
+    </type>
+  </data>
+  <device-id>
+    <data ref="device-id" />
+  </device-id>
   <entered-by>Jürgen Reuter, Copyright © 1998, 2018</entered-by>
   <enum id="pan">
     <description>Pan Data Assign Table</description>
@@ -2538,20 +2558,52 @@
       </integer>
     </range>
   </type>
-  <!--
-  <type id="pitch-coarse">
+  <type id="reverb-type">
+    <icon>internal-fx-reverb</icon>
     <range>
+      <enum>
+        <values>
+          <value>No Effect</value>
+          <value>Hall 1</value>
+          <value>Hall 2</value>
+          <value>Room 1</value>
+          <value>Room 2</value>
+          <value>Room 3</value>
+          <value>Stage 1</value>
+          <value>Stage 2</value>
+          <value>Plate</value>
+          <value>White Room</value>
+          <value>Tunnel</value>
+          <value>Basement</value>
+        </values>
+      </enum>
+      <lower-bound>0</lower-bound>
+      <upper-bound>11</upper-bound>
     </range>
-    </type>
+    <!--
+    <range>
+      <enum ref="hall" />
+      <lower-bound>128</lower-bound>
+      <upper-bound>129</upper-bound>
+    </range>
+    <range>
+      <enum ref="room" />
+      <lower-bound>256</lower-bound>
+      <upper-bound>258</upper-bound>
+    </range>
+    <range>
+      <enum ref="stage" />
+      <lower-bound>368</lower-bound>
+      <upper-bound>369</upper-bound>
+    </range>
     -->
-  <folder label="" id="drum-setup-node">
-    <data type="pitch-coarse" name="Pitch Coarse" />
-  </folder>
+  </type>
   <folder label="Drum Setup" id="drum_setup">
     <loop first="0" last="1" id="setup">
       <folder label="Drum Setup {hex:setup}">
         <loop first="13" last="91" id="note">
           <folder label="Drum Setup {hex:setup} Note {note}">
+            <!-- TODO -->
           </folder>
         </loop>
       </folder>
@@ -2562,6 +2614,9 @@
     </folder>
     <folder label="Effect1">
       <folder label="Reverb">
+        <data label="Reverb Type">
+          <type ref="reverb-type" />
+        </data>
       </folder>
       <folder label="Chorus">
       </folder>

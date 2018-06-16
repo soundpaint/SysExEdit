@@ -40,6 +40,7 @@ import org.soundpaint.sysexedit.SysExEdit;
 import org.soundpaint.sysexedit.model.AbstractDevice;
 import org.soundpaint.sysexedit.model.AddressRepresentation;
 import org.soundpaint.sysexedit.model.BitMaskRenderer;
+import org.soundpaint.sysexedit.model.DataNode;
 import org.soundpaint.sysexedit.model.EnumRenderer;
 import org.soundpaint.sysexedit.model.FolderNode;
 import org.soundpaint.sysexedit.model.IntegerRenderer;
@@ -54,11 +55,14 @@ import org.soundpaint.sysexedit.model.ValueRangeRenderer;
 public class DeviceModelParser
 {
   private static final String ATTR_NAME_ID = "id";
+  private static final String ATTR_NAME_REF = "ref";
   private static final String ATTR_NAME_LABEL = "label";
+  private static final String TAG_NAME_SYSEXEDIT = "sysexedit";
   private static final String TAG_NAME_DEVICE_CLASS = "device-class";
   private static final String TAG_NAME_DEVICE_NAME = "device-name";
   private static final String TAG_NAME_MAN_ID = "manufacturer-id";
   private static final String TAG_NAME_MODEL_ID = "model-id";
+  private static final String TAG_NAME_DEVICE_ID = "device-id";
   private static final String TAG_NAME_ENTERED_BY = "entered-by";
   private static final String TAG_NAME_ENUM = "enum";
   private static final String TAG_NAME_TYPE = "type";
@@ -81,6 +85,7 @@ public class DeviceModelParser
   private static final String TAG_NAME_BIT_STRING_SIZE = "bit-string-size";
   private static final String TAG_NAME_DATA = "data";
   private static final String TAG_NAME_LOOP = "loop";
+  private static final String TAG_NAME_DESIRED_ADDRESS = "desired-address";
 
   private static Document loadXml(final URL deviceUrl)
     throws ParseException
@@ -111,18 +116,35 @@ public class DeviceModelParser
   private Symbol<String> deviceName;
   private Symbol<Byte> manufacturerId;
   private Symbol<Byte> modelId;
+  private Symbol<? extends Value> deviceId;
   private Symbol<String> enteredBy;
   private SymbolTable<ValueRange> rangeSymbols;
   private SymbolTable<SparseType> typeSymbols;
   private SymbolTable<ValueRangeRenderer> rendererSymbols;
   private SymbolTable<FolderNode> folderSymbols;
+  private SymbolTable<Value> dataSymbols;
 
-  public DeviceModelParser()
+  public DeviceModelParser(final URL deviceUrl)
+    throws ParseException
+  {
+    this(loadXml(deviceUrl));
+  }
+
+  public DeviceModelParser(final String deviceName)
+    throws ParseException
+  {
+    this(loadXml(deviceName));
+  }
+
+  private DeviceModelParser(final Document document)
+    throws ParseException
   {
     rangeSymbols = new SymbolTable<ValueRange>();
     typeSymbols = new SymbolTable<SparseType>();
     rendererSymbols = new SymbolTable<ValueRangeRenderer>();
     folderSymbols = new SymbolTable<FolderNode>();
+    dataSymbols = new SymbolTable<Value>();
+    parse(document);
   }
 
   public String getDeviceClass()
@@ -145,21 +167,24 @@ public class DeviceModelParser
     return modelId.getValue();
   }
 
+  public Value getDeviceId()
+  {
+    return deviceId.getValue();
+  }
+
   public String getEnteredBy()
   {
     return enteredBy.getValue();
   }
 
-  public FolderNode getRoot()
+  public AbstractDevice.MapRoot getRoot()
   {
-    return folderSymbols.lookupSymbol(Identifier.ROOT_ID).getValue();
-  }
-
-  public AbstractDevice parse(final String deviceName)
-    throws ParseException
-  {
-    final Document document = loadXml(deviceName);
-    return parse(document);
+    final Symbol<? extends FolderNode> rootSymbol =
+      folderSymbols.lookupSymbol(Identifier.ROOT_ID);
+    return
+      rootSymbol != null ?
+      (AbstractDevice.MapRoot)rootSymbol.getValue() :
+      null;
   }
 
   private static boolean isIgnorableNodeType(final Node node)
@@ -180,56 +205,70 @@ public class DeviceModelParser
     return text.getData().trim().isEmpty();
   }
 
-  public AbstractDevice parse(final Document document)
+  private void checkRootExists(final Element documentElement)
     throws ParseException
   {
-    final Element docElement = document.getDocumentElement();
-    final String docName = docElement.getTagName();
-    if (!docName.equals("sysexedit")) {
-      throw new ParseException("expected document element 'sysexedit', but found " + docName);
+    final FolderNode root = getRoot();
+    if (root == null) {
+      throw new ParseException(documentElement,
+                               "no global folder node found that is marked as '#root'");
     }
-    final NodeList childNodes = docElement.getChildNodes();
+  }
+
+  private void parse(final Document document) throws ParseException
+  {
+    final Element documentElement = document.getDocumentElement();
+    final String documentName = documentElement.getTagName();
+    if (!documentName.equals(TAG_NAME_SYSEXEDIT)) {
+      throw new ParseException("expected document element '" +
+                               TAG_NAME_SYSEXEDIT + "', but found " +
+                               documentName);
+    }
+    final NodeList childNodes = documentElement.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
-      final Node child = childNodes.item(index);
-      if (child instanceof Element) {
-        final Element element = (Element)child;
-        final String elementName = element.getTagName();
-        if (elementName.equals(TAG_NAME_DEVICE_CLASS)) {
-          parseDeviceClass(element);
-        } else if (elementName.equals(TAG_NAME_DEVICE_NAME)) {
-          parseDeviceName(element);
-        } else if (elementName.equals(TAG_NAME_MAN_ID)) {
-          parseManufacturerId(element);
-        } else if (elementName.equals(TAG_NAME_MODEL_ID)) {
-          parseModelId(element);
-        } else if (elementName.equals(TAG_NAME_ENTERED_BY)) {
-          parseEnteredBy(element);
-        } else if (elementName.equals(TAG_NAME_ENUM)) {
-          parseEnumRenderer(element, true);
-        } else if (elementName.equals(TAG_NAME_INTEGER)) {
-          parseIntegerRenderer(element, true);
-        } else if (elementName.equals(TAG_NAME_BIT_MASK)) {
-          parseBitMaskRenderer(element, true);
-        } else if (elementName.equals(TAG_NAME_TYPE)) {
-          parseType(element, true);
-        } else if (elementName.equals(TAG_NAME_RANGE)) {
-          parseRange(element, true);
-        } else if (elementName.equals(TAG_NAME_FOLDER)) {
-          parseFolder(element, true);
+      final Node childNode = childNodes.item(index);
+      if (childNode instanceof Element) {
+        final Element childElement = (Element)childNode;
+        final String childElementName = childElement.getTagName();
+        if (childElementName.equals(TAG_NAME_DEVICE_CLASS)) {
+          parseDeviceClass(childElement);
+        } else if (childElementName.equals(TAG_NAME_DEVICE_NAME)) {
+          parseDeviceName(childElement);
+        } else if (childElementName.equals(TAG_NAME_MAN_ID)) {
+          parseManufacturerId(childElement);
+        } else if (childElementName.equals(TAG_NAME_MODEL_ID)) {
+          parseModelId(childElement);
+        } else if (childElementName.equals(TAG_NAME_DEVICE_ID)) {
+          parseDeviceId(childElement);
+        } else if (childElementName.equals(TAG_NAME_ENTERED_BY)) {
+          parseEnteredBy(childElement);
+        } else if (childElementName.equals(TAG_NAME_ENUM)) {
+          parseEnumRenderer(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_INTEGER)) {
+          parseIntegerRenderer(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_BIT_MASK)) {
+          parseBitMaskRenderer(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_TYPE)) {
+          parseType(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_RANGE)) {
+          parseRange(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_FOLDER)) {
+          parseFolder(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_DATA)) {
+          parseData(childElement, true);
         } else {
-          throw new ParseException(element, "unexpected element: " +
-                                   elementName);
+          throw new ParseException(childElement, "unexpected element: " +
+                                   childElementName);
         }
-      } else if (isWhiteSpace(child)) {
+      } else if (isWhiteSpace(childNode)) {
         // ignore white space
-      } else if (isIgnorableNodeType(child)) {
+      } else if (isIgnorableNodeType(childNode)) {
         // ignore comments, entities, etc.
       } else {
-        throw new ParseException(child, "unsupported node");
+        throw new ParseException(childNode, "unsupported node");
       }
     }
-    // TODO
-    return null;
+    checkRootExists(documentElement);
   }
 
   private void throwDuplicateException(final Element element,
@@ -248,8 +287,7 @@ public class DeviceModelParser
     throw new ParseException(element, "duplicate '" + tagName + "' definition");
   }
 
-  private void parseDeviceClass(final Element element)
-    throws ParseException
+  private void parseDeviceClass(final Element element) throws ParseException
   {
     if (deviceClass != null) {
       final Throwable cause =
@@ -261,8 +299,7 @@ public class DeviceModelParser
     deviceClass = new Symbol<String>(element, value);
   }
 
-  private void parseDeviceName(final Element element)
-    throws ParseException
+  private void parseDeviceName(final Element element) throws ParseException
   {
     if (deviceName != null) {
       final Throwable cause =
@@ -274,8 +311,7 @@ public class DeviceModelParser
     deviceName = new Symbol<String>(element, value);
   }
 
-  private static byte parseByte(final Element element)
-    throws ParseException
+  private static byte parseByte(final Element element) throws ParseException
   {
     final byte value;
     final String text = element.getTextContent();
@@ -291,12 +327,12 @@ public class DeviceModelParser
     return value;
   }
 
-  private void parseManufacturerId(final Element element)
-    throws ParseException
+  private void parseManufacturerId(final Element element) throws ParseException
   {
     if (manufacturerId != null) {
       final Throwable cause =
-        new ParseException(deviceName.getLocation(), "first definition here");
+        new ParseException(manufacturerId.getLocation(),
+                           "first definition here");
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_MAN_ID, cause);
     }
@@ -304,12 +340,11 @@ public class DeviceModelParser
     manufacturerId = new Symbol<Byte>(element, value);
   }
 
-  private void parseModelId(final Element element)
-    throws ParseException
+  private void parseModelId(final Element element) throws ParseException
   {
     if (modelId != null) {
       final Throwable cause =
-        new ParseException(deviceName.getLocation(), "first definition here");
+        new ParseException(modelId.getLocation(), "first definition here");
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_MODEL_ID, cause);
     }
@@ -317,12 +352,44 @@ public class DeviceModelParser
     modelId = new Symbol<Byte>(element, value);
   }
 
-  private void parseEnteredBy(final Element element)
-    throws ParseException
+  private void parseDeviceId(final Element element) throws ParseException
+  {
+    Identifier dataId = null;
+    final NodeList childNodes = element.getChildNodes();
+    for (int index = 0; index < childNodes.getLength(); index++) {
+      final Node childNode = childNodes.item(index);
+      if (childNode instanceof Element) {
+        final Element childElement = (Element)childNode;
+        final String childElementName = childElement.getTagName();
+        if (childElementName.equals(TAG_NAME_DATA)) {
+          if (dataId != null) {
+            throwDuplicateException(childElement, TAG_NAME_DATA);
+          }
+          dataId = parseData(childElement, false);
+          final Symbol<? extends Value> dataSymbol =
+            dataSymbols.lookupSymbol(dataId);
+          if (dataSymbol == null) {
+            throw new ParseException(element,
+                                     "can not resolve data reference " +
+                                     dataId);
+          }
+          deviceId = dataSymbol;
+        } else if (isWhiteSpace(childNode)) {
+          // ignore white space
+        } else if (isIgnorableNodeType(childNode)) {
+          // ignore comments, entities, etc.
+        } else {
+          throw new ParseException(childNode, "unsupported node");
+        }
+      }
+    }
+  }
+
+  private void parseEnteredBy(final Element element) throws ParseException
   {
     if (enteredBy != null) {
       final Throwable cause =
-        new ParseException(deviceName.getLocation(), "first definition here");
+        new ParseException(enteredBy.getLocation(), "first definition here");
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_ENTERED_BY, cause);
     }
@@ -336,15 +403,46 @@ public class DeviceModelParser
     throws ParseException
   {
     final Identifier identifier;
-    if (element.hasAttribute(ATTR_NAME_ID)) {
+    if (element.hasAttribute(ATTR_NAME_REF)) {
+      identifier = Identifier.fromString(element.getAttribute(ATTR_NAME_REF));
+      if (element.hasAttribute(ATTR_NAME_ID)) {
+        throw new ParseException(element, "element may declare at most one of the attributes 'id' and 'ref'");
+      }
+    } else if (element.hasAttribute(ATTR_NAME_ID)) {
       identifier = Identifier.fromString(element.getAttribute(ATTR_NAME_ID));
     } else {
       if (requireId) {
-        throw new ParseException(element, "missing attribute 'id'");
+        throw new ParseException(element,
+                                 "missing attribute '" + ATTR_NAME_ID + "'");
       }
       identifier = Identifier.createAnonymousIdentifier();
     }
     return identifier;
+  }
+
+  private boolean isTypeRef(final Element element) throws ParseException
+  {
+    final boolean isTypeRef = element.hasAttribute(ATTR_NAME_REF);
+    if (isTypeRef) {
+      final NodeList childNodes = element.getChildNodes();
+      for (int index = 0; index < childNodes.getLength(); index++) {
+        final Node childNode = childNodes.item(index);
+        if (childNode instanceof Element) {
+          final Element childElement = (Element)childNode;
+          final String childElementName = childElement.getTagName();
+          throw new ParseException(childElement,
+                                   "element may not have children elements, but found tag '" +
+                                   childElementName + "'");
+        } else if (isWhiteSpace(childNode)) {
+          // ignore white space
+        } else if (isIgnorableNodeType(childNode)) {
+          // ignore comments, entities, etc.
+        } else {
+          throw new ParseException(childNode, "unsupported node");
+        }
+      }
+    }
+    return isTypeRef;
   }
 
   private Identifier parseEnumRenderer(final Element element,
@@ -352,6 +450,9 @@ public class DeviceModelParser
     throws ParseException
   {
     final Identifier identifier = parseId(element, requireId);
+    if (isTypeRef(element)) {
+      return identifier;
+    }
     String description = null;
     List<String> values = null;
     final NodeList childNodes = element.getChildNodes();
@@ -383,10 +484,16 @@ public class DeviceModelParser
         throw new ParseException(childNode, "unsupported node");
       }
     }
-    final EnumRenderer renderer =
-      new EnumRenderer(description,
-                       0,
-                       values != null ? values.toArray(EMPTY_STRING_ARRAY) : EMPTY_STRING_ARRAY);
+    if (values == null) {
+      throw new ParseException(element,
+                               "missing '" + TAG_NAME_VALUES + "' declaration");
+    }
+    final String[] strValues = values.toArray(EMPTY_STRING_ARRAY);
+    if (strValues.length == 0) {
+      throw new ParseException(element,
+                               "empty '" + TAG_NAME_VALUES + "' declaration");
+    }
+    final EnumRenderer renderer = new EnumRenderer(description, 0, strValues);
     final Symbol<EnumRenderer> symbol =
       new Symbol<EnumRenderer>(element, renderer);
     rendererSymbols.enterSymbol(identifier, symbol);
@@ -398,6 +505,9 @@ public class DeviceModelParser
     throws ParseException
   {
     final Identifier identifier = parseId(element, requireId);
+    if (isTypeRef(element)) {
+      return identifier;
+    }
     Integer lowerBound = null;
     Integer radix = null;
     Boolean fillWithLeadingZeros = null;
@@ -470,6 +580,9 @@ public class DeviceModelParser
     throws ParseException
   {
     final Identifier identifier = parseId(element, requireId);
+    if (isTypeRef(element)) {
+      return identifier;
+    }
     Integer lowerBound = null;
     Integer bitStringSize = null;
     final NodeList childNodes = element.getChildNodes();
@@ -513,6 +626,9 @@ public class DeviceModelParser
     throws ParseException
   {
     final Identifier identifier = parseId(element, requireId);
+    if (isTypeRef(element)) {
+      return identifier;
+    }
     String description = null;
     Identifier iconId = null;
     final List<ValueRange> ranges = new ArrayList<ValueRange>();
@@ -534,7 +650,14 @@ public class DeviceModelParser
           iconId = Identifier.fromString(childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_RANGE)) {
           final Identifier rangeId = parseRange(childElement, false);
-          ranges.add(rangeSymbols.lookupSymbol(rangeId).getValue());
+          final Symbol<? extends ValueRange> rangeSymbol =
+            rangeSymbols.lookupSymbol(rangeId);
+          if (rangeSymbol == null) {
+            throw new ParseException(element,
+                                     "can not resolve range reference " +
+                                     rangeId);
+          }
+          ranges.add(rangeSymbol.getValue());
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);
@@ -568,6 +691,9 @@ public class DeviceModelParser
     throws ParseException
   {
     final Identifier identifier = parseId(element, requireId);
+    if (isTypeRef(element)) {
+      return identifier;
+    }
     String description = null;
     Long lowerBound = null;
     Long upperBound = null;
@@ -601,9 +727,13 @@ public class DeviceModelParser
             cause.fillInStackTrace();
             throwDuplicateRendererException(childElement, TAG_NAME_ENUM);
           }
-          final Identifier rendererId =
-            parseEnumRenderer(childElement, true);
+          final Identifier rendererId = parseEnumRenderer(childElement, false);
           rendererSymbol = rendererSymbols.lookupSymbol(rendererId);
+          if (rendererSymbol == null) {
+            throw new ParseException(element,
+                                     "can not resolve renderer reference " +
+                                     rendererId);
+          }
         } else if (childElementName.equals(TAG_NAME_INTEGER)) {
           if (rendererSymbol != null) {
             final Throwable cause =
@@ -615,6 +745,11 @@ public class DeviceModelParser
           final Identifier rendererId =
             parseIntegerRenderer(childElement, false);
           rendererSymbol = rendererSymbols.lookupSymbol(rendererId);
+          if (rendererSymbol == null) {
+            throw new ParseException(element,
+                                     "can not resolve renderer reference " +
+                                     rendererId);
+          }
         } else if (childElementName.equals(TAG_NAME_BIT_MASK)) {
           if (rendererSymbol != null) {
             final Throwable cause =
@@ -626,6 +761,11 @@ public class DeviceModelParser
           final Identifier rendererId =
             parseBitMaskRenderer(childElement, true);
           rendererSymbol = rendererSymbols.lookupSymbol(rendererId);
+          if (rendererSymbol == null) {
+            throw new ParseException(element,
+                                     "can not resolve renderer reference " +
+                                     rendererId);
+          }
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);
@@ -644,11 +784,23 @@ public class DeviceModelParser
                                "', '" + TAG_NAME_BIT_MASK +
                                "' must be specified");
     }
+    final ValueRangeRenderer renderer = rendererSymbol.getValue();
+    final long lb =
+      lowerBound != null ?
+      lowerBound :
+      renderer.getLowerBound();
+    final long ub =
+      upperBound != null ?
+      upperBound :
+      lb + renderer.getSize() - 1;
     final ValueRange range =
+      new ValueRange(description, lb, ub, renderer);
+      /*
       new ValueRange(description,
                      lowerBound != null ? lowerBound : 0,
                      upperBound != null ? upperBound : 0,
-                     rendererSymbol.getValue());
+                     renderer);
+      */
     final Symbol<ValueRange> symbol = new Symbol<ValueRange>(element, range);
     rangeSymbols.enterSymbol(identifier, symbol);
     return identifier;
@@ -658,8 +810,10 @@ public class DeviceModelParser
     throws ParseException
   {
     final Identifier identifier = parseId(element, requireId);
+    if (isTypeRef(element)) {
+      return identifier;
+    }
     String description = null;
-
     final String label;
     if (element.hasAttribute(ATTR_NAME_LABEL)) {
       label = element.getAttribute(ATTR_NAME_LABEL);
@@ -683,9 +837,26 @@ public class DeviceModelParser
           final Identifier folderId = parseFolder(childElement, false);
           final Symbol<? extends FolderNode> folderSymbol =
             folderSymbols.lookupSymbol(folderId);
+          if (folderSymbol == null) {
+            throw new ParseException(element,
+                                     "can not resolve folder reference " +
+                                     folderId);
+          }
+          if (folderId == Identifier.ROOT_ID) {
+            throw new ParseException(element,
+                                     "can not put root beneath other node");
+          }
           folderContents.add(folderSymbol.getValue());
         } else if (childElementName.equals(TAG_NAME_DATA)) {
-          // TODO
+          final Identifier dataId = parseData(childElement, false);
+          final Symbol<? extends Value> dataSymbol =
+            dataSymbols.lookupSymbol(dataId);
+          if (dataSymbol == null) {
+            throw new ParseException(element,
+                                     "can not resolve data reference " +
+                                     dataId);
+          }
+          folderContents.add(new DataNode(dataSymbol.getValue()));
         } else if (childElementName.equals(TAG_NAME_LOOP)) {
           // TODO
         } else {
@@ -700,13 +871,21 @@ public class DeviceModelParser
         throw new ParseException(childNode, "unsupported node");
       }
     }
-
-    final List<MapNode> entries =
-      new ArrayList<MapNode>(); /* or List<Identifier>? */
-    final FolderNode folderNode =
-      new FolderNode(description != null ? description : null,
-                     label != null ? label : null,
-                     desiredAddress != null ? desiredAddress : -1);
+    final FolderNode folderNode;
+    if (identifier == Identifier.ROOT_ID) {
+      folderNode =
+        new AbstractDevice.MapRoot(description != null ? description : null,
+                                   label != null ? label : null,
+                                   desiredAddress != null ? desiredAddress : -1);
+    } else {
+      folderNode =
+        new FolderNode(description != null ? description : null,
+                       label != null ? label : null,
+                       desiredAddress != null ? desiredAddress : -1);
+    }
+    for (MapNode node : folderContents) {
+      folderNode.add(node);
+    }
     final Symbol<FolderNode> symbol =
       new Symbol<FolderNode>(element, folderNode);
     folderSymbols.enterSymbol(identifier, symbol);
@@ -723,7 +902,7 @@ public class DeviceModelParser
         final Element childElement = (Element)childNode;
         final String childElementName = childElement.getTagName();
         if (childElementName.equals(TAG_NAME_VALUE)) {
-          final String value = element.getTextContent();
+          final String value = childElement.getTextContent();
           values.add(value);
         } else {
           throw new ParseException(childElement, "unexpected element: " +
@@ -739,17 +918,93 @@ public class DeviceModelParser
     }
   }
 
+  private Identifier parseData(final Element element, final boolean requireId)
+    throws ParseException
+  {
+    final Identifier identifier = parseId(element, requireId);
+    if (isTypeRef(element)) {
+      return identifier;
+    }
+    String description = null; // TODO
+    Identifier iconId = null;
+    Long desiredAddress = null;
+
+    final String label;
+    if (element.hasAttribute(ATTR_NAME_LABEL)) {
+      label = element.getAttribute(ATTR_NAME_LABEL);
+    } else {
+      label = null;
+    }
+
+    SparseType type = null;
+    final NodeList childNodes = element.getChildNodes();
+    for (int index = 0; index < childNodes.getLength(); index++) {
+      final Node childNode = childNodes.item(index);
+      if (childNode instanceof Element) {
+        final Element childElement = (Element)childNode;
+        final String childElementName = childElement.getTagName();
+        if (childElementName.equals(TAG_NAME_DESCRIPTION)) {
+          if (description != null) {
+            throwDuplicateException(childElement, TAG_NAME_DESCRIPTION);
+          }
+          description = childElement.getTextContent();
+        } else if (childElementName.equals(TAG_NAME_TYPE)) {
+          if (type != null) {
+            throwDuplicateException(childElement, TAG_NAME_TYPE);
+          }
+          final Identifier typeId = parseType(childElement, false);
+          final Symbol<? extends SparseType> typeSymbol =
+            typeSymbols.lookupSymbol(typeId);
+          if (typeSymbol == null) {
+            throw new ParseException(element,
+                                     "can not resolve type reference " +
+                                     typeId);
+          }
+          type = typeSymbol.getValue();
+        } else if (childElementName.equals(TAG_NAME_ICON)) {
+          if (iconId != null) {
+            throwDuplicateException(childElement, TAG_NAME_ICON);
+          }
+          iconId = Identifier.fromString(childElement.getTextContent());
+        } else if (childElementName.equals(TAG_NAME_DESIRED_ADDRESS)) {
+          if (desiredAddress != null) {
+            throwDuplicateException(childElement, TAG_NAME_DESIRED_ADDRESS);
+          }
+          desiredAddress = Long.parseLong(childElement.getTextContent());
+        } else {
+          throw new ParseException(childElement, "unexpected element: " +
+                                   childElementName);
+        }
+      } else if (isWhiteSpace(childNode)) {
+        // ignore white space
+      } else if (isIgnorableNodeType(childNode)) {
+        // ignore comments, entities, etc.
+      } else {
+        throw new ParseException(childNode, "unsupported node");
+      }
+    }
+    if (type == null) {
+      throw new ParseException(element,
+                               "missing '" + TAG_NAME_TYPE + "' declaration");
+    }
+    final Value value =
+      new ValueImpl(iconId != null ? iconId.toString() : null,
+                    type, description, label,
+                    desiredAddress != null ? desiredAddress : -1);
+    final Symbol<Value> dataSymbol = new Symbol<Value>(element, value);
+    dataSymbols.enterSymbol(identifier, dataSymbol);
+    return identifier;
+  }
+
   /**
    * For testing only.
    */
-  private void test() throws ParseException
-  {
-    parse("db50xg");
-  }
-
   public static void main(final String argv[]) throws ParseException
   {
-    new DeviceModelParser().test();
+    final Device device = Device.create("db50xg");
+    System.out.println("[created device=" + device + "]");
+    device.buildMap(null, null);
+    System.out.println("[map=" + device.getMap() + "]");
   }
 }
 

@@ -69,7 +69,7 @@ public class DocumentMetaData implements TreeSelectionListener
     // should be changed such that model selection
     // occurs before instantiating the editor frame.
     if (device != null) {
-      setMidiDeviceId(device.createDeviceId());
+      setMidiDeviceId(device.getDeviceId());
     }
   }
 

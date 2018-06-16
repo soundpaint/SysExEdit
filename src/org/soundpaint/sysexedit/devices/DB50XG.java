@@ -954,7 +954,7 @@ public class DB50XG extends AbstractDevice
    * of this device.  As the DB50XG specs do not explicitly specify
    * this value, we assume default value 0.
    */
-  public Value createDeviceId()
+  public Value getDeviceId()
   {
     final Value deviceId = new ValueImpl(rangeDeviceId);
     deviceId.setBitSize(7);
