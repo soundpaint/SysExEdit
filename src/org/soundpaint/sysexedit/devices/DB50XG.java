@@ -1317,37 +1317,53 @@ public class DB50XG extends AbstractDevice
     new SparseType("internal-tune").
     addValueRange(0x00, 0x7f, lfoFrequency);
 
+  private static final SparseType typeTune3 =
+    new SparseType("internal-tune").
+    addValueRange(0x0, 0x0, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeTune2 =
+    new SparseType("internal-tune").
+    addValueRange(0x0, 0x7, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeTune1 =
+    new SparseType("internal-tune").
+    addValueRange(0x0, 0xf, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeTune0 =
+    new SparseType("internal-tune").
+    addValueRange(0x0, 0xf, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeDrumsSetupReset =
+    new SparseType("internal-error").
+    addValueRange(0x0, 0x1, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeXgOn =
+    new SparseType("internal-error").
+    addSingleValue(0x0, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeAllReset =
+    new SparseType("internal-error").
+    addSingleValue(0x0, IntegerRenderer.DEFAULT_RENDERER);
+
   private FolderNode buildFolderNodeSystem()
   {
     FolderNode nodeSystem = new FolderNode("System");
 
-    final SparseType typeTune3 =
-      new SparseType("internal-tune").
-      addValueRange(0x0, 0x0, IntegerRenderer.DEFAULT_RENDERER);
     final Value tune3 = new ValueImpl(typeTune3, "Master Tune[3]");
     tune3.setBitSize(7);
     tune3.setDefaultValue(0x0);
     nodeSystem.add(new DataNode(tune3));
 
-    final SparseType typeTune2 =
-      new SparseType("internal-tune").
-      addValueRange(0x0, 0x7, IntegerRenderer.DEFAULT_RENDERER);
     final Value tune2 = new ValueImpl(typeTune2, "Master Tune[2]");
     tune2.setBitSize(7);
     tune2.setDefaultValue(0x4);
     nodeSystem.add(new DataNode(tune2));
 
-    final SparseType typeTune1 =
-      new SparseType("internal-tune").
-      addValueRange(0x0, 0xf, IntegerRenderer.DEFAULT_RENDERER);
     final Value tune1 = new ValueImpl(typeTune1, "Master Tune[1]");
     tune1.setBitSize(7);
     tune1.setDefaultValue(0x0);
     nodeSystem.add(new DataNode(tune1));
 
-    final SparseType typeTune0 =
-      new SparseType("internal-tune").
-      addValueRange(0x0, 0xf, IntegerRenderer.DEFAULT_RENDERER);
     final Value tune0 = new ValueImpl(typeTune0, "Master Tune[0]");
     tune0.setBitSize(7);
     tune0.setDefaultValue(0x0);
@@ -1365,9 +1381,6 @@ public class DB50XG extends AbstractDevice
     transpose.setDefaultValue(0x40);
     nodeSystem.add(new DataNode(transpose));
 
-    final SparseType typeDrumsSetupReset =
-      new SparseType("internal-error").
-      addValueRange(0x0, 0x1, IntegerRenderer.DEFAULT_RENDERER);
     final Value drumsSetupReset =
       new ValueImpl(typeDrumsSetupReset, "Drum Setup Reset",
                     addr2index(0x00, 0x00, 0x7d));
@@ -1375,17 +1388,11 @@ public class DB50XG extends AbstractDevice
     drumsSetupReset.setDefaultValue(0x0);
     nodeSystem.add(new DataNode(drumsSetupReset));
 
-    final SparseType typeXgOn =
-      new SparseType("internal-error").
-      addSingleValue(0x0, IntegerRenderer.DEFAULT_RENDERER);
     final Value xgOn = new ValueImpl(typeXgOn, "XG System On");
     xgOn.setBitSize(7);
     xgOn.setDefaultValue(0x0);
     nodeSystem.add(new DataNode(xgOn));
 
-    final SparseType typeAllReset =
-      new SparseType("internal-error").
-      addSingleValue(0x0, IntegerRenderer.DEFAULT_RENDERER);
     final Value allReset = new ValueImpl(typeAllReset, "All Parameter Reset");
     allReset.setBitSize(7);
     allReset.setDefaultValue(0x0);
@@ -1393,6 +1400,22 @@ public class DB50XG extends AbstractDevice
 
     return nodeSystem;
   }
+
+  private static final SparseType typeDiffusion =
+    new SparseType("internal-control").
+    addValueRange(0x00, 0x0a, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeWallVary =
+    new SparseType("internal-control").
+    addValueRange(0x00, 0x1e, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeDensity =
+    new SparseType("internal-control").
+    addValueRange(0x0, 0x3, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeFeedbackLevel =
+    new SparseType("internal-volume").
+    addValueRange(0x01, 0x7f, -0x3f, IntegerRenderer.DEFAULT_RENDERER);
 
   private FolderNode buildFolderNodeReverb()
   {
@@ -1408,9 +1431,6 @@ public class DB50XG extends AbstractDevice
     reverbTime.setDefaultValue(0x00);
     nodeReverb.add(new DataNode(reverbTime));
 
-    final SparseType typeDiffusion =
-      new SparseType("internal-control").
-      addValueRange(0x00, 0x0a, IntegerRenderer.DEFAULT_RENDERER);
     final Value diffusion = new ValueImpl(typeDiffusion, "Diffusion");
     diffusion.setBitSize(7);
     diffusion.setDefaultValue(0x00);
@@ -1446,9 +1466,6 @@ public class DB50XG extends AbstractDevice
     depth.setDefaultValue(0x00);
     nodeReverb.add(new DataNode(depth));
 
-    final SparseType typeWallVary =
-      new SparseType("internal-control").
-      addValueRange(0x00, 0x1e, IntegerRenderer.DEFAULT_RENDERER);
     final Value wallVary = new ValueImpl(typeWallVary, "Wall Vary");
     wallVary.setBitSize(7);
     wallVary.setDefaultValue(0x00);
@@ -1475,9 +1492,6 @@ public class DB50XG extends AbstractDevice
     revDelay.setDefaultValue(0x00);
     nodeReverb.add(new DataNode(revDelay));
 
-    final SparseType typeDensity =
-      new SparseType("internal-control").
-      addValueRange(0x0, 0x3, IntegerRenderer.DEFAULT_RENDERER);
     final Value density = new ValueImpl(typeDensity, "Density");
     density.setBitSize(7);
     density.setDefaultValue(0x0);
@@ -1491,9 +1505,6 @@ public class DB50XG extends AbstractDevice
 
     nodeReverb.add(new DataNode(new ValueImpl(7, "Unused")));
 
-    final SparseType typeFeedbackLevel =
-      new SparseType("internal-volume").
-      addValueRange(0x01, 0x7f, -0x3f, IntegerRenderer.DEFAULT_RENDERER);
     final Value feedbackLevel =
       new ValueImpl(typeFeedbackLevel, "Feedback Level");
     feedbackLevel.setBitSize(7);
@@ -1525,9 +1536,6 @@ public class DB50XG extends AbstractDevice
     lfoPmDepth.setDefaultValue(0x40);
     nodeChorus.add(new DataNode(lfoPmDepth));
 
-    final SparseType typeFeedbackLevel =
-      new SparseType("internal-volume").
-      addValueRange(0x01, 0x7f, -0x3f, IntegerRenderer.DEFAULT_RENDERER);
     final Value feedbackLevel =
       new ValueImpl(typeFeedbackLevel, "Feedback Level");
     feedbackLevel.setBitSize(7);
@@ -1760,14 +1768,32 @@ public class DB50XG extends AbstractDevice
     node.add(new DataNode(lfoAModDepth));
   }
 
+  private static final SparseType typeElementReserve =
+    new SparseType("internal-control").
+    addValueRange(0x00, 0x1f, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeProgramNumber =
+    new SparseType("internal-control").
+    addValueRange(0x00, 0x7f, 0x01, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeRcvChannel =
+    new SparseType("internal-control").
+    addValueRange(0x00, 0x0f, 0x01, IntegerRenderer.DEFAULT_RENDERER).
+    addSingleValue(0x10, "Off");
+
+  private static final SparseType typeKeyOnAssign =
+    new SparseType("internal-control").
+    addValueRange(0x0, 0x2, rendererKeyOnAssign);
+
+  private static final SparseType typePartMode =
+    new SparseType("internal-control").
+    addValueRange(0x0, 0x3, rendererPartMode);
+
   private FolderNode buildFolderNodeMultiPartN(final int n)
   {
     final FolderNode nodeMultiPartN =
       new FolderNode("Multi Part " + (n + 1), addr2index(0x08, n, 0x00));
 
-    final SparseType typeElementReserve =
-      new SparseType("internal-control").
-      addValueRange(0x00, 0x1f, IntegerRenderer.DEFAULT_RENDERER);
     final Value elementReserve =
       new ValueImpl(typeElementReserve, "Element Reserve");
     elementReserve.setBitSize(7);
@@ -1786,19 +1812,12 @@ public class DB50XG extends AbstractDevice
     bankSelectLsb.setDefaultValue(0x00);
     nodeMultiPartN.add(new DataNode(bankSelectLsb));
 
-    final SparseType typeProgramNumber =
-      new SparseType("internal-control").
-      addValueRange(0x00, 0x7f, 0x01, IntegerRenderer.DEFAULT_RENDERER);
     final Value programNumber =
       new ValueImpl(typeProgramNumber, "Program Number");
     programNumber.setBitSize(7);
     programNumber.setDefaultValue(0x00);
     nodeMultiPartN.add(new DataNode(programNumber));
 
-    final SparseType typeRcvChannel =
-      new SparseType("internal-control").
-      addValueRange(0x00, 0x0f, 0x01, IntegerRenderer.DEFAULT_RENDERER).
-      addSingleValue(0x10, "Off");
     final Value rcvChannel =
       new ValueImpl(typeRcvChannel, "Rcv Channel");
     rcvChannel.setBitSize(7);
@@ -1811,18 +1830,12 @@ public class DB50XG extends AbstractDevice
     monoPolyMode.setDefaultValue(0x1);
     nodeMultiPartN.add(new DataNode(monoPolyMode));
 
-    final SparseType typeKeyOnAssign =
-      new SparseType("internal-control").
-      addValueRange(0x0, 0x2, rendererKeyOnAssign);
     final Value keyOnAssign =
       new ValueImpl(typeKeyOnAssign, "Same Not Number Key on Assign");
     keyOnAssign.setBitSize(7);
     keyOnAssign.setDefaultValue(n == 9 ? 0x2 : 0x0);
     nodeMultiPartN.add(new DataNode(keyOnAssign));
 
-    final SparseType typePartMode =
-      new SparseType("internal-control").
-      addValueRange(0x0, 0x3, rendererPartMode);
     final Value partMode = new ValueImpl(typePartMode, "Part Mode");
     partMode.setBitSize(7);
     partMode.setDefaultValue(n == 9 ? 0x2 : 0x0);
@@ -2226,6 +2239,15 @@ public class DB50XG extends AbstractDevice
     return nodeMultiPart;
   }
 
+  private static final SparseType typeAlternativeGroup =
+    new SparseType("internal-control").
+    addSingleValue(0x00, "Off").
+    addValueRange(0x01, 0x7f, IntegerRenderer.DEFAULT_RENDERER);
+
+  private static final SparseType typeKeyAssign =
+    new SparseType("internal-control").
+    addValueRange(0x00, 0x01, rendererKeyAssign);
+
   private FolderNode buildFolderNodeDrumSetupNoteNR(final int n, final int r)
   {
     final FolderNode nodeDrumSetupNoteR =
@@ -2247,10 +2269,6 @@ public class DB50XG extends AbstractDevice
     level.setDefaultValue(0x40);
     nodeDrumSetupNoteR.add(new DataNode(level));
 
-    final SparseType typeAlternativeGroup =
-      new SparseType("internal-control").
-      addSingleValue(0x00, "Off").
-      addValueRange(0x01, 0x7f, IntegerRenderer.DEFAULT_RENDERER);
     final Value alternativeGroup =
       new ValueImpl(typeAlternativeGroup, "Alternative Group");
     alternativeGroup.setBitSize(7);
@@ -2277,9 +2295,6 @@ public class DB50XG extends AbstractDevice
     variationSend.setDefaultValue(0x7f);
     nodeDrumSetupNoteR.add(new DataNode(variationSend));
 
-    final SparseType typeKeyAssign =
-      new SparseType("internal-control").
-      addValueRange(0x00, 0x01, rendererKeyAssign);
     final Value keyAssign = new ValueImpl(typeKeyAssign, "Key Assign");
     keyAssign.setBitSize(7);
     keyAssign.setDefaultValue(0x0);
