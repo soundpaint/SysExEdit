@@ -241,8 +241,8 @@ public class ValueImpl extends AbstractValue
       throw new IllegalArgumentException("amount");
     final BitMaskRenderer bitMaskRenderer = new BitMaskRenderer();
     final SparseType sparseType =
-      new SparseTypeImpl(SparseType.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
-                         bitMaskRenderer);
+      new SparseType(SparseType.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
+                     bitMaskRenderer);
     return sparseType;
   }
 
@@ -312,9 +312,9 @@ public class ValueImpl extends AbstractValue
           {
             sparseType.getDisplayValue(numericalValue)
           });
-      final SparseTypeImpl editorSparseType =
-        new SparseTypeImpl(sparseType.getIconKey(),
-                           numericalValue, numericalValue, enumRenderer);
+      final SparseType editorSparseType =
+        new SparseType(sparseType.getIconKey(),
+                       numericalValue, numericalValue, enumRenderer);
       final Value value = new ValueImpl(editorSparseType);
       value.setNumericalValue(numericalValue);
       editor.addSelectableValue(value);

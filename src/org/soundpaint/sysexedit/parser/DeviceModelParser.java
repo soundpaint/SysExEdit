@@ -46,7 +46,6 @@ import org.soundpaint.sysexedit.model.FolderNode;
 import org.soundpaint.sysexedit.model.IntegerRenderer;
 import org.soundpaint.sysexedit.model.MapNode;
 import org.soundpaint.sysexedit.model.SparseType;
-import org.soundpaint.sysexedit.model.SparseTypeImpl;
 import org.soundpaint.sysexedit.model.Value;
 import org.soundpaint.sysexedit.model.ValueImpl;
 import org.soundpaint.sysexedit.model.ValueRange;
@@ -671,9 +670,9 @@ public class DeviceModelParser
       }
     }
     final SparseType type =
-      new SparseTypeImpl(description,
-                         iconId != null ? iconId.toString() : null,
-                         ranges);
+      new SparseType(description,
+                     iconId != null ? iconId.toString() : null,
+                     ranges);
     final Symbol<SparseType> symbol = new Symbol<SparseType>(element, type);
     typeSymbols.enterSymbol(identifier, symbol);
     return identifier;
