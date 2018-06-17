@@ -112,6 +112,30 @@ public class DeviceModelParser
     return loadXml(deviceResource);
   }
 
+  private static int parseInt(final String value)
+  {
+    final String trimmedValue = value.trim();
+    if (trimmedValue.startsWith("0x")) {
+      return Integer.parseInt(trimmedValue.substring(2), 16);
+    } else if (trimmedValue.startsWith("0b")) {
+      return Integer.parseInt(trimmedValue.substring(2), 2);
+    } else {
+      return Integer.parseInt(trimmedValue);
+    }
+  }
+
+  private static long parseLong(final String value)
+  {
+    final String trimmedValue = value.trim();
+    if (trimmedValue.startsWith("0x")) {
+      return Long.parseLong(trimmedValue.substring(2), 16);
+    } else if (trimmedValue.startsWith("0b")) {
+      return Long.parseLong(trimmedValue.substring(2), 2);
+    } else {
+      return Long.parseLong(trimmedValue);
+    }
+  }
+
   private Symbol<String> deviceClass;
   private Symbol<String> deviceName;
   private Symbol<Byte> manufacturerId;
@@ -523,7 +547,7 @@ public class DeviceModelParser
           if (radix != null) {
             throwDuplicateException(childElement, TAG_NAME_RADIX);
           }
-          radix = Integer.parseInt(childElement.getTextContent());
+          radix = parseInt(childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_FILL_WITH_LEADING_ZEROS)) {
           if (fillWithLeadingZeros != null) {
             throwDuplicateException(childElement, TAG_NAME_FILL_WITH_LEADING_ZEROS);
@@ -587,7 +611,7 @@ public class DeviceModelParser
           if (bitStringSize != null) {
             throwDuplicateException(childElement, TAG_NAME_BIT_STRING_SIZE);
           }
-          bitStringSize = Integer.parseInt(childElement.getTextContent());
+          bitStringSize = parseInt(childElement.getTextContent());
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);
@@ -700,17 +724,17 @@ public class DeviceModelParser
           if (lowerBound != null) {
             throwDuplicateException(childElement, TAG_NAME_LOWER_BOUND);
           }
-          lowerBound = Long.parseLong(childElement.getTextContent());
+          lowerBound = parseLong(childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_UPPER_BOUND)) {
           if (upperBound != null) {
             throwDuplicateException(childElement, TAG_NAME_UPPER_BOUND);
           }
-          upperBound = Long.parseLong(childElement.getTextContent());
+          upperBound = parseLong(childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_DISPLAY_OFFSET)) {
           if (displayOffset != null) {
             throwDuplicateException(childElement, TAG_NAME_DISPLAY_OFFSET);
           }
-          displayOffset = Long.parseLong(childElement.getTextContent());
+          displayOffset = parseLong(childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_ENUM)) {
           if (rendererSymbol != null) {
             final Throwable cause =
@@ -960,7 +984,7 @@ public class DeviceModelParser
           if (desiredAddress != null) {
             throwDuplicateException(childElement, TAG_NAME_DESIRED_ADDRESS);
           }
-          desiredAddress = Long.parseLong(childElement.getTextContent());
+          desiredAddress = parseLong(childElement.getTextContent());
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);

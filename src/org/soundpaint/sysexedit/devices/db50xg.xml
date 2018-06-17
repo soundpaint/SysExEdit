@@ -2545,8 +2545,8 @@
   <type id="device-id">
     <icon>internal-control</icon>
     <range>
-      <lower-bound>0</lower-bound>
-      <upper-bound>15</upper-bound>
+      <lower-bound>0x0</lower-bound>
+      <upper-bound>0xf</upper-bound>
       <integer>
         <radix>16</radix>
         <fill-with-leading-zeros>true</fill-with-leading-zeros>
@@ -2567,18 +2567,15 @@
     </range>
     <range>
       <enum ref="hall" />
-      <lower-bound>128</lower-bound>
-      <upper-bound>129</upper-bound>
+      <lower-bound>0x0080</lower-bound>
     </range>
     <range>
       <enum ref="room" />
-      <lower-bound>256</lower-bound>
-      <upper-bound>258</upper-bound>
+      <lower-bound>0x0100</lower-bound>
     </range>
     <range>
       <enum ref="stage" />
-      <lower-bound>384</lower-bound>
-      <upper-bound>385</upper-bound>
+      <lower-bound>0x0180</lower-bound>
     </range>
     <range>
       <enum>
@@ -2586,8 +2583,7 @@
           <value>Plate</value>
         </values>
       </enum>
-      <lower-bound>512</lower-bound>
-      <upper-bound>512</upper-bound>
+      <lower-bound>0x0200</lower-bound>
     </range>
     <range>
       <enum>
@@ -2595,8 +2591,7 @@
           <value>White Room</value>
         </values>
       </enum>
-      <lower-bound>2048</lower-bound>
-      <upper-bound>2048</upper-bound>
+      <lower-bound>0x0800</lower-bound>
     </range>
     <range>
       <enum>
@@ -2604,8 +2599,7 @@
           <value>Tunnel</value>
         </values>
       </enum>
-      <lower-bound>2176</lower-bound>
-      <upper-bound>2176</upper-bound>
+      <lower-bound>0x0880</lower-bound>
     </range>
     <range>
       <enum>
@@ -2613,8 +2607,7 @@
           <value>Basement</value>
         </values>
       </enum>
-      <lower-bound>2432</lower-bound>
-      <upper-bound>2432</upper-bound>
+      <lower-bound>0x0980</lower-bound>
     </range>
   </type>
   <folder label="Drum Setup" id="drum_setup">
