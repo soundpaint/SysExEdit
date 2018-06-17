@@ -946,7 +946,7 @@ public class DB50XG extends AbstractDevice
   private static final SparseType rangeDeviceId =
     new SparseType("internal-control").
     addValueRange(0x0, 0xf,
-                  new IntegerRenderer(0, 16, true, "0x", "", (byte)4));
+                  new IntegerRenderer(16, true, "0x", "", (byte)4));
 
   /**
    * Returns a Value object that represents the MIDI device model ID
@@ -1008,7 +1008,7 @@ public class DB50XG extends AbstractDevice
   }
 
   private static final ValueRangeRenderer rendererPan =
-    new EnumRenderer(1, PAN);
+    new EnumRenderer(PAN);
 
   private static final ValueRangeRenderer rendererLevel =
     new EnumRenderer(LEVEL);
@@ -1059,52 +1059,50 @@ public class DB50XG extends AbstractDevice
     addValueRange(0x00, 0x68, rendererReverbDimLength);
 
   private static final ValueRangeRenderer rendererDryWet =
-    new EnumRenderer(0x01, DRY_WET);
+    new EnumRenderer(DRY_WET);
   private static final SparseType typeDryWet =
     new SparseType("internal-pan").
     addValueRange(0x01, 0x7f, rendererDryWet);
 
   private static final ValueRangeRenderer rendererErRevBalance =
-    new EnumRenderer(0x01, ER_REV_BALANCE);
+    new EnumRenderer(ER_REV_BALANCE);
   private static final SparseType typeErRevBalance =
     new SparseType("internal-pan").
     addValueRange(0x01, 0x7f, rendererErRevBalance);
 
   private static final ValueRangeRenderer rendererEqGain =
-    new EnumRenderer(0x34, EQ_GAIN);
+    new EnumRenderer(EQ_GAIN);
   private static final SparseType typeEqGain =
     new SparseType("internal-volume").
     addValueRange(0x34, 0x4c, rendererEqGain);
 
   private static final ValueRangeRenderer rendererPhaseDifference =
-    new EnumRenderer(0x04, PHASE_DIFFERENCE);
+    new EnumRenderer(PHASE_DIFFERENCE);
   private static final SparseType typePhaseDifference =
     new SparseType("internal-control").
-    addValueRange(0x4, 0x7c, rendererPhaseDifference);
+    addValueRange(0x04, 0x7c, rendererPhaseDifference);
 
-  private static final ValueRangeRenderer rendererHall =
-    new EnumRenderer(0x0080, HALL);
+  private static final ValueRangeRenderer rendererHall = new EnumRenderer(HALL);
 
-  private static final ValueRangeRenderer rendererRoom =
-    new EnumRenderer(0x0100, ROOM);
+  private static final ValueRangeRenderer rendererRoom = new EnumRenderer(ROOM);
 
   private static final ValueRangeRenderer rendererStage =
-    new EnumRenderer(0x0180, STAGE);
+    new EnumRenderer(STAGE);
 
   private static final ValueRangeRenderer rendererChorus =
-    new EnumRenderer(0x2080, CHORUS);
+    new EnumRenderer(CHORUS);
 
   private static final ValueRangeRenderer rendererCeleste =
-    new EnumRenderer(0x2100, CELESTE);
+    new EnumRenderer(CELESTE);
 
   private static final ValueRangeRenderer rendererFlanger =
-    new EnumRenderer(0x2180, FLANGER);
+    new EnumRenderer(FLANGER);
 
   private static final ValueRangeRenderer rendererEarlyRef =
-    new EnumRenderer(0x0480, EARLY_REF);
+    new EnumRenderer(EARLY_REF);
 
   private static final ValueRangeRenderer rendererKaraoke =
-    new EnumRenderer(0x0a00, KARAOKE);
+    new EnumRenderer(KARAOKE);
 
   private static final ValueRangeRenderer rendererConnection =
     new EnumRenderer(CONNECTION);
@@ -1125,37 +1123,37 @@ public class DB50XG extends AbstractDevice
     new EnumRenderer(PART_MODE);
 
   private static final ValueRangeRenderer rendererDetune0x0 =
-    new EnumRenderer(0x0000, DETUNE_0X0);
+    new EnumRenderer(DETUNE_0X0);
   private static final ValueRangeRenderer rendererDetune0x1 =
-    new EnumRenderer(0x0080, DETUNE_0X1);
+    new EnumRenderer(DETUNE_0X1);
   private static final ValueRangeRenderer rendererDetune0x2 =
-    new EnumRenderer(0x0100, DETUNE_0X2);
+    new EnumRenderer(DETUNE_0X2);
   private static final ValueRangeRenderer rendererDetune0x3 =
-    new EnumRenderer(0x0180, DETUNE_0X3);
+    new EnumRenderer(DETUNE_0X3);
   private static final ValueRangeRenderer rendererDetune0x4 =
-    new EnumRenderer(0x0200, DETUNE_0X4);
+    new EnumRenderer(DETUNE_0X4);
   private static final ValueRangeRenderer rendererDetune0x5 =
-    new EnumRenderer(0x0280, DETUNE_0X5);
+    new EnumRenderer(DETUNE_0X5);
   private static final ValueRangeRenderer rendererDetune0x6 =
-    new EnumRenderer(0x0300, DETUNE_0X6);
+    new EnumRenderer(DETUNE_0X6);
   private static final ValueRangeRenderer rendererDetune0x7 =
-    new EnumRenderer(0x0380, DETUNE_0X7);
+    new EnumRenderer(DETUNE_0X7);
   private static final ValueRangeRenderer rendererDetune0x8 =
-    new EnumRenderer(0x0400, DETUNE_0X8);
+    new EnumRenderer(DETUNE_0X8);
   private static final ValueRangeRenderer rendererDetune0x9 =
-    new EnumRenderer(0x0480, DETUNE_0X9);
+    new EnumRenderer(DETUNE_0X9);
   private static final ValueRangeRenderer rendererDetune0xa =
-    new EnumRenderer(0x0500, DETUNE_0XA);
+    new EnumRenderer(DETUNE_0XA);
   private static final ValueRangeRenderer rendererDetune0xb =
-    new EnumRenderer(0x0580, DETUNE_0XB);
+    new EnumRenderer(DETUNE_0XB);
   private static final ValueRangeRenderer rendererDetune0xc =
-    new EnumRenderer(0x0600, DETUNE_0XC);
+    new EnumRenderer(DETUNE_0XC);
   private static final ValueRangeRenderer rendererDetune0xd =
-    new EnumRenderer(0x0680, DETUNE_0XD);
+    new EnumRenderer(DETUNE_0XD);
   private static final ValueRangeRenderer rendererDetune0xe =
-    new EnumRenderer(0x0700, DETUNE_0XE);
+    new EnumRenderer(DETUNE_0XE);
   private static final ValueRangeRenderer rendererDetune0xf =
-    new EnumRenderer(0x0780, DETUNE_0XF);
+    new EnumRenderer(DETUNE_0XF);
   private static final SparseType typeDetune =
     new SparseType("internal-transpose").
     addValueRange(0x0000, 0x000f, rendererDetune0x0).
@@ -1212,7 +1210,7 @@ public class DB50XG extends AbstractDevice
 
   private static final SparseType typeTranspose =
     new SparseType("internal-transpose").
-    addValueRange(0x28, 0x58, new IntegerRenderer(0x40));
+    addValueRange(0x28, 0x58, -0x18, IntegerRenderer.DEFAULT_RENDERER);
 
   private static final SparseType typeReverbType =
     new SparseType("internal-fx-reverb").
@@ -1285,7 +1283,7 @@ public class DB50XG extends AbstractDevice
 
   private static final SparseType typeVolume =
     new SparseType("internal-volume").
-    addValueRange(0x00, 0x7f, IntegerRenderer.BYTE_RENDERER);
+    addValueRange(0x00, 0x7f, IntegerRenderer.DEFAULT_RENDERER);
 
   private static final SparseType typeConnection =
     new SparseType("internal-control").
@@ -1299,19 +1297,19 @@ public class DB50XG extends AbstractDevice
 
   private static final SparseType typeNonNegative7Bit =
     new SparseType("internal-control").
-    addValueRange(0x00, 0x7f, IntegerRenderer.BYTE_RENDERER);
+    addValueRange(0x00, 0x7f, IntegerRenderer.DEFAULT_RENDERER);
 
   private static final SparseType typePositive7Bit =
     new SparseType("internal-control").
-    addValueRange(0x01, 0x7f, IntegerRenderer.BYTE_RENDERER);
+    addValueRange(0x01, 0x7f, IntegerRenderer.DEFAULT_RENDERER);
 
   private static final SparseType typeSigned7Bit =
     new SparseType("internal-control").
-    addValueRange(0x00, 0x7f, new IntegerRenderer(0x40));
+    addValueRange(0x00, 0x7f, -0x40, IntegerRenderer.DEFAULT_RENDERER);
 
   private static final SparseType typeControllerNumber =
     new SparseType("internal-control").
-    addValueRange(0x00, 0x5f, IntegerRenderer.BYTE_RENDERER);
+    addValueRange(0x00, 0x5f, IntegerRenderer.DEFAULT_RENDERER);
 
   private static final ValueRangeRenderer lfoFrequency =
     new EnumRenderer(LFO_FREQUENCY);
@@ -1325,7 +1323,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeTune3 =
       new SparseType("internal-tune").
-      addValueRange(0x0, 0x0, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x0, 0x0, IntegerRenderer.DEFAULT_RENDERER);
     final Value tune3 = new ValueImpl(typeTune3, "Master Tune[3]");
     tune3.setBitSize(7);
     tune3.setDefaultValue(0x0);
@@ -1333,7 +1331,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeTune2 =
       new SparseType("internal-tune").
-      addValueRange(0x0, 0x7, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x0, 0x7, IntegerRenderer.DEFAULT_RENDERER);
     final Value tune2 = new ValueImpl(typeTune2, "Master Tune[2]");
     tune2.setBitSize(7);
     tune2.setDefaultValue(0x4);
@@ -1341,7 +1339,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeTune1 =
       new SparseType("internal-tune").
-      addValueRange(0x0, 0xf, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x0, 0xf, IntegerRenderer.DEFAULT_RENDERER);
     final Value tune1 = new ValueImpl(typeTune1, "Master Tune[1]");
     tune1.setBitSize(7);
     tune1.setDefaultValue(0x0);
@@ -1349,7 +1347,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeTune0 =
       new SparseType("internal-tune").
-      addValueRange(0x0, 0xf, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x0, 0xf, IntegerRenderer.DEFAULT_RENDERER);
     final Value tune0 = new ValueImpl(typeTune0, "Master Tune[0]");
     tune0.setBitSize(7);
     tune0.setDefaultValue(0x0);
@@ -1369,7 +1367,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeDrumsSetupReset =
       new SparseType("internal-error").
-      addValueRange(0x0, 0x1, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x0, 0x1, IntegerRenderer.DEFAULT_RENDERER);
     final Value drumsSetupReset =
       new ValueImpl(typeDrumsSetupReset, "Drum Setup Reset",
                     addr2index(0x00, 0x00, 0x7d));
@@ -1379,7 +1377,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeXgOn =
       new SparseType("internal-error").
-      addSingleValue(0x0, IntegerRenderer.BYTE_RENDERER);
+      addSingleValue(0x0, IntegerRenderer.DEFAULT_RENDERER);
     final Value xgOn = new ValueImpl(typeXgOn, "XG System On");
     xgOn.setBitSize(7);
     xgOn.setDefaultValue(0x0);
@@ -1387,7 +1385,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeAllReset =
       new SparseType("internal-error").
-      addSingleValue(0x0, IntegerRenderer.BYTE_RENDERER);
+      addSingleValue(0x0, IntegerRenderer.DEFAULT_RENDERER);
     final Value allReset = new ValueImpl(typeAllReset, "All Parameter Reset");
     allReset.setBitSize(7);
     allReset.setDefaultValue(0x0);
@@ -1412,7 +1410,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeDiffusion =
       new SparseType("internal-control").
-      addValueRange(0x00, 0x0a, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x00, 0x0a, IntegerRenderer.DEFAULT_RENDERER);
     final Value diffusion = new ValueImpl(typeDiffusion, "Diffusion");
     diffusion.setBitSize(7);
     diffusion.setDefaultValue(0x00);
@@ -1450,7 +1448,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeWallVary =
       new SparseType("internal-control").
-      addValueRange(0x00, 0x1e, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x00, 0x1e, IntegerRenderer.DEFAULT_RENDERER);
     final Value wallVary = new ValueImpl(typeWallVary, "Wall Vary");
     wallVary.setBitSize(7);
     wallVary.setDefaultValue(0x00);
@@ -1479,7 +1477,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeDensity =
       new SparseType("internal-control").
-      addValueRange(0x0, 0x3, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x0, 0x3, IntegerRenderer.DEFAULT_RENDERER);
     final Value density = new ValueImpl(typeDensity, "Density");
     density.setBitSize(7);
     density.setDefaultValue(0x0);
@@ -1495,7 +1493,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeFeedbackLevel =
       new SparseType("internal-volume").
-      addValueRange(0x01, 0x7f, new IntegerRenderer(0x40));
+      addValueRange(0x01, 0x7f, -0x3f, IntegerRenderer.DEFAULT_RENDERER);
     final Value feedbackLevel =
       new ValueImpl(typeFeedbackLevel, "Feedback Level");
     feedbackLevel.setBitSize(7);
@@ -1529,7 +1527,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeFeedbackLevel =
       new SparseType("internal-volume").
-      addValueRange(0x01, 0x7f, new IntegerRenderer(0x40));
+      addValueRange(0x01, 0x7f, -0x3f, IntegerRenderer.DEFAULT_RENDERER);
     final Value feedbackLevel =
       new ValueImpl(typeFeedbackLevel, "Feedback Level");
     feedbackLevel.setBitSize(7);
@@ -1769,7 +1767,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeElementReserve =
       new SparseType("internal-control").
-      addValueRange(0x00, 0x1f, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x00, 0x1f, IntegerRenderer.DEFAULT_RENDERER);
     final Value elementReserve =
       new ValueImpl(typeElementReserve, "Element Reserve");
     elementReserve.setBitSize(7);
@@ -1788,11 +1786,9 @@ public class DB50XG extends AbstractDevice
     bankSelectLsb.setDefaultValue(0x00);
     nodeMultiPartN.add(new DataNode(bankSelectLsb));
 
-    final ValueRangeRenderer valueType1ToN = new IntegerRenderer(-1);
-
     final SparseType typeProgramNumber =
       new SparseType("internal-control").
-      addValueRange(0x00, 0x7f, valueType1ToN);
+      addValueRange(0x00, 0x7f, 0x01, IntegerRenderer.DEFAULT_RENDERER);
     final Value programNumber =
       new ValueImpl(typeProgramNumber, "Program Number");
     programNumber.setBitSize(7);
@@ -1801,7 +1797,7 @@ public class DB50XG extends AbstractDevice
 
     final SparseType typeRcvChannel =
       new SparseType("internal-control").
-      addValueRange(0x00, 0x0f, valueType1ToN).
+      addValueRange(0x00, 0x0f, 0x01, IntegerRenderer.DEFAULT_RENDERER).
       addSingleValue(0x10, "Off");
     final Value rcvChannel =
       new ValueImpl(typeRcvChannel, "Rcv Channel");
@@ -2254,7 +2250,7 @@ public class DB50XG extends AbstractDevice
     final SparseType typeAlternativeGroup =
       new SparseType("internal-control").
       addSingleValue(0x00, "Off").
-      addValueRange(0x01, 0x7f, IntegerRenderer.BYTE_RENDERER);
+      addValueRange(0x01, 0x7f, IntegerRenderer.DEFAULT_RENDERER);
     final Value alternativeGroup =
       new ValueImpl(typeAlternativeGroup, "Alternative Group");
     alternativeGroup.setBitSize(7);

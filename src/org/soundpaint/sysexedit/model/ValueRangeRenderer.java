@@ -39,13 +39,6 @@ public interface ValueRangeRenderer
   String DISPLAY_VALUE_UNKNOWN = "???";
 
   /**
-   * Returns the lower bound of the range of values that this value
-   * range type represents.
-   * @return The lower bound integer value of this value range type.
-   */
-  int getLowerBound();
-
-  /**
    * Returns the size of this value range type, i.e. the number of
    * different values in this value range type.
    * @return The size of this value range type.

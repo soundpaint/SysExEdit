@@ -120,22 +120,23 @@ public class SparseType
   /**
    * Creates a sparse type with initially a single contiguous range.
    * @param iconKey The key of the icon to be used when rendering this
-   * @param lb The lower bound of the contiguous range.
-   * @param ub The upper bound of the contiguous range.
+   * @param lowerBound The lower bound of the contiguous range.
+   * @param upperBound The upper bound of the contiguous range.
    * @param renderer The renderer for the contiguous range.
    * @exception NullPointerException If renderer equals null.
    */
   public SparseType(final String iconKey,
-                    final int lb, final int ub,
+                    final int lowerBound, final int upperBound,
                     final ValueRangeRenderer renderer)
   {
     this(iconKey);
-    addValueRange(lb, ub, renderer);
+    addValueRange(lowerBound, upperBound, renderer);
   }
 
   /**
    * Creates a sparse type with initially a single contiguous range.
    * @param description An optional informal description of this
+   * sparse type.
    * @param iconKey The key of the icon to be used when rendering this
    * @param ranges A list of contiguous ranges.
    * SparseType.  Useful e.g. as tooltip in the GUI.
@@ -206,25 +207,71 @@ public class SparseType
 
   /**
    * Adds a single contiguous range to this sparse type.
-   * @param lb The lower bound of the contiguous range.
-   * @param ub The upper bound of the contiguous range.
+   * @param lowerBound The lower bound of the contiguous range.
+   * @param upperBound The upper bound of the contiguous range.
    * @param renderer The renderer for the contiguous range.
    * @return This object for convenience of chained expressions.
    * @exception NullPointerException If renderer equals null.
    * @exception IllegalArgumentException If the value range overlaps
    *    some already exisiting value range.
    */
-  public SparseType addValueRange(final int lb, final int ub,
+  public SparseType addValueRange(final int lowerBound, final int upperBound,
                                   final ValueRangeRenderer renderer)
   {
-    final long unsigned_lb = signed_int_to_long(lb);
-    final long unsigned_ub = signed_int_to_long(ub);
-    if ((lb < 0) && (ub >= 0)) {
+    return addValueRange(lowerBound, upperBound, 0, renderer);
+  }
+
+  /**
+   * Adds a single contiguous range to this sparse type.
+   * @param lowerBound The lower bound of the contiguous range.
+   * @param upperBound The upper bound of the contiguous range.
+   * @param displayOffset The offset to add from the numerical value
+   * relative to the lower bound when getting the display value from
+   * the specified renderer.
+   * @param renderer The renderer for the contiguous range.
+   * @return This object for convenience of chained expressions.
+   * @exception NullPointerException If renderer equals null.
+   * @exception IllegalArgumentException If the value range overlaps
+   *    some already exisiting value range.
+   */
+  public SparseType addValueRange(final int lowerBound, final int upperBound,
+                                  final int displayOffset,
+                                  final ValueRangeRenderer renderer)
+  {
+    return addValueRange(null, lowerBound, upperBound, displayOffset, renderer);
+  }
+
+  /**
+   * Adds a single contiguous range to this sparse type.
+   * @param description An optional informal description of the
+   * range to add.
+   * @param lowerBound The lower bound of the contiguous range.
+   * @param upperBound The upper bound of the contiguous range.
+   * @param displayOffset The offset to add from the numerical value
+   * relative to the lower bound when getting the display value from
+   * the specified renderer.
+   * @param renderer The renderer for the contiguous range.
+   * @return This object for convenience of chained expressions.
+   * @exception NullPointerException If renderer equals null.
+   * @exception IllegalArgumentException If the value range overlaps
+   *    some already exisiting value range.
+   */
+  public SparseType addValueRange(final String description,
+                                  final int lowerBound, final int upperBound,
+                                  final int displayOffset,
+                                  final ValueRangeRenderer renderer)
+  {
+    final long unsigned_lb = signed_int_to_long(lowerBound);
+    final long unsigned_ub = signed_int_to_long(upperBound);
+    if ((lowerBound < 0) && (upperBound >= 0)) {
       // contiguous wrap-over ; split it up
-      valueRanges.add(new ValueRange(unsigned_lb, max_unsigned, renderer));
-      valueRanges.add(new ValueRange(min_unsigned, unsigned_ub, renderer));
+      valueRanges.add(new ValueRange(description, unsigned_lb, max_unsigned,
+                                     displayOffset, renderer));
+      valueRanges.add(new ValueRange(description, min_unsigned, unsigned_ub,
+                                     displayOffset, renderer));
     } else {
-      valueRanges.add(new ValueRange(unsigned_lb, unsigned_ub, renderer));
+      valueRanges.add(new ValueRange(description, unsigned_lb, unsigned_ub,
+                                     displayOffset, renderer));
     }
     valueRangesByNumericalValue = null;
     return this;
@@ -246,25 +293,6 @@ public class SparseType
   }
 
   /**
-   * Adds a single value to the sparse type, assuming that the
-   * specified renderer's range consists of a single value.
-   * @param renderer The value range renderer for the value.
-   * @return This object for convenience of chained expressions.
-   * @exception NullPointerException If renderer equals null.
-   * @exception IllegalArgumentException If the renderer represents
-   *    more than a single value.
-   * @exception IllegalArgumentException If the single value is
-   *    already contained in some existing value range.
-   */
-  public SparseType addSingleValue(final ValueRangeRenderer renderer)
-  {
-    if (renderer.getSize() != 1) {
-      throw new IllegalArgumentException("renderer does not represent a single value");
-    }
-    return addSingleValue(renderer.getLowerBound(), renderer);
-  }
-
-  /**
    * Adds a single enumeration value to the sparse type.
    * @param value The enumeration value to be added.
    * @param enumValue The enumeration value as string.
@@ -275,7 +303,7 @@ public class SparseType
    */
   public SparseType addSingleValue(final int value, final String enumValue)
   {
-    return addSingleValue(value, new EnumRenderer(value, enumValue));
+    return addSingleValue(value, new EnumRenderer(enumValue));
   }
 
   private final static Comparator<ValueRange>
@@ -318,7 +346,7 @@ public class SparseType
     }
     final ValueRange valueRange =
       new ValueRange(numericalValue, numericalValue,
-                     IntegerRenderer.BYTE_RENDERER);
+                     IntegerRenderer.DEFAULT_RENDERER);
     final ValueRange floor = valueRangesByNumericalValue.floor(valueRange);
     if (floor != null) {
       return floor;

@@ -26,7 +26,6 @@ package org.soundpaint.sysexedit.model;
  */
 public class IntegerRenderer implements ValueRangeRenderer
 {
-  private final int lowerBound;
   private final int radix;
   private final boolean fillWithLeadingZeroes;
   private final String displayPrefix;
@@ -38,37 +37,20 @@ public class IntegerRenderer implements ValueRangeRenderer
    * 0x00 through 0xff.  The display value is just the value's
    * ordinary numeric representation.
    */
-  public final static IntegerRenderer BYTE_RENDERER = new IntegerRenderer();
+  public static final IntegerRenderer DEFAULT_RENDERER = new IntegerRenderer();
 
   /**
-   * Defines a new IntegerRenderer for arbitrary values n in the range
-   * 0x00 through 0xff.  The display value is just the value's
-   * ordinary numeric representation.
+   * Defines a new IntegerRenderer for arbitrary integer values n.
+   * This convenience constructor assumes a radix of 10 for displaying
+   * the value.
    */
-  private IntegerRenderer()
+  public IntegerRenderer()
   {
-    this(0);
+    this(10, false, "", "", (byte)0);
   }
 
   /**
-   * Defines a new IntegerRenderer for arbitrary integer values n in
-   * the range [0, 255], that are displayed as values [lowerBound,
-   * lowerBound + 255].  This convenience constructor assumes a radix
-   * of 10 for displaying the value.
-   * @param lowerBound The integer value that the display value '0'
-   * maps to.
-   */
-  public IntegerRenderer(final int lowerBound)
-  {
-    this(lowerBound, 10, false, "", "", (byte)0);
-  }
-
-  /**
-   * Defines a new IntegerRenderer for arbitrary integer values n in
-   * the range [0, 255], that are displayed as values [lowerBound,
-   * lowerBound + 255].
-   * @param lowerBound The integer value that the display value '0'
-   * maps to.
+   * Defines a new IntegerRenderer for arbitrary integer values n.
    * @param radix The radix to use when creating a numeric display
    * value from the integer value.
    * @param fillWithLeadingZeroes If minWidth is larger than the
@@ -82,13 +64,12 @@ public class IntegerRenderer implements ValueRangeRenderer
    * generated String will cover (including display prefix and display
    * suffix).
    */
-  public IntegerRenderer(final int lowerBound, final int radix,
+  public IntegerRenderer(final int radix,
                          final boolean fillWithLeadingZeroes,
                          final String displayPrefix,
                          final String displaySuffix,
                          final byte minWidth)
   {
-    this.lowerBound = lowerBound;
     this.radix = radix;
     this.fillWithLeadingZeroes = fillWithLeadingZeroes;
     this.displayPrefix = displayPrefix;
@@ -96,14 +77,9 @@ public class IntegerRenderer implements ValueRangeRenderer
     this.minWidth = minWidth;
   }
 
-  public int getLowerBound()
-  {
-    return lowerBound;
-  }
-
   public int getSize()
   {
-    return 256;
+    throw new UnsupportedOperationException("method getSize() not implemented for integer renderer");
   }
 
   /**
@@ -146,12 +122,13 @@ public class IntegerRenderer implements ValueRangeRenderer
    * Returns a String that represents the specified value according to
    * the specification of this IntegerRenderer.
    */
-  public String getDisplayValue(final int value)
+  public String getDisplayValue(final int numericalValue)
   {
-    final long index = value - lowerBound;
-    final long nonNegativeIndex = index >= 0 ? index : -index;
-    final String digits = Integer.toString((int)nonNegativeIndex, radix);
-    final String sign = index >= 0 ? "" : "-";
+    final long nonNegativeNumericalValue =
+      numericalValue >= 0 ? numericalValue : -numericalValue;
+    final String digits =
+      Integer.toString((int)nonNegativeNumericalValue, radix);
+    final String sign = numericalValue >= 0 ? "" : "-";
     final int width =
       displayPrefix.length() +
       sign.length() +
@@ -170,7 +147,7 @@ public class IntegerRenderer implements ValueRangeRenderer
   public String toString()
   {
     return
-      "IntegerRenderer{lowerBound=" + lowerBound + ", radix=" + radix + "}";
+      "IntegerRenderer{radix=" + radix + "}";
   }
 }
 

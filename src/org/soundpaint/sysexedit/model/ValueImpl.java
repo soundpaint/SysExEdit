@@ -307,11 +307,9 @@ public class ValueImpl extends AbstractValue
     int index = -1;
     Integer numericalValue = sparseType.lowermost();
     while (numericalValue != null) {
+      final String displayValue = sparseType.getDisplayValue(numericalValue);
       final EnumRenderer enumRenderer =
-        new EnumRenderer(numericalValue, new String[]
-          {
-            sparseType.getDisplayValue(numericalValue)
-          });
+        new EnumRenderer(new String[] { displayValue });
       final SparseType editorSparseType =
         new SparseType(sparseType.getIconKey(),
                        numericalValue, numericalValue, enumRenderer);

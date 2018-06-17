@@ -25,58 +25,34 @@ package org.soundpaint.sysexedit.model;
  */
 public class BitMaskRenderer implements ValueRangeRenderer
 {
-  private final int lowerBound;
   private final int bitStringSize;
 
   /**
    * Defines a new bits mask for arbitrary values n in the range 0x00
    * through 0xff.  The display value is just the value's ordinary
-   * numerical representation as a set of binary digits.  This
-   * convenience constructor assumes a bit string size of 8.
+   * numerical representation, displayed as a set of binary digits.
+   * This convenience constructor assumes a bit string size of 8.
    */
   public BitMaskRenderer()
   {
-    this(0);
+    this(8);
   }
 
   /**
    * Defines a new bits mask for arbitrary values n in the range 0x00
    * through 0xff.  The display value is just the value's ordinary
-   * numerical representation relative to the specified lower bound,
-   * displayed as a set of binary digits.  This convenience
-   * constructor assumes a bit string size of 8.
-   * @param lowerBound The integer value that the bit mask consisting
-   * of '0's only maps to.
-   */
-  public BitMaskRenderer(final int lowerBound)
-  {
-    this(lowerBound, 8);
-  }
-
-  /**
-   * Defines a new bits mask for arbitrary values n in the range 0x00
-   * through 0xff.  The display value is just the value's ordinary
-   * numerical representation relative to the specified lower bound,
-   * displayed as a set of binary digits.
-   * @param lowerBound The integer value that the bit mask consisting
-   * of '0's only maps to.
+   * numerical representation, displayed as a set of binary digits.
    * @param bitStringSize The number of flags to be shown in the
    * display value.
    */
-  public BitMaskRenderer(final int lowerBound, final int bitStringSize)
+  public BitMaskRenderer(final int bitStringSize)
   {
-    this.lowerBound = lowerBound;
     this.bitStringSize = bitStringSize;
-  }
-
-  public int getLowerBound()
-  {
-    return lowerBound;
   }
 
   public int getSize()
   {
-    return 256;
+    throw new UnsupportedOperationException("method getSize() not implemented for bit mask renderer");
   }
 
   private String formatBitMask(final int value)
@@ -94,13 +70,12 @@ public class BitMaskRenderer implements ValueRangeRenderer
    * @param value The numerical value to be represented.
    * @return A bit mask as display value.
    */
-  public String getDisplayValue(final int value)
+  public String getDisplayValue(final int numericalValue)
   {
-    final long index = value - lowerBound;
-    if ((index < 0) || (index > 255)) {
+    if ((numericalValue < 0) || (numericalValue > 255)) {
       return DISPLAY_VALUE_UNKNOWN;
     }
-    return formatBitMask((int)index);
+    return formatBitMask(numericalValue);
   }
 
   /**
@@ -109,8 +84,7 @@ public class BitMaskRenderer implements ValueRangeRenderer
    */
   public String toString()
   {
-    return "BitMaskRenderer{lowerBound=" + lowerBound +
-      ", bitStringSize=" + bitStringSize + "}";
+    return "BitMaskRenderer{bitStringSize=" + bitStringSize + "}";
   }
 }
 

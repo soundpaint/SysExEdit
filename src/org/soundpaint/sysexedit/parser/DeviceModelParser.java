@@ -74,6 +74,7 @@ public class DeviceModelParser
   private static final String TAG_NAME_ICON = "icon";
   private static final String TAG_NAME_LOWER_BOUND = "lower-bound";
   private static final String TAG_NAME_UPPER_BOUND = "upper-bound";
+  private static final String TAG_NAME_DISPLAY_OFFSET = "display-offset";
   private static final String TAG_NAME_INTEGER = "integer";
   private static final String TAG_NAME_RADIX = "radix";
   private static final String TAG_NAME_FILL_WITH_LEADING_ZEROS = "fill-with-leading-zeros";
@@ -492,7 +493,7 @@ public class DeviceModelParser
       throw new ParseException(element,
                                "empty '" + TAG_NAME_VALUES + "' declaration");
     }
-    final EnumRenderer renderer = new EnumRenderer(description, 0, strValues);
+    final EnumRenderer renderer = new EnumRenderer(description, strValues);
     final Symbol<EnumRenderer> symbol =
       new Symbol<EnumRenderer>(element, renderer);
     rendererSymbols.enterSymbol(identifier, symbol);
@@ -507,7 +508,6 @@ public class DeviceModelParser
     if (isTypeRef(element)) {
       return identifier;
     }
-    Integer lowerBound = null;
     Integer radix = null;
     Boolean fillWithLeadingZeros = null;
     String displayPrefix = null;
@@ -519,12 +519,7 @@ public class DeviceModelParser
       if (childNode instanceof Element) {
         final Element childElement = (Element)childNode;
         final String childElementName = childElement.getTagName();
-        if (childElementName.equals(TAG_NAME_LOWER_BOUND)) {
-          if (lowerBound != null) {
-            throwDuplicateException(childElement, TAG_NAME_LOWER_BOUND);
-          }
-          lowerBound = Integer.parseInt(childElement.getTextContent());
-        } else if (childElementName.equals(TAG_NAME_RADIX)) {
+        if (childElementName.equals(TAG_NAME_RADIX)) {
           if (radix != null) {
             throwDuplicateException(childElement, TAG_NAME_RADIX);
           }
@@ -562,8 +557,7 @@ public class DeviceModelParser
       }
     }
     final IntegerRenderer renderer =
-      new IntegerRenderer(lowerBound != null ? lowerBound : 0,
-                          radix != null ? radix : 10,
+      new IntegerRenderer(radix != null ? radix : 10,
                           fillWithLeadingZeros != null ? fillWithLeadingZeros : false,
                           displayPrefix != null ? displayPrefix : "",
                           displaySuffix != null ? displaySuffix : "",
@@ -582,7 +576,6 @@ public class DeviceModelParser
     if (isTypeRef(element)) {
       return identifier;
     }
-    Integer lowerBound = null;
     Integer bitStringSize = null;
     final NodeList childNodes = element.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
@@ -590,12 +583,7 @@ public class DeviceModelParser
       if (childNode instanceof Element) {
         final Element childElement = (Element)childNode;
         final String childElementName = childElement.getTagName();
-        if (childElementName.equals(TAG_NAME_LOWER_BOUND)) {
-          if (lowerBound != null) {
-            throwDuplicateException(childElement, TAG_NAME_LOWER_BOUND);
-          }
-          lowerBound = Integer.parseInt(childElement.getTextContent());
-        } else if (childElementName.equals(TAG_NAME_BIT_STRING_SIZE)) {
+        if (childElementName.equals(TAG_NAME_BIT_STRING_SIZE)) {
           if (bitStringSize != null) {
             throwDuplicateException(childElement, TAG_NAME_BIT_STRING_SIZE);
           }
@@ -613,8 +601,7 @@ public class DeviceModelParser
       }
     }
     final BitMaskRenderer renderer =
-      new BitMaskRenderer(lowerBound != null ? lowerBound : 0,
-                          bitStringSize != null ? bitStringSize : 8);
+      new BitMaskRenderer(bitStringSize != null ? bitStringSize : 8);
     final Symbol<BitMaskRenderer> symbol =
       new Symbol<BitMaskRenderer>(element, renderer);
     rendererSymbols.enterSymbol(identifier, symbol);
@@ -696,6 +683,7 @@ public class DeviceModelParser
     String description = null;
     Long lowerBound = null;
     Long upperBound = null;
+    Long displayOffset = null;
     Symbol<? extends ValueRangeRenderer> rendererSymbol = null;
     final NodeList childNodes = element.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
@@ -718,6 +706,11 @@ public class DeviceModelParser
             throwDuplicateException(childElement, TAG_NAME_UPPER_BOUND);
           }
           upperBound = Long.parseLong(childElement.getTextContent());
+        } else if (childElementName.equals(TAG_NAME_DISPLAY_OFFSET)) {
+          if (displayOffset != null) {
+            throwDuplicateException(childElement, TAG_NAME_DISPLAY_OFFSET);
+          }
+          displayOffset = Long.parseLong(childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_ENUM)) {
           if (rendererSymbol != null) {
             final Throwable cause =
@@ -784,16 +777,14 @@ public class DeviceModelParser
                                "' must be specified");
     }
     final ValueRangeRenderer renderer = rendererSymbol.getValue();
-    final long lb =
-      lowerBound != null ?
-      lowerBound :
-      renderer.getLowerBound();
+    final long lb = lowerBound != null ? lowerBound : 0;
     final long ub =
       upperBound != null ?
       upperBound :
       lb + renderer.getSize() - 1;
+    final long dspOffs = displayOffset != null ? displayOffset : 0;
     final ValueRange range =
-      new ValueRange(description, lb, ub, renderer);
+      new ValueRange(description, lb, ub, dspOffs, renderer);
       /*
       new ValueRange(description,
                      lowerBound != null ? lowerBound : 0,
