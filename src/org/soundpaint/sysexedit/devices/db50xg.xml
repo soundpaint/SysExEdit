@@ -2628,6 +2628,7 @@
       <folder label="Reverb">
         <data label="Reverb Type">
           <type ref="reverb-type" />
+          <default-value>0x0080</default-value>
         </data>
       </folder>
       <folder label="Chorus">

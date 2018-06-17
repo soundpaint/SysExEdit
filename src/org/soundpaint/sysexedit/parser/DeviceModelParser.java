@@ -85,6 +85,7 @@ public class DeviceModelParser
   private static final String TAG_NAME_BIT_STRING_SIZE = "bit-string-size";
   private static final String TAG_NAME_DATA = "data";
   private static final String TAG_NAME_LOOP = "loop";
+  private static final String TAG_NAME_DEFAULT_VALUE = "default-value";
   private static final String TAG_NAME_DESIRED_ADDRESS = "desired-address";
 
   private static Document loadXml(final URL deviceUrl)
@@ -939,7 +940,7 @@ public class DeviceModelParser
     if (isTypeRef(element)) {
       return identifier;
     }
-    String description = null; // TODO
+    String description = null;
     Identifier iconId = null;
     Long desiredAddress = null;
 
@@ -951,6 +952,8 @@ public class DeviceModelParser
     }
 
     SparseType type = null;
+    Integer defaultValue = null;
+
     final NodeList childNodes = element.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
       final Node childNode = childNodes.item(index);
@@ -980,6 +983,11 @@ public class DeviceModelParser
             throwDuplicateException(childElement, TAG_NAME_ICON);
           }
           iconId = Identifier.fromString(childElement.getTextContent());
+        } else if (childElementName.equals(TAG_NAME_DEFAULT_VALUE)) {
+          if (defaultValue != null) {
+            throwDuplicateException(childElement, TAG_NAME_DEFAULT_VALUE);
+          }
+          defaultValue = parseInt(childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_DESIRED_ADDRESS)) {
           if (desiredAddress != null) {
             throwDuplicateException(childElement, TAG_NAME_DESIRED_ADDRESS);
@@ -1004,6 +1012,7 @@ public class DeviceModelParser
     final Value value =
       new ValueImpl(iconId != null ? iconId.toString() : null,
                     type, description, label,
+                    defaultValue != null ? defaultValue : 0,
                     desiredAddress != null ? desiredAddress : -1);
     final Symbol<Value> dataSymbol = new Symbol<Value>(element, value);
     dataSymbols.enterSymbol(identifier, dataSymbol);

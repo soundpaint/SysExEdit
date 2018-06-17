@@ -55,49 +55,53 @@ public class ValueImpl extends AbstractValue
 
   private final Vector<ValueChangeListener> listeners;
 
-  public ValueImpl(final SparseType sparseType)
+  public ValueImpl(final SparseType sparseType, final int defaultValue)
   {
-    this(null, sparseType);
-  }
-
-  public ValueImpl(final String iconKey, final SparseType sparseType)
-  {
-    this(iconKey, sparseType, null);
-  }
-
-  public ValueImpl(final SparseType sparseType, final String label)
-  {
-    this(null, sparseType, label);
+    this(null, sparseType, defaultValue);
   }
 
   public ValueImpl(final String iconKey, final SparseType sparseType,
-                   final String label)
+                   final int defaultValue)
   {
-    this(iconKey, sparseType, null, label);
+    this(iconKey, sparseType, null, defaultValue);
   }
 
-  public ValueImpl(final SparseType sparseType,
-                   final String description, final String label)
+  public ValueImpl(final SparseType sparseType, final String label,
+                   final int defaultValue)
   {
-    this(null, sparseType, description, label);
-  }
-
-  public ValueImpl(final String iconKey, final SparseType sparseType,
-                   final String description, final String label)
-  {
-    this(iconKey, sparseType, description, label, -1);
-  }
-
-  public ValueImpl(final SparseType sparseType,
-                   final String label, final long desiredAddress)
-  {
-    this(null, sparseType, label, desiredAddress);
+    this(null, sparseType, label, defaultValue);
   }
 
   public ValueImpl(final String iconKey, final SparseType sparseType,
-                   final String label, final long desiredAddress)
+                   final String label, final int defaultValue)
   {
-    this(iconKey, sparseType, null, label, desiredAddress);
+    this(iconKey, sparseType, null, label, defaultValue);
+  }
+
+  public ValueImpl(final SparseType sparseType, final String description,
+                   final String label, final int defaultValue)
+  {
+    this(null, sparseType, description, label, defaultValue);
+  }
+
+  public ValueImpl(final String iconKey, final SparseType sparseType,
+                   final String description, final String label,
+                   final int defaultValue)
+  {
+    this(iconKey, sparseType, description, label, defaultValue, -1);
+  }
+
+  public ValueImpl(final SparseType sparseType, final String label,
+                   final int defaultValue, final long desiredAddress)
+  {
+    this(null, sparseType, label, defaultValue, desiredAddress);
+  }
+
+  public ValueImpl(final String iconKey, final SparseType sparseType,
+                   final String label, final int defaultValue,
+                   final long desiredAddress)
+  {
+    this(iconKey, sparseType, null, label, defaultValue, desiredAddress);
   }
 
   /**
@@ -110,6 +114,7 @@ public class ValueImpl extends AbstractValue
    *    the sparse type of this Value object.
    * @param iconKey If non-null, overrides the associated
    * sparse type's iconKey.
+   * @param defaultValue The underlying numerical default value.
    * @param desiredAddress If negative, automatically determine an
    *    absolute address for this node.  If non-negative, request that
    *    this node will appear at the specified absolute address in the
@@ -126,9 +131,9 @@ public class ValueImpl extends AbstractValue
    */
   public ValueImpl(final String iconKey, final SparseType sparseType,
                    final String description, final String label,
-                   final long desiredAddress)
+                   final int defaultValue, final long desiredAddress)
   {
-    super(iconKey, description, label, desiredAddress);
+    super(iconKey, description, label, defaultValue, desiredAddress);
     if (sparseType == null) {
       throw new NullPointerException("sparseType");
     }
@@ -145,23 +150,44 @@ public class ValueImpl extends AbstractValue
   /**
    * Creates a new Value object that represents unused bits.
    * @param amount The amount of unused bits.
+   * @param label The label of this node.
    * @exception IllegalArgumentException If amount of unused bits is
    *    below zero or above the upper limit of 15.
    */
   public ValueImpl(final int amount, final String label)
   {
-    this(amount, null, label);
+    this(amount, label, 0);
   }
 
-  public ValueImpl(final int amount, final String iconKey, final String label)
+  /**
+   * Creates a new Value object that represents unused bits.
+   * @param amount The amount of unused bits.
+   * @param label The label of this node.
+   * @param defaultValue The underlying numerical default value.
+   * @exception IllegalArgumentException If amount of unused bits is
+   *    below zero or above the upper limit of 15.
+   */
+  public ValueImpl(final int amount, final String label, final int defaultValue)
   {
-    this(amount, iconKey, label, -1);
+    this(amount, null, label, defaultValue);
+  }
+
+  public ValueImpl(final int amount, final String iconKey, final String label,
+                   final int defaultValue)
+  {
+    this(amount, iconKey, label, defaultValue, -1);
   }
 
   public ValueImpl(final int amount, final String label,
                    final long desiredAddress)
   {
-    this(amount, null, label, desiredAddress);
+    this(amount, label, 0, desiredAddress);
+  }
+
+  public ValueImpl(final int amount, final String label,
+                   final int defaultValue, final long desiredAddress)
+  {
+    this(amount, null, label, defaultValue, desiredAddress);
   }
 
   /**
@@ -170,6 +196,7 @@ public class ValueImpl extends AbstractValue
    * @param iconKey If non-null, overrides the associated
    * SparseType's iconKey.
    * @param label The label of this node.
+   * @param defaultValue The underlying numerical default value.
    * @param desiredAddress If negative, automatically determine an
    *    absolute address for this node.  If non-negative, request that
    *    this node will appear at the specified absolute address in the
@@ -186,11 +213,11 @@ public class ValueImpl extends AbstractValue
    *    below zero or above the upper limit of 15.
    */
   public ValueImpl(final int amount, final String iconKey, final String label,
-                   final long desiredAddress)
+                   final int defaultValue, final long desiredAddress)
   {
-    this(iconKey, getBitStringType(amount), label, desiredAddress);
+    this(iconKey, getBitStringType(amount),
+         label, defaultValue, desiredAddress);
     setBitSize(amount);
-    setDefaultValue(new Integer(0));
   }
 
   private void setupKeyListener()
@@ -313,8 +340,7 @@ public class ValueImpl extends AbstractValue
       final SparseType editorSparseType =
         new SparseType(sparseType.getIconKey(),
                        numericalValue, numericalValue, enumRenderer);
-      final Value value = new ValueImpl(editorSparseType);
-      value.setNumericalValue(numericalValue);
+      final Value value = new ValueImpl(editorSparseType, numericalValue);
       editor.addSelectableValue(value);
       index++;
       if (numericalValue == getNumericalValue()) {

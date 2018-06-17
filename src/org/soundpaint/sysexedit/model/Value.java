@@ -90,14 +90,6 @@ public interface Value
   long getDesiredAddress();
 
   /**
-   * Sets the underlying numerical value to apply when this Value
-   * instance is reset.
-   * @param defaultValue The underlying numerical default value.
-   * @see #reset
-   */
-  void setDefaultValue(final int defaultValue);
-
-  /**
    * Returns the underlying numerical value to apply when this Value
    * instance is reset.
    * @return The underlying numerical default value.

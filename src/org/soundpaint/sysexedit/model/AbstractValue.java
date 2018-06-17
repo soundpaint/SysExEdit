@@ -47,11 +47,11 @@ public abstract class AbstractValue implements Value
   /** Desired absolute address for the associated node. */
   private final long desiredAddress;
 
+  /** The initial (default) value. */
+  private final int defaultValue;
+
   /** The current value. */
   private int value;
-
-  /** The initial (default) value. */
-  private int defaultValue;
 
   private AbstractValue()
   {
@@ -66,6 +66,7 @@ public abstract class AbstractValue implements Value
    * @param description An optional informal description of this
    * Value.  Useful e.g. as tooltip in the GUI.
    * @param label The label of this node.
+   * @param defaultValue The default value.
    * @param desiredAddress If negative, automatically determine an
    *    absolute address for this node.  If non-negative, request that
    *    this node will appear at the specified absolute address in the
@@ -80,14 +81,15 @@ public abstract class AbstractValue implements Value
    *    and thus may result in throwing an exception some time later.
    */
   protected AbstractValue(final String iconKey, final String description,
-                          final String label, final long desiredAddress)
+                          final String label, final int defaultValue,
+                          final long desiredAddress)
   {
     this.iconKey = iconKey;
     this.description = description;
     this.label = label;
+    this.defaultValue = defaultValue;
     this.desiredAddress = desiredAddress;
-    value = 0;
-    defaultValue = 0;
+    value = defaultValue;
   }
 
   /**
@@ -145,19 +147,6 @@ public abstract class AbstractValue implements Value
   public long getDesiredAddress()
   {
     return desiredAddress;
-  }
-
-  /**
-   * Sets the underlying numerical value to apply when this Value
-   * instance is reset.  This value is not bound to a specific value
-   * range of the associated sparse type; thus it even may be out of
-   * the currently selected or any other value range.
-   * @param defaultValue The default value.
-   * @see #reset
-   */
-  public void setDefaultValue(final int defaultValue)
-  {
-    this.defaultValue = defaultValue;
   }
 
   /**
