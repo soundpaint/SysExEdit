@@ -57,6 +57,8 @@ public class DeviceModelParser
   private static final String ATTR_NAME_REF = "ref";
   private static final String ATTR_NAME_LABEL = "label";
   private static final String TAG_NAME_SYSEXEDIT = "sysexedit";
+  private static final String TAG_NAME_ADDRESS_REPRESENTATION =
+    "address-representation";
   private static final String TAG_NAME_DEVICE_CLASS = "device-class";
   private static final String TAG_NAME_DEVICE_NAME = "device-name";
   private static final String TAG_NAME_MAN_ID = "manufacturer-id";
@@ -137,6 +139,7 @@ public class DeviceModelParser
     }
   }
 
+  private Symbol<AddressRepresentation> addressRepresentation;
   private Symbol<String> deviceClass;
   private Symbol<String> deviceName;
   private Symbol<Byte> manufacturerId;
@@ -202,6 +205,11 @@ public class DeviceModelParser
     return enteredBy.getValue();
   }
 
+  public AddressRepresentation getAddressRepresentation()
+  {
+    return addressRepresentation.getValue();
+  }
+
   public AbstractDevice.MapRoot getRoot()
   {
     final Symbol<? extends FolderNode> rootSymbol =
@@ -230,6 +238,17 @@ public class DeviceModelParser
     return text.getData().trim().isEmpty();
   }
 
+  private void checkAddressRepresentationExists(final Element documentElement)
+    throws ParseException
+  {
+    final AddressRepresentation addressRepresentation =
+      getAddressRepresentation();
+    if (addressRepresentation == null) {
+      throw new ParseException(documentElement,
+                               "no global address representation definition found");
+    }
+  }
+
   private void checkRootExists(final Element documentElement)
     throws ParseException
   {
@@ -255,7 +274,9 @@ public class DeviceModelParser
       if (childNode instanceof Element) {
         final Element childElement = (Element)childNode;
         final String childElementName = childElement.getTagName();
-        if (childElementName.equals(TAG_NAME_DEVICE_CLASS)) {
+        if (childElementName.equals(TAG_NAME_ADDRESS_REPRESENTATION)) {
+          parseAddressRepresentation(childElement);
+        } else if (childElementName.equals(TAG_NAME_DEVICE_CLASS)) {
           parseDeviceClass(childElement);
         } else if (childElementName.equals(TAG_NAME_DEVICE_NAME)) {
           parseDeviceName(childElement);
@@ -293,6 +314,7 @@ public class DeviceModelParser
         throw new ParseException(childNode, "unsupported node");
       }
     }
+    checkAddressRepresentationExists(documentElement);
     checkRootExists(documentElement);
   }
 
@@ -310,6 +332,44 @@ public class DeviceModelParser
     throws ParseException
   {
     throw new ParseException(element, "duplicate '" + tagName + "' definition");
+  }
+
+  private static final String ADDRESS_REPRESENTATION_CLASS_NAME =
+    "org.soundpaint.sysexedit.model.AddressRepresentation";
+
+  private void parseAddressRepresentation(final Element element)
+    throws ParseException
+  {
+    if (addressRepresentation != null) {
+      final Throwable cause =
+        new ParseException(addressRepresentation.getLocation(),
+                           "first definition here");
+      cause.fillInStackTrace();
+      throwDuplicateException(element, TAG_NAME_ADDRESS_REPRESENTATION, cause);
+    }
+    final String className =
+      ADDRESS_REPRESENTATION_CLASS_NAME + "$" + element.getTextContent();
+    final Class<? extends AddressRepresentation> clazz;
+    try {
+      clazz = (Class<? extends AddressRepresentation>)Class.forName(className);
+    } catch (final ClassNotFoundException e) {
+      throw
+        new ParseException("no such address representation found: " +
+                           className, e);
+    }
+    final AddressRepresentation value;
+    try {
+      value = clazz.newInstance();
+    } catch (final InstantiationException e) {
+      throw
+        new ParseException("failed instantiating address representation: " +
+                           className, e);
+    } catch (final IllegalAccessException e) {
+      throw
+        new ParseException("failed instantiating address representation: " +
+                           className, e);
+    }
+    addressRepresentation = new Symbol<AddressRepresentation>(element, value);
   }
 
   private void parseDeviceClass(final Element element) throws ParseException
@@ -835,7 +895,7 @@ public class DeviceModelParser
     } else {
       label = null;
     }
-    final Long desiredAddress = null; // TODO
+    Long desiredAddress = null;
     final List<MapNode> folderContents = new ArrayList<MapNode>();
     final NodeList childNodes = element.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
@@ -848,6 +908,13 @@ public class DeviceModelParser
             throwDuplicateException(childElement, TAG_NAME_DESCRIPTION);
           }
           description = childElement.getTextContent();
+        } else if (childElementName.equals(TAG_NAME_DESIRED_ADDRESS)) {
+          if (desiredAddress != null) {
+            throwDuplicateException(childElement, TAG_NAME_DESIRED_ADDRESS);
+          }
+          desiredAddress = parseLong(childElement.getTextContent());
+          // TODO: Do not parseLong(), but according to address
+          // representation.
         } else if (childElementName.equals(TAG_NAME_FOLDER)) {
           final Identifier folderId = parseFolder(childElement, false);
           final Symbol<? extends FolderNode> folderSymbol =

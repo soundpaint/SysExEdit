@@ -974,22 +974,7 @@ public class DB50XG extends AbstractDevice
    */
   public AddressRepresentation getAddressRepresentation()
   {
-    return new AddressRepresentation() {
-      public String memoryBitAddress2DeviceAddress(final long bitAddress)
-      {
-        final long address = bitAddress / 7;
-        final byte addrHigh = (byte)((address >> 14) & 0x7f);
-        final byte addrMiddle = (byte)((address >> 7) & 0x7f);
-        final byte addrLow = (byte)(address & 0x7f);
-        final byte offset = (byte)(bitAddress % 7);
-        final String offsetStr = offset == 0 ? "" : " [" + offset + "]";
-        return
-          String.format("%02x", addrHigh) + " " +
-          String.format("%02x", addrMiddle) + " " +
-          String.format("%02x", addrLow) +
-          offsetStr;
-      }
-    };
+    return new AddressRepresentation.Triple7Bits();
   }
 
   /**

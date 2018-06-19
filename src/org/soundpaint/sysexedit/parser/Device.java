@@ -88,7 +88,7 @@ public class Device extends AbstractDevice
                       parser.getModelId(),
                       parser.getDeviceId(),
                       parser.getEnteredBy(),
-                      null, // TODO
+                      parser.getAddressRepresentation(),
                       parser.getRoot());
   }
 
@@ -128,6 +128,7 @@ public class Device extends AbstractDevice
   {
     final Map map = new Map(selectionListener, mapContextMenu);
     root.setMap(map);
+    resolve();
     return root;
   }
 
