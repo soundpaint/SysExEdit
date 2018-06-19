@@ -20,6 +20,9 @@
 
 package org.soundpaint.sysexedit.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * A class implements this interface to customize the literal
  * representation of addresses for a specific synthesizer.
@@ -33,24 +36,56 @@ public interface AddressRepresentation
    * @return A string representation for the device's memory address
    * of the bit.
    */
-  String memoryBitAddress2DeviceAddress(final long bitAddress);
+  String getDisplayAddress(final long bitAddress);
+
+  /**
+   * Returns the address of the memory bit in the map that represents
+   * the device's memory address with the specified string
+   * representation.
+   * @param displayAddress A string representation for the device's
+   * memory address of the bit.
+   * @return The index in the bit array of the memory map.
+   * @exception NumberFormatException If parsing fails.
+   */
+  long parse(final String displayAddress);
 
   static class Triple7Bits implements AddressRepresentation
   {
-      public String memoryBitAddress2DeviceAddress(final long bitAddress)
-      {
-        final long address = bitAddress / 7;
-        final byte addrHigh = (byte)((address >> 14) & 0x7f);
-        final byte addrMiddle = (byte)((address >> 7) & 0x7f);
-        final byte addrLow = (byte)(address & 0x7f);
-        final byte offset = (byte)(bitAddress % 7);
-        final String offsetStr = offset == 0 ? "" : " [" + offset + "]";
-        return
-          String.format("%02x", addrHigh) + " " +
-          String.format("%02x", addrMiddle) + " " +
-          String.format("%02x", addrLow) +
-          offsetStr;
+    public String getDisplayAddress(final long bitAddress)
+    {
+      final long address = bitAddress / 7;
+      final byte addrHigh = (byte)((address >> 14) & 0x7f);
+      final byte addrMiddle = (byte)((address >> 7) & 0x7f);
+      final byte addrLow = (byte)(address & 0x7f);
+      final byte offset = (byte)(bitAddress % 7);
+      final String offsetStr = offset == 0 ? "" : " [" + offset + "]";
+      return
+        String.format("%02x", addrHigh) + " " +
+        String.format("%02x", addrMiddle) + " " +
+        String.format("%02x", addrLow) +
+        offsetStr;
+    }
+
+    public long parse(final String displayAddress)
+    {
+      final String regex = "^([a-fA-F0-9]{1,2})\\s+([a-fA-F0-9]{1,2})\\s+([a-fA-F0-9]{1,2})(\\s+\\[[0-7]\\])?$";
+      final Pattern pattern = Pattern.compile(regex);
+      final Matcher matcher = pattern.matcher(displayAddress);
+
+      final StringBuilder result = new StringBuilder();
+      if (!matcher.find()) {
+        throw new NumberFormatException();
       }
+      final int addrHigh = Integer.parseInt(matcher.group(1), 16) & 0xff;
+      final int addrMiddle = Integer.parseInt(matcher.group(2), 16) & 0xff;
+      final int addrLow = Integer.parseInt(matcher.group(3), 16) & 0xff;
+      final long address = (addrHigh << 14) | (addrMiddle << 7) | addrLow;
+      final String offsGroup = matcher.group(4);
+      final int offs =
+        offsGroup != null ? Integer.parseInt(offsGroup, 16) & 0x7 : 0x0;
+      final long bitAddress = address * 7 + offs;
+      return bitAddress;
+    }
   }
 }
 

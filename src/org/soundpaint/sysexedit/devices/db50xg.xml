@@ -2612,7 +2612,7 @@
     </range>
   </type>
   <folder label="Drum Setup" id="drum_setup">
-    <desired-address>0x540000</desired-address>
+    <address>30 00 00</address>
     <loop first="0" last="1" id="setup">
       <folder label="Drum Setup {hex:setup}">
         <loop first="13" last="91" id="note">
@@ -2625,10 +2625,10 @@
   </folder>
   <folder label="MU50 / DB50XG" id="#root">
     <folder label="System">
-      <desired-address>0x000000</desired-address>
+      <address>00 00 00</address>
     </folder>
     <folder label="Effect1">
-      <desired-address>0x038380</desired-address>
+      <address>02 01 00</address>
       <folder label="Reverb">
         <data label="Reverb Type">
           <type ref="reverb-type" />
@@ -2636,14 +2636,14 @@
         </data>
       </folder>
       <folder label="Chorus">
-        <desired-address>0x038460</desired-address>
+        <address>02 01 20</address>
       </folder>
       <folder label="Variation">
-        <desired-address>0x038540</desired-address>
+        <address>02 01 40</address>
       </folder>
     </folder>
     <folder label="Multi Part">
-      <desired-address>0x0e0000</desired-address>
+      <address>08 00 00</address>
       <loop first="1" last="16" id="part">
         <folder label="Multi Part {part}">
         </folder>

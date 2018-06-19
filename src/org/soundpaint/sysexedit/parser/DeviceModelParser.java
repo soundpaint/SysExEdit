@@ -88,7 +88,8 @@ public class DeviceModelParser
   private static final String TAG_NAME_DATA = "data";
   private static final String TAG_NAME_LOOP = "loop";
   private static final String TAG_NAME_DEFAULT_VALUE = "default-value";
-  private static final String TAG_NAME_DESIRED_ADDRESS = "desired-address";
+  private static final String TAG_NAME_BIT_ADDRESS = "bit-address";
+  private static final String TAG_NAME_ADDRESS = "address";
 
   private static Document loadXml(final URL deviceUrl)
     throws ParseException
@@ -332,6 +333,16 @@ public class DeviceModelParser
     throws ParseException
   {
     throw new ParseException(element, "duplicate '" + tagName + "' definition");
+  }
+
+  private void throwDuplicateException(final Element element,
+                                       final String tagName1,
+                                       final String tagName2)
+    throws ParseException
+  {
+    throw new ParseException(element, "can define only one of '" +
+                             tagName1 + "' and '" + tagName2 + "', " +
+                             "but not both");
   }
 
   private static final String ADDRESS_REPRESENTATION_CLASS_NAME =
@@ -881,6 +892,18 @@ public class DeviceModelParser
     return identifier;
   }
 
+  private long parseAddress(final Element element) throws ParseException
+  {
+    if (addressRepresentation == null) {
+      throw new ParseException(element, "need address representation be defined prior to parsing display address");
+    }
+    try {
+      return addressRepresentation.getValue().parse(element.getTextContent());
+    } catch (final NumberFormatException e) {
+      throw new ParseException(element, "failed parsing display address");
+    }
+  }
+
   private Identifier parseFolder(final Element element, final boolean requireId)
     throws ParseException
   {
@@ -895,7 +918,8 @@ public class DeviceModelParser
     } else {
       label = null;
     }
-    Long desiredAddress = null;
+    Long address = null;
+    Long bitAddress = null;
     final List<MapNode> folderContents = new ArrayList<MapNode>();
     final NodeList childNodes = element.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
@@ -908,13 +932,24 @@ public class DeviceModelParser
             throwDuplicateException(childElement, TAG_NAME_DESCRIPTION);
           }
           description = childElement.getTextContent();
-        } else if (childElementName.equals(TAG_NAME_DESIRED_ADDRESS)) {
-          if (desiredAddress != null) {
-            throwDuplicateException(childElement, TAG_NAME_DESIRED_ADDRESS);
+        } else if (childElementName.equals(TAG_NAME_ADDRESS)) {
+          if (bitAddress != null) {
+            throwDuplicateException(childElement,
+                                    TAG_NAME_BIT_ADDRESS, TAG_NAME_ADDRESS);
           }
-          desiredAddress = parseLong(childElement.getTextContent());
-          // TODO: Do not parseLong(), but according to address
-          // representation.
+          if (address != null) {
+            throwDuplicateException(childElement, TAG_NAME_ADDRESS);
+          }
+          address = parseAddress(childElement);
+        } else if (childElementName.equals(TAG_NAME_BIT_ADDRESS)) {
+          if (address != null) {
+            throwDuplicateException(childElement,
+                                    TAG_NAME_ADDRESS, TAG_NAME_BIT_ADDRESS);
+          }
+          if (bitAddress != null) {
+            throwDuplicateException(childElement, TAG_NAME_BIT_ADDRESS);
+          }
+          bitAddress = parseLong(childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_FOLDER)) {
           final Identifier folderId = parseFolder(childElement, false);
           final Symbol<? extends FolderNode> folderSymbol =
@@ -954,16 +989,18 @@ public class DeviceModelParser
       }
     }
     final FolderNode folderNode;
+    final long desiredAddress =
+      bitAddress != null ? bitAddress : (address != null ? address : -1);
     if (identifier == Identifier.ROOT_ID) {
       folderNode =
         new AbstractDevice.MapRoot(description != null ? description : null,
                                    label != null ? label : null,
-                                   desiredAddress != null ? desiredAddress : -1);
+                                   desiredAddress);
     } else {
       folderNode =
         new FolderNode(description != null ? description : null,
                        label != null ? label : null,
-                       desiredAddress != null ? desiredAddress : -1);
+                       desiredAddress);
     }
     for (MapNode node : folderContents) {
       folderNode.add(node);
@@ -1009,7 +1046,8 @@ public class DeviceModelParser
     }
     String description = null;
     Identifier iconId = null;
-    Long desiredAddress = null;
+    Long address = null;
+    Long bitAddress = null;
 
     final String label;
     if (element.hasAttribute(ATTR_NAME_LABEL)) {
@@ -1055,11 +1093,24 @@ public class DeviceModelParser
             throwDuplicateException(childElement, TAG_NAME_DEFAULT_VALUE);
           }
           defaultValue = parseInt(childElement.getTextContent());
-        } else if (childElementName.equals(TAG_NAME_DESIRED_ADDRESS)) {
-          if (desiredAddress != null) {
-            throwDuplicateException(childElement, TAG_NAME_DESIRED_ADDRESS);
+        } else if (childElementName.equals(TAG_NAME_ADDRESS)) {
+          if (bitAddress != null) {
+            throwDuplicateException(childElement,
+                                    TAG_NAME_BIT_ADDRESS, TAG_NAME_ADDRESS);
           }
-          desiredAddress = parseLong(childElement.getTextContent());
+          if (address != null) {
+            throwDuplicateException(childElement, TAG_NAME_ADDRESS);
+          }
+          address = parseAddress(childElement);
+        } else if (childElementName.equals(TAG_NAME_BIT_ADDRESS)) {
+          if (address != null) {
+            throwDuplicateException(childElement,
+                                    TAG_NAME_ADDRESS, TAG_NAME_BIT_ADDRESS);
+          }
+          if (bitAddress != null) {
+            throwDuplicateException(childElement, TAG_NAME_BIT_ADDRESS);
+          }
+          bitAddress = parseLong(childElement.getTextContent());
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);
@@ -1076,11 +1127,13 @@ public class DeviceModelParser
       throw new ParseException(element,
                                "missing '" + TAG_NAME_TYPE + "' declaration");
     }
+    final long desiredAddress =
+      bitAddress != null ? bitAddress : (address != null ? address : -1);
     final Value value =
       new ValueImpl(iconId != null ? iconId.toString() : null,
                     type, description, label,
                     defaultValue != null ? defaultValue : 0,
-                    desiredAddress != null ? desiredAddress : -1);
+                    desiredAddress);
     final Symbol<Value> dataSymbol = new Symbol<Value>(element, value);
     dataSymbols.enterSymbol(identifier, dataSymbol);
     return identifier;

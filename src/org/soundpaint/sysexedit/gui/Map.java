@@ -160,8 +160,7 @@ public class Map extends JTree
     final long address = node.getAddress();
     final String addressStr;
     if ((address >= 0) && addressInfoEnabled) {
-      addressStr =
-        addressRepresentation.memoryBitAddress2DeviceAddress(address) + ": ";
+      addressStr = addressRepresentation.getDisplayAddress(address) + ": ";
     } else {
       // address not yet evaluated or not enabled
       addressStr = "";
