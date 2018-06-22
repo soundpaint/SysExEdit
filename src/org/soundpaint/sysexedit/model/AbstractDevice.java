@@ -72,18 +72,13 @@ public abstract class AbstractDevice implements Device
    */
   public abstract void buildMap(final MapRoot root);
 
-  protected void resolve()
-  {
-    root.resolveDfsLinkedNodes(null);
-    root.resolveAddresses(0);
-  }
-
   public TreeNode buildMap(final TreeSelectionListener selectionListener,
                            final MapContextMenu mapContextMenu)
   {
     root = new MapRoot(getName(), selectionListener, mapContextMenu);
     buildMap(root);
-    resolve();
+    root.resolveDfsLinkedNodes(null);
+    root.resolveAddresses(0);
     return root;
   }
 

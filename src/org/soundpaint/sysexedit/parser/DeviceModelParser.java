@@ -56,6 +56,8 @@ public class DeviceModelParser
   private static final String ATTR_NAME_ID = "id";
   private static final String ATTR_NAME_REF = "ref";
   private static final String ATTR_NAME_LABEL = "label";
+  private static final String ATTR_NAME_MULTIPLICITY = "multiplicity";
+  private static final String ATTR_NAME_INDEX_VAR = "index-var";
   private static final String TAG_NAME_SYSEXEDIT = "sysexedit";
   private static final String TAG_NAME_ADDRESS_REPRESENTATION =
     "address-representation";
@@ -86,7 +88,6 @@ public class DeviceModelParser
   private static final String TAG_NAME_BIT_MASK = "bit-mask";
   private static final String TAG_NAME_BIT_STRING_SIZE = "bit-string-size";
   private static final String TAG_NAME_DATA = "data";
-  private static final String TAG_NAME_LOOP = "loop";
   private static final String TAG_NAME_DEFAULT_VALUE = "default-value";
   private static final String TAG_NAME_BIT_ADDRESS = "bit-address";
   private static final String TAG_NAME_ADDRESS = "address";
@@ -145,13 +146,13 @@ public class DeviceModelParser
   private Symbol<String> deviceName;
   private Symbol<Byte> manufacturerId;
   private Symbol<Byte> modelId;
-  private Symbol<? extends Value> deviceId;
+  private Symbol<? extends Data> deviceId;
   private Symbol<String> enteredBy;
   private SymbolTable<ValueRange> rangeSymbols;
   private SymbolTable<SparseType> typeSymbols;
   private SymbolTable<ValueRangeRenderer> rendererSymbols;
-  private SymbolTable<FolderNode> folderSymbols;
-  private SymbolTable<Value> dataSymbols;
+  private SymbolTable<Folder> folderSymbols;
+  private SymbolTable<Data> dataSymbols;
 
   public DeviceModelParser(final URL deviceUrl)
     throws ParseException
@@ -171,8 +172,8 @@ public class DeviceModelParser
     rangeSymbols = new SymbolTable<ValueRange>();
     typeSymbols = new SymbolTable<SparseType>();
     rendererSymbols = new SymbolTable<ValueRangeRenderer>();
-    folderSymbols = new SymbolTable<FolderNode>();
-    dataSymbols = new SymbolTable<Value>();
+    folderSymbols = new SymbolTable<Folder>();
+    dataSymbols = new SymbolTable<Data>();
     parse(document);
   }
 
@@ -198,7 +199,7 @@ public class DeviceModelParser
 
   public Value getDeviceId()
   {
-    return deviceId.getValue();
+    return deviceId.getValue().getValue();
   }
 
   public String getEnteredBy()
@@ -211,14 +212,34 @@ public class DeviceModelParser
     return addressRepresentation.getValue();
   }
 
-  public AbstractDevice.MapRoot getRoot()
+  private void checkRoot(final Element documentElement)
+    throws ParseException
   {
-    final Symbol<? extends FolderNode> rootSymbol =
+    final Symbol<? extends Folder> rootSymbol =
       folderSymbols.lookupSymbol(Identifier.ROOT_ID);
-    return
-      rootSymbol != null ?
-      (AbstractDevice.MapRoot)rootSymbol.getValue() :
-      null;
+    if (rootSymbol == null) {
+      throw new ParseException(documentElement,
+                               "no global folder node found that is marked as '#root'");
+    }
+    final Element rootElement = rootSymbol.getLocation();
+    if (rootElement == null) {
+      throw new ParseException(documentElement,
+                               "root folder element without location info");
+    }
+    final Folder root = rootSymbol.getValue();
+    if (root == null) {
+      throw new ParseException(rootElement, "invalid root folder element");
+    }
+    if (root.getMultiplicity() != 1) {
+      throw new ParseException(rootElement, "multiplicity of root folder must be 1");
+    }
+  }
+
+  public Folder getRoot()
+  {
+    final Symbol<? extends Folder> rootSymbol =
+      folderSymbols.lookupSymbol(Identifier.ROOT_ID);
+    return rootSymbol.getValue();
   }
 
   private static boolean isIgnorableNodeType(final Node node)
@@ -247,16 +268,6 @@ public class DeviceModelParser
     if (addressRepresentation == null) {
       throw new ParseException(documentElement,
                                "no global address representation definition found");
-    }
-  }
-
-  private void checkRootExists(final Element documentElement)
-    throws ParseException
-  {
-    final FolderNode root = getRoot();
-    if (root == null) {
-      throw new ParseException(documentElement,
-                               "no global folder node found that is marked as '#root'");
     }
   }
 
@@ -316,7 +327,7 @@ public class DeviceModelParser
       }
     }
     checkAddressRepresentationExists(documentElement);
-    checkRootExists(documentElement);
+    checkRoot(documentElement);
   }
 
   private void throwDuplicateException(final Element element,
@@ -462,7 +473,7 @@ public class DeviceModelParser
             throwDuplicateException(childElement, TAG_NAME_DATA);
           }
           dataId = parseData(childElement, false);
-          final Symbol<? extends Value> dataSymbol =
+          final Symbol<? extends Data> dataSymbol =
             dataSymbols.lookupSymbol(dataId);
           if (dataSymbol == null) {
             throw new ParseException(element,
@@ -911,16 +922,37 @@ public class DeviceModelParser
     if (isTypeRef(element)) {
       return identifier;
     }
+
     String description = null;
+
     final String label;
     if (element.hasAttribute(ATTR_NAME_LABEL)) {
       label = element.getAttribute(ATTR_NAME_LABEL);
     } else {
       label = null;
     }
+
+    final Integer multiplicity;
+    if (element.hasAttribute(ATTR_NAME_MULTIPLICITY)) {
+      multiplicity = parseInt(element.getAttribute(ATTR_NAME_MULTIPLICITY));
+      if (multiplicity < 1) {
+        throw new ParseException(element, "non-positive folder multiplicity");
+      }
+    } else {
+      multiplicity = 1;
+    }
+
+    final Identifier indexVar;
+    if (element.hasAttribute(ATTR_NAME_INDEX_VAR)) {
+      indexVar =
+        Identifier.fromString(element.getAttribute(ATTR_NAME_INDEX_VAR));
+    } else {
+      indexVar = Identifier.createAnonymousIdentifier();
+    }
+
     Long address = null;
     Long bitAddress = null;
-    final List<MapNode> folderContents = new ArrayList<MapNode>();
+    final List<ParserNode> contents = new ArrayList<ParserNode>();
     final NodeList childNodes = element.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
       final Node childNode = childNodes.item(index);
@@ -952,7 +984,7 @@ public class DeviceModelParser
           bitAddress = parseLong(childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_FOLDER)) {
           final Identifier folderId = parseFolder(childElement, false);
-          final Symbol<? extends FolderNode> folderSymbol =
+          final Symbol<? extends Folder> folderSymbol =
             folderSymbols.lookupSymbol(folderId);
           if (folderSymbol == null) {
             throw new ParseException(element,
@@ -963,19 +995,17 @@ public class DeviceModelParser
             throw new ParseException(element,
                                      "can not put root beneath other node");
           }
-          folderContents.add(folderSymbol.getValue());
+          contents.add(folderSymbol.getValue());
         } else if (childElementName.equals(TAG_NAME_DATA)) {
           final Identifier dataId = parseData(childElement, false);
-          final Symbol<? extends Value> dataSymbol =
+          final Symbol<? extends Data> dataSymbol =
             dataSymbols.lookupSymbol(dataId);
           if (dataSymbol == null) {
             throw new ParseException(element,
                                      "can not resolve data reference " +
                                      dataId);
           }
-          folderContents.add(new DataNode(dataSymbol.getValue()));
-        } else if (childElementName.equals(TAG_NAME_LOOP)) {
-          // TODO
+          contents.add(dataSymbol.getValue());
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);
@@ -988,25 +1018,16 @@ public class DeviceModelParser
         throw new ParseException(childNode, "unsupported node");
       }
     }
-    final FolderNode folderNode;
+
     final long desiredAddress =
       bitAddress != null ? bitAddress : (address != null ? address : -1);
-    if (identifier == Identifier.ROOT_ID) {
-      folderNode =
-        new AbstractDevice.MapRoot(description != null ? description : null,
-                                   label != null ? label : null,
-                                   desiredAddress);
-    } else {
-      folderNode =
-        new FolderNode(description != null ? description : null,
-                       label != null ? label : null,
-                       desiredAddress);
-    }
-    for (MapNode node : folderContents) {
-      folderNode.add(node);
-    }
-    final Symbol<FolderNode> symbol =
-      new Symbol<FolderNode>(element, folderNode);
+    final Folder folder = new Folder(description, label,
+                                     multiplicity, indexVar,
+                                     desiredAddress);
+    folder.addAll(contents);
+
+    final Symbol<Folder> symbol =
+      new Symbol<Folder>(element, folder);
     folderSymbols.enterSymbol(identifier, symbol);
     return identifier;
   }
@@ -1134,7 +1155,8 @@ public class DeviceModelParser
                     type, description, label,
                     defaultValue != null ? defaultValue : 0,
                     desiredAddress);
-    final Symbol<Value> dataSymbol = new Symbol<Value>(element, value);
+    final Data data = new Data(value);
+    final Symbol<Data> dataSymbol = new Symbol<Data>(element, data);
     dataSymbols.enterSymbol(identifier, dataSymbol);
     return identifier;
   }

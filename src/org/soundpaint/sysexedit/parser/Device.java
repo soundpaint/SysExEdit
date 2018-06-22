@@ -29,6 +29,8 @@ import org.soundpaint.sysexedit.gui.Map;
 import org.soundpaint.sysexedit.gui.MapContextMenu;
 import org.soundpaint.sysexedit.model.AbstractDevice;
 import org.soundpaint.sysexedit.model.AddressRepresentation;
+import org.soundpaint.sysexedit.model.DataNode;
+import org.soundpaint.sysexedit.model.FolderNode;
 import org.soundpaint.sysexedit.model.MapNode;
 import org.soundpaint.sysexedit.model.Value;
 
@@ -37,6 +39,7 @@ import org.soundpaint.sysexedit.model.Value;
  */
 public class Device extends AbstractDevice
 {
+  private final Folder parserRoot;
   private final String name;
   private final byte manufacturerId;
   private final byte modelId;
@@ -53,7 +56,7 @@ public class Device extends AbstractDevice
                  final byte modelId, final Value deviceId,
                  final String enteredBy,
                  final AddressRepresentation addressRepresentation,
-                 final MapRoot root)
+                 final Folder parserRoot)
   {
     this.name = name;
     this.manufacturerId = manufacturerId;
@@ -61,7 +64,7 @@ public class Device extends AbstractDevice
     this.deviceId = deviceId;
     this.enteredBy = enteredBy;
     this.addressRepresentation = addressRepresentation;
-    this.root = root;
+    this.parserRoot = parserRoot;
   }
 
   public static Device create(final URL deviceDescriptionUrl)
@@ -122,19 +125,38 @@ public class Device extends AbstractDevice
     return addressRepresentation;
   }
 
-  @Override
-  public TreeNode buildMap(final TreeSelectionListener selectionListener,
-                           final MapContextMenu mapContextMenu)
+  private void addFolder(final FolderNode mapFolder, final Folder parseFolder)
   {
-    final Map map = new Map(selectionListener, mapContextMenu);
-    root.setMap(map);
-    resolve();
-    return root;
+    final String description = parseFolder.getDescription();
+    final String label = parseFolder.getLabel();
+    final long desiredAddress = parseFolder.getDesiredAddress();
+    for (int index = 0; index < parseFolder.getMultiplicity(); index++) {
+      final FolderNode mapChildFolder =
+        new FolderNode(description, label, desiredAddress);
+      mapFolder.add(mapChildFolder);
+      for (final ParserNode node : parseFolder.getContents()) {
+        addNode(mapChildFolder, node);
+      }
+    }
+  }
+
+  private void addNode(final FolderNode mapFolder, final ParserNode node)
+  {
+    if (node instanceof Folder) {
+      addFolder(mapFolder, (Folder)node);
+    } else if (node instanceof Data) {
+      final Data data = (Data)node;
+      mapFolder.add(new DataNode(data.getValue()));
+    } else {
+      throw new IllegalStateException("unknown node type: " + node.getClass());
+    }
   }
 
   public void buildMap(final MapRoot root)
   {
-    // map already built => nothing to do
+    for (final ParserNode node : parserRoot.getContents()) {
+      addNode(root, node);
+    }
   }
 
   public InputStream bulkDump(final Value deviceId,

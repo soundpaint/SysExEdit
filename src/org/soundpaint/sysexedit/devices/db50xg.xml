@@ -2543,6 +2543,27 @@
       <value>63ct</value>
     </values>
   </enum>
+  <type id="drum-setup-number">
+    <range>
+      <upper-bound>0x1</upper-bound>
+      <display-offset>0x1</display-offset>
+      <integer />
+    </range>
+  </type>
+  <type id="note-number">
+    <range>
+      <upper-bound>0x4e</upper-bound>
+      <display-offset>0x0d</display-offset>
+      <integer />
+    </range>
+  </type>
+  <type id="multi-part-number">
+    <range>
+      <upper-bound>0xf</upper-bound>
+      <display-offset>0x1</display-offset>
+      <integer />
+    </range>
+  </type>
   <type id="device-id">
     <icon>internal-control</icon>
     <range>
@@ -2613,15 +2634,15 @@
   </type>
   <folder label="Drum Setup" id="drum_setup">
     <address>30 00 00</address>
-    <loop first="0" last="1" id="setup">
-      <folder label="Drum Setup {hex:setup}">
-        <loop first="13" last="91" id="note">
-          <folder label="Drum Setup {hex:setup} Note {note}">
-            <!-- TODO -->
-          </folder>
-        </loop>
+    <folder label="Drum Setup {drum-setup-number(#setup)}"
+            multiplicity="2"
+            index-var="setup">
+      <folder label="Note {note-number(#note)}"
+              multiplicity="79"
+              index-var="note">
+        <!-- TODO -->
       </folder>
-    </loop>
+    </folder>
   </folder>
   <folder label="MU50 / DB50XG" id="#root">
     <folder label="System">
@@ -2644,10 +2665,20 @@
     </folder>
     <folder label="Multi Part">
       <address>08 00 00</address>
-      <loop first="1" last="16" id="part">
-        <folder label="Multi Part {part}">
-        </folder>
-      </loop>
+      <folder label="Multi Part {multi-part-number(#part)}"
+              multiplicity="16"
+              index-var="part">
+        <data label="Element Reserve">
+          <type id="element-reserve">
+            <icon>internal-control</icon>
+            <range>
+              <upper-bound>0x1f</upper-bound>
+              <integer />
+            </range>
+          </type>
+          <default-value>0x02</default-value> <!-- 0x00 for part 10 -->
+        </data>
+      </folder>
     </folder>
     <folder ref="drum_setup" />
   </folder>
