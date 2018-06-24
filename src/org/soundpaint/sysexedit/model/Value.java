@@ -29,7 +29,7 @@ import javax.swing.Icon;
  * or represent just one memory location or cover a couple of memory
  * locations.
  *
- * @TODO: Rename this interface into "ValueSet", class "AbstractValue"
+ * TODO: Rename this interface into "ValueSet", class "AbstractValue"
  * into "AbstractValueSet" and class "ValueImpl" into "ValueSetImpl".
  */
 public interface Value

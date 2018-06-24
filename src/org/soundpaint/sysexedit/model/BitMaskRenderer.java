@@ -67,7 +67,7 @@ public class BitMaskRenderer implements ValueRangeRenderer
   /**
    * Returns a bit mask representation as display value for a given
    * numerical value.
-   * @param value The numerical value to be represented.
+   * @param numericalValue The numerical value to be represented.
    * @return A bit mask as display value.
    */
   public String getDisplayValue(final int numericalValue)

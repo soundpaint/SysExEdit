@@ -135,7 +135,7 @@ public class DataNode extends MapNode implements ValueChangeListener
    * Sets the underlying numerical value of this Value object.  The
    * value is not bound to a specific value range of the associated
    * sparse type; thus it even may be out of any value range.
-   * @param value The underlying numerical value.
+   * @param numericalValue The underlying numerical value.
    * @exception IllegalArgumentException If value is not an instance
    *    of the class that holds the value represented by this class.
    * @see #reset
@@ -277,9 +277,9 @@ public class DataNode extends MapNode implements ValueChangeListener
   }
 
   /**
-   * Resets the underlying mumerical value to the default value.
+   * Resets the underlying numerical value to the default value.
    * @param model The tree model of the tree that contains this node.
-   * @see #setDefaultValue
+   * @see Value#getDefaultValue
    */
   public void reset(final DefaultTreeModel model)
   {
