@@ -166,19 +166,20 @@ public class Map extends JTree
       addressStr = "";
     }
     String label = node.getLabel();
-    String displayValue = node.getDisplayValue();
-    if (displayValue == null) {
-      if (!node.getAllowsChildren()) {
+    String displayValue;
+    if (node instanceof DataNode) {
+      displayValue = ((DataNode)node).getDisplayValue();
+      if (displayValue == null) {
         displayValue = ValueRangeRenderer.DISPLAY_VALUE_UNKNOWN;
-      } else {
-        displayValue = "";
       }
+    } else {
+      displayValue = "";
     }
     if (label == null) {
       label = "";
     }
     final String separator =
-      ((label.length() > 0) && (displayValue.length() > 0)) ? " : " : "";
+      ((label.length() > 0) && (displayValue.length() > 0)) ? ": " : "";
     final String text = addressStr + label + separator + displayValue;
     return text;
   }

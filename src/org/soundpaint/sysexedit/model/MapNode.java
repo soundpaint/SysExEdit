@@ -174,14 +174,6 @@ public abstract class MapNode extends DefaultMutableTreeNode
     return label;
   }
 
-  /**
-   * Returns this node's value as string for display or
-   * <code>null</code>, if this node is a folder.
-   * @return This node's value as string for display or
-   * <code>null</code>, if this node is a folder.
-   */
-  abstract public String getDisplayValue();
-
   abstract protected MapNode resolveDfsLastDescendant();
 
   /**

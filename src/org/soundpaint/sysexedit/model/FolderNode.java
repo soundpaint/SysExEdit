@@ -134,16 +134,6 @@ public class FolderNode extends MapNode
     return dfsLastDescendant;
   }
 
-  /**
-   * Returns this node's value as string for display.
-   * @return Folder nodes do not have a value.  Hence, this method
-   * returns @code{null}.
-   */
-  public String getDisplayValue()
-  {
-    return null;
-  }
-
   protected MapNode resolveDfsLastDescendant()
   {
     MapNode dfsLastDescendant = this;
