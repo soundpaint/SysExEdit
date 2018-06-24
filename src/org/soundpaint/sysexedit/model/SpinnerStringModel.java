@@ -22,23 +22,37 @@ package org.soundpaint.sysexedit.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import javax.swing.SpinnerModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.soundpaint.sysexedit.gui.JValue;
+
 public class SpinnerStringModel implements SpinnerModel
 {
-  private final List<Value> selectableValues;
+  private final List<JValue> selectableValues;
   private final List<ChangeListener> listeners;
   private final ChangeEvent changeEvent;
   private int index;
 
-  public SpinnerStringModel()
+  public SpinnerStringModel(final Vector<JValue> selectableValues)
   {
-    selectableValues = new ArrayList<Value>();
+    this.selectableValues = new ArrayList<JValue>();
+    this.selectableValues.addAll(selectableValues);
     listeners = new ArrayList<ChangeListener>();
     changeEvent = new ChangeEvent(this);
     index = -1;
+  }
+
+  public int getSize()
+  {
+    return selectableValues.size();
+  }
+
+  public JValue getElementAt(final int index)
+  {
+    return selectableValues.get(index);
   }
 
   public void clear()
@@ -50,7 +64,7 @@ public class SpinnerStringModel implements SpinnerModel
     fireStateChanged();
   }
 
-  public void addSelectableValue(final Value value)
+  public void addSelectableValue(final JValue value)
   {
     index = 0;
     selectableValues.add(value);
@@ -67,7 +81,7 @@ public class SpinnerStringModel implements SpinnerModel
     fireStateChanged();
   }
 
-  public Value getValue()
+  public JValue getValue()
   {
     if (index < 0) {
       return null;
@@ -79,14 +93,14 @@ public class SpinnerStringModel implements SpinnerModel
    * Unfortunately, the Swing JSpinner component internally uses a
    * JFormattedTextField component for value display, and passes this
    * text field's string representation to the setValue() method of
-   * this model (rather than the original Value object).  To
+   * this model (rather than the original JValue object).  To
    * compensate, we have to look up the index by string representation
    * comparison rather than by object comparison.
    */
-  private int indexOfString(final String value)
+  private int indexOfString(final String displayValue)
   {
     for (int index = 0; index < selectableValues.size(); index++) {
-      if (value.equals(selectableValues.get(index).toString())) {
+      if (displayValue.equals(selectableValues.get(index).toString())) {
         return index;
       }
     }
@@ -105,7 +119,7 @@ public class SpinnerStringModel implements SpinnerModel
     //fireStateChanged(); // already handled internally by JSpinner
   }
 
-  public Value getNextValue()
+  public JValue getNextValue()
   {
     if (index < selectableValues.size() - 1) {
       index++;
@@ -116,7 +130,7 @@ public class SpinnerStringModel implements SpinnerModel
     return null;
   }
 
-  public Value getPreviousValue()
+  public JValue getPreviousValue()
   {
     if (index > 0) {
       index--;

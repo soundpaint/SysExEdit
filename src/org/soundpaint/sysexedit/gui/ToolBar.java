@@ -37,7 +37,7 @@ public class ToolBar extends JToolBar
 
   private ToolBar()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   public ToolBar(final Controller controller)
@@ -103,7 +103,7 @@ public class ToolBar extends JToolBar
     // ignore
   }
 
-  public void midiDeviceIdChanged(final Value midiDeviceId)
+  public void midiDeviceIdChanged(final JValue midiDeviceId)
   {
     // ignore
   }

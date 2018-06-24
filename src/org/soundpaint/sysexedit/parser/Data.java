@@ -25,20 +25,30 @@ import org.soundpaint.sysexedit.model.Value;
 public class Data implements ParserNode
 {
   private final Value value;
+  private final long desiredAddress;
 
   private Data()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
-  public Data(final Value value)
+  public Data(final Value value, final long desiredAddress)
   {
     this.value = value;
+    this.desiredAddress = desiredAddress;
   }
 
   public Value getValue()
   {
     return value;
+  }
+
+  public long getDesiredAddress()
+  {
+    // TODO / FIXME: desired address will typically depend on indexVar
+    // of enclosing folder when multiplicity of that folder is greater
+    // than 1.
+    return desiredAddress;
   }
 }
 

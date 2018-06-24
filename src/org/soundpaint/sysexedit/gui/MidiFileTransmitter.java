@@ -32,7 +32,7 @@ public class MidiFileTransmitter implements Transmitter
 
   private MidiFileTransmitter()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   public MidiFileTransmitter(final File midiFile) throws IOException
@@ -59,7 +59,7 @@ public class MidiFileTransmitter implements Transmitter
 
   public void setReceiver(final Receiver receiver)
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("method setReceiver() not implemented for MidiFileTransmitter");
   }
 }
 

@@ -42,7 +42,7 @@ public class MidiFileReceiver implements Receiver
 
   private MidiFileReceiver()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   public MidiFileReceiver(final File midiFile) throws IOException

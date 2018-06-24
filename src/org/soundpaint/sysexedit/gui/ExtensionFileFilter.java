@@ -53,7 +53,7 @@ public class ExtensionFileFilter extends FileFilter
 
   private ExtensionFileFilter()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   /**

@@ -54,13 +54,16 @@ public abstract class MapNode extends DefaultMutableTreeNode
 {
   private static final long serialVersionUID = -1726377369359671649L;
 
-  private final Value value;
-  private final NodeMetaData folderMetaData;
-
-  // map change listeners
+  /** Map change listeners. */
   private final List<MapChangeListener> listeners;
 
-  // the confirmed absolute bit address of this node
+  /** The desired absolute address for the associated node. */
+  private final long desiredAddress;
+
+  /** The label to display as node name in the tree view. */
+  private final String label;
+
+  /** The confirmed absolute bit address of this node. */
   protected long address;
 
   /**
@@ -79,35 +82,34 @@ public abstract class MapNode extends DefaultMutableTreeNode
 
   private MapNode()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   /**
    * Creates a folder node with the specified meta data.
-   * @param folderMetaData the meta data for this node.
+   * @param label The label to display as node name in the tree view.
+   * @param desiredAddress Desired absolute address for the associated
+   * node.  If negative, automatically determine an absolute address
+   * for this node.  If non-negative, request that this node will
+   * appear at the specified absolute address in the address space.
+   * Effectively, by setting an absolute address, an area of
+   * inaccessible memory bits will precede this node's data in order
+   * to make this node appear at the desired address.  If specifying
+   * an absolute address, it must be chosen such that all previous
+   * nodes' memory mapped values (with respect to depth first search
+   * order) fit into the address space range preceding the desired
+   * address.  Note that validity check for this restriction will be
+   * made only upon completion of the tree and thus may result in
+   * throwing an exception some time later.
+   * @param allowsChildren If @code{true}, the node is allowed to have
+   * child nodes.  Otherwise, it is always a leaf node.
    */
-  public MapNode(final NodeMetaData folderMetaData)
+  public MapNode(final String label, final long desiredAddress,
+                 final boolean allowsChildren)
   {
-    super(null, true);
-    this.folderMetaData = folderMetaData;
-    value = null;
-    address = -1; // resolve later
-    listeners = new ArrayList<MapChangeListener>();
-  }
-
-  /**
-   * Creates a data node with no children.
-   * @param value The underlying Value object.
-   * @exception NullPointerException If value equals null.
-   */
-  public MapNode(final Value value)
-  {
-    super(value, false);
-    if (value == null) {
-      throw new NullPointerException("value");
-    }
-    this.value = value;
-    folderMetaData = null;
+    super(allowsChildren);
+    this.label = label;
+    this.desiredAddress = desiredAddress;
     address = -1; // resolve later
     listeners = new ArrayList<MapChangeListener>();
   }
@@ -169,7 +171,7 @@ public abstract class MapNode extends DefaultMutableTreeNode
    */
   public String getLabel()
   {
-    return value != null ? value.getLabel() : folderMetaData.getLabel();
+    return label;
   }
 
   /**
@@ -203,13 +205,23 @@ public abstract class MapNode extends DefaultMutableTreeNode
     return resolveDfsLastDescendant();
   }
 
+  /**
+   * @return If negative, automatically determine an absolute address
+   * for this node.  If non-negative, request that this node will
+   * appear at the specified absolute address in the address space.
+   * Effectively, by setting an absolute address, an area of
+   * inaccessible memory bits will precede this node's data in order
+   * to make this node appear at the desired address.  If specifying
+   * an absolute address, it must be chosen such that all previous
+   * nodes' memory mapped values (with respect to depth first search
+   * order) fit into the address space range preceding the desired
+   * address.  Note that validity check for this restriction will be
+   * made only upon completion of the tree and thus may result in
+   * throwing an exception some time later.
+   */
   public long getDesiredAddress()
   {
-    if (value != null) {
-      return value.getDesiredAddress();
-    } else {
-      return folderMetaData.getDesiredAddress();
-    }
+    return desiredAddress;
   }
 
   /**

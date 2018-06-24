@@ -45,7 +45,7 @@ public class DocumentMetaData implements TreeSelectionListener
   private boolean hasUnsavedData;
   private int selectionCount;
   private Device device;
-  private Value midiDeviceId;
+  private JValue midiDeviceId;
   private MidiDevice.Info midiInput;
   private MidiDevice.Info midiOutput;
   private File dumpMidiFile;
@@ -69,7 +69,7 @@ public class DocumentMetaData implements TreeSelectionListener
     // should be changed such that model selection
     // occurs before instantiating the editor frame.
     if (device != null) {
-      setMidiDeviceId(device.getDeviceId());
+      setMidiDeviceId(new JValue(device.getDeviceIdType()));
     }
   }
 
@@ -112,7 +112,7 @@ public class DocumentMetaData implements TreeSelectionListener
     return hasUnsavedData;
   }
 
-  public void setMidiDeviceId(final Value midiDeviceId)
+  public void setMidiDeviceId(final JValue midiDeviceId)
   {
     this.midiDeviceId = midiDeviceId;
     for (final DocumentMetaDataChangeListener listener :
@@ -121,7 +121,7 @@ public class DocumentMetaData implements TreeSelectionListener
     }
   }
 
-  public Value getMidiDeviceId()
+  public JValue getMidiDeviceId()
   {
     return midiDeviceId;
   }

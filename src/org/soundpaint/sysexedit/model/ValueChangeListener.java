@@ -22,7 +22,7 @@ package org.soundpaint.sysexedit.model;
 
 public interface ValueChangeListener
 {
-  void editingPathValueChanged(final Value value);
+  void editingPathValueChanged(final int numericalValue);
 }
 
 /*

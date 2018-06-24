@@ -53,6 +53,8 @@ public class FolderNode extends MapNode
 {
   private static final long serialVersionUID = -2167951077552183614L;
 
+  private final String description;
+
   /**
    * Creates a folder node with the specified label.
    * @param label The label of this node.
@@ -117,7 +119,8 @@ public class FolderNode extends MapNode
   public FolderNode(final String description, final String label,
                     final long desiredAddress)
   {
-    super(new NodeMetaData(description, label, desiredAddress));
+    super(label, desiredAddress, true);
+    this.description = description;
   }
 
   /**
@@ -131,14 +134,10 @@ public class FolderNode extends MapNode
     return dfsLastDescendant;
   }
 
-  protected boolean allowsChildren()
-  {
-    return true;
-  }
-
   /**
    * Returns this node's value as string for display.
-   * @return This node's value as string for display.
+   * @return Folder nodes do not have a value.  Hence, this method
+   * returns @code{null}.
    */
   public String getDisplayValue()
   {
@@ -175,7 +174,6 @@ public class FolderNode extends MapNode
     super.insert(newChild, childIndex);
     if (newChild instanceof DataNode) {
       final DataNode child = (DataNode)newChild;
-      child.reset(null);
     }
   }
 
@@ -192,12 +190,6 @@ public class FolderNode extends MapNode
   {
     final MapNode child = (MapNode)getChildAt(childIndex);
     super.remove(childIndex);
-  }
-
-  @Override
-  public void setUserObject(final Object userObject)
-  {
-    throw new RuntimeException("change of user object reserved for data nodes");
   }
 
   public int getBitSize()

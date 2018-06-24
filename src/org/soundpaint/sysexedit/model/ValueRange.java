@@ -30,7 +30,7 @@ public class ValueRange implements Comparable<ValueRange>
 
   private ValueRange()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   /**

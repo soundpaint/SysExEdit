@@ -953,11 +953,11 @@ public class DB50XG extends AbstractDevice
    * of this device.  As the DB50XG specs do not explicitly specify
    * this value, we assume default value 0.
    */
-  public Value getDeviceId()
+  public Value getDeviceIdType()
   {
-    final Value deviceId = new ValueImpl(rangeDeviceId, 0x00);
-    deviceId.setBitSize(7);
-    return deviceId;
+    final Value deviceIdType = new ValueImpl(rangeDeviceId, 0x00);
+    deviceIdType.setBitSize(7);
+    return deviceIdType;
   }
 
   /**
@@ -1360,10 +1360,9 @@ public class DB50XG extends AbstractDevice
     nodeSystem.add(new DataNode(transpose));
 
     final Value drumsSetupReset =
-      new ValueImpl(typeDrumsSetupReset, "Drum Setup Reset",
-                    0x0, addr2index(0x00, 0x00, 0x7d));
+      new ValueImpl(typeDrumsSetupReset, "Drum Setup Reset", 0x0);
     drumsSetupReset.setBitSize(7);
-    nodeSystem.add(new DataNode(drumsSetupReset));
+    nodeSystem.add(new DataNode(drumsSetupReset, addr2index(0x00, 0x00, 0x7d)));
 
     final Value xgOn = new ValueImpl(typeXgOn, "XG System On", 0x0);
     xgOn.setBitSize(7);
@@ -1447,10 +1446,9 @@ public class DB50XG extends AbstractDevice
     level.setBitSize(7);
     nodeReverb.add(new DataNode(level));
 
-    final Value pan = new ValueImpl(typePan, "Reverb Pan", 0x40,
-                                    addr2index(0x02, 0x01, 0x10));
+    final Value pan = new ValueImpl(typePan, "Reverb Pan", 0x40);
     pan.setBitSize(7);
-    nodeReverb.add(new DataNode(pan));
+    nodeReverb.add(new DataNode(pan, addr2index(0x02, 0x01, 0x10)));
 
     final Value revDelay = new ValueImpl(typeDelayTime1, "Rev Delay", 0x00);
     revDelay.setBitSize(7);
@@ -1544,8 +1542,8 @@ public class DB50XG extends AbstractDevice
     levelReverb.setBitSize(7);
     nodeChorus.add(new DataNode(levelReverb));
 
-    nodeChorus.add(new DataNode(new ValueImpl(7, "Unused",
-                                              addr2index(0x02, 0x01, 0x30))));
+    nodeChorus.add(new DataNode(new ValueImpl(7, "Unused"),
+                                              addr2index(0x02, 0x01, 0x30)));
     nodeChorus.add(new DataNode(new ValueImpl(7, "Unused")));
     nodeChorus.add(new DataNode(new ValueImpl(7, "Unused")));
 
@@ -1643,9 +1641,9 @@ public class DB50XG extends AbstractDevice
       final long desiredAddress = i == 10 ? addr2index(0x02, 0x01, 0x70) : -1;
       final Value value7Bit =
         new ValueImpl(typeNonNegative7Bit, "Variation Parameter " + (i + 1),
-                      0x00, desiredAddress);
+                      0x00);
       value7Bit.setBitSize(7);
-      nodeVariation.add(new DataNode(value7Bit));
+      nodeVariation.add(new DataNode(value7Bit, desiredAddress));
     }
 
     return nodeVariation;
@@ -1897,10 +1895,9 @@ public class DB50XG extends AbstractDevice
     nodeMultiPartN.add(new DataNode(bendLfoAModDepth));
 
     final Value rcvPitchBend =
-      new ValueImpl(typeSwitch, "Rcv Pitch Bend", 0x1,
-                    addr2index(0x08, n, 0x30));
+      new ValueImpl(typeSwitch, "Rcv Pitch Bend", 0x1);
     rcvPitchBend.setBitSize(7);
-    nodeMultiPartN.add(new DataNode(rcvPitchBend));
+    nodeMultiPartN.add(new DataNode(rcvPitchBend, addr2index(0x08, n, 0x30)));
 
     final Value rcvChAfterTouch =
       new ValueImpl(typeSwitch, "Rcv Ch After Touch (CAT)", 0x1);
@@ -2250,7 +2247,7 @@ public class DB50XG extends AbstractDevice
 
     private BulkStream()
     {
-      throw new UnsupportedOperationException();
+      throw new UnsupportedOperationException("unsupported constructor");
     }
 
     BulkStream(final byte deviceId, final MapNode root,
@@ -2358,12 +2355,11 @@ public class DB50XG extends AbstractDevice
     }
   }
 
-  public InputStream bulkDump(final Value deviceId, final MapNode root,
+  public InputStream bulkDump(final byte deviceId, final MapNode root,
                               final long start, final long end)
   {
     try {
-      return new BulkStream((byte)deviceId.getNumericalValue(),
-                            root, start, end);
+      return new BulkStream(deviceId, root, start, end);
     } catch (final IOException e) {
       throw new IllegalStateException("failed creating bulk stream: " +
                                       e.getMessage(), e);

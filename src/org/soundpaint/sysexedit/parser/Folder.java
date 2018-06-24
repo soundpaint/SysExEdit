@@ -36,7 +36,7 @@ public class Folder implements ParserNode
 
   private Folder()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   public Folder(final String description, final String label,

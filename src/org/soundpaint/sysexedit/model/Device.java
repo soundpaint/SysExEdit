@@ -50,7 +50,7 @@ public interface Device
    * Returns the range of possible values and default value for this
    * device's device ID.
    */
-  Value getDeviceId();
+  Value getDeviceIdType();
 
   /**
    * Returns the name of the author; optionally, a copyright message.
@@ -91,7 +91,7 @@ public interface Device
    * @return A stream that bulk dumps the sequence of bytes for the
    *    MIDI device.
    */
-  InputStream bulkDump(final Value deviceId,
+  InputStream bulkDump(final byte deviceId,
                        final long start, final long end);
 
   /**

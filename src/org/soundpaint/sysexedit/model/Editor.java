@@ -20,15 +20,26 @@
 
 package org.soundpaint.sysexedit.model;
 
+import java.util.Vector;
+
+import org.soundpaint.sysexedit.gui.JValue;
+
 public interface Editor
 {
-  public abstract void clear();
+  void setSelectableValues(final Vector<JValue> values);
 
-  public abstract void addSelectableValue(final Value value);
+  void setSelectedIndex(final int selectedIndex);
 
-  public abstract void setSelectedIndex(final int selectedIndex);
+  JValue getSelectedValue();
 
-  public abstract Value getSelectedValue();
+  /*
+   * @param numericalValue The preselection value to use in the
+   * editor, or null, if there is no preferred preselection.  In that
+   * case, the editor may decide by itself which value to preselect.
+   */
+  void setSelectionByNumericalValue(final Integer numericalValue);
+
+  void addValueChangeListener(ValueChangeListener listener);
 }
 
 /*

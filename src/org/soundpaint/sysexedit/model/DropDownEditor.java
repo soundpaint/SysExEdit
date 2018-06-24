@@ -20,36 +20,75 @@
 
 package org.soundpaint.sysexedit.model;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-public class DropDownEditor extends JComboBox<Value> implements Editor
+import org.soundpaint.sysexedit.gui.JValue;
+
+public class DropDownEditor extends JComboBox<JValue>
+  implements Editor, ItemListener
 {
   private static final long serialVersionUID = 1620075446582652477L;
 
-  private final DefaultComboBoxModel<Value> model;
+  private DefaultComboBoxModel<JValue> model;
+  private final List<ValueChangeListener> listeners;
 
   public DropDownEditor()
   {
-    model = new DefaultComboBoxModel<Value>();
+    listeners = new ArrayList<ValueChangeListener>();
+    addItemListener(this);
+  }
+
+  public void setSelectableValues(final Vector<JValue> values)
+  {
+    model = new DefaultComboBoxModel<JValue>(values);
     setModel(model);
   }
 
-  public void clear()
-  {
-    while (model.getSize() > 0) {
-      model.removeElementAt(model.getSize() - 1);
-    }
-  }
-
-  public void addSelectableValue(final Value value)
-  {
-    model.addElement(value);
-  }
-
-  public Value getSelectedValue()
+  public JValue getSelectedValue()
   {
     return getItemAt(getSelectedIndex());
+  }
+
+  public void setSelectionByNumericalValue(final Integer numericalValue)
+  {
+    if (model == null) {
+      throw new NullPointerException("no model set on drop-down editor");
+    }
+    int selectedIndex = -1;
+    if (numericalValue != null) {
+      for (int index = 0; index < model.getSize(); index++) {
+        final JValue value = model.getElementAt(index);
+        if (value.getSystemValue() == numericalValue) {
+          selectedIndex = index;
+          break;
+        }
+      }
+    }
+    setSelectedIndex(selectedIndex);
+  }
+
+  public void addValueChangeListener(final ValueChangeListener listener)
+  {
+    listeners.add(listener);
+  }
+
+  public void itemStateChanged(final ItemEvent itemEvent)
+  {
+    if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+      final JValue value = getSelectedValue();
+      if (value != null) {
+        final int numericalValue = value.getSystemValue();
+        for (final ValueChangeListener listener : listeners) {
+          listener.editingPathValueChanged(numericalValue);
+        }
+      }
+    }
   }
 }
 

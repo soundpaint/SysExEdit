@@ -147,19 +147,22 @@ public class DeviceIdDialog extends Dialog
 
   private void saveInputFields()
   {
-    final Value midiDeviceId = documentMetaData.getMidiDeviceId();
+    final JValue deviceId = documentMetaData.getMidiDeviceId();
     final Editor editor = (Editor)deviceIdValuePanel.getComponent(0);
-    final Value selectedValue = editor.getSelectedValue();
-    midiDeviceId.setNumericalValue(selectedValue.getNumericalValue());
+    final JValue selectedValue = editor.getSelectedValue();
+    if (selectedValue != null) {
+      deviceId.setSystemValue(selectedValue.getSystemValue());
+    }
   }
 
   private void loadInputFields()
   {
-    final Value deviceId = documentMetaData.getMidiDeviceId();
+    final JValue deviceId = documentMetaData.getMidiDeviceId();
     deviceIdValuePanel.removeAll();
     iconPanel.removeAll();
-    iconPanel.add(new JLabel(deviceId.getIcon()));
-    final Component deviceIdEditor = deviceId.getEditor();
+    final Value deviceIdType = deviceId.getValueType();
+    iconPanel.add(new JLabel(deviceIdType.getIcon()));
+    final Component deviceIdEditor = (Component)(deviceIdType.createEditor());
     deviceIdValuePanel.add(deviceIdEditor);
     deviceIdValuePanel.updateUI();
     pack();

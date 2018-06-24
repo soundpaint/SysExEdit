@@ -104,7 +104,7 @@ public class EditorFrame extends JFrame
 
   private EditorFrame()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   /**
@@ -633,7 +633,7 @@ public class EditorFrame extends JFrame
     // ignore
   }
 
-  public void midiDeviceIdChanged(final Value midiDeviceId)
+  public void midiDeviceIdChanged(final JValue midiDeviceId)
   {
     // ignore
   }

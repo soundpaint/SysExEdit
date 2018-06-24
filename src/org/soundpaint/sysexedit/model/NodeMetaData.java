@@ -28,7 +28,7 @@ public class NodeMetaData
 
   public NodeMetaData()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   /**

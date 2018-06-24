@@ -44,18 +44,15 @@ public abstract class AbstractValue implements Value
   /** An optional label for this value. */
   private final String label;
 
-  /** Desired absolute address for the associated node. */
-  private final long desiredAddress;
-
   /** The initial (default) value. */
   private final int defaultValue;
 
-  /** The current value. */
-  private int value;
+  /** The data type of this value. */
+  protected final SparseType sparseType;
 
   private AbstractValue()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   /**
@@ -67,29 +64,16 @@ public abstract class AbstractValue implements Value
    * Value.  Useful e.g. as tooltip in the GUI.
    * @param label The label of this node.
    * @param defaultValue The default value.
-   * @param desiredAddress If negative, automatically determine an
-   *    absolute address for this node.  If non-negative, request that
-   *    this node will appear at the specified absolute address in the
-   *    address space.  Effectively, by setting an absolute address,
-   *    an area of inaccessible memory bits will precede this node's
-   *    data in order to make this node appear at the desired address.
-   *    If specifying an absolute address, it must be chosen such that
-   *    all previous nodes' memory mapped values (with respect to
-   *    depth first search order) fit into the address space range
-   *    preceding the desired address.  Note that validity check for
-   *    this restriction will be made only upon completion of the tree
-   *    and thus may result in throwing an exception some time later.
    */
   protected AbstractValue(final String iconKey, final String description,
                           final String label, final int defaultValue,
-                          final long desiredAddress)
+                          final SparseType sparseType)
   {
     this.iconKey = iconKey;
     this.description = description;
     this.label = label;
     this.defaultValue = defaultValue;
-    this.desiredAddress = desiredAddress;
-    value = defaultValue;
+    this.sparseType = sparseType;
   }
 
   /**
@@ -98,23 +82,27 @@ public abstract class AbstractValue implements Value
    * @return The underlying SparseType object associated with this
    * Value object.
    */
-  protected abstract SparseType getSparseType();
+  public SparseType getSparseType()
+  {
+    return sparseType;
+  }
 
-  /**
-   * Returns a String that represents this Value object's underlying
-   * numerical value according to the underlying SparseType, or null,
-   * if the value is out of range with respect to the sparse type.
-   * @return A String representation for this Value object's
-   * underlying numerical value.
-   */
-  public String getDisplayValue()
+  public String getDisplayValue(final int numericalValue)
   {
     final SparseType sparseType = getSparseType();
     if (sparseType != null) {
-      return sparseType.getDisplayValue(getNumericalValue());
+      return sparseType.getDisplayValue(numericalValue);
     } else {
       return null;
     }
+  }
+
+  protected String getIconKey()
+  {
+    return
+      this.iconKey != null ?
+      this.iconKey :
+      sparseType.getIconKey();
   }
 
   public Icon getIcon()
@@ -122,8 +110,7 @@ public abstract class AbstractValue implements Value
     final SparseType sparseType = getSparseType();
     if (sparseType == null)
       return null;
-    final String iconKey =
-      this.iconKey != null ? this.iconKey : sparseType.getIconKey();
+    final String iconKey = getIconKey();
     if (iconKey == null)
       return null;
     final Icon icon = UIManager.getIcon(iconKey);
@@ -144,11 +131,6 @@ public abstract class AbstractValue implements Value
     return label;
   }
 
-  public long getDesiredAddress()
-  {
-    return desiredAddress;
-  }
-
   /**
    * Returns the underlying numerical value to apply when this Value
    * instance is reset.  This value is not bound to a specific value
@@ -161,86 +143,40 @@ public abstract class AbstractValue implements Value
     return defaultValue;
   }
 
-  /**
-   * Sets the underlying numerical value of this Value object.  The
-   * value is not bound to a specific value range of the associated
-   * sparse type; thus it even may be out of any value range.
-   * @param value The underlying numerical value.
-   */
-  public void setNumericalValue(final int value)
-  {
-    this.value = value;
-  }
-
-  /**
-   * Returns the underlying numerical value of this Value object.  The
-   * value is not bound to a specific value range of the associated
-   * sparse type; thus it even may be out of any value range.
-   * @return The underlying numerical value.
-   */
-  public int getNumericalValue()
-  {
-    return value;
-  }
-
-  public void reset()
-  {
-    setNumericalValue(defaultValue);
-  }
-
-  public void increment()
+  public Integer succ(final int numericalValue)
   {
     final SparseType sparseType = getSparseType();
-    if (sparseType.isEnumerable())
-      {
-        final Integer succValue = sparseType.succ(getNumericalValue());
-        if (succValue != null)
-          setNumericalValue(succValue);
-      }
+    if (sparseType.isEnumerable()) {
+      return sparseType.succ(numericalValue);
+    } else {
+      return null;
+    }
   }
 
-  public void decrement()
+  public Integer pred(final int numericalValue)
   {
     final SparseType sparseType = getSparseType();
-    if (sparseType.isEnumerable())
-      {
-        final Integer predValue = sparseType.pred(getNumericalValue());
-        if (predValue != null)
-          setNumericalValue(predValue);
-      }
+    if (sparseType.isEnumerable()) {
+      final Integer predValue = sparseType.pred(numericalValue);
+      return predValue;
+    } else {
+      return null;
+    }
   }
 
-  /**
-   * Sets the underlying numerical value to the uppermost value that
-   * is valid for the associated sparse type.
-   */
-  public void uppermost()
+  public Integer uppermost()
   {
-    setNumericalValue(getSparseType().uppermost());
+    return getSparseType().uppermost();
   }
 
-  /**
-   * Sets the underlying numerical value to the lowermost value that
-   * is valid for the associated sparse type.
-   */
-  public void lowermost()
+  public Integer lowermost()
   {
-    setNumericalValue(getSparseType().lowermost());
+    return getSparseType().lowermost();
   }
 
   public abstract void setBitSize(final int bitSize);
 
   public abstract byte getBitSize();
-
-  public abstract int[] toBits();
-
-  public String toString()
-  {
-    final String displayValue = getDisplayValue();
-    return
-      displayValue != null ?
-      displayValue : ValueRangeRenderer.DISPLAY_VALUE_UNKNOWN;
-  }
 }
 
 /*

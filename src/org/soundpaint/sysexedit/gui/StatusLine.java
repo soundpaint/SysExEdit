@@ -103,9 +103,9 @@ public class StatusLine extends JPanel implements DocumentMetaDataChangeListener
     labelModelId.updateUI();
   }
 
-  public void midiDeviceIdChanged(final Value deviceId)
+  public void midiDeviceIdChanged(final JValue midiDeviceId)
   {
-    labelDeviceId.setText("Device ID: " + deviceId.getDisplayValue());
+    labelDeviceId.setText("Device ID: " + midiDeviceId.getDisplayValue());
     labelDeviceId.updateUI();
   }
 }

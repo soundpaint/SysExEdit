@@ -55,7 +55,7 @@ public class Controller
 
   private Controller()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   public Controller(final FramesManager manager,

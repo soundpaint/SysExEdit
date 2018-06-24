@@ -58,7 +58,7 @@ public class Map extends JTree
 
   private Map()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   public Map(final TreeSelectionListener selectionListener,
@@ -284,7 +284,7 @@ public class Map extends JTree
         throw new RuntimeException("tree value is not a map node");
       }
       final DataNode node = (DataNode)value;
-      final Component editor = node.getEditor();
+      final Component editor = (Component)(node.getEditor());
       lastRequestedEditor = editor;
       return editor;
     }

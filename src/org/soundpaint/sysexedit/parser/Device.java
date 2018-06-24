@@ -43,17 +43,17 @@ public class Device extends AbstractDevice
   private final String name;
   private final byte manufacturerId;
   private final byte modelId;
-  private final Value deviceId;
+  private final Value deviceIdType;
   private final String enteredBy;
   private final AddressRepresentation addressRepresentation;
 
   private Device()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   private Device(final String name, final byte manufacturerId,
-                 final byte modelId, final Value deviceId,
+                 final byte modelId, final Value deviceIdType,
                  final String enteredBy,
                  final AddressRepresentation addressRepresentation,
                  final Folder parserRoot)
@@ -61,7 +61,7 @@ public class Device extends AbstractDevice
     this.name = name;
     this.manufacturerId = manufacturerId;
     this.modelId = modelId;
-    this.deviceId = deviceId;
+    this.deviceIdType = deviceIdType;
     this.enteredBy = enteredBy;
     this.addressRepresentation = addressRepresentation;
     this.parserRoot = parserRoot;
@@ -110,9 +110,9 @@ public class Device extends AbstractDevice
     return modelId;
   }
 
-  public Value getDeviceId()
+  public Value getDeviceIdType()
   {
-    return deviceId;
+    return deviceIdType;
   }
 
   public String getEnteredBy()
@@ -146,7 +146,7 @@ public class Device extends AbstractDevice
       addFolder(mapFolder, (Folder)node);
     } else if (node instanceof Data) {
       final Data data = (Data)node;
-      mapFolder.add(new DataNode(data.getValue()));
+      mapFolder.add(new DataNode(data.getValue(), data.getDesiredAddress()));
     } else {
       throw new IllegalStateException("unknown node type: " + node.getClass());
     }
@@ -159,7 +159,7 @@ public class Device extends AbstractDevice
     }
   }
 
-  public InputStream bulkDump(final Value deviceId,
+  public InputStream bulkDump(final byte deviceId,
                               final MapNode root,
                               final long start, final long end)
   {

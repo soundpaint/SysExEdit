@@ -42,7 +42,7 @@ public class MenuBar extends JMenuBar
 
   private MenuBar()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   public MenuBar(final Controller ctrl)
@@ -66,7 +66,7 @@ public class MenuBar extends JMenuBar
     // ignore
   }
 
-  public void midiDeviceIdChanged(final Value midiDeviceId)
+  public void midiDeviceIdChanged(final JValue midiDeviceId)
   {
     // ignore
   }

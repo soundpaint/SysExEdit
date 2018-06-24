@@ -75,7 +75,7 @@ public class TreeSelectionDumpListener extends KeyAdapter
 
   private TreeSelectionDumpListener()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   public TreeSelectionDumpListener(final Device device, final Map map,
@@ -100,8 +100,10 @@ public class TreeSelectionDumpListener extends KeyAdapter
 
   private MidiMessage createMidiMessage() throws IOException
   {
+    final byte deviceId =
+      (byte)(documentMetaData.getMidiDeviceId().getSystemValue());
     final InputStream bulkDump =
-      device.bulkDump(documentMetaData.getMidiDeviceId(),
+      device.bulkDump(deviceId,
                       bulkAreaStartAddress, bulkAreaStopBeforeAddress);
     final List<Byte> sysexData = new ArrayList<Byte>();
     int data;

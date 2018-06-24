@@ -21,11 +21,9 @@
 package org.soundpaint.sysexedit.model;
 
 import java.awt.Component;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Vector;
-import javax.swing.SwingUtilities;
+
+import org.soundpaint.sysexedit.gui.JValue;
 
 /**
  * This class holds the structural information and actual value, based
@@ -46,14 +44,6 @@ public class ValueImpl extends AbstractValue
 
   /** The effective size of this value in bits (0..32). */
   private byte bitSize;
-
-  /** The data type of this value. */
-  private final SparseType sparseType;
-
-  /** The editor for entering a value. */
-  private final Editor editor;
-
-  private final Vector<ValueChangeListener> listeners;
 
   public ValueImpl(final SparseType sparseType, final int defaultValue)
   {
@@ -84,29 +74,9 @@ public class ValueImpl extends AbstractValue
     this(null, sparseType, description, label, defaultValue);
   }
 
-  public ValueImpl(final String iconKey, final SparseType sparseType,
-                   final String description, final String label,
-                   final int defaultValue)
-  {
-    this(iconKey, sparseType, description, label, defaultValue, -1);
-  }
-
-  public ValueImpl(final SparseType sparseType, final String label,
-                   final int defaultValue, final long desiredAddress)
-  {
-    this(null, sparseType, label, defaultValue, desiredAddress);
-  }
-
-  public ValueImpl(final String iconKey, final SparseType sparseType,
-                   final String label, final int defaultValue,
-                   final long desiredAddress)
-  {
-    this(iconKey, sparseType, null, label, defaultValue, desiredAddress);
-  }
-
   /**
    * Creates a new Value object of the specified sparse type and
-   * description, label, icon key, and desired address.
+   * description, label, and icon key.
    * @param description An optional informal description of this
    * Value.  Useful e.g. as tooltip in the GUI.
    * @param label The label of this node.
@@ -115,36 +85,18 @@ public class ValueImpl extends AbstractValue
    * @param iconKey If non-null, overrides the associated
    * sparse type's iconKey.
    * @param defaultValue The underlying numerical default value.
-   * @param desiredAddress If negative, automatically determine an
-   *    absolute address for this node.  If non-negative, request that
-   *    this node will appear at the specified absolute address in the
-   *    address space.  Effectively, by setting an absolute address,
-   *    an area of inaccessible memory bits will precede this node's
-   *    data in order to make this node appear at the desired address.
-   *    If specifying an absolute address, it must be chosen such that
-   *    all previous nodes' memory mapped values (with respect to
-   *    depth first search order) fit into the address space range
-   *    preceding the desired address.  Note that validity check for
-   *    this restriction will be made only upon completion of the tree
-   *    and thus may result in throwing an exception some time later.
    * @exception NullPointerException If sparseType equals null.
    */
   public ValueImpl(final String iconKey, final SparseType sparseType,
                    final String description, final String label,
-                   final int defaultValue, final long desiredAddress)
+                   final int defaultValue)
   {
-    super(iconKey, description, label, defaultValue, desiredAddress);
+    super(iconKey, description, label, defaultValue, sparseType);
     if (sparseType == null) {
       throw new NullPointerException("sparseType");
     }
-    this.sparseType = sparseType;
     minBitSize = sparseType.getRequiredBitSize();
     bitSize = (byte)Math.max(minBitSize, bitSize);
-    // TODO: Editor can also be a SpinnerEditor or anything else,
-    // depending on the underlying SparseType.
-    editor = new DropDownEditor();
-    listeners = new Vector<ValueChangeListener>();
-    setupKeyListener();
   }
 
   /**
@@ -172,24 +124,6 @@ public class ValueImpl extends AbstractValue
     this(amount, null, label, defaultValue);
   }
 
-  public ValueImpl(final int amount, final String iconKey, final String label,
-                   final int defaultValue)
-  {
-    this(amount, iconKey, label, defaultValue, -1);
-  }
-
-  public ValueImpl(final int amount, final String label,
-                   final long desiredAddress)
-  {
-    this(amount, label, 0, desiredAddress);
-  }
-
-  public ValueImpl(final int amount, final String label,
-                   final int defaultValue, final long desiredAddress)
-  {
-    this(amount, null, label, defaultValue, desiredAddress);
-  }
-
   /**
    * Creates a new Value object that represents unused bits.
    * @param amount The amount of unused bits.
@@ -197,65 +131,14 @@ public class ValueImpl extends AbstractValue
    * SparseType's iconKey.
    * @param label The label of this node.
    * @param defaultValue The underlying numerical default value.
-   * @param desiredAddress If negative, automatically determine an
-   *    absolute address for this node.  If non-negative, request that
-   *    this node will appear at the specified absolute address in the
-   *    address space.  Effectively, by setting an absolute address,
-   *    an area of inaccessible memory bits will precede this node's
-   *    data in order to make this node appear at the desired address.
-   *    If specifying an absolute address, it must be chosen such that
-   *    all previous nodes' memory mapped values (with respect to
-   *    depth first search order) fit into the address space range
-   *    preceding the desired address.  Note that validity check for
-   *    this restriction will be made only upon completion of the tree
-   *    and thus may result in throwing an exception some time later.
    * @exception IllegalArgumentException If amount of unused bits is
    *    below zero or above the upper limit of 15.
    */
   public ValueImpl(final int amount, final String iconKey, final String label,
-                   final int defaultValue, final long desiredAddress)
+                   final int defaultValue)
   {
-    this(iconKey, getBitStringType(amount),
-         label, defaultValue, desiredAddress);
+    this(iconKey, getBitStringType(amount), label, defaultValue);
     setBitSize(amount);
-  }
-
-  private void setupKeyListener()
-  {
-    final KeyListener keyListener = new KeyAdapter()
-      {
-        public void keyTyped(final KeyEvent e)
-        {
-          if (e.getKeyChar() == '\n') {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                  final Value newValue = editor.getSelectedValue();
-                  editingPathValueChanged(newValue);
-                }
-              });
-          }
-        }
-      };
-    ((Component)editor).addKeyListener(keyListener);
-  }
-
-  public void addValueChangeListener(final ValueChangeListener listener)
-  {
-    if (listener == null) {
-      throw new NullPointerException("listener");
-    }
-    listeners.add(listener);
-  }
-
-  private void editingPathValueChanged(final Value newValue)
-  {
-    // Here, we actually update the map (rather than in
-    // MapNode#setUserObject()).
-    setNumericalValue(newValue.getNumericalValue());
-
-    for (final ValueChangeListener listener : listeners) {
-      listener.editingPathValueChanged(this);
-    }
   }
 
   /**
@@ -270,15 +153,6 @@ public class ValueImpl extends AbstractValue
     final SparseType sparseType =
       new SparseType(SparseType.GENERIC_ICON_KEY, 0, (1 << amount) - 1,
                      bitMaskRenderer);
-    return sparseType;
-  }
-
-  /**
-   * Returns the sparse type of this Value object.
-   * @return The SparseType object of this Value object.
-   */
-  protected SparseType getSparseType()
-  {
     return sparseType;
   }
 
@@ -310,29 +184,11 @@ public class ValueImpl extends AbstractValue
     return bitSize;
   }
 
-  /**
-   * Returns a numerical representation of this Value object according
-   * to the underlying bit layout.
-   * @return The array of bits that represents the numerical value.
-   *    For performance reasons, the return value is actually not an
-   *    array of bits, but rather an array of integer values with each
-   *    integer value holding 32 bits.  The least significant bit is
-   *    stored in the least significant bit of field 0 of the return
-   *    value.
-   */
-  public int[] toBits()
+  public Editor createEditor()
   {
-    final int[] bits = new int[1];
-    bits[0] = getNumericalValue();
-    return bits;
-  }
-
-  public Component getEditor()
-  {
-    editor.clear();
-    int selectedIndex = -1;
     int index = -1;
     Integer numericalValue = sparseType.lowermost();
+    final Vector<JValue> values = new Vector<JValue>();
     while (numericalValue != null) {
       final String displayValue = sparseType.getDisplayValue(numericalValue);
       final EnumRenderer enumRenderer =
@@ -340,18 +196,25 @@ public class ValueImpl extends AbstractValue
       final SparseType editorSparseType =
         new SparseType(sparseType.getIconKey(),
                        numericalValue, numericalValue, enumRenderer);
-      final Value value = new ValueImpl(editorSparseType, numericalValue);
-      editor.addSelectableValue(value);
+      final JValue value = new JValue(this, numericalValue);
+      values.add(value);
       index++;
-      if (numericalValue == getNumericalValue()) {
-        selectedIndex = index;
-      }
       numericalValue = sparseType.succ(numericalValue);
     }
-    if (selectedIndex > 0) {
-      editor.setSelectedIndex(selectedIndex);
-    }
-    return (Component)editor;
+    // TODO: Editor can also be a SpinnerEditor or anything else,
+    // depending on the underlying SparseType.
+    final Editor editor = new DropDownEditor();
+    editor.setSelectableValues(values);
+    editor.setSelectionByNumericalValue(getDefaultValue());
+    return editor;
+  }
+
+  public String toString()
+  {
+    return "ValueImpl[minBitSize=" + minBitSize + ", bitSize=" + bitSize +
+      ", iconKey=" + getIconKey() + ", description=" + getDescription() +
+      ", label=" + getLabel() + ", defaultValue=" + getDefaultValue() +
+      ", sparseType=" + getSparseType() + "]";
   }
 }
 

@@ -21,50 +21,84 @@
 package org.soundpaint.sysexedit.model;
 
 import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Enumeration;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Icon;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
+import org.soundpaint.sysexedit.gui.JValue;
 import org.soundpaint.sysexedit.gui.Map;
 
 public class DataNode extends MapNode implements ValueChangeListener
 {
   private static final long serialVersionUID = -2825523179205933317L;
 
+  /** The associated value type. */
+  private final Value value;
+
+  /** The current value. */
+  private int numericalValue;
+
   /**
-   * Creates a data node with the specified value and no children.
+   * The editor instance of the associated value type for this data
+   * node for entering a value.
+   */
+  private Editor editor;
+
+  /**
+   * Creates a data node with the specified value and no children
+   * and no explicitly specified desired address.
    * @param value The underlying Value object.
    * @exception NullPointerException If value equals null.
    */
   public DataNode(final Value value)
   {
-    super(value);
+    this(value, -1);
+  }
+
+  /**
+   * Creates a data node with the specified value and no children.
+   * @param value The underlying Value object.
+   * @param desiredAddress Desired absolute address for the associated
+   * node.  If negative, automatically determine an absolute address
+   * for this node.  If non-negative, request that this node will
+   * appear at the specified absolute address in the address space.
+   * Effectively, by setting an absolute address, an area of
+   * inaccessible memory bits will precede this node's data in order
+   * to make this node appear at the desired address.  If specifying
+   * an absolute address, it must be chosen such that all previous
+   * nodes' memory mapped values (with respect to depth first search
+   * order) fit into the address space range preceding the desired
+   * address.  Note that validity check for this restriction will be
+   * made only upon completion of the tree and thus may result in
+   * throwing an exception some time later.
+   * @exception NullPointerException If value equals null.
+   */
+  public DataNode(final Value value, final long desiredAddress)
+  {
+    super(getLabel(value), desiredAddress, false);
+    this.value = value;
+    this.numericalValue = value.getDefaultValue();
+  }
+
+  private static String getLabel(final Value value) {
     if (value == null) {
-      throw new NullPointerException("value");
+      throw new NullPointerException("value must not be null");
     }
-    value.addValueChangeListener(this);
+    return value.getLabel();
   }
 
   protected MapNode getDfsLastDescendant()
   {
     return this;
-  }
-
-  protected boolean allowsChildren()
-  {
-    return true;
-  }
-
-  public void editingPathValueChanged(final Value value)
-  {
-    final TreeNode root = getRoot();
-    final Map map = ((AbstractDevice.MapRoot)root).getMap();
-    map.stopEditing();
   }
 
   /**
@@ -77,52 +111,52 @@ public class DataNode extends MapNode implements ValueChangeListener
       model.nodeChanged(this); // note: this only works *within* a tree
   }
 
-  /**
-   * If this node does not allow children, this method returns the
-   * appropriate Value object associated with this node.
-   * @return The Value object associated with this node.
-   */
-  public Value getValue()
+  public Editor getEditor()
   {
-    final Object obj = getUserObject();
-    if (obj == null) {
-      return null;
+    if (editor == null) {
+      editor = value.createEditor();
+      ((Component)editor).addKeyListener(createKeyListener());
     }
-    if (!(obj instanceof Value)) {
-      throw new IllegalStateException("user object is not a Value [obj=" +
-                                      obj.getClass() + "]");
-    }
-    return (Value)getUserObject();
-  }
-
-  public Component getEditor()
-  {
-    final Value value = getValue();
-    return value != null ? value.getEditor() : null;
+    return editor;
   }
 
   /**
-   * Returns the numerical representation of this node's value.
+   * Returns the numerical representation of this node's value.  The
+   * value is not bound to a specific value range; thus it even may be
+   * out of any value range.
    * @return The numerical representation of this node's value.
    */
-  public Integer getNumericalValue()
+  public int getNumericalValue()
   {
-    final Value value = getValue();
-    if (value != null) {
-      return value.getNumericalValue();
-    } else {
-      return null;
-    }
+    return numericalValue;
   }
 
   /**
-   * Returns this node's value as string for display.
-   * @return This node's value as string for display.
+   * Sets the underlying numerical value of this Value object.  The
+   * value is not bound to a specific value range of the associated
+   * sparse type; thus it even may be out of any value range.
+   * @param value The underlying numerical value.
+   * @exception IllegalArgumentException If value is not an instance
+   *    of the class that holds the value represented by this class.
+   * @see #reset
+   */
+  public void setNumericalValue(final int numericalValue)
+  {
+    // TODO: Check numerical value against ranges of valid values?
+    this.numericalValue = numericalValue;
+    getEditor().setSelectionByNumericalValue(numericalValue);
+  }
+
+  /**
+   * Returns a String that represents this Value object's underlying
+   * numerical value, or null, if the value is out of range with
+   * respect to the associated type.
+   * @return A String representation for this Value object's
+   * underlying numerical value.
    */
   public String getDisplayValue()
   {
-    final Value value = getValue();
-    return value.getDisplayValue();
+    return value.getDisplayValue(getNumericalValue());
   }
 
   protected MapNode resolveDfsLastDescendant()
@@ -136,12 +170,7 @@ public class DataNode extends MapNode implements ValueChangeListener
    */
   public Icon getIcon()
   {
-    final Value value = getValue();
-    if (value != null) {
-      return value.getIcon();
-    } else {
-      return null;
-    }
+    return value.getIcon();
   }
 
   /**
@@ -177,85 +206,90 @@ public class DataNode extends MapNode implements ValueChangeListener
     throw new RuntimeException("can not remove node from beneath of data leaf node");
   }
 
-  @Override
-  public void setUserObject(final Object userObject)
+  /**
+   * Returns the underlying numerical value to apply when this Value
+   * instance is reset.  This value is not bound to a specific value
+   * range of the associated sparse type; thus it even may be out of
+   * the currently selected or any other value range.
+   * @return The current default value.
+   */
+  public int getDefaultValue()
   {
-    /*
-     * The user object is actually already updated in
-     * ValueImpl#editingPathValueChanged().  Hence, this method does
-     * not change anything in the map.
-     */
+    return value.getDefaultValue();
   }
 
   /**
-   * Increments the value of this node, if possible.
+   * Increments the underlying numerical value, if possible.
    * @param model The tree model of the tree that contains this node.
    */
   public void increment(final DefaultTreeModel model)
   {
-    if (!getAllowsChildren()) {
-      final Value value = getValue();
-      value.increment();
-      fireMapChangeEvents(model);
+    final Integer succ = value.succ(getNumericalValue());
+    if (succ != null) {
+      setNumericalValue(succ);
     }
+    fireMapChangeEvents(model);
   }
 
   /**
-   * Decrements the value of this node, if possible.
+   * Decrements the underlying numerical value, if possible.
    * @param model The tree model of the tree that contains this node.
    */
   public void decrement(final DefaultTreeModel model)
   {
-    if (!getAllowsChildren()) {
-      final Value value = getValue();
-      value.decrement();
-      fireMapChangeEvents(model);
+    final Integer pred = value.pred(getNumericalValue());
+    if (pred != null) {
+      setNumericalValue(pred);
     }
+    fireMapChangeEvents(model);
   }
 
   /**
-   * Sets the value of this node to the uppermost value that is in range.
+   * Sets the underlying numerical value to the uppermost value that
+   * is valid.
    * @param model The tree model of the tree that contains this node.
    */
   public void uppermost(final DefaultTreeModel model)
   {
-    if (!getAllowsChildren()) {
-      final Value value = getValue();
-      value.uppermost();
+    final Integer numericalValue = value.uppermost();
+    if (numericalValue != null) {
+      setNumericalValue(numericalValue);
       fireMapChangeEvents(model);
+    } else {
+      // empty set of values => nothing that could be changed
     }
   }
 
   /**
-   * Sets the value of this node to the lowermost value that is in range.
+   * Sets the underlying numerical value to the lowermost value that
+   * is valid.
    * @param model The tree model of the tree that contains this node.
    */
   public void lowermost(final DefaultTreeModel model)
   {
-    if (!getAllowsChildren()) {
-      final Value value = getValue();
-      value.lowermost();
+    final Integer numericalValue = value.lowermost();
+    if (numericalValue != null) {
+      setNumericalValue(numericalValue);
       fireMapChangeEvents(model);
+    } else {
+      // empty set of values => nothing that could be changed
     }
   }
 
   /**
-   * Resets the value of this node to its default value.
+   * Resets the underlying mumerical value to the default value.
    * @param model The tree model of the tree that contains this node.
+   * @see #setDefaultValue
    */
   public void reset(final DefaultTreeModel model)
   {
-    if (!getAllowsChildren()) {
-      final Value value = getValue();
-      value.reset();
-      fireMapChangeEvents(model);
-    }
+    setNumericalValue(value.getDefaultValue());
+    fireMapChangeEvents(model);
   }
 
   public int getBitSize()
   {
-    final Value value = getValue();
-    return value != null ? value.getBitSize() : 0;
+    return value.getBitSize();
   }
 
   private static final Integer[] EMPTY_INTEGER_ARRAY = new Integer[0];
@@ -294,6 +328,23 @@ public class DataNode extends MapNode implements ValueChangeListener
   }
 
   /**
+   * Returns a numerical representation of the value according to the
+   * underlying bit layout.
+   * @return The array of bits that represents the underlying
+   *    numerical value.  For performance reasons, the return value is
+   *    actually not an array of bits, but rather an array of int
+   *    values with each int value holding 32 bits. The least
+   *    significant bit is stored in the least significant bit of
+   *    field 0 of the return value.
+   */
+  public int[] toBits()
+  {
+    final int[] bits = new int[1];
+    bits[0] = getNumericalValue();
+    return bits;
+  }
+
+  /**
    * Returns the numerical value according to the given address and
    * amount.  Assumes, that this node completely contains the
    * requested data.<BR> [PENDING: This is not yet fully implemented]
@@ -308,13 +359,12 @@ public class DataNode extends MapNode implements ValueChangeListener
                                   final List<Integer> resultList)
   {
     final int addrOffs = (int)(address - this.address);
-    final Value value = getValue();
     final int valueBitSize = value.getBitSize();
     final int shiftSize = valueBitSize - size - addrOffs;
     if (shiftSize < 0) {
       throw new IllegalStateException("Partial addresses nodes not yet fully supported");
     }
-    final int[] localData = value.toBits();
+    final int[] localData = toBits();
     final int localDataIndex = shiftSize / 32;
     final int localDataBitOffs = shiftSize % 32;
     final int dataValue = localDataBitOffs >= 0 ?
@@ -337,6 +387,38 @@ public class DataNode extends MapNode implements ValueChangeListener
     if (size > 32) {
       appendDataToResult(address + 32, size - 32, resultList);
     }
+  }
+
+  private KeyListener createKeyListener()
+  {
+    final KeyListener keyListener = new KeyAdapter()
+      {
+        public void keyTyped(final KeyEvent e)
+        {
+          if (e.getKeyChar() == '\n') {
+            SwingUtilities.invokeLater(new Runnable()
+              {
+                public void run()
+                {
+                  final JValue newValue = getEditor().getSelectedValue();
+                  if (newValue != null) {
+                    editingPathValueChanged(newValue.getSystemValue());
+                  }
+                }
+              });
+          }
+        }
+      };
+    return keyListener;
+  }
+
+  public void editingPathValueChanged(final int numericalValue)
+  {
+    // Here, we actually update the map.
+    setNumericalValue(numericalValue);
+    final TreeNode root = getRoot();
+    final Map map = ((AbstractDevice.MapRoot)root).getMap();
+    map.stopEditing();
   }
 
   @Override

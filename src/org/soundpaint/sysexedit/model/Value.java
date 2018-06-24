@@ -24,10 +24,13 @@ import java.awt.Component;
 import javax.swing.Icon;
 
 /**
- * This class holds the structural information and the actual value of
- * a single memory entry of the target device. A memory entry may be
- * part of a memory location or represent just one memory location or
- * cover a couple of memory locations.
+ * This class holds all of the meta data of a single memory entry of
+ * the target device. A memory entry may be part of a memory location
+ * or represent just one memory location or cover a couple of memory
+ * locations.
+ *
+ * @TODO: Rename this interface into "ValueSet", class "AbstractValue"
+ * into "AbstractValueSet" and class "ValueImpl" into "ValueSetImpl".
  */
 public interface Value
 {
@@ -36,25 +39,15 @@ public interface Value
    * for this Value object in a proper manner.
    * @return The GUI component.
    */
-  Component getEditor();
+  Editor createEditor();
 
   /**
-   * Adds a ValueChangeListener that is envoked whenever the value
-   * changes.
-   * @param listener The listener to add.
-   * @exception NullPointerException If <code>listener</code> is
-   * <code>null</code>.
+   * Returns a String that represents the specified numerical, or
+   * null, if the specified numerical value is out of range.
+   * @return A String representation for the specified numerical
+   * value.
    */
-  void addValueChangeListener(final ValueChangeListener listener);
-
-  /**
-   * Returns a String that represents this Value object's underlying
-   * numerical value, or null, if the value is out of range with
-   * respect to the associated type.
-   * @return A String representation for this Value object's
-   * underlying numerical value.
-   */
-  String getDisplayValue();
+  String getDisplayValue(final int numericalValue);
 
   /**
    * Returns an icon that represents this Value object's type.
@@ -74,22 +67,6 @@ public interface Value
   String getLabel();
 
   /**
-   * @return If negative, automatically determine an absolute address
-   * for this node.  If non-negative, request that this node will
-   * appear at the specified absolute address in the address space.
-   * Effectively, by setting an absolute address, an area of
-   * inaccessible memory bits will precede this node's data in order
-   * to make this node appear at the desired address.  If specifying
-   * an absolute address, it must be chosen such that all previous
-   * nodes' memory mapped values (with respect to depth first search
-   * order) fit into the address space range preceding the desired
-   * address.  Note that validity check for this restriction will be
-   * made only upon completion of the tree and thus may result in
-   * throwing an exception some time later.
-   */
-  long getDesiredAddress();
-
-  /**
    * Returns the underlying numerical value to apply when this Value
    * instance is reset.
    * @return The underlying numerical default value.
@@ -97,47 +74,40 @@ public interface Value
   int getDefaultValue();
 
   /**
-   * Sets the underlying numerical value of this Value object.
-   * @param value The underlying numerical value.
-   * @exception IllegalArgumentException If value is not an instance of the
-   *    class that holds the value represented by this class.
-   * @see #reset
+   * Given some numerical value that this set of values may contain or
+   * not, returns the next upper value that this set of values
+   * contains.
+   * @param numericalValue Some arbitrary numerical value (which may
+   *    be even from the omitted value ranges of this set of values).
+   * @return The next upper value that this set of values contains or
+   *    null, if there is no such value.
    */
-  void setNumericalValue(final int value);
+  Integer succ(final int numericalValue);
 
   /**
-   * Returns the underlying numerical value of this Value object.
-   * @return The underlying numerical value.
+   * Given some numerical value that this set of values may contain or
+   * not, return the next lower value that this set of values
+   * contains.
+   * @param numericalValue Some arbitrary numerical value (which may
+   *    be even from the omitted value ranges of this set of values).
+   * @return The next lower value that this set of values contains or
+   *    null, if there is no such value.
    */
-  int getNumericalValue();
+  Integer pred(final int numericalValue);
 
   /**
-   * Resets the underlying mumerical value to the default value.
-   * @see #setDefaultValue
+   * Returns the lowermost value of this set of values.
+   * @return The lowermost value of this set of values or null, if
+   *    this set of values is an empty set.
    */
-  void reset();
+  Integer uppermost();
 
   /**
-   * Increments the underlying numerical value, if possible.
+   * Returns the uppermost value of this set of values.
+   * @return The uppermost value of this set of values or null, if
+   *    this set of values is an empty set.
    */
-  void increment();
-
-  /**
-   * Decrements the underlying numerical value, if possible.
-   */
-  void decrement();
-
-  /**
-   * Sets the underlying numerical value to the uppermost value that
-   * is valid for this Value object.
-   */
-  void uppermost();
-
-  /**
-   * Sets the underlying numerical value to the lowermost value that
-   * is valid for this Value object.
-   */
-  void lowermost();
+  Integer lowermost();
 
   /**
    * Sets the bit size of this Value object's underlying numerical
@@ -160,18 +130,6 @@ public interface Value
    * value.
    */
   byte getBitSize();
-
-  /**
-   * Returns a numerical representation of the value according to the
-   * underlying bit layout.
-   * @return The array of bits that represents the underlying
-   *    numerical value.  For performance reasons, the return value is
-   *    actually not an array of bits, but rather an array of int
-   *    values with each int value holding 32 bits. The least
-   *    significant bit is stored in the least significant bit of
-   *    field 0 of the return value.
-   */
-  int[] toBits();
 }
 
 /*

@@ -36,7 +36,7 @@ public class Dialog extends JDialog
 
   private Dialog()
   {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
   public Dialog(final Frame owner, final String title, final boolean modal)

@@ -1153,9 +1153,8 @@ public class DeviceModelParser
     final Value value =
       new ValueImpl(iconId != null ? iconId.toString() : null,
                     type, description, label,
-                    defaultValue != null ? defaultValue : 0,
-                    desiredAddress);
-    final Data data = new Data(value);
+                    defaultValue != null ? defaultValue : 0);
+    final Data data = new Data(value, desiredAddress);
     final Symbol<Data> dataSymbol = new Symbol<Data>(element, data);
     dataSymbols.enterSymbol(identifier, dataSymbol);
     return identifier;
