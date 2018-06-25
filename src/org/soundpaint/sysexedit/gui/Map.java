@@ -22,6 +22,8 @@ package org.soundpaint.sysexedit.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.util.EventObject;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Icon;
 import javax.swing.JTree;
@@ -29,6 +31,7 @@ import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellEditor;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.soundpaint.sysexedit.model.AddressRepresentation;
@@ -272,6 +275,24 @@ public class Map extends JTree
     {
       final Editor editor = (Editor)lastRequestedEditor;
       return editor.getSelectedValue();
+    }
+
+    public boolean isCellEditable(final EventObject event)
+    {
+      if (event.getSource() != Map.this) {
+        throw new IllegalStateException("unexpected event source: " +
+                                        event.getSource().getClass());
+      }
+      if (!(event instanceof MouseEvent)) {
+        throw new UnsupportedOperationException("unexpected event type: " +
+                                                event.getClass());
+      }
+      final MouseEvent mouseEvent = (MouseEvent)event;
+      final int x = mouseEvent.getX();
+      final int y = mouseEvent.getY();
+      final TreePath path = Map.this.getClosestPathForLocation(x, y);
+      final Object node = path.getLastPathComponent();
+      return node instanceof DataNode;
     }
 
     public Component getTreeCellEditorComponent(final JTree tree,
