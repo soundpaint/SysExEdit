@@ -1,5 +1,5 @@
 /*
- * @(#)Symbol.java 1.00 18/06/03
+ * @(#)IndexVariable.java 1.00 18/06/26
  *
  * Copyright (C) 2018 Jürgen Reuter
  *
@@ -20,30 +20,33 @@
 
 package org.soundpaint.sysexedit.parser;
 
-import org.w3c.dom.Node;
-
-public class Symbol<Type>
+public class IndexVariable
 {
-  private final Node location;
-  private final Type value;
+  private Identifier identifier;
+  private int value;
 
-  private Symbol()
+  private IndexVariable()
   {
-    throw new RuntimeException("unsupported constructor");
+    throw new UnsupportedOperationException("unsupported constructor");
   }
 
-  public Symbol(final Node location, final Type value)
+  public IndexVariable(final Identifier identifier)
   {
-    this.location = location;
+    this.identifier = identifier;
+    this.value = 0;
+  }
+
+  public Identifier getIdentifier()
+  {
+    return identifier;
+  }
+
+  public void setValue(final int value)
+  {
     this.value = value;
   }
 
-  public Node getLocation()
-  {
-    return location;
-  }
-
-  public Type getValue()
+  public int getValue()
   {
     return value;
   }

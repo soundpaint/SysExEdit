@@ -28,10 +28,11 @@ import java.util.List;
 public class Folder implements ParserNode
 {
   private final String description;
-  private final String label;
+  private final StringExpression label;
   private final int multiplicity;
-  private final Identifier indexVar;
+  private final IndexVariable variable;
   private final long desiredAddress;
+  private final long desiredAddressIncrement;
   private final List<ParserNode> contents;
 
   private Folder()
@@ -39,15 +40,16 @@ public class Folder implements ParserNode
     throw new UnsupportedOperationException("unsupported constructor");
   }
 
-  public Folder(final String description, final String label,
-                final int multiplicity, final Identifier indexVar,
-                final long desiredAddress)
+  public Folder(final String description, final StringExpression label,
+                final int multiplicity, final IndexVariable variable,
+                final long desiredAddress, final long desiredAddressIncrement)
   {
     this.description = description;
     this.label = label;
     this.multiplicity = multiplicity;
-    this.indexVar = indexVar;
+    this.variable = variable;
     this.desiredAddress = desiredAddress;
+    this.desiredAddressIncrement = desiredAddressIncrement;
     contents = new ArrayList<ParserNode>();
   }
 
@@ -56,7 +58,7 @@ public class Folder implements ParserNode
     return description;
   }
 
-  public String getLabel()
+  public StringExpression getLabel()
   {
     return label;
   }
@@ -66,14 +68,19 @@ public class Folder implements ParserNode
     return multiplicity;
   }
 
-  public Identifier getIndexVar()
+  public IndexVariable getIndexVariable()
   {
-    return indexVar;
+    return variable;
   }
 
   public long getDesiredAddress()
   {
     return desiredAddress;
+  }
+
+  public long getDesiredAddressIncrement()
+  {
+    return desiredAddressIncrement;
   }
 
   public void addAll(final Collection<ParserNode> nodes)

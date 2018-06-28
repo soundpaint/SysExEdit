@@ -88,9 +88,13 @@ public class DeviceModelParser
   private static final String TAG_NAME_BIT_MASK = "bit-mask";
   private static final String TAG_NAME_BIT_STRING_SIZE = "bit-string-size";
   private static final String TAG_NAME_DATA = "data";
+  private static final String TAG_NAME_BIT_SIZE = "bit-size";
   private static final String TAG_NAME_DEFAULT_VALUE = "default-value";
   private static final String TAG_NAME_BIT_ADDRESS = "bit-address";
+  private static final String TAG_NAME_BIT_ADDRESS_INCREMENT =
+    "bit-address-increment";
   private static final String TAG_NAME_ADDRESS = "address";
+  private static final String TAG_NAME_ADDRESS_INCREMENT = "address-increment";
 
   private static Document loadXml(final URL deviceUrl)
     throws ParseException
@@ -117,30 +121,61 @@ public class DeviceModelParser
     return loadXml(deviceResource);
   }
 
-  private static int parseInt(final String value)
+  private static byte parseByte(final Element location, final String value)
+    throws ParseException
   {
     final String trimmedValue = value.trim();
-    if (trimmedValue.startsWith("0x")) {
-      return Integer.parseInt(trimmedValue.substring(2), 16);
-    } else if (trimmedValue.startsWith("0b")) {
-      return Integer.parseInt(trimmedValue.substring(2), 2);
-    } else {
-      return Integer.parseInt(trimmedValue);
+    final String lowerCaseValue = trimmedValue.toLowerCase();
+    try {
+      if (lowerCaseValue.startsWith("0x")) {
+        return Byte.parseByte(trimmedValue.substring(2), 16);
+      } else if (lowerCaseValue.startsWith("0b")) {
+        return Byte.parseByte(trimmedValue.substring(2), 2);
+      } else {
+        return Byte.parseByte(trimmedValue);
+      }
+    } catch (final NumberFormatException e) {
+      throw new ParseException(location, "invalid byte value: " + value);
     }
   }
 
-  private static long parseLong(final String value)
+  private static int parseInt(final Element location, final String value)
+    throws ParseException
   {
     final String trimmedValue = value.trim();
-    if (trimmedValue.startsWith("0x")) {
-      return Long.parseLong(trimmedValue.substring(2), 16);
-    } else if (trimmedValue.startsWith("0b")) {
-      return Long.parseLong(trimmedValue.substring(2), 2);
-    } else {
-      return Long.parseLong(trimmedValue);
+    final String lowerCaseValue = trimmedValue.toLowerCase();
+    try {
+      if (lowerCaseValue.startsWith("0x")) {
+        return Integer.parseInt(trimmedValue.substring(2), 16);
+      } else if (lowerCaseValue.startsWith("0b")) {
+        return Integer.parseInt(trimmedValue.substring(2), 2);
+      } else {
+        return Integer.parseInt(trimmedValue);
+      }
+    } catch (final NumberFormatException e) {
+      throw new ParseException(location, "invalid integer value: " + value);
     }
   }
 
+  private static long parseLong(final Element location, final String value)
+    throws ParseException
+  {
+    final String trimmedValue = value.trim();
+    final String lowerCaseValue = trimmedValue.toLowerCase();
+    try {
+      if (lowerCaseValue.startsWith("0x")) {
+        return Long.parseLong(trimmedValue.substring(2), 16);
+      } else if (lowerCaseValue.startsWith("0b")) {
+        return Long.parseLong(trimmedValue.substring(2), 2);
+      } else {
+        return Long.parseLong(trimmedValue);
+      }
+    } catch (final NumberFormatException e) {
+      throw new ParseException(location, "invalid long value: " + value);
+    }
+  }
+
+  private Scope scope;
   private Symbol<AddressRepresentation> addressRepresentation;
   private Symbol<String> deviceClass;
   private Symbol<String> deviceName;
@@ -169,6 +204,7 @@ public class DeviceModelParser
   private DeviceModelParser(final Document document)
     throws ParseException
   {
+    scope = new Scope();
     rangeSymbols = new SymbolTable<ValueRange>();
     typeSymbols = new SymbolTable<SparseType>();
     rendererSymbols = new SymbolTable<ValueRangeRenderer>();
@@ -221,7 +257,7 @@ public class DeviceModelParser
       throw new ParseException(documentElement,
                                "no global folder node found that is marked as '#root'");
     }
-    final Element rootElement = rootSymbol.getLocation();
+    final Element rootElement = (Element)(rootSymbol.getLocation());
     if (rootElement == null) {
       throw new ParseException(documentElement,
                                "root folder element without location info");
@@ -418,22 +454,6 @@ public class DeviceModelParser
     deviceName = new Symbol<String>(element, value);
   }
 
-  private static byte parseByte(final Element element) throws ParseException
-  {
-    final byte value;
-    final String text = element.getTextContent();
-    try {
-      if (text.toLowerCase().startsWith("0x")) {
-        value = Byte.parseByte(text.substring(2), 16);
-      } else {
-        value = Byte.parseByte(text);
-      }
-    } catch (final NumberFormatException e) {
-      throw new ParseException(element, "invalid byte value: " + text);
-    }
-    return value;
-  }
-
   private void parseManufacturerId(final Element element) throws ParseException
   {
     if (manufacturerId != null) {
@@ -443,7 +463,7 @@ public class DeviceModelParser
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_MAN_ID, cause);
     }
-    final byte value = parseByte(element);
+    final byte value = parseByte(element, element.getTextContent());
     manufacturerId = new Symbol<Byte>(element, value);
   }
 
@@ -455,7 +475,7 @@ public class DeviceModelParser
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_MODEL_ID, cause);
     }
-    final byte value = parseByte(element);
+    final byte value = parseByte(element, element.getTextContent());
     modelId = new Symbol<Byte>(element, value);
   }
 
@@ -630,7 +650,7 @@ public class DeviceModelParser
           if (radix != null) {
             throwDuplicateException(childElement, TAG_NAME_RADIX);
           }
-          radix = parseInt(childElement.getTextContent());
+          radix = parseInt(childElement, childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_FILL_WITH_LEADING_ZEROS)) {
           if (fillWithLeadingZeros != null) {
             throwDuplicateException(childElement, TAG_NAME_FILL_WITH_LEADING_ZEROS);
@@ -650,7 +670,8 @@ public class DeviceModelParser
           if (displayMinWidth != null) {
             throwDuplicateException(childElement, TAG_NAME_DISPLAY_MIN_WIDTH);
           }
-          displayMinWidth = Byte.parseByte(childElement.getTextContent());
+          displayMinWidth =
+            parseByte(childElement, childElement.getTextContent());
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);
@@ -694,7 +715,7 @@ public class DeviceModelParser
           if (bitStringSize != null) {
             throwDuplicateException(childElement, TAG_NAME_BIT_STRING_SIZE);
           }
-          bitStringSize = parseInt(childElement.getTextContent());
+          bitStringSize = parseInt(childElement, childElement.getTextContent());
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);
@@ -807,17 +828,18 @@ public class DeviceModelParser
           if (lowerBound != null) {
             throwDuplicateException(childElement, TAG_NAME_LOWER_BOUND);
           }
-          lowerBound = parseLong(childElement.getTextContent());
+          lowerBound = parseLong(childElement, childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_UPPER_BOUND)) {
           if (upperBound != null) {
             throwDuplicateException(childElement, TAG_NAME_UPPER_BOUND);
           }
-          upperBound = parseLong(childElement.getTextContent());
+          upperBound = parseLong(childElement, childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_DISPLAY_OFFSET)) {
           if (displayOffset != null) {
             throwDuplicateException(childElement, TAG_NAME_DISPLAY_OFFSET);
           }
-          displayOffset = parseLong(childElement.getTextContent());
+          displayOffset =
+            parseLong(childElement, childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_ENUM)) {
           if (rendererSymbol != null) {
             final Throwable cause =
@@ -903,21 +925,28 @@ public class DeviceModelParser
     return identifier;
   }
 
+  private long parseAddress(final Element location,
+                            final String text) throws ParseException
+  {
+    try {
+      return addressRepresentation.getValue().parse(text);
+    } catch (final NumberFormatException e) {
+      throw new ParseException(location, "failed parsing display address");
+    }
+  }
+
   private long parseAddress(final Element element) throws ParseException
   {
     if (addressRepresentation == null) {
       throw new ParseException(element, "need address representation be defined prior to parsing display address");
     }
-    try {
-      return addressRepresentation.getValue().parse(element.getTextContent());
-    } catch (final NumberFormatException e) {
-      throw new ParseException(element, "failed parsing display address");
-    }
+    return parseAddress(element, element.getTextContent());
   }
 
   private Identifier parseFolder(final Element element, final boolean requireId)
     throws ParseException
   {
+    scope.enterScope();
     final Identifier identifier = parseId(element, requireId);
     if (isTypeRef(element)) {
       return identifier;
@@ -925,16 +954,17 @@ public class DeviceModelParser
 
     String description = null;
 
-    final String label;
+    final String unparsedLabel;
     if (element.hasAttribute(ATTR_NAME_LABEL)) {
-      label = element.getAttribute(ATTR_NAME_LABEL);
+      unparsedLabel = element.getAttribute(ATTR_NAME_LABEL);
     } else {
-      label = null;
+      unparsedLabel = null;
     }
 
     final Integer multiplicity;
     if (element.hasAttribute(ATTR_NAME_MULTIPLICITY)) {
-      multiplicity = parseInt(element.getAttribute(ATTR_NAME_MULTIPLICITY));
+      multiplicity =
+        parseInt(element, element.getAttribute(ATTR_NAME_MULTIPLICITY));
       if (multiplicity < 1) {
         throw new ParseException(element, "non-positive folder multiplicity");
       }
@@ -942,16 +972,21 @@ public class DeviceModelParser
       multiplicity = 1;
     }
 
-    final Identifier indexVar;
+    final Identifier indexVarId;
     if (element.hasAttribute(ATTR_NAME_INDEX_VAR)) {
-      indexVar =
+      indexVarId =
         Identifier.fromString(element.getAttribute(ATTR_NAME_INDEX_VAR));
     } else {
-      indexVar = Identifier.createAnonymousIdentifier();
+      indexVarId = Identifier.createAnonymousIdentifier();
     }
-
-    Long address = null;
+    final IndexVariable indexVar = new IndexVariable(indexVarId);
+    final Symbol<IndexVariable> indexVarSymbol =
+      new Symbol<IndexVariable>(element, indexVar);
+    scope.enterIndexVariable(indexVarSymbol);
     Long bitAddress = null;
+    Long address = null;
+    Long bitAddressIncrement = null;
+    Long addressIncrement = null;
     final List<ParserNode> contents = new ArrayList<ParserNode>();
     final NodeList childNodes = element.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
@@ -964,6 +999,19 @@ public class DeviceModelParser
             throwDuplicateException(childElement, TAG_NAME_DESCRIPTION);
           }
           description = childElement.getTextContent();
+
+        } else if (childElementName.equals(TAG_NAME_BIT_ADDRESS)) {
+          if (address != null) {
+            throwDuplicateException(childElement,
+                                    TAG_NAME_ADDRESS, TAG_NAME_BIT_ADDRESS);
+          }
+          if (bitAddress != null) {
+            throwDuplicateException(childElement, TAG_NAME_BIT_ADDRESS);
+          }
+          bitAddress = parseLong(childElement, childElement.getTextContent());
+          if (bitAddress < 0) {
+            throw new ParseException(childElement, "negative bit address");
+          }
         } else if (childElementName.equals(TAG_NAME_ADDRESS)) {
           if (bitAddress != null) {
             throwDuplicateException(childElement,
@@ -973,15 +1021,39 @@ public class DeviceModelParser
             throwDuplicateException(childElement, TAG_NAME_ADDRESS);
           }
           address = parseAddress(childElement);
-        } else if (childElementName.equals(TAG_NAME_BIT_ADDRESS)) {
-          if (address != null) {
+          if (address < 0) {
+            throw new ParseException(childElement, "negative address");
+          }
+        } else if (childElementName.equals(TAG_NAME_BIT_ADDRESS_INCREMENT)) {
+          if (addressIncrement != null) {
             throwDuplicateException(childElement,
-                                    TAG_NAME_ADDRESS, TAG_NAME_BIT_ADDRESS);
+                                    TAG_NAME_ADDRESS_INCREMENT,
+                                    TAG_NAME_BIT_ADDRESS_INCREMENT);
           }
-          if (bitAddress != null) {
-            throwDuplicateException(childElement, TAG_NAME_BIT_ADDRESS);
+          if (bitAddressIncrement != null) {
+            throwDuplicateException(childElement,
+                                    TAG_NAME_BIT_ADDRESS_INCREMENT);
           }
-          bitAddress = parseLong(childElement.getTextContent());
+          bitAddressIncrement =
+            parseLong(childElement, childElement.getTextContent());
+          if (bitAddressIncrement < 1) {
+            throw new ParseException(childElement,
+                                     "non-positive bit address increment");
+          }
+        } else if (childElementName.equals(TAG_NAME_ADDRESS_INCREMENT)) {
+          if (bitAddressIncrement != null) {
+            throwDuplicateException(childElement,
+                                    TAG_NAME_BIT_ADDRESS_INCREMENT,
+                                    TAG_NAME_ADDRESS_INCREMENT);
+          }
+          if (addressIncrement != null) {
+            throwDuplicateException(childElement, TAG_NAME_ADDRESS_INCREMENT);
+          }
+          addressIncrement = parseAddress(childElement);
+          if (addressIncrement < 1) {
+            throw new ParseException(childElement,
+                                     "non-positive address increment");
+          }
         } else if (childElementName.equals(TAG_NAME_FOLDER)) {
           final Identifier folderId = parseFolder(childElement, false);
           final Symbol<? extends Folder> folderSymbol =
@@ -1019,17 +1091,168 @@ public class DeviceModelParser
       }
     }
 
+    final StringExpression label = parseLabel(element, unparsedLabel);
+
     final long desiredAddress =
       bitAddress != null ? bitAddress : (address != null ? address : -1);
+    final long desiredAddressIncrement =
+      bitAddressIncrement != null ?
+      bitAddressIncrement :
+      (addressIncrement != null ?
+       addressIncrement : -1);
+    if ((desiredAddressIncrement != -1) && (desiredAddress == -1)) {
+      throw new ParseException(element, "can not declare address increment " +
+                               "if no address is declared");
+    }
     final Folder folder = new Folder(description, label,
                                      multiplicity, indexVar,
-                                     desiredAddress);
+                                     desiredAddress,
+                                     desiredAddressIncrement);
     folder.addAll(contents);
 
     final Symbol<Folder> symbol =
       new Symbol<Folder>(element, folder);
     folderSymbols.enterSymbol(identifier, symbol);
+    scope.leaveScope();
     return identifier;
+  }
+
+  private enum ParseLabelState {
+    START_VAR_OR_FUNC_OR_CONST,
+    START_VAR_OR_FUNC,
+    IN_VAR_OR_FUNC,
+    IN_CONST,
+  }
+
+  private boolean isIdentifierStartChar(final char ch)
+  {
+    return
+      (ch >= 'A' && ch <= 'Z') ||
+      (ch >= 'a' && ch <= 'z');
+  }
+
+  private boolean isIdentifierChar(final char ch)
+  {
+    return
+      isIdentifierStartChar(ch) ||
+      (ch >= '0' && ch <= '9') ||
+      (ch == '-') ||
+      (ch == '_');
+  }
+
+  private static class ParseLabelException extends ParseException
+  {
+    private static final long serialVersionUID = -299586991505951473L;
+
+    public ParseLabelException(final Node location, final String label,
+                               final int charPos, final String message)
+    {
+      super(location, createLabelMessage(label, charPos, message), null);
+    }
+
+    private static String createLabelMessage(final String label,
+                                             final int charPos,
+                                             final String message)
+    {
+      return
+        "error at character position " + charPos +
+        "while parsing label: " + message + "\r\n" +
+        label;
+    }
+  }
+
+  private void addVariable(final Node location,
+                           final StringExpression label, final String token)
+    throws ParseException
+  {
+    final Identifier identifier = Identifier.fromString(token);
+    final Symbol<? extends IndexVariable> variableSymbol =
+      scope.lookupIndexVariable(identifier);
+    if (variableSymbol == null) {
+      throw new ParseException(location,
+                               "could not resolve variable '" + token + "'");
+    }
+    label.add(variableSymbol.getValue());
+  }
+
+  private StringExpression parseLabel(final Node location,
+                                      final String unparsedLabel)
+    throws ParseException
+  {
+    final StringExpression label = new StringExpression();
+    ParseLabelState state = ParseLabelState.START_VAR_OR_FUNC_OR_CONST;
+    StringBuilder token = new StringBuilder();
+    for (int pos = 0; pos < unparsedLabel.length(); pos++) {
+      final char ch = unparsedLabel.charAt(pos);
+      switch (state) {
+      case START_VAR_OR_FUNC_OR_CONST:
+        if (ch == '$') {
+          token.setLength(0);
+          state = ParseLabelState.START_VAR_OR_FUNC;
+        } else {
+          token.setLength(0);
+          token.append(ch);
+          state = ParseLabelState.IN_CONST;
+        }
+        break;
+      case START_VAR_OR_FUNC:
+        if (isIdentifierStartChar(ch)) {
+          token.append(ch);
+          state = ParseLabelState.IN_VAR_OR_FUNC;
+        } else {
+          throw new ParseLabelException(location, unparsedLabel, pos,
+                                        "variable or function starts with invalid character");
+        }
+        break;
+      case IN_VAR_OR_FUNC:
+        if (isIdentifierChar(ch)) {
+          token.append(ch);
+          // keep state
+        } else if (ch == '$') {
+          addVariable(location, label, token.toString());
+          token.setLength(0);
+          state = ParseLabelState.START_VAR_OR_FUNC;
+        } else {
+          addVariable(location, label, token.toString());
+          token.setLength(0);
+          token.append(ch);
+          state = ParseLabelState.IN_CONST;
+        }
+        break;
+      case IN_CONST:
+        if (ch == '$') {
+          label.add(token.toString());
+          token.setLength(0);
+          state = ParseLabelState.START_VAR_OR_FUNC;
+        } else {
+          token.append(ch);
+          // keep state
+        }
+        break;
+      default:
+        throw new IllegalStateException("unexpected state: " + state);
+      }
+    }
+
+    switch (state) {
+    case START_VAR_OR_FUNC_OR_CONST:
+      // nothing to add
+      break;
+    case START_VAR_OR_FUNC:
+      throw new ParseLabelException(location, unparsedLabel,
+                                    unparsedLabel.length(),
+                                    "identifier expected");
+    case IN_VAR_OR_FUNC:
+      addVariable(location, label, token.toString());
+      break;
+    case IN_CONST:
+      label.add(token.toString());
+      break;
+    default:
+      throw new IllegalStateException("unexpected state: " + state);
+    }
+
+    return label;
   }
 
   private void parseValues(final Element element, final List<String> values)
@@ -1078,6 +1301,7 @@ public class DeviceModelParser
     }
 
     SparseType type = null;
+    Byte bitSize = null;
     Integer defaultValue = null;
 
     final NodeList childNodes = element.getChildNodes();
@@ -1109,11 +1333,19 @@ public class DeviceModelParser
             throwDuplicateException(childElement, TAG_NAME_ICON);
           }
           iconId = Identifier.fromString(childElement.getTextContent());
+        } else if (childElementName.equals(TAG_NAME_BIT_SIZE)) {
+          if (bitSize != null) {
+            throwDuplicateException(childElement, TAG_NAME_BIT_SIZE);
+          }
+          bitSize = parseByte(childElement, childElement.getTextContent());
+          if ((bitSize < 0) || (bitSize > 32)) {
+            throw new ParseException("invalid bit size; valid range: 0..32");
+          }
         } else if (childElementName.equals(TAG_NAME_DEFAULT_VALUE)) {
           if (defaultValue != null) {
             throwDuplicateException(childElement, TAG_NAME_DEFAULT_VALUE);
           }
-          defaultValue = parseInt(childElement.getTextContent());
+          defaultValue = parseInt(childElement, childElement.getTextContent());
         } else if (childElementName.equals(TAG_NAME_ADDRESS)) {
           if (bitAddress != null) {
             throwDuplicateException(childElement,
@@ -1131,7 +1363,7 @@ public class DeviceModelParser
           if (bitAddress != null) {
             throwDuplicateException(childElement, TAG_NAME_BIT_ADDRESS);
           }
-          bitAddress = parseLong(childElement.getTextContent());
+          bitAddress = parseLong(childElement, childElement.getTextContent());
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);
@@ -1154,6 +1386,15 @@ public class DeviceModelParser
       new ValueImpl(iconId != null ? iconId.toString() : null,
                     type, description, label,
                     defaultValue != null ? defaultValue : 0);
+    if (bitSize == null) {
+      bitSize = type.getRequiredBitSize();
+    } else if (bitSize < type.getRequiredBitSize()) {
+      throw new ParseException(element, "declared bit size (" + bitSize +
+                               ") must be greater than or equal to " +
+                               "required bit size (" +
+                               type.getRequiredBitSize() + ")");
+    }
+    value.setBitSize(bitSize);
     final Data data = new Data(value, desiredAddress);
     final Symbol<Data> dataSymbol = new Symbol<Data>(element, data);
     dataSymbols.enterSymbol(identifier, dataSymbol);

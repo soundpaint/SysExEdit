@@ -25,6 +25,15 @@
     <data ref="device-id" />
   </device-id>
   <entered-by>Jürgen Reuter, Copyright © 1998, 2018</entered-by>
+  <type id="non-negative-7-bit">
+    <icon>internal-control</icon>
+    <range>
+      <lower-bound>0</lower-bound>
+      <upper-bound>127</upper-bound>
+      <display-offset>0x1</display-offset>
+      <integer />
+    </range>
+  </type>
   <enum id="pan">
     <description>Pan Data Assign Table</description>
     <values>
@@ -2634,12 +2643,18 @@
   </type>
   <folder label="Drum Setup" id="drum_setup">
     <address>30 00 00</address>
-    <folder label="Drum Setup {drum-setup-number(#setup)}"
+    <folder label="Drum Setup #drum-setup-number{$setup}"
             multiplicity="2"
             index-var="setup">
-      <folder label="Note {note-number(#note)}"
+      <address>30 00 00</address>
+      <address-increment>01 00 00</address-increment>
+      <folder label="Note #note-number{$note}"
               multiplicity="79"
               index-var="note">
+        <!--
+        <address>30 00 00</address>
+        <address-increment>00 01 00</address-increment>
+        -->
         <!-- TODO -->
       </folder>
     </folder>
@@ -2665,9 +2680,11 @@
     </folder>
     <folder label="Multi Part">
       <address>08 00 00</address>
-      <folder label="Multi Part {multi-part-number(#part)}"
+      <folder label="Multi Part #multi-part-number{$part}"
               multiplicity="16"
               index-var="part">
+        <address>08 00 00</address>
+        <address-increment>00 01 00</address-increment>
         <data label="Element Reserve">
           <type id="element-reserve">
             <icon>internal-control</icon>
@@ -2676,7 +2693,13 @@
               <integer />
             </range>
           </type>
-          <default-value>0x02</default-value> <!-- 0x00 for part 10 -->
+          <bit-size>7</bit-size>
+          <default-value>0x02</default-value> <!-- TODO: 0x00 for part 10 -->
+        </data>
+        <data label="Bank Select LSB">
+          <type ref="non-negative-7-bit" />
+          <bit-size>7</bit-size>
+          <default-value>0x00</default-value> <!-- TODO: 0x7f for part 10 -->
         </data>
       </folder>
     </folder>

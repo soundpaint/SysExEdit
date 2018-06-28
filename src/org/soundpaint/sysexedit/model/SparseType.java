@@ -149,6 +149,7 @@ public class SparseType
     this(description, iconKey);
     for (final ValueRange range : ranges) {
       valueRanges.add(range);
+      size += range.getUpperBound() - range.getLowerBound() + 1;
     }
   }
 
@@ -274,6 +275,7 @@ public class SparseType
                                      displayOffset, renderer));
     }
     valueRangesByNumericalValue = null;
+    size += upperBound - lowerBound + 1;
     return this;
   }
 
@@ -487,7 +489,8 @@ public class SparseType
       }
       s.append(valueRange.toString());
     }
-    return "SparseType[valueRanges={" + s + "}]";
+    return "SparseType[description=" + description + ", iconKey=" + iconKey +
+      ", valueRanges={" + s + "}, size=" + size + "]";
   }
 }
 
