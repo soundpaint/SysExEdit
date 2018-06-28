@@ -974,7 +974,7 @@ public class DB50XG extends AbstractDevice
    */
   public AddressRepresentation getAddressRepresentation()
   {
-    return new AddressRepresentation.Triple7Bits();
+    return AddressRepresentation.TRIPLE_7_BITS;
   }
 
   /**

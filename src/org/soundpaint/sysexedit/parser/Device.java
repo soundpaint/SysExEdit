@@ -22,11 +22,7 @@ package org.soundpaint.sysexedit.parser;
 
 import java.io.InputStream;
 import java.net.URL;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreeNode;
 
-import org.soundpaint.sysexedit.gui.Map;
-import org.soundpaint.sysexedit.gui.MapContextMenu;
 import org.soundpaint.sysexedit.model.AbstractDevice;
 import org.soundpaint.sysexedit.model.AddressRepresentation;
 import org.soundpaint.sysexedit.model.DataNode;

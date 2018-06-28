@@ -49,6 +49,8 @@ public interface AddressRepresentation
    */
   long parse(final String displayAddress);
 
+  static AddressRepresentation TRIPLE_7_BITS = new Triple7Bits();
+
   static class Triple7Bits implements AddressRepresentation
   {
     public String getDisplayAddress(final long bitAddress)

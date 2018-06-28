@@ -206,7 +206,6 @@ public class EditorFrame extends JFrame
     getContentPane().add(panel_map, "Center");
     final Device device = documentMetaData.getDevice();
     map = device.getMap();
-    map.setAddressRepresentation(device.getAddressRepresentation());
     setAddressInfoEnabled(false);
     map.setModel(mapModel);
     map.setShowsRootHandles(true);

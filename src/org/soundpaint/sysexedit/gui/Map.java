@@ -52,7 +52,7 @@ public class Map extends JTree
   /**
    * When displaying addresses, call addressToString() of this class.
    */
-  private AddressRepresentation addressRepresentation;
+  private final AddressRepresentation addressRepresentation;
 
   /**
    * A flag that turns address information generation on or off.
@@ -65,14 +65,15 @@ public class Map extends JTree
   }
 
   public Map(final TreeSelectionListener selectionListener,
-             final MapContextMenu mapContextMenu)
+             final MapContextMenu mapContextMenu,
+             final AddressRepresentation addressRepresentation)
   {
     super();
+    this.addressRepresentation = addressRepresentation;
     getSelectionModel().
       setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     setEditable(true);
-    final CellRenderer renderer = new CellRenderer();
-    setCellRenderer(renderer);
+    setCellRenderer(new CellRenderer());
     setCellEditor(new MapCellEditor());
     setComponentPopupMenu(mapContextMenu);
     addTreeSelectionListener(selectionListener);
@@ -106,23 +107,11 @@ public class Map extends JTree
   }
 
   /**
-   * Sets the AddressRepresentation object that is used when address
-   * information is to be displayed.
-   * @param addressRepresentation The AddressRepresentation object to use.
-   * @see #getAddressRepresentation
-   * @see #setAddressInfoEnabled
-   */
-  void setAddressRepresentation(final AddressRepresentation representation)
-  {
-    addressRepresentation = representation;
-  }
-
-  /**
    * Returns the AddressRepresentation object that is currently set.
    * @return The AddressRepresentation object.
    * @see #setAddressRepresentation
    */
-  private AddressRepresentation getAddressRepresentation()
+  public AddressRepresentation getAddressRepresentation()
   {
     return addressRepresentation;
   }

@@ -233,11 +233,18 @@ public abstract class MapNode extends DefaultMutableTreeNode
       // no desired address specified => use default
       address = nextAvailableAddress;
     } else if (nextAvailableAddress > desiredAddress) {
+      final Map map = ((AbstractDevice.MapRoot)getRoot()).getMap();
+      final AddressRepresentation addressRepresentation =
+        map.getAddressRepresentation();
+      final String desiredDisplayAddress =
+        addressRepresentation.getDisplayAddress(desiredAddress);
+      final String nextAvailableDisplayAddress =
+        addressRepresentation.getDisplayAddress(nextAvailableAddress);
       throw new RuntimeException("invalid desired address " +
-                                 desiredAddress +
+                                 desiredDisplayAddress +
                                  " for node " + this + ": " +
                                  "desired address must be " +
-                                 nextAvailableAddress + " or higher");
+                                 nextAvailableDisplayAddress + " or higher");
     } else {
       // use desired address
       address = desiredAddress;

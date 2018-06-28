@@ -40,23 +40,11 @@ public abstract class AbstractDevice implements Device
 
     private MapRoot(final String deviceName,
                     final TreeSelectionListener selectionListener,
-                    final MapContextMenu mapContextMenu)
+                    final MapContextMenu mapContextMenu,
+                    final AddressRepresentation addressRepresentation)
     {
       super(deviceName);
-      map = new Map(selectionListener, mapContextMenu);
-    }
-
-    public MapRoot(final String description,
-                   final String label,
-                   final long desiredAddress)
-    {
-      super(description, label, desiredAddress);
-      map = null; // initialize map later on
-    }
-
-    public void setMap(final Map map)
-    {
-      this.map = map;
+      map = new Map(selectionListener, mapContextMenu, addressRepresentation);
     }
 
     public Map getMap()
@@ -75,7 +63,8 @@ public abstract class AbstractDevice implements Device
   public TreeNode buildMap(final TreeSelectionListener selectionListener,
                            final MapContextMenu mapContextMenu)
   {
-    root = new MapRoot(getName(), selectionListener, mapContextMenu);
+    root = new MapRoot(getName(), selectionListener, mapContextMenu,
+                       getAddressRepresentation());
     buildMap(root);
     root.resolveDfsLinkedNodes(null);
     root.resolveAddresses(0);
