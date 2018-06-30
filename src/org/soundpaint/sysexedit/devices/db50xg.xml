@@ -2641,25 +2641,26 @@
       <lower-bound>0x0980</lower-bound>
     </range>
   </type>
-  <folder label="Drum Setup" id="drum_setup">
+  <folder id="drum_setups"
+          label="Drum Setup">
     <address>30 00 00</address>
-    <folder label="Drum Setup #drum-setup-number{$setup}"
+    <folder id="drum_setup"
+            label="Drum Setup #drum-setup-number{$setup}"
             multiplicity="2"
             index-var="setup">
-      <address>30 00 00</address>
+      <address relative-to="drum_setups">00 00 00</address>
       <address-increment>01 00 00</address-increment>
       <folder label="Note #note-number{$note}"
               multiplicity="79"
               index-var="note">
-        <!--
-        <address>30 00 00</address>
+        <address relative-to="drum_setup">00 0D 00</address>
         <address-increment>00 01 00</address-increment>
-        -->
         <!-- TODO -->
       </folder>
     </folder>
   </folder>
-  <folder label="MU50 / DB50XG" id="#root">
+  <folder id="#root"
+          label="MU50 / DB50XG">
     <folder label="System">
       <address>00 00 00</address>
     </folder>
@@ -2703,6 +2704,6 @@
         </data>
       </folder>
     </folder>
-    <folder ref="drum_setup" />
+    <folder ref="drum_setups" />
   </folder>
 </sysexedit>

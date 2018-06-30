@@ -29,10 +29,12 @@ public class Scope
   private class ScopeItem
   {
     private SymbolTable<IndexVariable> indexVariableSymbols;
+    private SymbolTable<Folder> folderSymbols;
 
     public ScopeItem()
     {
       indexVariableSymbols = new SymbolTable<IndexVariable>();
+      folderSymbols = new SymbolTable<Folder>();
     }
   }
 
@@ -41,6 +43,7 @@ public class Scope
   public Scope()
   {
     scopeItems = new Stack<ScopeItem>();
+    enterScope();
   }
 
   public boolean empty()
@@ -94,6 +97,41 @@ public class Scope
     } else {
       if (scopeIndex > 0) {
         return lookupIndexVariable(id, scopeIndex - 1);
+      } else {
+        return null;
+      }
+    }
+  }
+
+  public void enterFolder(final Identifier id, final Symbol<Folder> folder)
+    throws ParseException
+  {
+    if (lookupIndexVariable(id) != null) {
+      // TODO: Where to put warnings?  Probably not directly to
+      // System.out.
+      System.out.println("warning: folder id " + id +
+                         " hides folder id from enclosing scope");
+    }
+    final ScopeItem scopeItem = scopeItems.peek();
+    scopeItem.folderSymbols.enterSymbol(id, folder);
+  }
+
+  public Symbol<? extends Folder> lookupFolder(final Identifier id)
+  {
+    return lookupFolder(id, scopeItems.size() - 1);
+  }
+
+  private Symbol<? extends Folder>
+    lookupFolder(final Identifier id, final int scopeIndex)
+  {
+    final ScopeItem scopeItem = scopeItems.get(scopeIndex);
+    final Symbol<? extends Folder> folder =
+      scopeItem.folderSymbols.lookupSymbol(id);
+    if (folder != null) {
+      return folder;
+    } else {
+      if (scopeIndex > 0) {
+        return lookupFolder(id, scopeIndex - 1);
       } else {
         return null;
       }

@@ -58,6 +58,7 @@ public class DeviceModelParser
   private static final String ATTR_NAME_LABEL = "label";
   private static final String ATTR_NAME_MULTIPLICITY = "multiplicity";
   private static final String ATTR_NAME_INDEX_VAR = "index-var";
+  private static final String ATTR_NAME_RELATIVE_TO = "relative-to";
   private static final String TAG_NAME_SYSEXEDIT = "sysexedit";
   private static final String TAG_NAME_ADDRESS_REPRESENTATION =
     "address-representation";
@@ -186,7 +187,6 @@ public class DeviceModelParser
   private SymbolTable<ValueRange> rangeSymbols;
   private SymbolTable<SparseType> typeSymbols;
   private SymbolTable<ValueRangeRenderer> rendererSymbols;
-  private SymbolTable<Folder> folderSymbols;
   private SymbolTable<Data> dataSymbols;
 
   public DeviceModelParser(final URL deviceUrl)
@@ -208,7 +208,6 @@ public class DeviceModelParser
     rangeSymbols = new SymbolTable<ValueRange>();
     typeSymbols = new SymbolTable<SparseType>();
     rendererSymbols = new SymbolTable<ValueRangeRenderer>();
-    folderSymbols = new SymbolTable<Folder>();
     dataSymbols = new SymbolTable<Data>();
     parse(document);
   }
@@ -252,7 +251,7 @@ public class DeviceModelParser
     throws ParseException
   {
     final Symbol<? extends Folder> rootSymbol =
-      folderSymbols.lookupSymbol(Identifier.ROOT_ID);
+      scope.lookupFolder(Identifier.ROOT_ID);
     if (rootSymbol == null) {
       throw new ParseException(documentElement,
                                "no global folder node found that is marked as '#root'");
@@ -274,7 +273,7 @@ public class DeviceModelParser
   public Folder getRoot()
   {
     final Symbol<? extends Folder> rootSymbol =
-      folderSymbols.lookupSymbol(Identifier.ROOT_ID);
+      scope.lookupFolder(Identifier.ROOT_ID);
     return rootSymbol.getValue();
   }
 
@@ -497,8 +496,8 @@ public class DeviceModelParser
             dataSymbols.lookupSymbol(dataId);
           if (dataSymbol == null) {
             throw new ParseException(element,
-                                     "can not resolve data reference " +
-                                     dataId);
+                                     "can not resolve data reference '" +
+                                     dataId + "'");
           }
           deviceId = dataSymbol;
         } else if (isWhiteSpace(childNode)) {
@@ -768,8 +767,8 @@ public class DeviceModelParser
             rangeSymbols.lookupSymbol(rangeId);
           if (rangeSymbol == null) {
             throw new ParseException(element,
-                                     "can not resolve range reference " +
-                                     rangeId);
+                                     "can not resolve range reference '" +
+                                     rangeId + "'");
           }
           ranges.add(rangeSymbol.getValue());
         } else {
@@ -852,8 +851,8 @@ public class DeviceModelParser
           rendererSymbol = rendererSymbols.lookupSymbol(rendererId);
           if (rendererSymbol == null) {
             throw new ParseException(element,
-                                     "can not resolve renderer reference " +
-                                     rendererId);
+                                     "can not resolve renderer reference '" +
+                                     rendererId + "'");
           }
         } else if (childElementName.equals(TAG_NAME_INTEGER)) {
           if (rendererSymbol != null) {
@@ -868,8 +867,8 @@ public class DeviceModelParser
           rendererSymbol = rendererSymbols.lookupSymbol(rendererId);
           if (rendererSymbol == null) {
             throw new ParseException(element,
-                                     "can not resolve renderer reference " +
-                                     rendererId);
+                                     "can not resolve renderer reference '" +
+                                     rendererId + "'");
           }
         } else if (childElementName.equals(TAG_NAME_BIT_MASK)) {
           if (rendererSymbol != null) {
@@ -884,8 +883,8 @@ public class DeviceModelParser
           rendererSymbol = rendererSymbols.lookupSymbol(rendererId);
           if (rendererSymbol == null) {
             throw new ParseException(element,
-                                     "can not resolve renderer reference " +
-                                     rendererId);
+                                     "can not resolve renderer reference '" +
+                                     rendererId + "'");
           }
         } else {
           throw new ParseException(childElement, "unexpected element: " +
@@ -946,13 +945,16 @@ public class DeviceModelParser
   private Identifier parseFolder(final Element element, final boolean requireId)
     throws ParseException
   {
-    scope.enterScope();
     final Identifier identifier = parseId(element, requireId);
     if (isTypeRef(element)) {
       return identifier;
     }
 
-    String description = null;
+    final Folder folder = new Folder();
+    final Symbol<Folder> symbol = new Symbol<Folder>(element, folder);
+    scope.enterFolder(identifier, symbol);
+
+    scope.enterScope();
 
     final String unparsedLabel;
     if (element.hasAttribute(ATTR_NAME_LABEL)) {
@@ -983,10 +985,15 @@ public class DeviceModelParser
     final Symbol<IndexVariable> indexVarSymbol =
       new Symbol<IndexVariable>(element, indexVar);
     scope.enterIndexVariable(indexVarSymbol);
+
+    final StringExpression label = parseLabel(element, unparsedLabel);
+
+    String description = null;
     Long bitAddress = null;
     Long address = null;
     Long bitAddressIncrement = null;
     Long addressIncrement = null;
+    Identifier relativeToId = null;
     final List<ParserNode> contents = new ArrayList<ParserNode>();
     final NodeList childNodes = element.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
@@ -1012,6 +1019,10 @@ public class DeviceModelParser
           if (bitAddress < 0) {
             throw new ParseException(childElement, "negative bit address");
           }
+          if (childElement.hasAttribute(ATTR_NAME_RELATIVE_TO)) {
+            relativeToId =
+              Identifier.fromString(childElement.getAttribute(ATTR_NAME_RELATIVE_TO));
+          }
         } else if (childElementName.equals(TAG_NAME_ADDRESS)) {
           if (bitAddress != null) {
             throwDuplicateException(childElement,
@@ -1023,6 +1034,10 @@ public class DeviceModelParser
           address = parseAddress(childElement);
           if (address < 0) {
             throw new ParseException(childElement, "negative address");
+          }
+          if (childElement.hasAttribute(ATTR_NAME_RELATIVE_TO)) {
+            relativeToId =
+              Identifier.fromString(childElement.getAttribute(ATTR_NAME_RELATIVE_TO));
           }
         } else if (childElementName.equals(TAG_NAME_BIT_ADDRESS_INCREMENT)) {
           if (addressIncrement != null) {
@@ -1057,11 +1072,11 @@ public class DeviceModelParser
         } else if (childElementName.equals(TAG_NAME_FOLDER)) {
           final Identifier folderId = parseFolder(childElement, false);
           final Symbol<? extends Folder> folderSymbol =
-            folderSymbols.lookupSymbol(folderId);
+            scope.lookupFolder(folderId);
           if (folderSymbol == null) {
             throw new ParseException(element,
-                                     "can not resolve folder reference " +
-                                     folderId);
+                                     "can not resolve folder reference '" +
+                                     folderId + "'");
           }
           if (folderId == Identifier.ROOT_ID) {
             throw new ParseException(element,
@@ -1074,8 +1089,8 @@ public class DeviceModelParser
             dataSymbols.lookupSymbol(dataId);
           if (dataSymbol == null) {
             throw new ParseException(element,
-                                     "can not resolve data reference " +
-                                     dataId);
+                                     "can not resolve data reference '" +
+                                     dataId + "'");
           }
           contents.add(dataSymbol.getValue());
         } else {
@@ -1091,8 +1106,6 @@ public class DeviceModelParser
       }
     }
 
-    final StringExpression label = parseLabel(element, unparsedLabel);
-
     final long desiredAddress =
       bitAddress != null ? bitAddress : (address != null ? address : -1);
     final long desiredAddressIncrement =
@@ -1104,15 +1117,40 @@ public class DeviceModelParser
       throw new ParseException(element, "can not declare address increment " +
                                "if no address is declared");
     }
-    final Folder folder = new Folder(description, label,
-                                     multiplicity, indexVar,
-                                     desiredAddress,
-                                     desiredAddressIncrement);
+
+    if ((multiplicity > 1) && (desiredAddress > -1)) {
+      if (addressIncrement == null) {
+        throw new ParseException(element,
+                                 "since this folder's multiplicity is " +
+                                 "greater than 1 and a desired address has " +
+                                 "been explicitly specified, you also need " +
+                                 "to explicitly specify an address increment");
+      }
+    }
+
+    final Folder addressBase;
+    if (relativeToId != null) {
+      final Symbol<? extends Folder> folderSymbol =
+        scope.lookupFolder(relativeToId);
+      if (folderSymbol == null) {
+        throw new ParseException(element,
+                                 "can not resolve folder reference '" +
+                                 relativeToId + "'");
+      }
+      addressBase = folderSymbol.getValue();
+    } else {
+      addressBase = null;
+    }
+
+    folder.setDescription(description);
+    folder.setLabel(label);
+    folder.setMultiplicity(multiplicity);
+    folder.setIndexVariable(indexVar);
+    folder.setDesiredAddress(desiredAddress);
+    folder.setDesiredAddressIncrement(desiredAddressIncrement);
+    folder.setAddressBase(addressBase);
     folder.addAll(contents);
 
-    final Symbol<Folder> symbol =
-      new Symbol<Folder>(element, folder);
-    folderSymbols.enterSymbol(identifier, symbol);
     scope.leaveScope();
     return identifier;
   }
@@ -1324,8 +1362,8 @@ public class DeviceModelParser
             typeSymbols.lookupSymbol(typeId);
           if (typeSymbol == null) {
             throw new ParseException(element,
-                                     "can not resolve type reference " +
-                                     typeId);
+                                     "can not resolve type reference '" +
+                                     typeId + "'");
           }
           type = typeSymbol.getValue();
         } else if (childElementName.equals(TAG_NAME_ICON)) {

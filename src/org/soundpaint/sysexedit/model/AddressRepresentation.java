@@ -62,9 +62,9 @@ public interface AddressRepresentation
       final byte offset = (byte)(bitAddress % 7);
       final String offsetStr = offset == 0 ? "" : " [" + offset + "]";
       return
-        String.format("%02x", addrHigh) + " " +
-        String.format("%02x", addrMiddle) + " " +
-        String.format("%02x", addrLow) +
+        String.format("%02X", addrHigh) + " " +
+        String.format("%02X", addrMiddle) + " " +
+        String.format("%02X", addrLow) +
         offsetStr;
     }
 

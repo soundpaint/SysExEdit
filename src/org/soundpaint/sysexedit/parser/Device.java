@@ -126,22 +126,17 @@ public class Device extends AbstractDevice
     final String description = parseFolder.getDescription();
     final StringExpression label = parseFolder.getLabel();
     final IndexVariable variable = parseFolder.getIndexVariable();
-    final long desiredFirstAddress = parseFolder.getDesiredAddress();
-    final long desiredAddressIncrement =
-      parseFolder.getDesiredAddressIncrement();
+    parseFolder.resetLoopIndex();
     for (int index = 0; index < parseFolder.getMultiplicity(); index++) {
-      final long desiredAddress =
-        index == 0 ? desiredFirstAddress :
-        (desiredFirstAddress == -1 ? -1 :
-         (desiredAddressIncrement == -1 ? -1 :
-          desiredFirstAddress + index * desiredAddressIncrement));
       variable.setValue(index);
       final FolderNode mapChildFolder =
-        new FolderNode(description, label.evaluate(), desiredAddress);
+        new FolderNode(description, label.evaluate(),
+                       parseFolder.getIncrementedDesiredAddress());
       mapFolder.add(mapChildFolder);
       for (final ParserNode node : parseFolder.getContents()) {
         addNode(mapChildFolder, node);
       }
+      parseFolder.incrementLoopIndex();
     }
   }
 
