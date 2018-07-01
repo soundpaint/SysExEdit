@@ -2563,7 +2563,8 @@
     <range>
       <upper-bound>0x4e</upper-bound>
       <display-offset>0x0d</display-offset>
-      <integer />
+      <enum ref="note" />
+      <!-- <integer /> -->
     </range>
   </type>
   <type id="multi-part-number">
@@ -2645,12 +2646,12 @@
           label="Drum Setup">
     <address>30 00 00</address>
     <folder id="drum_setup"
-            label="Drum Setup #drum-setup-number{$setup}"
+            label="Drum Setup $drum-setup-number(setup)"
             multiplicity="2"
             index-var="setup">
       <address relative-to="drum_setups">00 00 00</address>
       <address-increment>01 00 00</address-increment>
-      <folder label="Note #note-number{$note}"
+      <folder label="Note $note-number(note)"
               multiplicity="79"
               index-var="note">
         <address relative-to="drum_setup">00 0D 00</address>
@@ -2681,7 +2682,7 @@
     </folder>
     <folder label="Multi Part">
       <address>08 00 00</address>
-      <folder label="Multi Part #multi-part-number{$part}"
+      <folder label="Multi Part $multi-part-number(part)"
               multiplicity="16"
               index-var="part">
         <address>08 00 00</address>

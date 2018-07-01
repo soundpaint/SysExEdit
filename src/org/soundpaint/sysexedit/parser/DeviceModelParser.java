@@ -185,7 +185,6 @@ public class DeviceModelParser
   private Symbol<? extends Data> deviceId;
   private Symbol<String> enteredBy;
   private SymbolTable<ValueRange> rangeSymbols;
-  private SymbolTable<SparseType> typeSymbols;
   private SymbolTable<ValueRangeRenderer> rendererSymbols;
   private SymbolTable<Data> dataSymbols;
 
@@ -206,7 +205,6 @@ public class DeviceModelParser
   {
     scope = new Scope();
     rangeSymbols = new SymbolTable<ValueRange>();
-    typeSymbols = new SymbolTable<SparseType>();
     rendererSymbols = new SymbolTable<ValueRangeRenderer>();
     dataSymbols = new SymbolTable<Data>();
     parse(document);
@@ -788,7 +786,7 @@ public class DeviceModelParser
                      iconId != null ? iconId.toString() : null,
                      ranges);
     final Symbol<SparseType> symbol = new Symbol<SparseType>(element, type);
-    typeSymbols.enterSymbol(identifier, symbol);
+    scope.enterType(symbol, identifier);
     return identifier;
   }
 
@@ -986,7 +984,8 @@ public class DeviceModelParser
       new Symbol<IndexVariable>(element, indexVar);
     scope.enterIndexVariable(indexVarSymbol);
 
-    final StringExpression label = parseLabel(element, unparsedLabel);
+    final StringExpression label =
+      StringExpression.parse(element, unparsedLabel, scope);
 
     String description = null;
     Long bitAddress = null;
@@ -1155,144 +1154,6 @@ public class DeviceModelParser
     return identifier;
   }
 
-  private enum ParseLabelState {
-    START_VAR_OR_FUNC_OR_CONST,
-    START_VAR_OR_FUNC,
-    IN_VAR_OR_FUNC,
-    IN_CONST,
-  }
-
-  private boolean isIdentifierStartChar(final char ch)
-  {
-    return
-      (ch >= 'A' && ch <= 'Z') ||
-      (ch >= 'a' && ch <= 'z');
-  }
-
-  private boolean isIdentifierChar(final char ch)
-  {
-    return
-      isIdentifierStartChar(ch) ||
-      (ch >= '0' && ch <= '9') ||
-      (ch == '-') ||
-      (ch == '_');
-  }
-
-  private static class ParseLabelException extends ParseException
-  {
-    private static final long serialVersionUID = -299586991505951473L;
-
-    public ParseLabelException(final Node location, final String label,
-                               final int charPos, final String message)
-    {
-      super(location, createLabelMessage(label, charPos, message), null);
-    }
-
-    private static String createLabelMessage(final String label,
-                                             final int charPos,
-                                             final String message)
-    {
-      return
-        "error at character position " + charPos +
-        "while parsing label: " + message + "\r\n" +
-        label;
-    }
-  }
-
-  private void addVariable(final Node location,
-                           final StringExpression label, final String token)
-    throws ParseException
-  {
-    final Identifier identifier = Identifier.fromString(token);
-    final Symbol<? extends IndexVariable> variableSymbol =
-      scope.lookupIndexVariable(identifier);
-    if (variableSymbol == null) {
-      throw new ParseException(location,
-                               "could not resolve variable '" + token + "'");
-    }
-    label.add(variableSymbol.getValue());
-  }
-
-  private StringExpression parseLabel(final Node location,
-                                      final String unparsedLabel)
-    throws ParseException
-  {
-    final StringExpression label = new StringExpression();
-    ParseLabelState state = ParseLabelState.START_VAR_OR_FUNC_OR_CONST;
-    StringBuilder token = new StringBuilder();
-    for (int pos = 0; pos < unparsedLabel.length(); pos++) {
-      final char ch = unparsedLabel.charAt(pos);
-      switch (state) {
-      case START_VAR_OR_FUNC_OR_CONST:
-        if (ch == '$') {
-          token.setLength(0);
-          state = ParseLabelState.START_VAR_OR_FUNC;
-        } else {
-          token.setLength(0);
-          token.append(ch);
-          state = ParseLabelState.IN_CONST;
-        }
-        break;
-      case START_VAR_OR_FUNC:
-        if (isIdentifierStartChar(ch)) {
-          token.append(ch);
-          state = ParseLabelState.IN_VAR_OR_FUNC;
-        } else {
-          throw new ParseLabelException(location, unparsedLabel, pos,
-                                        "variable or function starts with invalid character");
-        }
-        break;
-      case IN_VAR_OR_FUNC:
-        if (isIdentifierChar(ch)) {
-          token.append(ch);
-          // keep state
-        } else if (ch == '$') {
-          addVariable(location, label, token.toString());
-          token.setLength(0);
-          state = ParseLabelState.START_VAR_OR_FUNC;
-        } else {
-          addVariable(location, label, token.toString());
-          token.setLength(0);
-          token.append(ch);
-          state = ParseLabelState.IN_CONST;
-        }
-        break;
-      case IN_CONST:
-        if (ch == '$') {
-          label.add(token.toString());
-          token.setLength(0);
-          state = ParseLabelState.START_VAR_OR_FUNC;
-        } else {
-          token.append(ch);
-          // keep state
-        }
-        break;
-      default:
-        throw new IllegalStateException("unexpected state: " + state);
-      }
-    }
-
-    switch (state) {
-    case START_VAR_OR_FUNC_OR_CONST:
-      // nothing to add
-      break;
-    case START_VAR_OR_FUNC:
-      throw new ParseLabelException(location, unparsedLabel,
-                                    unparsedLabel.length(),
-                                    "identifier expected");
-    case IN_VAR_OR_FUNC:
-      addVariable(location, label, token.toString());
-      break;
-    case IN_CONST:
-      label.add(token.toString());
-      break;
-    default:
-      throw new IllegalStateException("unexpected state: " + state);
-    }
-
-    return label;
-  }
-
   private void parseValues(final Element element, final List<String> values)
     throws ParseException
   {
@@ -1359,7 +1220,7 @@ public class DeviceModelParser
           }
           final Identifier typeId = parseType(childElement, false);
           final Symbol<? extends SparseType> typeSymbol =
-            typeSymbols.lookupSymbol(typeId);
+            scope.lookupType(typeId);
           if (typeSymbol == null) {
             throw new ParseException(element,
                                      "can not resolve type reference '" +

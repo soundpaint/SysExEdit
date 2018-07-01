@@ -24,16 +24,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import org.soundpaint.sysexedit.model.SparseType;
+
 public class Scope
 {
   private class ScopeItem
   {
     private SymbolTable<IndexVariable> indexVariableSymbols;
+    private SymbolTable<SparseType> typeSymbols;
     private SymbolTable<Folder> folderSymbols;
 
     public ScopeItem()
     {
       indexVariableSymbols = new SymbolTable<IndexVariable>();
+      typeSymbols = new SymbolTable<SparseType>();
       folderSymbols = new SymbolTable<Folder>();
     }
   }
@@ -74,7 +78,7 @@ public class Scope
       // TODO: Where to put warnings?  Probably not directly to
       // System.out.
       System.out.println("warning: index variable " + id +
-                         " hides variable from enclosing scope");
+                         " hides declaration from enclosing scope");
     }
     final ScopeItem scopeItem = scopeItems.peek();
     scopeItem.indexVariableSymbols.enterSymbol(id, indexVariable);
@@ -103,14 +107,50 @@ public class Scope
     }
   }
 
+  public void enterType(final Symbol<SparseType> type, final Identifier id)
+    throws ParseException
+  {
+    if (lookupType(id) != null) {
+      // TODO: Where to put warnings?  Probably not directly to
+      // System.out.
+      System.out.println("warning: type " + id +
+                         " hides declaration from enclosing scope");
+    }
+    final ScopeItem scopeItem = scopeItems.peek();
+    scopeItem.typeSymbols.enterSymbol(id, type);
+  }
+
+  public Symbol<? extends SparseType>
+    lookupType(final Identifier id)
+  {
+    return lookupType(id, scopeItems.size() - 1);
+  }
+
+  private Symbol<? extends SparseType>
+    lookupType(final Identifier id, final int scopeIndex)
+  {
+    final ScopeItem scopeItem = scopeItems.get(scopeIndex);
+    final Symbol<? extends SparseType> type =
+      scopeItem.typeSymbols.lookupSymbol(id);
+    if (type != null) {
+      return type;
+    } else {
+      if (scopeIndex > 0) {
+        return lookupType(id, scopeIndex - 1);
+      } else {
+        return null;
+      }
+    }
+  }
+
   public void enterFolder(final Identifier id, final Symbol<Folder> folder)
     throws ParseException
   {
     if (lookupIndexVariable(id) != null) {
       // TODO: Where to put warnings?  Probably not directly to
       // System.out.
-      System.out.println("warning: folder id " + id +
-                         " hides folder id from enclosing scope");
+      System.out.println("warning: folder " + id +
+                         " hides declaration from enclosing scope");
     }
     final ScopeItem scopeItem = scopeItems.peek();
     scopeItem.folderSymbols.enterSymbol(id, folder);
