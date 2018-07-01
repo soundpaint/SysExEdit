@@ -122,16 +122,34 @@ public class DeviceModelParser
     return loadXml(deviceResource);
   }
 
+  private static boolean startsWithHexPrefix(final String value)
+  {
+    return value.startsWith("0x") || value.startsWith("-0x");
+  }
+
+  private static boolean startsWithBinPrefix(final String value)
+  {
+    return value.startsWith("0b") || value.startsWith("-0b");
+  }
+
+  private static String dropPrefix(final String value)
+  {
+    return
+      value.startsWith("-") ?
+      "-" + value.substring(3) :
+      value.substring(2);
+  }
+
   private static byte parseByte(final Element location, final String value)
     throws ParseException
   {
     final String trimmedValue = value.trim();
     final String lowerCaseValue = trimmedValue.toLowerCase();
     try {
-      if (lowerCaseValue.startsWith("0x")) {
-        return Byte.parseByte(trimmedValue.substring(2), 16);
-      } else if (lowerCaseValue.startsWith("0b")) {
-        return Byte.parseByte(trimmedValue.substring(2), 2);
+      if (startsWithHexPrefix(lowerCaseValue)) {
+        return Byte.parseByte(dropPrefix(trimmedValue), 16);
+      } else if (startsWithBinPrefix(lowerCaseValue)) {
+        return Byte.parseByte(dropPrefix(trimmedValue), 2);
       } else {
         return Byte.parseByte(trimmedValue);
       }
@@ -146,10 +164,10 @@ public class DeviceModelParser
     final String trimmedValue = value.trim();
     final String lowerCaseValue = trimmedValue.toLowerCase();
     try {
-      if (lowerCaseValue.startsWith("0x")) {
-        return Integer.parseInt(trimmedValue.substring(2), 16);
-      } else if (lowerCaseValue.startsWith("0b")) {
-        return Integer.parseInt(trimmedValue.substring(2), 2);
+      if (startsWithHexPrefix(lowerCaseValue)) {
+        return Integer.parseInt(dropPrefix(trimmedValue), 16);
+      } else if (startsWithBinPrefix(lowerCaseValue)) {
+        return Integer.parseInt(dropPrefix(trimmedValue), 2);
       } else {
         return Integer.parseInt(trimmedValue);
       }
@@ -164,10 +182,10 @@ public class DeviceModelParser
     final String trimmedValue = value.trim();
     final String lowerCaseValue = trimmedValue.toLowerCase();
     try {
-      if (lowerCaseValue.startsWith("0x")) {
-        return Long.parseLong(trimmedValue.substring(2), 16);
-      } else if (lowerCaseValue.startsWith("0b")) {
-        return Long.parseLong(trimmedValue.substring(2), 2);
+      if (startsWithHexPrefix(lowerCaseValue)) {
+        return Long.parseLong(dropPrefix(trimmedValue), 16);
+      } else if (startsWithBinPrefix(lowerCaseValue)) {
+        return Long.parseLong(dropPrefix(trimmedValue), 2);
       } else {
         return Long.parseLong(trimmedValue);
       }
