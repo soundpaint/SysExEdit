@@ -109,7 +109,6 @@ public class Map extends JTree
   /**
    * Returns the AddressRepresentation object that is currently set.
    * @return The AddressRepresentation object.
-   * @see #setAddressRepresentation
    */
   public AddressRepresentation getAddressRepresentation()
   {

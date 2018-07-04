@@ -167,7 +167,7 @@ public class ValueImpl extends AbstractValue
   {
     if ((bitSize < 0) || (bitSize > 32) ||
         (minBitSize > bitSize))
-      throw new IllegalArgumentException("bitSize out of range");
+      throw new IllegalArgumentException("bitSize out of range: " + bitSize);
     else
       this.bitSize = (byte)bitSize;
   }

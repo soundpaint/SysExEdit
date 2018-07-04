@@ -60,8 +60,10 @@ public class DeviceModelParser
   private static final String ATTR_NAME_INDEX_VAR = "index-var";
   private static final String ATTR_NAME_RELATIVE_TO = "relative-to";
   private static final String TAG_NAME_SYSEXEDIT = "sysexedit";
-  private static final String TAG_NAME_ADDRESS_REPRESENTATION =
-    "address-representation";
+  private static final String TAG_NAME_ADDRESS_MODEL = "address-model";
+  private static final String TAG_NAME_REPRESENTATION = "representation";
+  private static final String TAG_NAME_DEFAULT_DATA_SIZE = "default-data-size";
+  private static final String TAG_NAME_MULTIPLE_OF_BITS = "multiple-of-bits";
   private static final String TAG_NAME_DEVICE_CLASS = "device-class";
   private static final String TAG_NAME_DEVICE_NAME = "device-name";
   private static final String TAG_NAME_MAN_ID = "manufacturer-id";
@@ -195,13 +197,14 @@ public class DeviceModelParser
   }
 
   private Scope scope;
-  private Symbol<AddressRepresentation> addressRepresentation;
-  private Symbol<String> deviceClass;
-  private Symbol<String> deviceName;
-  private Symbol<Byte> manufacturerId;
-  private Symbol<Byte> modelId;
-  private Symbol<? extends Data> deviceId;
-  private Symbol<String> enteredBy;
+  private Symbol<AddressRepresentation> addressRepresentationSymbol;
+  private Symbol<DefaultDataSize> defaultDataSizeSymbol;
+  private Symbol<String> deviceClassSymbol;
+  private Symbol<String> deviceNameSymbol;
+  private Symbol<Byte> manufacturerIdSymbol;
+  private Symbol<Byte> modelIdSymbol;
+  private Symbol<? extends Data> deviceIdSymbol;
+  private Symbol<String> enteredBySymbol;
   private SymbolTable<ValueRange> rangeSymbols;
   private SymbolTable<ValueRangeRenderer> rendererSymbols;
   private SymbolTable<Data> dataSymbols;
@@ -230,37 +233,37 @@ public class DeviceModelParser
 
   public String getDeviceClass()
   {
-    return deviceClass.getValue();
+    return deviceClassSymbol.getValue();
   }
 
   public String getDeviceName()
   {
-    return deviceName.getValue();
+    return deviceNameSymbol.getValue();
   }
 
   public byte getManufacturerId()
   {
-    return manufacturerId.getValue();
+    return manufacturerIdSymbol.getValue();
   }
 
   public byte getModelId()
   {
-    return modelId.getValue();
+    return modelIdSymbol.getValue();
   }
 
   public Value getDeviceId()
   {
-    return deviceId.getValue().getValue();
+    return deviceIdSymbol.getValue().getValue();
   }
 
   public String getEnteredBy()
   {
-    return enteredBy.getValue();
+    return enteredBySymbol.getValue();
   }
 
   public AddressRepresentation getAddressRepresentation()
   {
-    return addressRepresentation.getValue();
+    return addressRepresentationSymbol.getValue();
   }
 
   private void checkRoot(final Element documentElement)
@@ -337,8 +340,8 @@ public class DeviceModelParser
       if (childNode instanceof Element) {
         final Element childElement = (Element)childNode;
         final String childElementName = childElement.getTagName();
-        if (childElementName.equals(TAG_NAME_ADDRESS_REPRESENTATION)) {
-          parseAddressRepresentation(childElement);
+        if (childElementName.equals(TAG_NAME_ADDRESS_MODEL)) {
+          parseAddressModel(childElement);
         } else if (childElementName.equals(TAG_NAME_DEVICE_CLASS)) {
           parseDeviceClass(childElement);
         } else if (childElementName.equals(TAG_NAME_DEVICE_NAME)) {
@@ -407,18 +410,93 @@ public class DeviceModelParser
                              "but not both");
   }
 
+  private void parseAddressModel(final Element element) throws ParseException
+  {
+    final NodeList childNodes = element.getChildNodes();
+    for (int index = 0; index < childNodes.getLength(); index++) {
+      final Node childNode = childNodes.item(index);
+      if (childNode instanceof Element) {
+        final Element childElement = (Element)childNode;
+        final String childElementName = childElement.getTagName();
+        if (childElementName.equals(TAG_NAME_REPRESENTATION)) {
+          parseRepresentation(childElement);
+        } else if (childElementName.equals(TAG_NAME_DEFAULT_DATA_SIZE)) {
+          parseDefaultDataSize(childElement);
+        } else {
+          throw new ParseException(childElement, "unexpected element: " +
+                                   childElementName);
+        }
+      } else if (isWhiteSpace(childNode)) {
+        // ignore white space
+      } else if (isIgnorableNodeType(childNode)) {
+        // ignore comments, entities, etc.
+      } else {
+        throw new ParseException(childNode, "unsupported node");
+      }
+    }
+  }
+
+  private void parseDefaultDataSize(final Element element)
+    throws ParseException
+  {
+    if (defaultDataSizeSymbol != null) {
+      final Throwable cause =
+        new ParseException(defaultDataSizeSymbol.getLocation(),
+                           "first definition here");
+      cause.fillInStackTrace();
+      throwDuplicateException(element, TAG_NAME_DEFAULT_DATA_SIZE, cause);
+    }
+    Byte multipleOfBits = null;
+    final NodeList childNodes = element.getChildNodes();
+    for (int index = 0; index < childNodes.getLength(); index++) {
+      final Node childNode = childNodes.item(index);
+      if (childNode instanceof Element) {
+        final Element childElement = (Element)childNode;
+        final String childElementName = childElement.getTagName();
+        if (childElementName.equals(TAG_NAME_MULTIPLE_OF_BITS)) {
+          if (multipleOfBits != null) {
+            throwDuplicateException(childElement, TAG_NAME_MULTIPLE_OF_BITS);
+          }
+          multipleOfBits =
+            parseByte(childElement, childElement.getTextContent());
+          if (multipleOfBits < 1) {
+            throw new ParseException(childElement,
+                                     "'multiple-of-bits' must be a " +
+                                     "positive value > 0");
+          }
+        } else {
+          throw new ParseException(childElement, "unexpected element: " +
+                                   childElementName);
+        }
+      } else if (isWhiteSpace(childNode)) {
+        // ignore white space
+      } else if (isIgnorableNodeType(childNode)) {
+        // ignore comments, entities, etc.
+      } else {
+        throw new ParseException(childNode, "unsupported node");
+      }
+    }
+    if (multipleOfBits == null) {
+      throw new ParseException(element, "'multiple-of-bits' expected");
+    }
+    final DefaultDataSize defaultDataSize =
+      DefaultDataSize.fromMultipleOfBits(multipleOfBits);
+    defaultDataSizeSymbol =
+      new Symbol<DefaultDataSize>(element, defaultDataSize);
+  }
+
   private static final String ADDRESS_REPRESENTATION_CLASS_NAME =
     "org.soundpaint.sysexedit.model.AddressRepresentation";
 
-  private void parseAddressRepresentation(final Element element)
+  private void parseRepresentation(final Element element)
     throws ParseException
   {
-    if (addressRepresentation != null) {
+    if (addressRepresentationSymbol != null) {
       final Throwable cause =
-        new ParseException(addressRepresentation.getLocation(),
+        new ParseException(addressRepresentationSymbol.getLocation(),
                            "first definition here");
       cause.fillInStackTrace();
-      throwDuplicateException(element, TAG_NAME_ADDRESS_REPRESENTATION, cause);
+      throwDuplicateException(element, TAG_NAME_REPRESENTATION, cause);
     }
     final String className =
       ADDRESS_REPRESENTATION_CLASS_NAME + "$" + element.getTextContent();
@@ -442,56 +520,60 @@ public class DeviceModelParser
         new ParseException("failed instantiating address representation: " +
                            className, e);
     }
-    addressRepresentation = new Symbol<AddressRepresentation>(element, value);
+    addressRepresentationSymbol =
+      new Symbol<AddressRepresentation>(element, value);
   }
 
   private void parseDeviceClass(final Element element) throws ParseException
   {
-    if (deviceClass != null) {
+    if (deviceClassSymbol != null) {
       final Throwable cause =
-        new ParseException(deviceClass.getLocation(), "first definition here");
+        new ParseException(deviceClassSymbol.getLocation(),
+                           "first definition here");
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_DEVICE_CLASS, cause);
     }
     final String value = element.getTextContent();
-    deviceClass = new Symbol<String>(element, value);
+    deviceClassSymbol = new Symbol<String>(element, value);
   }
 
   private void parseDeviceName(final Element element) throws ParseException
   {
-    if (deviceName != null) {
+    if (deviceNameSymbol != null) {
       final Throwable cause =
-        new ParseException(deviceName.getLocation(), "first definition here");
+        new ParseException(deviceNameSymbol.getLocation(),
+                           "first definition here");
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_DEVICE_NAME, cause);
     }
     final String value = element.getTextContent();
-    deviceName = new Symbol<String>(element, value);
+    deviceNameSymbol = new Symbol<String>(element, value);
   }
 
   private void parseManufacturerId(final Element element) throws ParseException
   {
-    if (manufacturerId != null) {
+    if (manufacturerIdSymbol != null) {
       final Throwable cause =
-        new ParseException(manufacturerId.getLocation(),
+        new ParseException(manufacturerIdSymbol.getLocation(),
                            "first definition here");
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_MAN_ID, cause);
     }
     final byte value = parseByte(element, element.getTextContent());
-    manufacturerId = new Symbol<Byte>(element, value);
+    manufacturerIdSymbol = new Symbol<Byte>(element, value);
   }
 
   private void parseModelId(final Element element) throws ParseException
   {
-    if (modelId != null) {
+    if (modelIdSymbol != null) {
       final Throwable cause =
-        new ParseException(modelId.getLocation(), "first definition here");
+        new ParseException(modelIdSymbol.getLocation(),
+                           "first definition here");
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_MODEL_ID, cause);
     }
     final byte value = parseByte(element, element.getTextContent());
-    modelId = new Symbol<Byte>(element, value);
+    modelIdSymbol = new Symbol<Byte>(element, value);
   }
 
   private void parseDeviceId(final Element element) throws ParseException
@@ -515,7 +597,7 @@ public class DeviceModelParser
                                      "can not resolve data reference '" +
                                      dataId + "'");
           }
-          deviceId = dataSymbol;
+          deviceIdSymbol = dataSymbol;
         } else if (isWhiteSpace(childNode)) {
           // ignore white space
         } else if (isIgnorableNodeType(childNode)) {
@@ -529,14 +611,15 @@ public class DeviceModelParser
 
   private void parseEnteredBy(final Element element) throws ParseException
   {
-    if (enteredBy != null) {
+    if (enteredBySymbol != null) {
       final Throwable cause =
-        new ParseException(enteredBy.getLocation(), "first definition here");
+        new ParseException(enteredBySymbol.getLocation(),
+                           "first definition here");
       cause.fillInStackTrace();
       throwDuplicateException(element, TAG_NAME_ENTERED_BY, cause);
     }
     final String value = element.getTextContent();
-    enteredBy = new Symbol<String>(element, value);
+    enteredBySymbol = new Symbol<String>(element, value);
   }
 
   private static final String[] EMPTY_STRING_ARRAY = new String[0];
@@ -573,7 +656,7 @@ public class DeviceModelParser
           final Element childElement = (Element)childNode;
           final String childElementName = childElement.getTagName();
           throw new ParseException(childElement,
-                                   "element may not have children elements, but found tag '" +
+                                   "element may not have child elements, but found tag '" +
                                    childElementName + "'");
         } else if (isWhiteSpace(childNode)) {
           // ignore white space
@@ -944,7 +1027,7 @@ public class DeviceModelParser
                             final String text) throws ParseException
   {
     try {
-      return addressRepresentation.getValue().parse(text);
+      return addressRepresentationSymbol.getValue().parse(text);
     } catch (final NumberFormatException e) {
       throw new ParseException(location, "failed parsing display address");
     }
@@ -952,7 +1035,7 @@ public class DeviceModelParser
 
   private long parseAddress(final Element element) throws ParseException
   {
-    if (addressRepresentation == null) {
+    if (addressRepresentationSymbol == null) {
       throw new ParseException(element, "need address representation be defined prior to parsing display address");
     }
     return parseAddress(element, element.getTextContent());
@@ -1303,13 +1386,19 @@ public class DeviceModelParser
       new ValueImpl(iconId != null ? iconId.toString() : null,
                     type, description, label,
                     defaultValue != null ? defaultValue : 0);
+    final byte requiredBitSize = type.getRequiredBitSize();
     if (bitSize == null) {
-      bitSize = type.getRequiredBitSize();
-    } else if (bitSize < type.getRequiredBitSize()) {
+      if (defaultDataSizeSymbol != null) {
+        final DefaultDataSize defaultDataSize =
+          defaultDataSizeSymbol.getValue();
+        bitSize = defaultDataSize.getBitSize(requiredBitSize);
+      } else {
+        bitSize = requiredBitSize;
+      }
+    } else if (bitSize < requiredBitSize) {
       throw new ParseException(element, "declared bit size (" + bitSize +
                                ") must be greater than or equal to " +
-                               "required bit size (" +
-                               type.getRequiredBitSize() + ")");
+                               "required bit size (" + requiredBitSize + ")");
     }
     value.setBitSize(bitSize);
     final Data data = new Data(value, desiredAddress);
