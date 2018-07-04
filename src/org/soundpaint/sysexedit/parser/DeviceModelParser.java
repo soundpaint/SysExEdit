@@ -102,18 +102,7 @@ public class DeviceModelParser
   private static Document loadXml(final URL deviceUrl)
     throws ParseException
   {
-    System.out.println("[parsing device model from URL " + deviceUrl + "]");
-    final Document document;
-    try {
-      final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      dbf.setValidating(false);
-      final DocumentBuilder db = dbf.newDocumentBuilder();
-      document = db.parse(deviceUrl.toString());
-    } catch (final Exception ex) {
-      throw new ParseException("parsing device xml failed: "
-          + ex.getMessage() + "\r\n" + deviceUrl, ex);
-    }
-    return document;
+    return LineNumberXmlParser.parse(deviceUrl.toString());
   }
 
   private static Document loadXml(final String deviceName)

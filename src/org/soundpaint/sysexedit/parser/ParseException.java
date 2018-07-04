@@ -84,9 +84,28 @@ public class ParseException extends Exception
       return "<null>";
     }
     final Document document = location.getOwnerDocument();
-    // TODO: Print line number, xpath etc.
-    return location.toString() + " in " + document + "[" +
-      document.compareDocumentPosition(location) + "]";
+    final Object inputSourceInfo =
+      document.getUserData(LineNumberXmlParser.KEY_INPUT_SOURCE_INFO);
+    final Object columnInfo =
+      location.getUserData(LineNumberXmlParser.KEY_COLUMN_NUMBER);
+    final Object lineInfo =
+      location.getUserData(LineNumberXmlParser.KEY_LINE_NUMBER);
+    final String strInputSource =
+      inputSourceInfo != null ? "" + inputSourceInfo : "";
+    final String strColumn = columnInfo != null ? "column " + columnInfo : "";
+    final String strLine = lineInfo != null ? "line " + lineInfo : "";
+    final String strInputPosition =
+      strColumn +
+      ((columnInfo != null) && (lineInfo != null) ? ", " : "") +
+      strLine;
+    final String strLocation =
+      strInputPosition + (!strInputPosition.isEmpty() ? " " : "") +
+      (!strInputSource.isEmpty() ? "in " : "") +
+      strInputSource;
+    final String strDocumentPosition =
+      "document position: " + document.compareDocumentPosition(location);
+    return
+      strLocation + (!strLocation.isEmpty() ? ", " : "") + strDocumentPosition;
   }
 
   public String getMessage()
