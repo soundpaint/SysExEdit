@@ -501,6 +501,8 @@ public class EditorFrame extends JFrame
     return deviceEntries.toArray(new ComboBoxDeviceEntry[0]);
   }
 
+  private static final boolean PRINT_FULL_STACK_TRACE = false;
+
   public void loadDeviceModel(final Frame parent)
   {
     // [PENDING: Sometimes, the program hangs while calling
@@ -530,7 +532,12 @@ public class EditorFrame extends JFrame
     } catch (final Exception e) {
       final StringWriter stringWriter = new StringWriter();
       final PrintWriter printWriter = new PrintWriter(stringWriter);
-      e.printStackTrace(printWriter);
+      if (PRINT_FULL_STACK_TRACE) {
+        e.printStackTrace(printWriter);
+      } else {
+        e.printStackTrace(System.out);
+        printWriter.print(e.getMessage());
+      }
       printWriter.close();
       JOptionPane.showMessageDialog(parent, stringWriter, ERROR,
                                     JOptionPane.INFORMATION_MESSAGE);
