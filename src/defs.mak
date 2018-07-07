@@ -23,11 +23,11 @@ SYSEXEDIT_HOME = $(PWD)/..
 JRE_HOME = $(PWD)/../../JRE
 
 # java source files root dircetory
-SRC_ROOT = $(SYSEXEDIT_HOME)/src
+SRC_DIR = $(SYSEXEDIT_HOME)/src
 
 # compiled class files root directory
 # (run 'make classes' to generate)
-CLS_ROOT = $(SYSEXEDIT_HOME)/classes
+BUILD_DIR = $(SYSEXEDIT_HOME)/build
 
 # binary target directory; contains archive file with the compiled classes
 # (run 'make jar' to generate)
@@ -37,7 +37,7 @@ JAR_DIR = $(SYSEXEDIT_HOME)/jar
 DOC_OTHER =
 
 # java classpath environment variable
-CLASSPATH = $(CLS_ROOT):$(SRC_ROOT)
+CLASSPATH = $(BUILD_DIR):$(SRC_DIR)
 
 #  Local Variables:
 #    coding:utf-8

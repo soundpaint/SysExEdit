@@ -22,7 +22,7 @@ include defs.mak
 # Packages
 #
 
-SRC_SYSEXEDIT=$(SRC_ROOT)/org/soundpaint/sysexedit
+SRC_SYSEXEDIT=$(SRC_DIR)/org/soundpaint/sysexedit
 PACKAGE_ROOT=org.soundpaint.sysexedit
 SUB_PACKAGES = model gui devices midi parser
 PACKAGES = $(PACKAGE_ROOT) $(patsubst %,$(PACKAGE_ROOT).%,$(SUB_PACKAGES))
@@ -35,73 +35,74 @@ JAVA=\
 	$(wildcard $(SRC_SYSEXEDIT)/*.java) \
 	$(wildcard $(patsubst %,$(SRC_SYSEXEDIT)/%/*.java,$(SUB_PACKAGES)))
 
-CLASS=$(patsubst $(SRC_ROOT)/%.java,$(CLS_ROOT)/%.class,$(JAVA))
+CLASS=$(patsubst $(SRC_DIR)/%.java,$(BUILD_DIR)/%.class,$(JAVA))
 
 all: classes doc jar
 
-TUTORIAL_SRC=$(wildcard $(SRC_ROOT)/doc/tutorial/*.html)
-TUTORIAL_OBJ=$(patsubst $(SRC_ROOT)/%,$(CLS_ROOT)/%,$(TUTORIAL_SRC))
-LICENSE=$(CLS_ROOT)/LICENSE.html
-DEMO=$(CLS_ROOT)/Demo.html
-ICONS=$(patsubst $(SRC_ROOT)/%,$(CLS_ROOT)/%,$(wildcard $(SRC_ROOT)/icons/*.gif)) \
-	$(CLS_ROOT)/icons.properties
-DEVICES=$(patsubst $(SRC_SYSEXEDIT)/devices/%,$(CLS_ROOT)/devices/%,$(wildcard $(SRC_SYSEXEDIT)/devices/*.xml))
+TUTORIAL_SRC=$(wildcard $(SRC_DIR)/doc/tutorial/*.html)
+TUTORIAL_OBJ=$(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(TUTORIAL_SRC))
+LICENSE=$(BUILD_DIR)/LICENSE.html
+DEMO=$(BUILD_DIR)/Demo.html
+ICONS=$(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(wildcard $(SRC_DIR)/icons/*.gif)) \
+	$(BUILD_DIR)/icons.properties
+DEVICES=\
+  $(patsubst $(SRC_SYSEXEDIT)/devices/%,$(BUILD_DIR)/devices/%,$(wildcard $(SRC_SYSEXEDIT)/devices/*.xml))
 JAR_FILE=$(JAR_DIR)/SysExEdit.jar
 
-classes: $(CLS_ROOT) $(CLASS) $(ICONS) $(DEVICES) $(LICENSE) $(DEMO)
+classes: $(BUILD_DIR) $(CLASS) $(ICONS) $(DEVICES) $(LICENSE) $(DEMO)
 
-$(CLS_ROOT):
+$(BUILD_DIR):
 	mkdir -p $@
 
-$(CLS_ROOT)/LICENSE.html: $(SRC_ROOT)/LICENSE.html
+$(BUILD_DIR)/LICENSE.html: $(SRC_DIR)/LICENSE.html
 	cp -fp $< $@
 
-$(CLS_ROOT)/Demo.html: $(SRC_ROOT)/Demo.html
+$(BUILD_DIR)/Demo.html: $(SRC_DIR)/Demo.html
 	cp -fp $< $@
 
-$(CLS_ROOT)/icons:
+$(BUILD_DIR)/icons:
 	mkdir -p $@
 
-$(CLS_ROOT)/icons/%: $(SRC_ROOT)/icons/% | $(CLS_ROOT)/icons
+$(BUILD_DIR)/icons/%: $(SRC_DIR)/icons/% | $(BUILD_DIR)/icons
 	cp -fp $< $@
 
-$(CLS_ROOT)/icons.properties: $(SRC_ROOT)/icons.properties
+$(BUILD_DIR)/icons.properties: $(SRC_DIR)/icons.properties
 	cp -fp $< $@
 
 icons:
 	cd icons; make all
 
-$(CLS_ROOT)/devices:
+$(BUILD_DIR)/devices:
 	mkdir -p $@
 
-$(CLS_ROOT)/devices/%: $(SRC_SYSEXEDIT)/devices/% | $(CLS_ROOT)/devices
+$(BUILD_DIR)/devices/%: $(SRC_SYSEXEDIT)/devices/% | $(BUILD_DIR)/devices
 	cp -fp $< $@
 
-$(CLS_ROOT)/doc:
+$(BUILD_DIR)/doc:
 	mkdir -p $@
 
-$(CLS_ROOT)/doc/api: $(CLS_ROOT)/doc
+$(BUILD_DIR)/doc/api: $(BUILD_DIR)/doc
 	mkdir -p $@
 
-$(CLS_ROOT)/doc/tutorial: $(CLS_ROOT)/doc
+$(BUILD_DIR)/doc/tutorial: $(BUILD_DIR)/doc
 	mkdir -p $@
 
-$(CLS_ROOT)/doc/tutorial/%: $(SRC_ROOT)/doc/tutorial/% | $(CLS_ROOT)/doc/tutorial
+$(BUILD_DIR)/doc/tutorial/%: $(SRC_DIR)/doc/tutorial/% | $(BUILD_DIR)/doc/tutorial
 	cp -fp $< $@
 
-$(CLS_ROOT)/doc/api/images: $(CLS_ROOT)/doc/api
+$(BUILD_DIR)/doc/api/images: $(BUILD_DIR)/doc/api
 	mkdir -p $@
 
-$(CLS_ROOT)/doc/api/images/%: $(SRC_ROOT)/doc/api/images/%
+$(BUILD_DIR)/doc/api/images/%: $(SRC_DIR)/doc/api/images/%
 	cp -fp $< $@
 
-$(CLS_ROOT)/doc/api/packages.html: \
+$(BUILD_DIR)/doc/api/packages.html: \
 	$(SRC_SYSEXEDIT) $(patsubst %,$(SRC_SYSEXEDIT)/%,$(SUB_PACKAGES)) \
 	| classes
-	javadoc -d $(CLS_ROOT)/doc/api -classpath $(CLASSPATH) \
+	javadoc -d $(BUILD_DIR)/doc/api -classpath $(CLASSPATH) \
 		$(DOC_OTHER) $(PACKAGES)
 
-doc: $(TUTORIAL_OBJ) $(CLS_ROOT)/doc/api/packages.html
+doc: $(TUTORIAL_OBJ) $(BUILD_DIR)/doc/api/packages.html
 
 jar: doc $(JAR_FILE)
 
@@ -109,8 +110,8 @@ $(JAR_DIR):
 	mkdir -p $@
 
 $(JAR_FILE): $(JAR_DIR) $(CLASS)
-	cd $(CLS_ROOT); \
-	jar -0cvfm $(JAR_DIR)/SysExEdit.jar $(SRC_ROOT)/META-INF/MANIFEST.MF .
+	cd $(BUILD_DIR); \
+	jar -0cvfm $(JAR_DIR)/SysExEdit.jar $(SRC_DIR)/META-INF/MANIFEST.MF .
 
 depend:
 
@@ -118,17 +119,17 @@ tags:
 	etags *.java
 
 docclean:
-	- rm -rf $(CLS_ROOT)/doc
+	- rm -rf $(BUILD_DIR)/doc
 
 objclean:
-	- rm -rf $(CLS_ROOT)
+	- rm -rf $(BUILD_DIR)
 	- cd icons ; make clean
 
 jarclean:
 	- rm -rf $(JAR_DIR)
 
 bkpclean:
-	- find $(SRC_ROOT) -name \*~ -exec /bin/rm -f {} \; -print
+	- find $(SRC_DIR) -name \*~ -exec /bin/rm -f {} \; -print
 
 clean: objclean jarclean
 
@@ -148,8 +149,8 @@ tarball: distclean
 
 .SUFFIXES: $(SUFFIXES) .java .class
 
-$(CLS_ROOT)%class: $(SRC_ROOT)%java
-	javac -Xlint:all -d $(CLS_ROOT) -classpath $(CLASSPATH) $<
+$(BUILD_DIR)%class: $(SRC_DIR)%java
+	javac -Xlint:all -d $(BUILD_DIR) -classpath $(CLASSPATH) $<
 
 #  Local Variables:
 #    coding:utf-8
