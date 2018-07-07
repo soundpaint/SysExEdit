@@ -58,7 +58,7 @@ public class ParseException extends Exception
   public ParseException(final Node location,
                         final String message, final Throwable cause)
   {
-    super(message, cause);
+    super(concatMessages(message, cause), cause);
     this.location = location;
   }
 
@@ -69,7 +69,7 @@ public class ParseException extends Exception
 
   public ParseException(final Node location, final Throwable cause)
   {
-    super(cause);
+    super(cause.getMessage(), cause);
     this.location = location;
   }
 
@@ -78,10 +78,26 @@ public class ParseException extends Exception
     return location;
   }
 
+  private static String concatMessages(final String message,
+                                       final Throwable cause)
+  {
+    if (cause == null) {
+      return message;
+    }
+    if ((message == null) || message.isEmpty()) {
+      return cause.getMessage();
+    }
+    final String causeMessage = cause.getMessage();
+    if ((causeMessage == null) || causeMessage.isEmpty()) {
+      return message;
+    }
+    return message + ": " + causeMessage;
+  }
+
   private static String formatLocation(final Node location)
   {
     if (location == null) {
-      return "<null>";
+      return null;
     }
     final Document document = location.getOwnerDocument();
     final Object inputSourceInfo =
@@ -110,8 +126,16 @@ public class ParseException extends Exception
 
   public String getMessage()
   {
-    return super.getMessage() + ", location: " +
-      formatLocation(location);
+    final String superMessage = super.getMessage();
+    final String formattedLocation = formatLocation(location);
+    final String labelledLocation =
+      (formattedLocation != null) && !formattedLocation.isEmpty() ?
+      "location: " + formattedLocation : "";
+    return
+      superMessage +
+      ((superMessage != null) && !superMessage.isEmpty() &&
+       (labelledLocation != null) && !labelledLocation.isEmpty() ? ", " : "") +
+      labelledLocation;
   }
 }
 
