@@ -60,6 +60,8 @@ public class DeviceModelParser
   private static final String ATTR_NAME_INDEX_VAR = "index-var";
   private static final String ATTR_NAME_RELATIVE_TO = "relative-to";
   private static final String TAG_NAME_SYSEXEDIT = "sysexedit";
+  private static final String TAG_NAME_META = "meta";
+  private static final String TAG_NAME_CONTENTS = "contents";
   private static final String TAG_NAME_ADDRESS_MODEL = "address-model";
   private static final String TAG_NAME_REPRESENTATION = "representation";
   private static final String TAG_NAME_DEFAULT_DATA_SIZE = "default-data-size";
@@ -323,40 +325,32 @@ public class DeviceModelParser
                                TAG_NAME_SYSEXEDIT + "', but found " +
                                documentName);
     }
+    Element meta = null;
+    Element contents = null;
     final NodeList childNodes = documentElement.getChildNodes();
     for (int index = 0; index < childNodes.getLength(); index++) {
       final Node childNode = childNodes.item(index);
       if (childNode instanceof Element) {
         final Element childElement = (Element)childNode;
         final String childElementName = childElement.getTagName();
-        if (childElementName.equals(TAG_NAME_ADDRESS_MODEL)) {
-          parseAddressModel(childElement);
-        } else if (childElementName.equals(TAG_NAME_DEVICE_CLASS)) {
-          parseDeviceClass(childElement);
-        } else if (childElementName.equals(TAG_NAME_DEVICE_NAME)) {
-          parseDeviceName(childElement);
-        } else if (childElementName.equals(TAG_NAME_MAN_ID)) {
-          parseManufacturerId(childElement);
-        } else if (childElementName.equals(TAG_NAME_MODEL_ID)) {
-          parseModelId(childElement);
-        } else if (childElementName.equals(TAG_NAME_DEVICE_ID)) {
-          parseDeviceId(childElement);
-        } else if (childElementName.equals(TAG_NAME_ENTERED_BY)) {
-          parseEnteredBy(childElement);
-        } else if (childElementName.equals(TAG_NAME_ENUM)) {
-          parseEnumRenderer(childElement, true);
-        } else if (childElementName.equals(TAG_NAME_INTEGER)) {
-          parseIntegerRenderer(childElement, true);
-        } else if (childElementName.equals(TAG_NAME_BIT_MASK)) {
-          parseBitMaskRenderer(childElement, true);
-        } else if (childElementName.equals(TAG_NAME_TYPE)) {
-          parseType(childElement, true);
-        } else if (childElementName.equals(TAG_NAME_RANGE)) {
-          parseRange(childElement, true);
-        } else if (childElementName.equals(TAG_NAME_FOLDER)) {
-          parseFolder(childElement, true);
-        } else if (childElementName.equals(TAG_NAME_DATA)) {
-          parseData(childElement, true);
+        if (childElementName.equals(TAG_NAME_META)) {
+          if (meta != null) {
+            final Throwable cause =
+              new ParseException(meta, "first definition here");
+            cause.fillInStackTrace();
+            throwDuplicateException(childElement, TAG_NAME_META, cause);
+          }
+          parseMeta(childElement);
+          meta = childElement;
+        } else if (childElementName.equals(TAG_NAME_CONTENTS)) {
+          if (contents != null) {
+            final Throwable cause =
+              new ParseException(contents, "first definition here");
+            cause.fillInStackTrace();
+            throwDuplicateException(childElement, TAG_NAME_CONTENTS, cause);
+          }
+          parseContents(childElement);
+          contents = childElement;
         } else {
           throw new ParseException(childElement, "unexpected element: " +
                                    childElementName);
@@ -397,6 +391,78 @@ public class DeviceModelParser
     throw new ParseException(element, "can define only one of '" +
                              tagName1 + "' and '" + tagName2 + "', " +
                              "but not both");
+  }
+
+  private void parseMeta(final Element element) throws ParseException
+  {
+    final NodeList childNodes = element.getChildNodes();
+    for (int index = 0; index < childNodes.getLength(); index++) {
+      final Node childNode = childNodes.item(index);
+      if (childNode instanceof Element) {
+        final Element childElement = (Element)childNode;
+        final String childElementName = childElement.getTagName();
+        if (childElementName.equals(TAG_NAME_ADDRESS_MODEL)) {
+          parseAddressModel(childElement);
+        } else if (childElementName.equals(TAG_NAME_ENTERED_BY)) {
+          parseEnteredBy(childElement);
+        } else if (childElementName.equals(TAG_NAME_DEVICE_CLASS)) {
+          parseDeviceClass(childElement);
+        } else if (childElementName.equals(TAG_NAME_DEVICE_NAME)) {
+          parseDeviceName(childElement);
+        } else if (childElementName.equals(TAG_NAME_MAN_ID)) {
+          parseManufacturerId(childElement);
+        } else if (childElementName.equals(TAG_NAME_MODEL_ID)) {
+          parseModelId(childElement);
+        } else if (childElementName.equals(TAG_NAME_DEVICE_ID)) {
+          parseDeviceId(childElement);
+        } else {
+          throw new ParseException(childElement, "unexpected element: " +
+                                   childElementName);
+        }
+      } else if (isWhiteSpace(childNode)) {
+        // ignore white space
+      } else if (isIgnorableNodeType(childNode)) {
+        // ignore comments, entities, etc.
+      } else {
+        throw new ParseException(childNode, "unsupported node");
+      }
+    }
+  }
+
+  private void parseContents(final Element element) throws ParseException
+  {
+    final NodeList childNodes = element.getChildNodes();
+    for (int index = 0; index < childNodes.getLength(); index++) {
+      final Node childNode = childNodes.item(index);
+      if (childNode instanceof Element) {
+        final Element childElement = (Element)childNode;
+        final String childElementName = childElement.getTagName();
+        if (childElementName.equals(TAG_NAME_ENUM)) {
+          parseEnumRenderer(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_INTEGER)) {
+          parseIntegerRenderer(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_BIT_MASK)) {
+          parseBitMaskRenderer(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_TYPE)) {
+          parseType(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_RANGE)) {
+          parseRange(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_FOLDER)) {
+          parseFolder(childElement, true);
+        } else if (childElementName.equals(TAG_NAME_DATA)) {
+          parseData(childElement, true);
+        } else {
+          throw new ParseException(childElement, "unexpected element: " +
+                                   childElementName);
+        }
+      } else if (isWhiteSpace(childNode)) {
+        // ignore white space
+      } else if (isIgnorableNodeType(childNode)) {
+        // ignore comments, entities, etc.
+      } else {
+        throw new ParseException(childNode, "unsupported node");
+      }
+    }
   }
 
   private void parseAddressModel(final Element element) throws ParseException
@@ -595,6 +661,10 @@ public class DeviceModelParser
           throw new ParseException(childNode, "unsupported node");
         }
       }
+    }
+    if (dataId == null) {
+      throw new ParseException(element,
+                               "missing '" + TAG_NAME_DATA + "' declaration");
     }
   }
 
