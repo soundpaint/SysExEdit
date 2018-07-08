@@ -2568,7 +2568,7 @@
       <range>
         <upper-bound>0x4e</upper-bound>
         <display-offset>0x0d</display-offset>
-        <enum ref="note" />
+        <enum-ref ref="note" />
         <!-- <integer /> -->
       </range>
     </type>
@@ -2582,32 +2582,32 @@
     <type id="delay-time-1">
       <icon>internal-time</icon>
       <range>
-        <enum ref="delay-time-1" />
+        <enum-ref ref="delay-time-1" />
       </range>
     </type>
     <type id="eq-frequency">
       <icon>internal-tune</icon>
       <range>
-        <enum ref="eq-frequency" />
+        <enum-ref ref="eq-frequency" />
       </range>
     </type>
     <type id="dry-wet">
       <icon>internal-pan</icon>
       <range>
-        <enum ref="dry-wet" />
+        <enum-ref ref="dry-wet" />
         <lower-bound>0x01</lower-bound>
       </range>
     </type>
     <type id="level">
       <icon>internal-volume</icon>
       <range>
-        <enum ref="level" />
+        <enum-ref ref="level" />
       </range>
     </type>
     <type id="pan">
       <icon>internal-pan</icon>
       <range>
-        <enum ref="pan" />
+        <enum-ref ref="pan" />
         <lower-bound>0x01</lower-bound>
       </range>
     </type>
@@ -2622,7 +2622,7 @@
         <lower-bound>0x00</lower-bound>
       </range>
       <range>
-        <enum ref="pan" />
+        <enum-ref ref="pan" />
         <lower-bound>0x01</lower-bound>
       </range>
     </type>
@@ -2672,15 +2672,15 @@
                 </enum>
               </range>
               <range>
-                <enum ref="hall" />
+                <enum-ref ref="hall" />
                 <lower-bound>0x0080</lower-bound>
               </range>
               <range>
-                <enum ref="room" />
+                <enum-ref ref="room" />
                 <lower-bound>0x0100</lower-bound>
               </range>
               <range>
-                <enum ref="stage" />
+                <enum-ref ref="stage" />
                 <lower-bound>0x0180</lower-bound>
               </range>
               <range>
@@ -2722,7 +2722,7 @@
             <icon>internal-time</icon>
             <type>
               <range>
-                <enum ref="reverb-time" />
+                <enum-ref ref="reverb-time" />
               </range>
             </type>
           </data>
@@ -2736,19 +2736,19 @@
             </type>
           </data>
           <data label="Initial Delay">
-            <type ref="delay-time-1" />
+            <type-ref ref="delay-time-1" />
           </data>
           <data label="HPF Cutoff">
-            <type ref="eq-frequency" />
+            <type-ref ref="eq-frequency" />
           </data>
           <data label="LPF Cutoff">
-            <type ref="eq-frequency" />
+            <type-ref ref="eq-frequency" />
           </data>
           <data label="Width">
             <icon>internal-length</icon>
             <type>
               <range>
-                <enum ref="reverb-dim-length" />
+                <enum-ref ref="reverb-dim-length" />
                 <upper-bound>0x25</upper-bound>
               </range>
             </type>
@@ -2757,7 +2757,7 @@
             <icon>internal-length</icon>
             <type>
               <range>
-                <enum ref="reverb-dim-length" />
+                <enum-ref ref="reverb-dim-length" />
                 <upper-bound>0x49</upper-bound>
               </range>
             </type>
@@ -2766,7 +2766,7 @@
             <icon>internal-length</icon>
             <type>
               <range>
-                <enum ref="reverb-dim-length" />
+                <enum-ref ref="reverb-dim-length" />
                 <upper-bound>0x68</upper-bound>
               </range>
             </type>
@@ -2781,22 +2781,20 @@
             </type>
           </data>
           <data label="Dry / Wet">
-            <type ref="dry-wet">
-            </type>
+            <type-ref ref="dry-wet" />
             <default-value>0x40</default-value>
           </data>
           <data label="Reverb Return">
-            <type ref="level">
-            </type>
+            <type-ref ref="level" />
             <default-value>0x40</default-value>
           </data>
           <data label="Reverb Pan">
             <address>02 01 10</address>
-            <type ref="pan" />
+            <type-ref ref="pan" />
             <default-value>0x40</default-value>
           </data>
           <data label="Rev Delay">
-            <type ref="delay-time-1" />
+            <type-ref ref="delay-time-1" />
           </data>
           <data label="Density">
             <icon>internal-control</icon>
@@ -2811,14 +2809,14 @@
             <icon>internal-pan</icon>
             <type>
               <range>
-                <enum ref="er-rev-balance" />
+                <enum-ref ref="er-rev-balance" />
                 <lower-bound>0x01</lower-bound>
               </range>
             </type>
             <default-value>0x40</default-value>
           </data>
           <data label="Feedback Level">
-            <type ref="feedback-level" />
+            <type-ref ref="feedback-level" />
             <default-value>0x40</default-value>
           </data>
         </folder>
@@ -2848,13 +2846,13 @@
             <default-value>0x02</default-value> <!-- TODO: 0x00 for part 10 -->
           </data>
           <data label="Bank Select LSB">
-            <type ref="non-negative-7-bit" />
+            <type-ref ref="non-negative-7-bit" />
             <bit-size>7</bit-size>
             <default-value>0x00</default-value> <!-- TODO: 0x7f for part 10 -->
           </data>
         </folder>
       </folder>
-      <folder ref="drum_setups" />
+      <folder-ref ref="drum_setups" />
     </folder>
   </contents>
 </sysexedit>
