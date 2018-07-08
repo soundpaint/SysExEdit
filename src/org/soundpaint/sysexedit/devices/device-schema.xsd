@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE schema [
+  <!ENTITY see "http://www.soundpaint.org/2018/SysExEdit/Device">
+]>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:see="&see;"
+           targetNamespace="&see;"
+           elementFormDefault="qualified">
+  <xs:element name="sysexedit" type="see:SysExEditType" />
+
+  <xs:complexType name="SysExEditType">
+    <xs:sequence>
+      <xs:element name="meta" type="see:MetaType" />
+      <xs:element name="contents" type="see:ContentsType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="MetaType">
+    <xs:all>
+      <xs:element name="address-model" type="see:AddressModelType" />
+      <xs:element name="entered-by" type="xs:string"
+                  minOccurs="0" />
+      <xs:element name="device-class" type="see:JavaClassIdentifierType" />
+      <xs:element name="device-name" type="xs:string" />
+      <xs:element name="manufacturer-id"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType" />
+      <xs:element name="model-id"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType" />
+      <xs:element name="device-id" type="see:DeviceIdType" />
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="AddressModelType">
+    <xs:all>
+      <xs:element name="representation" type="see:JavaClassIdentifierType" />
+      <xs:element name="default-data-size" type="see:DefaultDataSizeType" />
+    </xs:all>
+  </xs:complexType>
+
+  <xs:simpleType name="NodeIdentifierType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Za-z_]([A-Za-z0-9_-])*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="RootIdentifierType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="#root" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="FolderIdentifierType">
+    <xs:union memberTypes="see:NodeIdentifierType see:RootIdentifierType" />
+  </xs:simpleType>
+
+  <xs:simpleType name="JavaClassIdentifierType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-Za-z_$]([A-Za-z0-9_$])*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="DefaultDataSizeType">
+    <xs:choice>
+      <xs:element name="multiple-of-bits" type="see:HexOrDecOrBinIntegerType" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:simpleType name="NonNegativeHexOrDecOrBinIntegerType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(0x([A-Fa-f0-9])*|0b([01])*)|([0-9])*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HexOrDecOrBinIntegerType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[-]?(0x([A-Fa-f0-9])*|0b([01])*)|([0-9])*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="IconType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="internal-button-load" />
+      <xs:enumeration value="internal-button-save" />
+      <xs:enumeration value="internal-button-request" />
+      <xs:enumeration value="internal-button-dump" />
+      <xs:enumeration value="internal-button-exit" />
+      <xs:enumeration value="internal-control" />
+      <xs:enumeration value="internal-data" />
+      <xs:enumeration value="internal-error" />
+      <xs:enumeration value="internal-filter-band-pass" />
+      <xs:enumeration value="internal-filter-high-pass" />
+      <xs:enumeration value="internal-filter-low-pass" />
+      <xs:enumeration value="internal-filter-notch" />
+      <xs:enumeration value="internal-fx-chorus" />
+      <xs:enumeration value="internal-fx-reverb" />
+      <xs:enumeration value="internal-length" />
+      <xs:enumeration value="internal-limit-bottom" />
+      <xs:enumeration value="internal-limit-top" />
+      <xs:enumeration value="internal-mod-am" />
+      <xs:enumeration value="internal-mod-fm" />
+      <xs:enumeration value="internal-pan" />
+      <xs:enumeration value="internal-switch" />
+      <xs:enumeration value="internal-transpose" />
+      <xs:enumeration value="internal-time" />
+      <xs:enumeration value="internal-tune" />
+      <xs:enumeration value="internal-tune-a" />
+      <xs:enumeration value="internal-tune-a-sharp" />
+      <xs:enumeration value="internal-tune-b" />
+      <xs:enumeration value="internal-tune-c" />
+      <xs:enumeration value="internal-tune-c-sharp" />
+      <xs:enumeration value="internal-tune-d" />
+      <xs:enumeration value="internal-tune-d-sharp" />
+      <xs:enumeration value="internal-tune-e" />
+      <xs:enumeration value="internal-tune-f" />
+      <xs:enumeration value="internal-tune-f-sharp" />
+      <xs:enumeration value="internal-tune-g" />
+      <xs:enumeration value="internal-tune-g-sharp" />
+      <xs:enumeration value="internal-unknown" />
+      <xs:enumeration value="internal-volume" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="DeviceIdType">
+    <xs:choice>
+      <xs:element name="data" type="see:DataType" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="ContentsType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="enum" type="see:EnumType" />
+      <xs:element name="integer" type="see:IntegerType" />
+      <xs:element name="bit-mask" type="see:BitMaskType" />
+      <xs:element name="type" type="see:TypeType" />
+      <xs:element name="range" type="see:RangeType" />
+      <xs:element name="data" type="see:DataType" />
+      <xs:element name="folder" type="see:FolderType" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="EnumType">
+    <xs:all>
+      <xs:element name="description" type="xs:string" minOccurs="0" />
+      <xs:element name="values" type="see:ValuesType" minOccurs="1" />
+    </xs:all>
+    <xs:attribute name="id" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="EnumRefType">
+    <xs:attribute name="ref" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="ValuesType">
+    <xs:choice>
+      <xs:element name="value" type="xs:string"
+                  minOccurs="0" maxOccurs="unbounded" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="IntegerType">
+    <xs:all>
+      <xs:element name="radix"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType"
+                  minOccurs="0" />
+      <xs:element name="fill-with-leading-zeros" type="xs:boolean"
+                  minOccurs="0" />
+      <xs:element name="display-prefix" type="xs:string" minOccurs="0" />
+      <xs:element name="display-suffix" type="xs:string" minOccurs="0" />
+      <xs:element name="display-min-width"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType"
+                  minOccurs="0" />
+    </xs:all>
+    <xs:attribute name="id" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="IntegerRefType">
+    <xs:attribute name="ref" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="BitMaskType">
+    <xs:attribute name="id" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="BitMaskRefType">
+    <xs:attribute name="ref" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="TypeType">
+    <!-- N.B.: In XSD 1.1, the following definition could be written
+         much more flexible regarding the order of elements… -->
+    <xs:sequence>
+      <xs:element name="description" type="xs:string" minOccurs="0" />
+      <xs:element name="icon" type="see:IconType" minOccurs="0" />
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="range" type="see:RangeType" />
+        <xs:element name="range-ref" type="see:RangeRefType" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="id" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="TypeRefType">
+    <xs:attribute name="ref" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="RangeType">
+    <xs:all>
+      <xs:element name="description" type="xs:string" minOccurs="0" />
+      <xs:element name="lower-bound"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType"
+                  minOccurs="0" />
+      <xs:element name="upper-bound"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType"
+                  minOccurs="0" />
+      <xs:element name="display-offset"
+                  type="see:HexOrDecOrBinIntegerType" minOccurs="0" />
+      <xs:element name="enum" type="see:EnumType" minOccurs="0" />
+      <xs:element name="enum-ref" type="see:EnumRefType" minOccurs="0" />
+      <xs:element name="integer" type="see:IntegerType" minOccurs="0" />
+      <xs:element name="integer-ref" type="see:IntegerRefType" minOccurs="0" />
+      <xs:element name="bit-mask" type="see:BitMaskType" minOccurs="0" />
+      <xs:element name="bit-mask-ref" type="see:BitMaskRefType" minOccurs="0" />
+    </xs:all>
+    <xs:attribute name="id" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="RangeRefType">
+    <xs:attribute name="ref" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="DataType">
+    <xs:all>
+      <xs:element name="description" type="xs:string" minOccurs="0" />
+
+      <!--
+          TODO: Possible in XSD 1.1:
+          <xs:all>
+            ...
+            <xs:choice minOccurs="1" maxOccurs="1">
+              <xs:element name="type" ... />
+              <xs:element name="type-ref" ... />
+            </xs:choice>
+            ...
+          </xs:all>
+      -->
+
+      <!-- Weaker XSD 1.0 version:-->
+      <xs:element name="type" type="see:TypeType" minOccurs="0"  />
+      <xs:element name="type-ref" type="see:TypeRefType" minOccurs="0"  />
+
+      <xs:element name="icon" type="see:IconType" minOccurs="0" />
+      <xs:element name="bit-size" type="xs:positiveInteger"
+                  minOccurs="0" />
+      <xs:element name="default-value"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType"
+                  minOccurs="0" />
+
+      <!--
+          TODO: Possible in XSD 1.1:
+          <xs:all>
+            ...
+            <xs:choice minOccurs="0">
+              <xs:element name="address" ... />
+              <xs:element name="bit-address" ... />
+            </xs:choice>
+            ...
+          </xs:all>
+      -->
+
+      <!-- Weaker XSD 1.0 version:-->
+      <xs:element name="address" type="xs:string" minOccurs="0" />
+      <xs:element name="bit-address"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType"
+                  minOccurs="0" />
+
+    </xs:all>
+    <xs:attribute name="id" type="see:NodeIdentifierType" />
+    <xs:attribute name="label" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="DataRefType">
+    <xs:attribute name="ref" type="see:NodeIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="AddressType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="relative-to" type="see:NodeIdentifierType" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="BitAddressType">
+    <xs:simpleContent>
+      <xs:extension base="see:NonNegativeHexOrDecOrBinIntegerType">
+        <xs:attribute name="relative-to" type="see:NodeIdentifierType" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="FolderType">
+
+    <!--
+        TODO: Possible in XSD 1.1:
+        <xs:all>
+          ...
+          <xs:choice minOccurs="0">
+            <xs:element name="address" ... />
+            <xs:element name="bit-address" ... />
+          </xs:choice>
+          ...
+        </xs:all>
+    -->
+
+    <!-- Much weaker XSD 1.0 version: -->
+
+    <xs:sequence>
+      <!-- Elements that may occur at most once -->
+      <xs:element name="description" type="xs:string"
+                  minOccurs="0" maxOccurs="1" />
+      <xs:element name="address" type="see:AddressType"
+                  minOccurs="0" maxOccurs="1" />
+      <xs:element name="bit-address"
+                  type="see:BitAddressType"
+                  minOccurs="0" maxOccurs="1" />
+      <xs:element name="address-increment" type="xs:string"
+                  minOccurs="0" maxOccurs="1" />
+      <xs:element name="bit-address-increment"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType"
+                  minOccurs="0" maxOccurs="1" />
+
+      <!-- Elements that may occur arbitrarily often -->
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="folder" type="see:FolderType" />
+        <xs:element name="folder-ref" type="see:FolderRefType" />
+        <xs:element name="data" type="see:DataType" />
+        <xs:element name="data-ref" type="see:DataRefType" />
+      </xs:choice>
+    </xs:sequence>
+
+    <xs:attribute name="id" type="see:FolderIdentifierType" />
+    <xs:attribute name="label" type="xs:string" />
+    <xs:attribute name="multiplicity"
+                  type="see:NonNegativeHexOrDecOrBinIntegerType" />
+    <xs:attribute name="index-var" type="see:FolderIdentifierType" />
+  </xs:complexType>
+
+  <xs:complexType name="FolderRefType">
+    <xs:attribute name="ref" type="see:NodeIdentifierType" />
+  </xs:complexType>
+</xs:schema>
+
+<!--
+    Local Variables:
+      coding:utf-8
+      mode:xml
+    End:
+-->

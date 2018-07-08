@@ -46,7 +46,8 @@ DEMO=$(BUILD_DIR)/Demo.html
 ICONS=$(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(wildcard $(SRC_DIR)/icons/*.gif)) \
 	$(BUILD_DIR)/icons.properties
 DEVICES=\
-  $(patsubst $(SRC_SYSEXEDIT)/devices/%,$(BUILD_DIR)/devices/%,$(wildcard $(SRC_SYSEXEDIT)/devices/*.xml))
+  $(patsubst $(SRC_SYSEXEDIT)/devices/%,$(BUILD_DIR)/devices/%,$(wildcard $(SRC_SYSEXEDIT)/devices/*.xml)) \
+  $(patsubst $(SRC_SYSEXEDIT)/devices/%,$(BUILD_DIR)/devices/%,$(wildcard $(SRC_SYSEXEDIT)/devices/*.xsd))
 JAR_FILE=$(JAR_DIR)/SysExEdit.jar
 
 classes: $(BUILD_DIR) $(CLASS) $(ICONS) $(DEVICES) $(LICENSE) $(DEMO)
