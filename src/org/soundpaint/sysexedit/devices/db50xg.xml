@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sysexedit>
+<sysexedit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.soundpaint.org/2018/SysExEdit/Device"
+           xsi:schemaLocation="device-schema.xsd">
   <meta>
     <address-model>
       <representation>Triple7Bits</representation>

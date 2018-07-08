@@ -101,7 +101,7 @@ public class ParseException extends Exception
     }
     final Document document = location.getOwnerDocument();
     final Object inputSourceInfo =
-      document.getUserData(LineNumberXmlParser.KEY_INPUT_SOURCE_INFO);
+      document.getUserData(LineNumberXmlParser.KEY_XML_URL);
     final Object columnInfo =
       location.getUserData(LineNumberXmlParser.KEY_COLUMN_NUMBER);
     final Object lineInfo =

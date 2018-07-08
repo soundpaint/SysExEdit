@@ -23,12 +23,18 @@ package org.soundpaint.sysexedit.parser;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Stack;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,91 +56,84 @@ public class LineNumberXmlParser
   private static final String KEY_LEXICAL_HANDLER =
     "http://xml.org/sax/properties/lexical-handler";
 
-  public static final String KEY_INPUT_SOURCE_INFO = "input-source-info";
+  public static final String KEY_XML_URL = "xml-url";
   public static final String KEY_COLUMN_NUMBER = "column-number";
   public static final String KEY_LINE_NUMBER = "line-number";
   public static final String KEY_PUBLIC_ID = "public-id";
   public static final String KEY_SYSTEM_ID = "system-id";
 
-  public static Document parse(final File file)
+  public static Document parse(final URL xmlUrl, final URL schemaUrl)
     throws ParseException
   {
-    final Document document = createDocument(file.getPath());
+    final Document document = createDocument(xmlUrl, schemaUrl);
     final Handler handler = createHandler(document);
     final SAXParser parser = createParser(handler);
     try {
-      parser.parse(file, handler);
-    } catch (final SAXException e) {
-      throw new ParseException("failed parsing XML input", e);
-    } catch (final IOException e) {
+      parser.parse(xmlUrl.toString(), handler);
+    } catch (final SAXException | IOException e) {
       throw new ParseException("failed parsing XML input", e);
     }
     return document;
   }
 
-  public static Document parse(final InputSource inputSource)
-    throws ParseException
-  {
-    final Document document = createDocument(null);
-    final Handler handler = createHandler(document);
-    final SAXParser parser = createParser(handler);
-    try {
-      parser.parse(inputSource, handler);
-    } catch (final SAXException e) {
-      throw new ParseException("failed parsing XML input", e);
-    } catch (final IOException e) {
-      throw new ParseException("failed parsing XML input", e);
-    }
-    return document;
-  }
-
-  public static Document parse(final InputStream inputStream)
-    throws ParseException
-  {
-    final Document document = createDocument("standard input");
-    final Handler handler = createHandler(document);
-    final SAXParser parser = createParser(handler);
-    try {
-      parser.parse(inputStream, handler);
-    } catch (final SAXException e) {
-      throw new ParseException("failed parsing XML input", e);
-    } catch (final IOException e) {
-      throw new ParseException("failed parsing XML input", e);
-    }
-    return document;
-  }
-
-  public static Document parse(final String uri)
-    throws ParseException
-  {
-    final Document document = createDocument(uri);
-    final Handler handler = createHandler(document);
-    final SAXParser parser = createParser(handler);
-    try {
-      parser.parse(uri, handler);
-    } catch (final SAXException e) {
-      throw new ParseException("failed parsing XML input", e);
-    } catch (final IOException e) {
-      throw new ParseException("failed parsing XML input", e);
-    }
-    return document;
-  }
-
-  private static Document createDocument(final String inputSourceInfo)
+  private static Document createDocument(final URL xmlUrl,
+                                         final URL schemaUrl)
     throws ParseException
   {
     final Document document;
     try {
       final DocumentBuilderFactory documentBuilderFactory =
         DocumentBuilderFactory.newInstance();
+      documentBuilderFactory.setIgnoringElementContentWhitespace(true);
+      documentBuilderFactory.setNamespaceAware(true);
+      documentBuilderFactory.
+        setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
+                     XMLConstants.W3C_XML_SCHEMA_NS_URI);
+      try {
+        setSchema(documentBuilderFactory, schemaUrl, xmlUrl);
+      } catch (final Exception t) {
+        throw new ParseException("failed setting schema", t);
+      }
       final DocumentBuilder documentBuilder =
         documentBuilderFactory.newDocumentBuilder();
       document = documentBuilder.newDocument();
     } catch (final ParserConfigurationException e) {
       throw new ParseException("failed creating DOM builder", e);
     }
-    document.setUserData(KEY_INPUT_SOURCE_INFO, inputSourceInfo, null);
+    document.setUserData(KEY_XML_URL, xmlUrl, null);
     return document;
+  }
+
+  private static void
+    setSchema(final DocumentBuilderFactory documentBuilderFactory,
+              final URL schemaUrl, final URL xmlUrl)
+    throws ParseException
+  {
+    if (schemaUrl != null) {
+      // TODO: Support for XSD 1.1
+      // ("http://www.w3.org/XML/XMLSchema/v1.1").
+      final String schemaLanguage = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+
+      final SchemaFactory schemaFactory =
+        SchemaFactory.newInstance(schemaLanguage);
+      final Schema schema;
+      try {
+        schema = schemaFactory.newSchema();
+      } catch (final SAXException e) {
+        throw new ParseException("generating new XSD instance failed", e);
+      }
+      final Validator validator = schema.newValidator();
+      final XsdResourceResolver xsdResourceResolver =
+        new XsdResourceResolver(schemaUrl);
+      validator.setResourceResolver(xsdResourceResolver);
+      try {
+        validator.validate(new SAXSource(new InputSource(xmlUrl.openStream())));
+      } catch (final IOException | SAXException e) {
+        throw new ParseException("failed opening stream for XML input", e);
+      }
+    } else {
+      System.out.println("[using no schema]");
+    }
   }
 
   private static Handler createHandler(final Document document)
@@ -357,16 +356,12 @@ public class LineNumberXmlParser
     final SAXParser parser;
     try {
       parser = factory.newSAXParser();
-    } catch (final SAXException e) {
-      throw new ParseException("failed creating SAX parser", e);
-    } catch (final ParserConfigurationException e) {
+    } catch (final SAXException | ParserConfigurationException e) {
       throw new ParseException("failed creating SAX parser", e);
     }
     try {
       parser.setProperty(KEY_LEXICAL_HANDLER, handler);
-    } catch (final SAXNotRecognizedException e) {
-      throw new ParseException("failed configuring SAX parser", e);
-    } catch (final SAXNotSupportedException e) {
+    } catch (final SAXNotRecognizedException | SAXNotSupportedException e) {
       throw new ParseException("failed configuring SAX parser", e);
     }
     return parser;

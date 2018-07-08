@@ -53,6 +53,8 @@ import org.soundpaint.sysexedit.model.ValueRangeRenderer;
 
 public class DeviceModelParser
 {
+  private static final String SCHEMA_RESOURCE_NAME =
+    "/devices/device-schema.xsd";
   private static final String ATTR_NAME_ID = "id";
   private static final String ATTR_NAME_REF = "ref";
   private static final String ATTR_NAME_LABEL = "label";
@@ -107,18 +109,24 @@ public class DeviceModelParser
   private static final String TAG_NAME_ADDRESS = "address";
   private static final String TAG_NAME_ADDRESS_INCREMENT = "address-increment";
 
-  private static Document loadXml(final URL deviceUrl)
+  private static Document loadXml(final URL deviceXmlUrl)
     throws ParseException
   {
-    return LineNumberXmlParser.parse(deviceUrl.toString());
+    final URL schemaUrl =
+      DeviceModelParser.class.getResource(SCHEMA_RESOURCE_NAME);
+    if (schemaUrl == null) {
+      throw new ParseException("failed locating device model XML schema");
+    }
+    System.out.println("[using device model XML schema: " + schemaUrl + "]");
+    return LineNumberXmlParser.parse(deviceXmlUrl, schemaUrl);
   }
 
   private static Document loadXml(final String deviceName)
     throws ParseException
   {
-    final URL deviceResource =
+    final URL deviceXmlUrl =
       SysExEdit.class.getResource("/devices/" + deviceName + ".xml");
-    return loadXml(deviceResource);
+    return loadXml(deviceXmlUrl);
   }
 
   private static boolean startsWithHexPrefix(final String value)
